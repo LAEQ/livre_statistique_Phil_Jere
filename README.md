@@ -1,3 +1,3 @@
-# The R Markdown Book
+# Introduction aux statistiques avec R
 
-The comprehensive documentation of R Markdown, published by [Chapman & Hall/CRC](https://www.crcpress.com/p/book/9781138359338).
+Un livre d'initiation aux statisiques avec R, utilisé dans le cadre du cours de méthodes quantitatives
