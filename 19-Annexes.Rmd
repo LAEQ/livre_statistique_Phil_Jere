@@ -1,0 +1,35 @@
+# Annexes
+
+## Tableau des valeurs critiques de khi^2^ {#annexe1}
+
+La courte syntaxe ![](Images/Rlogo.png) ci-dessous permet de générer un tableau avec les valeurs critiques du khi^2^ pour différents degrés de signification (valeurs de p).
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
+library(stargazer)
+
+# vecteur pour les degrés de liberté de 1 à 30, puis 40 et 50
+dl <- c(1:30, 40, 50, 100, 250, 500) 
+# la fonction qchisq permet d'obtenir la valeur théorique en fonction 
+# d'une valeur de p et d'un nombre de degrés de liberté
+TableT <- cbind(dl,
+                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
+                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = FALSE),3),
+                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = FALSE),3))
+# Impression du tableau avec la library stargazer
+stargazer(TableT, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 3,
+          title="Distribution des valeurs critiques du Khi2")
+```
+
+
+```{r tableCrtiqueT, echo=FALSE, message=FALSE, warning=FALSE}
+dl <- c(1:30, 40, 50, 100, 250, 500)
+TableT <- cbind(dl,
+                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
+                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = FALSE),3),
+                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = FALSE),3))
+
+knitr::kable(
+  head(TableT, n=nrow(TableT)), booktabs = TRUE,
+  caption = 'Distribution des valeurs critiques du khi2'
+  )
+```

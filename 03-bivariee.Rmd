@@ -1,1158 +1,1385 @@
-# (PART) Output Formats {-}
-
 # Analyses bivariées
 
-É very original version of Markdown was invented mainly to write HTML content more easily. For example, you can write a bullet with `- text` instead of the verbose HTML code `<ul><li>text</li></ul>`, or a quote with `> text` instead of `<blockquote>text</blockquote>`.
+Dans ce chapitre, nous présentons les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables, et ce, en fonction de leur type : deux variables quantitatives, deux variables qualitatives ou encore une variable quantitative _versus_ une variable qualitative (comprenant deux modalités ou plus de deux modalités) (figure \@ref(fig:fig1)). 
 
-The syntax of Markdown has been greatly extended by Pandoc. What is more, Pandoc makes it possible to convert a Markdown document to a large variety of output formats. In this chapter, we will introduce the features of various document output formats. In the next two chapters, we will document the presentation formats and other R Markdown extensions, respectively.
-
-## HTML document
-
-As we just mentioned before, Markdown was originally designed for HTML output, so it may not be surprising that the HTML format\index{HTML format} has the richest features among all output formats. We recommend that you read this full section before you learn other output formats, because other formats have several features in common with the HTML document format, and we will not repeat these features in the corresponding sections.
-
-To create an HTML document from R Markdown, you specify the `html_document` output format in the YAML metadata of your document:
-
-```yaml
----
-title: Habits
-author: John Doe
-date: March 22, 2005
-output: html_document
----
+```{r fig1, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les principales méthodes bivariées",  out.width='65%'}
+knitr::include_graphics('images/bivariee/figure1.jpg', dpi = NA)
 ```
 
-### Table of contents
+Plus spécifiquement, nous présentrons puis mettrons en oeuvre dans le logiciel ![](images/logos/Rlogo.png) les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect31)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect32)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect33)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect34)).
 
-You can add a table of contents (TOC) using the `toc` option and specify the depth of headers that it applies to using the `toc_depth` option. For example:
+## Relation linéaire entre deux variables quantitatives {#sect31}
 
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    toc: true
-    toc_depth: 2
----
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+**Deux variables continues varient-elles dans le même sens ou bien en sens contraire ?** Répondre à cette question est une démarche exploratoire classique en sciences sociales puisque les données socioéconomiques sont généralement associées linéairement. 
+
+En études urbaines, on pourrait vouloir vérifier si certaines variables socioéconomiques sont associées positivement ou négativement à des variables environnementales jugées positives (comme la couverture végétale ou des mesures d’accessibilité spatiale aux parcs) ou négatives (pollutions atmosphériques et sonores). 
+
+Par exemple, au niveau des secteurs de recensement d’une ville canadienne ou américaine, on pourrait vouloir vérifier si le revenu médian des ménages ou encore le coût moyen du loyer varient dans le même sens que la couverture végétale ; ou au contraire, en sens inverse des niveaux moyens de dioxyde d’azote ou de bruit routier.
+
+Pour évaluer la linéarité entre deux variables continues, deux statistiques descriptives sont utilisées : la **covariance**\index{covariance} (section \@ref(sect312)) et la **corrélation**\index{corrélation} (section \@ref(sect313)).
+:::
+
+
+### Bref retour sur postulat de la relation linéaire {#sect311}
+
+Vérifier le postulat de la linéarité consiste à évaluer si deux variables quantitatives varient dans le même sens ou bien en sens contraire. Toutefois, la relation entre deux variables quantitatives n’est pas forcément linéaire. En guise d'illustration, la figure \@ref(fig:fig2) permet de distinguer quatre types de relation :
+
+* le cas **a** illustre une relation linéaire positive entre les deux variables puisqu’elles vont dans le même sens. Autrement dit, quand les valeurs de *X* augmentent, celles de *Y* augmentent aussi. En guise d'exemple, pour les secteurs de recensement d'une métropole donnée, il est fort probable que le coût moyen du loyer soit associé positivement avec le revenu médian des ménages. 
+
+* le cas **b** illustre une relation linéaire négative entre les deux variables puisqu’elles vont en sens inverse. Autrement dit, quand les valeurs de *X* augmentent, celles de *Y* diminuent, et inversement. En guise d'exemple, pour les secteurs de recensement d'une métropole donnée, il est fort probable que le revenu médian des ménages soit associé négativement avec le taux de chômage. 
+* pour le cas **c**,  il y a une relation entre les deux variables, mais qui n’est pas linéaire. Le nuage de points entre les deux variables prend d’ailleurs une forme parabolique qui traduit une relation curvilinéaire. Concrètement, on observe une relation positive jusqu'à un certain seuil, puis une relation négative. 
+ 
+* pour le cas **d**,  la relation entre les deux variables est aussi curvilinéaire; d'abord négative, puis positive.
+
+
+```{r fig2, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Relations linéaires et curvilinéaires entre deux variables continues",  out.width='85%'}
+knitr::include_graphics('images/bivariee/figure2.jpg', dpi = NA)
 ```
 
-If the table of contents depth is not explicitly specified, it defaults to 3 (meaning that all level 1, 2, and 3 headers will be included in the table of contents).
+Dans une étude sur portant sur l'équité environnementale et la végétation à Montréal, Pham *et al.* [-@PhamApparicioSeguin2012] ont montré qu'il existe une relation curvilinéaire entre l'âge médian des bâtiments résidentiels (axe des abscisses) et les couvertures végétales (axes des ordonnées) :
 
-#### Floating TOC
+* la couverture de la végétation totale et celle des arbres augmentent quand l'âge médian croît jusqu'à atteindre un pic autour de 60 ans (autour de 1950). On peut supposer que les secteurs récemment construits, surtout ceux dans les banlieues, présentent des niveaux de végétation plus faibles. Au fur et au fur, que le quartier vieillit, les arbres plantés lors du développement résidentiel deviennent matures — canopée plus importante –, d'où l'augmentation des valeurs de la couverture végétale totale et de celle des arbres.
+*  Par contre, dans les secteurs développés avant les années 1950, la densité du bâti est plus forte, laissant ainsi moins de place pour la végétation, ce qui explique une diminution des variables relatives à la couverture végétale (figure \@ref(fig:fig3)).
 
-You can specify the `toc_float` option to float the table of contents to the left of the main document content. The floating table of contents will always be visible even when the document is scrolled. For example:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    toc: true
-    toc_float: true
----
+```{r fig3, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="xemples de relations curvilinéaires",  out.width='65%'}
+knitr::include_graphics('images/bivariee/figure3.jpg', dpi = NA)
 ```
 
-You may optionally specify a list of options for the `toc_float` parameter which control its behavior. These options include:
+Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives et exploratoires – la covariance (section \@ref(sect312)) et la corrélation (section \@ref(sect313)) – utilisées pour évaluer la relation linéaire entre deux variables continues. Ces deux mesures permettent de mesurer le degré d'association entre deux variables sans que l'une soit la variable dépendante (variable à expliquer) et l'autre, la variable dépendante (variable explicative). Puis, nous décrirons la régression linéaire simple (section \@ref(sect314))  qui permet justement de prédire une variable dépendante (_Y_) à partir d'une variable indépendante (_X_).
 
-- `collapsed` (defaults to `TRUE`) controls whether the TOC appears with only the top-level (e.g., H2) headers. If collapsed initially, the TOC is automatically expanded inline when necessary.
+### Covariance {#sect312}
 
-- `smooth_scroll` (defaults to `TRUE`) controls whether page scrolls are animated when TOC items are navigated to via mouse clicks.
+#### Formulation {#sect3121} 
 
-For example:
+La covariance\index{covariance} (eq. \@ref(eq:cov)), démommée $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives :
 
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
----
+
+\begin{equation} 
+cov(x,y) = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{n-1} = \frac{covariation}{n-1}
+(\#eq:cov)
+\end{equation} 
+
+avec $n$ étant le nombre d’observations; $\bar{x}$ et $\bar{y}$ étant les moyennes respectives des variables *X* et *Y*.
+
+#### Interprétation {#sect3122} 
+
+Le numérateur de l'équation \@ref(eq:cov) représente la covariation\index{covariance} soit la somme du produit des déviations des valeurs $x_{i}$ et $y_{i}$ par rapport à leurs moyennes respectives ($\bar{x}$ et $\bar{y}$). La covariance est donc la covariation divisée par le nombre d’observations, soit la moyenne de la covariation. Sa valeur peut être positive ou négative :  
+
+* positive quand les deux variables varient dans le même sens, c'est-à-dire que lorsque les valeurs de la variable _X_ s'éloignent de la moyenne, les valeurs de _Y_ s'éloignent aussi dans le même sens; et négative quand elles varient en sens contraire. 
+ * Quand la covariance est égale à 0, il n’y a pas de relation entre les variables _X_ et _Y_. Plus sa valeur absolue est élevée, plus la relation entre les deux variables *X* et *Y* est importante. 
+ 
+Le principe de la covariance\index{covariance} constitue un centrage des variables, c’est-à-dire à soustraire à chaque valeur de la variable sa moyenne correspondante. L'inconvénient majeur de l'utilisation de la covariance est qu'elle est tributaire des unités de mesure des deux variables. Par exemple, si nous calculons la covariance entre le pourcentage de personnes à faible revenu et la densité de population (habitants au km^2^) au niveau des secteurs de recensement de la région métropolitaine de Montréal, nous obtenons une valeur de covariance de 34934. Par contre, si la densité de population est exprimée en milliers d'habitants au km^2^, la valeur de la covariance sera de 34,934 alors que la relation linéaire entre les deux variables est la même, tel qu'illustré à la figure \@ref(fig:fig4). Pour rémédier à ce problème, on prévilégie l'utilisation du coefficient de corrélation.
+
+```{r fig4, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Covariance et unités de mesure', out.width='75%'}
+
+library(ggplot2)
+library(ggpubr)
+
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+
+cov1 <- round(cov(df$FaibleRev,df$HabKm2),0)
+cor1 <- round(cor(df$FaibleRev,df$HabKm2),3)
+cov2 <- round(cov(df$FaibleRev,df$Hab1000Km2),3)
+cor2 <- round(cor(df$FaibleRev,df$Hab1000Km2),3)
+
+plot1 <- ggplot(data = df, mapping = aes(x=FaibleRev,y=HabKm2))+
+  geom_point(colour="red")+
+  labs(title=paste0("covariance = ", cov1), 
+       subtitle = paste0("corrélation = ", cor1),
+       caption = "Les traits pointillés indiquent les moyennes.")+
+  xlab("Personnes à faible revenu (%)")+
+  ylab(expression("Densité de population : habitants au"~km^{2}))+
+  geom_vline(xintercept = mean(df$FaibleRev), colour="black", linetype="dashed", size=.5) +
+  geom_hline(yintercept = mean(df$HabKm2), colour="black", linetype="dashed", size=.5) +
+  stat_smooth(method="lm", se=FALSE)
+
+plot2 <- ggplot(data = df, mapping = aes(x=FaibleRev,y=Hab1000Km2))+
+  geom_point(colour="red")+
+  labs(title=paste0("covariance = ", cov2), 
+       subtitle = paste0("corrélation = ", cor2),
+       caption = "Les traits pointillés indiquent les moyennes.")+
+  xlab("Personnes à faible revenu (%)")+
+  ylab(expression("Densité de population : 1000 habitants au"~km^{2}))+
+  geom_vline(xintercept = mean(df$FaibleRev), colour="black", linetype="dashed", size=.5) +
+  geom_hline(yintercept = mean(df$Hab1000Km2), colour="black", linetype="dashed", size=.5) +
+  stat_smooth(method="lm", se=FALSE)
+
+ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ```
 
-### Section numbering
 
-You can add section numbering to headers using the `number_sections` option:
+### Corrélation {#sect313}
 
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    toc: true
-    number_sections: true
----
+#### Formulation {#sect3131} 
+Le coefficient de corrélation de Pearson ($r$) est égal à la covariance (numérateur) divisée par le produit des écart-types des deux variables *X* et *Y* (dénominateur). Il représente une standardisation de la covariance. Autrement dit, le coefficient de corrélation repose sur un centrage (moyenne = 0) et une réduction (variance = 1) des deux variables, c’est-à-dire à soustraire à chaque valeur sa moyenne correspondante et à la diviser par son écart-type. Il correspond ainsi à la moyenne du produit des deux variables centrées réduites. Il s'écrit alors :
+
+\begin{equation} 
+r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2(y_i - \bar{y})^2}}=\sum_{i=1}^n\frac{ZxZy}{n-1}
+(\#eq:cor)
+\end{equation}
+
+La syntaxe ![](images/Rlogo.png) ci-dessous démontre que le coefficient de corrélation de Pearson est bien égale à la moyenne du produit de deux variables centrées-réduites.
+
+```{r message=FALSE, warning=FALSE}
+library(MASS)
+N <- 1000      # nombre d'observations
+moy_x <- 50   # moyenne de x
+moy_y <- 40   # moyenne de y
+sd_x <- 10    # écart-type de x
+sd_y <- 8     # écart-type de y
+rxy <- .80 # corrélation entre X et Y
+
+# Création de la matrice de covariance
+cov <- matrix(c(sd_x^2,  rxy*sd_x*sd_y, rxy*sd_x*sd_y, sd_y^2), nrow=2)
+# Création du tableau de données avec deux variables
+df <- as.data.frame(mvrnorm(N, c(moy_x, moy_y), cov))
+# Centrage et réduction des deux variables
+df$zV1 <- scale(df$V1, center = TRUE, scale = TRUE)
+df$zV2 <- scale(df$V2, center = TRUE, scale = TRUE)
+# Corrélation de Pearson
+cor1 <- cor(df$V1, df$V2)
+# Moyenne du produit des variables centrées-réduites
+cor2 <- sum(df$zV1*df$zV2) / (nrow(df)-1)
+
+cat("Corrélation de Pearson = ",round(cor1,5),
+    "\nMoyenne du produit des variables centrées-réduites =", round(cor2,5))
 ```
 
-Note that if you do choose to use the `number_sections` option, you will likely also want to use `#` (H1) headers in your document as `##` (H2) headers will include a decimal point, because without H1 headers, you H2 headers will be numbered with `0.1`, `0.2`, and so on.
 
-### Tabbed sections
+#### Interprétation {#sect3132} 
 
-You can organize content using tabs by applying the `.tabset` class attribute to headers within a document. This will cause all sub-headers of the header with the `.tabset` attribute to appear within tabs rather than as standalone sections. For example:
+Le coefficient de corrélation $r$ varie de −1 à 1 avec :
 
-```markdown
-## Quarterly Results {.tabset}
+* 0 quand il n’y a pas de relation linéaire entre les variables _X_ et _Y_
+* −1 quand il y relation linéaire négative parfaite
+* et 1 quand il y a une relation linéaire positive parfaite. 
 
-### By Product
 
-(tab content)
+```{r fig5, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Relations entre deux variables continues et coefficients de corrélation de Pearson', out.width='75%'}
+library(MASS)
+library(ggplot2)
+library(ggpubr)
+N <- 1000      # nombre d'observations
+moy_x <- 50   # moyenne de x
+moy_y <- 40   # moyenne de y
+sd_x <- 10    # écart-type de x
+sd_y <- 8     # écart-type de y
+rxy <- c(.90,-.85,0.01) # corrélation entre X et Y
 
-### By Region
+ # Matrice de covariance
+cov1 <- matrix(c(sd_x^2,  rxy[1]*sd_x*sd_y, rxy[1]*sd_x*sd_y, sd_y^2), nrow=2)
+cov2 <- matrix(c(sd_x^2,  rxy[2]*sd_x*sd_y, rxy[2]*sd_x*sd_y, sd_y^2), nrow=2) 
+cov3 <- matrix(c(sd_x^2,  rxy[3]*sd_x*sd_y, rxy[3]*sd_x*sd_y, sd_y^2), nrow=2) 
+data1 <- mvrnorm(N, c(moy_x, moy_y), cov1)
+data2 <- mvrnorm(N, c(moy_x, moy_y), cov2)
+data3 <- mvrnorm(N, c(moy_x, moy_y), cov3)
 
-(tab content)
+plot1 <- ggplot(mapping = aes(x=data1[,1],y=data1[,2]))+
+  geom_point(colour="red")+
+  ggtitle("a. Relation linéaire positive", subtitle = paste0("Corrélation = ",round(cor(data1)[1,2],3)))+
+  xlab("Variable X")+ylab("Variable Y")+
+  stat_smooth(method="lm", se=FALSE)
+
+plot2 <- ggplot(mapping = aes(x=data2[,1],y=data2[,2]))+
+  geom_point(colour="red")+
+  ggtitle("b. Relation linéaire négative", subtitle = paste0("Corrélation = ",round(cor(data2)[1,2],3)))+
+  xlab("Variable X")+ylab("Variable Y")+
+  stat_smooth(method="lm", se=FALSE)
+
+plot3 <- ggplot(mapping = aes(x=data3[,1],y=data3[,2]))+
+  geom_point(colour="red")+
+  ggtitle("c. Absence de relation linéaire", subtitle = paste0("Corrélation = ",round(cor(data3)[1,2],3)))+
+  xlab("Variable X")+ylab("Variable Y")+
+  stat_smooth(method="lm", se=FALSE)
+
+ggarrange(plot1, plot2, plot3, ncol = 2, nrow = 2)
+
 ```
 
-You can also specify two additional attributes to control the appearance and behavior of the tabs. The `.tabset-fade` attribute causes the tabs to fade in and out when switching between tabs. The `.tabset-pills` attribute causes the visual appearance of the tabs to be "pill" (see Figure \@ref(fig:tabset)) rather than traditional tabs. For example:
+Concrètement, le signe du coefficient de corrélation indique si la relation est positive ou négative et la valeur absolue du coefficient indique le degré d’association entre les deux variables. Reste à savoir comment déterminer qu’une valeur de corrélation est faible, moyenne ou forte. En sciences sociales, on utilise habituellement les intervalles de valeurs reportées au tableau \@ref(tab:tableIntervallesCorrelation). Toutefois, ces seuils sont tout à fait arbitraires. En effet, dépendamment de la discipline de recherche (sciences sociales, sciences de la santé ou sciences physiques), et plus simplement des variables à l’étude, l’interprétation d’une valeur de corrélation peut varier. Par exemple, en sciences sociales, une valeur de corrélation de 0,2 sera considérée comme très faible alors qu’en sciences de la santé, elle pourrait être considérée comme intéressante. À l’opposé, une valeur de 0,9 en sciences physiques pourrait être considérée comme faible. Il convient alors d’utiliser ces intervalles avec précaution, et ce, en fonction du champ de recherche et des variables à l’étude.
 
-```markdown
-## Quarterly Results {.tabset .tabset-fade .tabset-pills}
-```
 
-```{r tabset, echo=FALSE, fig.cap='Traditional tabs and pill tabs on an HTML page.', out.width='50%', fig.align='center'}
-knitr::include_graphics('images/tabset.png', dpi = NA)
-```
+```{r tableIntervallesCorrelation, echo=FALSE, message=FALSE, warning=FALSE}
+df <- data.frame(
+        Corrélation = c("Faible","Moyenne", "Forte"), 
+        Négative = c("de −0,3 à 0,0","de −0,5 à −0,3", "de −1,0 à −0,5"), 
+        Positive = c("de 0,0 à 0,3","de 0,3 à 0,5", "de 0,5 à 1,0"))
 
-### Appearance and style
-
-There are several options that control the appearance of HTML documents:
-
-- `theme` specifies the Bootstrap theme to use for the page (themes are drawn from the [Bootswatch](https://bootswatch.com/3/) theme library). Valid themes include `r knitr::combine_words(rmarkdown:::themes())`. Pass `null` for no theme (in this case you can use the `css` parameter to add your own styles).
-
-- `highlight` specifies the syntax highlighting style. Supported styles include `r knitr::combine_words(rmarkdown:::html_highlighters(), before='\x60')`. Pass `null` to prevent syntax highlighting.
-
-- `smart` indicates whether to produce typographically correct output, converting straight quotes to curly quotes, `---` to em-dashes, `--` to en-dashes, and `...` to ellipses. Note that `smart` is enabled by default.
-
-For example:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    theme: united
-    highlight: tango
----
-```
-
-#### Custom CSS
-
-You can add your own CSS\index{CSS} to an HTML document using the `css` option:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    css: styles.css
----
-```
-
-If you want to provide all of the styles for the document from your own CSS you set the `theme` (and potentially `highlight`) to `null`:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    theme: null
-    highlight: null
-    css: styles.css
----
-```
-
-You can also target specific sections of documents with custom CSS by adding ids or classes to section headers within your document. For example the following section header:
-
-```markdown
-## Next Steps {#nextsteps .emphasized}
-```
-
-Would enable you to apply CSS to all of its content using either of the following CSS selectors:
-
-```css
-#nextsteps {
-   color: blue;
-}
-
-.emphasized {
-   font-size: 1.2em;
-}
-```
-
-### Figure options
-
-There are a number of options that affect the output of figures within HTML documents:
-
-- `fig_width` and  `fig_height` can be used to control the default figure width and height (7x5 is used by default).
-
-- `fig_retina` specifies the scaling to perform for retina displays (defaults to 2, which currently works for all widely used retina displays). Set to `null` to prevent retina scaling.
-
-- `fig_caption` controls whether figures are rendered with captions.
-
-- `dev` controls the graphics device used to render figures (defaults to `png`).
-
-For example:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    fig_width: 7
-    fig_height: 6
-    fig_caption: true
----
-```
-
-### Data frame printing
-
-You can enhance the default display of data frames via the `df_print` option. Valid values are shown in Table \@ref(tab:df-print).
-
-Table: (\#tab:df-print) The possible values of the `df_print` option for the `html_document` format.
-
-| Option  | Description  |
-|------------|-------------------------------------------|
-| default  | Call the `print.data.frame` generic method |
-| kable  | Use the `knitr::kable` function |
-| tibble  | Use the `tibble::print.tbl_df` function |
-| paged  |  Use `rmarkdown::paged_table` to create a pageable table |
-
-#### Paged printing
-
-When the `df_print` option is set to `paged`, tables are printed as HTML tables with support for pagination over rows and columns. For instance (see Figure \@ref(fig:paged)):
-
-````markdown
----
-title: "Motor Trend Car Road Tests"
-output:
-  html_document:
-    df_print: paged
----
-
-`r ''````{r}
-mtcars
-```
-````
-
-```{r paged, echo=FALSE, fig.cap='A paged table in the HTML output document.', out.width='100%'}
-knitr::include_graphics('images/paged.png', dpi = NA)
-```
-
-Table \@ref(tab:paged) shows the available options for paged tables.
-
-Table: (\#tab:paged) The options for paged HTML tables.
-
-| Option          | Description                                           |
-|-----------------|-------------------------------------------------------|
-| max.print       | The number of rows to print.                          |
-| rows.print      | The number of rows to display.                        |
-| cols.print      | The number of columns to display.                     |
-| cols.min.print  | The minimum number of columns to display.             |
-| pages.print     | The number of pages to display under page navigation. |
-| paged.print     | When set to `FALSE` turns off paged tables.           |
-| rownames.print  | When set to `FALSE` turns off row names.              |
-
-These options are specified in each chunk like below:
-
-````markdown
-`r ''````{r cols.print=3, rows.print=3}
-mtcars
-```
-````
-
-### Code folding
-
-When the **knitr** chunk option `echo = TRUE` is specified (the default behavior), the R source code within chunks is included within the rendered document. In some cases, it may be appropriate to exclude code entirely (`echo = FALSE`) but in other cases you might want the code to be available but not visible by default.
-
-The `code_folding: hide` option enables you to include R code but have it hidden by default. Users can then choose to show hidden R code chunks either individually or document wide. For example:
-
-````markdown
----
-title: "Habits"
-output:
-  html_document:
-    code_folding: hide
----
-````
-
-You can specify `code_folding: show` to still show all R code by default but then allow users to hide the code if they wish.
-
-### MathJax equations
-
-By default, [MathJax](https://www.mathjax.org)\index{MathJax} scripts are included in HTML documents for rendering LaTeX and MathML equations. You can use the `mathjax` option to control how MathJax is included:
-
-- Specify `"default"` to use an HTTPS URL from a CDN host (currently provided by RStudio).
-
-- Specify `"local"` to use a local version of MathJax (which is copied into the output directory). Note that when using `"local"` you also need to set the `self_contained` option to `false`.
-
-- Specify an alternate URL to load MathJax from another location.
-
-- Specify `null` to exclude MathJax entirely.
-
-For example, to use a local copy of MathJax:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    mathjax: local
-    self_contained: false
----
-```
-
-To use a self-hosted copy of MathJax:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    mathjax: "http://example.com/MathJax.js"
----
-```
-
-To exclude MathJax entirely:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    mathjax: null
----
-```
-
-### Document dependencies
-
-By default, R Markdown produces standalone HTML files with no external dependencies, using `data:` URIs to incorporate the contents of linked scripts, stylesheets, images, and videos. This means you can share or publish the file just like you share Office documents or PDFs. If you would rather keep dependencies in external files, you can specify `self_contained: false`. For example:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    self_contained: false
----
-```
-
-Note that even for self-contained documents, MathJax is still loaded externally (this is necessary because of its big size). If you want to serve MathJax locally, you should specify `mathjax: local` and `self_contained: false`.
-
-One common reason to keep dependencies external is for serving R Markdown documents from a website (external dependencies can be cached separately by browsers, leading to faster page load times). In the case of serving multiple R Markdown documents you may also want to consolidate dependent library files (e.g. Bootstrap, and MathJax, etc.) into a single directory shared by multiple documents. You can use the `lib_dir` option to do this. For example:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    self_contained: false
-    lib_dir: libs
----
-```
-
-### Advanced customization
-
-#### Keeping Markdown
-
-When **knitr** processes an R Markdown input file, it creates a Markdown (`*.md`) file that is subsequently transformed into HTML by Pandoc. If you want to keep a copy of the Markdown file after rendering, you can do so using the `keep_md` option:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    keep_md: true
----
-```
-
-#### Includes
-
-You can do more advanced customization of output by including additional HTML content or by replacing the core Pandoc template entirely. To include content in the document header or before/after the document body, you use the `includes` option as follows:
-
-```markdown
----
-title: "Habits"
-output:
-  html_document:
-    includes:
-      in_header: header.html
-      before_body: doc_prefix.html
-      after_body: doc_suffix.html
----
-```
-
-#### Custom templates
-
-You can also replace the underlying Pandoc template\index{Pandoc template} using the `template` option:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    template: quarterly_report.html
----
-```
-
-Consult the documentation on [Pandoc templates](http://pandoc.org/MANUAL.html#templates) for additional details on templates. You can also study the [default HTML template `default.html5`](https://github.com/jgm/pandoc-templates/) as an example.
-
-#### Markdown extensions {#markdown-extensions}
-
-By default, R Markdown is defined as all Pandoc Markdown extensions with the following tweaks for backward compatibility with the old **markdown** package [@R-markdown]:
-
-```
-+autolink_bare_uris
-+tex_math_single_backslash
-```
-
-You can enable or disable Markdown extensions using the `md_extensions` option (you preface an option with `-` to disable and `+` to enable it). For example:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    md_extensions: -autolink_bare_uris+hard_line_breaks
----
-```
-
-The above would disable the `autolink_bare_uris` extension, and enable the `hard_line_breaks` extension.
-
-For more on available markdown extensions see the [Pandoc Markdown specification](http://pandoc.org/MANUAL.html#pandocs-markdown).
-
-#### Pandoc arguments {#pandoc-arguments}
-
-If there are Pandoc features that you want to use but lack equivalents in the YAML options described above, you can still use them by passing custom `pandoc_args`. For example:
-
-```yaml
----
-title: "Habits"
-output:
-  html_document:
-    pandoc_args: [
-      "--title-prefix", "Foo",
-      "--id-prefix", "Bar"
-    ]
----
-```
-
-Documentation on all available pandoc arguments can be found in the [Pandoc User Guide](http://pandoc.org/MANUAL.html#options).
-
-### Shared options {#shared-options}
-
-If you want to specify a set of default options to be shared by multiple documents within a directory, you can include a file named `_output.yml` within the directory. Note that no YAML delimiters (`---`) or the enclosing `output` field are used in this file. For example:
-
-```yaml
-html_document:
-  self_contained: false
-  theme: united
-  highlight: textmate
-```
-
-It should not be written as:
-
-```yaml
----
-output:
-  html_document:
-    self_contained: false
-    theme: united
-    highlight: textmate
----
-```
-
-All documents located in the same directory as `_output.yml` will inherit its options. Options defined explicitly within documents will override those specified in the shared options file.
-
-### HTML fragments
-
-If want to create an HTML fragment rather than a full HTML document you can use the `html_fragment` format. For example:
-
-```yaml
----
-output: html_fragment
----
-```
-
-Note that HTML fragments are not complete HTML documents. They do not contain the standard header content that HTML documents do (they only contain content in the `<body>` tags of normal HTML documents). They are intended for inclusion within other web pages or content management systems (like blogs). As such, they do not support features like themes or code highlighting (it is expected that the environment they are ultimately published within handles these things).
-
-## Notebook
-
-An R Notebook is an R Markdown document with chunks that can be executed independently and interactively, with output visible immediately beneath the input. See Figure \@ref(fig:notebook-demo) for an example.
-
-```{r notebook-demo, echo=FALSE, fig.cap='An R Notebook example.', out.width='100%'}
-knitr::include_graphics('images/notebook-demo.png', dpi = NA)
-```
-
-R Notebooks are an implementation of [Literate Programming](https://en.wikipedia.org/wiki/Literate_programming) that allows for direct interaction with R while producing a reproducible document with publication-quality output.
-
-Any R Markdown document can be used as a notebook, and all R Notebooks can be rendered to other R Markdown document types. A notebook can therefore be thought of as a special execution mode for R Markdown documents. The immediacy of notebook mode makes it a good choice while authoring the R Markdown document and iterating on code. When you are ready to publish the document, you can share the notebook directly, or render it to a publication format with the `Knit` button.
-
-### Using Notebooks
-
-#### Creating a Notebook
-
-You can create a new notebook in RStudio with the menu command `File -> New File -> R Notebook`, or by using the `html_notebook` output type in your document's YAML metadata.
-
-```yaml
----
-title: "My Notebook"
-output: html_notebook
----
-```
-
-By default, RStudio enables inline output (Notebook mode) on all R Markdown documents, so you can interact with any R Markdown document as though it were a notebook. If you have a document with which you prefer to use the traditional console method of interaction, you can disable notebook mode by clicking the gear button in the editor toolbar, and choosing `Chunk Output in Console` (Figure \@ref(fig:notebook-console)).
-
-```{r notebook-console, echo=FALSE, fig.cap='Send the R code chunk output to the console.', out.width='80%', fig.align='center'}
-knitr::include_graphics('images/notebook-console.png', dpi = NA)
-```
-
-If you prefer to use the console by default for *all* your R Markdown documents (restoring the behavior in previous versions of RStudio), you can make `Chunk Output in Console` the default: `Tools -> Options -> R Markdown -> Show output inline for all R Markdown documents`.
-
-#### Inserting chunks
-
-Notebook chunks can be inserted quickly using the keyboard shortcut `Ctrl + Alt + I` (macOS: `Cmd + Option + I`), or via the `Insert` menu in the editor toolbar.
-
-Because all of a chunk's output appears beneath the chunk (not alongside the statement which emitted the output, as it does in the rendered R Markdown output), it is often helpful to split chunks that produce multiple outputs into two or more chunks which each produce only one output. To do this, select the code to split into a new chunk (Figure \@ref(fig:notebook-split-before)), and use the same keyboard shortcut for inserting a new code chunk (Figure \@ref(fig:notebook-split-after)).
-
-```{r notebook-split-before, echo=FALSE, fig.cap='Select the code to split into a new chunk.', out.width='90%', fig.align='center'}
-knitr::include_graphics('images/notebook-split-before.png', dpi = NA)
-```
-
-```{r notebook-split-after, echo=FALSE, fig.cap='Insert a new chunk from the code selected before.', out.width='90%', fig.align='center'}
-knitr::include_graphics('images/notebook-split-after.png', dpi = NA)
-```
-
-#### Executing code
-
-Code in the notebook is executed with the same gestures you would use to execute code in an R Markdown document:
-
-1. Use the green triangle button on the toolbar of a code chunk that has the tooltip "Run Current Chunk", or `Ctrl + Shift + Enter` (macOS: `Cmd + Shift + Enter`) to run the current chunk.
-
-1. Press `Ctrl + Enter` (macOS: `Cmd + Enter`) to run just the current statement. Running a single statement is much like running an entire chunk consisting only of that statement.
-
-1. There are other ways to run a batch of chunks if you click the menu `Run` on the editor toolbar, such as `Run All`, `Run All Chunks Above`, and `Run All Chunks Below`.
-
-The primary difference is that when executing chunks in an R Markdown document, all the code is sent to the console at once, but in a notebook, only one line at a time is sent. This allows execution to stop if a line raises an error.
-
-There is also a `Restart R and Run All Chunks` item in the `Run` menu on the editor toolbar, which gives you a fresh R session prior to running all the chunks. This is similar to the `Knit` button, which launches a separate R session to compile the document.
-
-When you execute code in a notebook, an indicator will appear in the gutter to show you execution progress (Figure \@ref(fig:notebook-longrunning)). Lines of code that have been sent to R are marked with dark green; lines that have not yet been sent to R are marked with light green. If at least one chunk is waiting to be executed, you will see a progress meter appear in the editor's status bar, indicating the number of chunks remaining to be executed. You can click on this meter at any time to jump to the currently executing chunk. When a chunk is waiting to execute, the `Run` button in its toolbar will change to a "queued" icon. If you do not want the chunk to run, you can click on the icon to remove it from the execution queue.
-
-```{r notebook-longrunning, echo=FALSE, fig.cap='The indicator in the gutter to show the execution progress of a code chunk in the notebook.', out.width='100%'}
-knitr::include_graphics('images/notebook-longrunning.png', dpi = NA)
-```
-
-In general, when you execute code in a notebook chunk, it will do exactly the same thing as it would if that same code were typed into the console. There are however a few differences:
-
-- **Output**: The most obvious difference is that most forms of output produced from a notebook chunk are shown in the chunk output rather than, for example, the RStudio Viewer or the Plots pane. Console output (including warnings and messages) appears both at the console *and* in the chunk output.
-
-- **Working directory**: The current working directory inside a notebook chunk is always the directory containing the notebook `.Rmd` file. This makes it easier to use relative paths inside notebook chunks, and also matches the behavior when knitting, making it easier to write code that works identically both interactively and in a standalone render.
-
-    You'll get a warning if you try to change the working directory inside a notebook chunk, and the directory will revert back to the notebook's directory once the chunk is finished executing. You can suppress this warning by using the `warnings = FALSE` chunk option.
-
-    If it is necessary to execute notebook chunks in a different directory, you can change the working directory for **all** your chunks by using the **knitr** `root.dir` option. For instance, to execute all notebook chunks in the grandparent folder of the notebook:
-
-    ```r
-    knitr::opts_knit$set(root.dir = normalizePath(".."))
-    ```
-
-    This option is only effective when used inside the setup chunk. Also note that, as in **knitr**, the `root.dir` chunk option applies only to chunks; relative paths in Markdown are still relative to the notebook's parent folder.
-
-- **Warnings**: Inside a notebook chunk, warnings are always displayed immediately rather than being held until the end, as in `options(warn = 1)`.
-
-- **Plots**: Plots emitted from a chunk are rendered to match the width of the editor at the time the chunk was executed. The height of the plot is determined by the [golden ratio](https://en.wikipedia.org/wiki/Golden_ratio). The plot's display list is saved, too, and the plot is re-rendered to match the editor's width when the editor is resized.
-
-    You can use the `fig.width`, `fig.height`, and `fig.asp` chunk options to manually specify the size of rendered plots in the notebook; you can also use `knitr::opts_chunk$set(fig.width = ..., fig.height = ...)` in the setup chunk to to set a default rendered size. Note, however, specifying a chunk size manually suppresses the generation of the display list, so plots with manually specified sizes will be resized using simple image scaling when the notebook editor is resized.
-
-To execute an inline R expression in the notebook, put your cursor inside the chunk and press `Ctrl + Enter` (macOS: `Cmd + Enter`). As in the execution of ordinary chunks, the content of the expression will be sent to the R console for evaluation. The results will appear in a small pop-up window next to the code (Figure \@ref(fig:notebook-inline-output)).
-
-```{r notebook-inline-output, echo=FALSE, fig.cap='Output from an inline R expression in the notebook.', out.width='40%', fig.align='center'}
-knitr::include_graphics('images/notebook-inline-output.png', dpi = NA)
-```
-
-In notebooks, inline R expressions can only produce text (not figures or other kinds of output). It is also important that inline R expressions executes quickly and do not have side-effects, as they are executed whenever you save the notebook.
-
-Notebooks are typically self-contained. However, in some situations, it is preferable to re-use code from an R script as a notebook chunk, as in **knitr**'s [code externalization](https://yihui.name/knitr/demo/externalization/). This can be done by using `knitr::read_chunk()` in your notebook's setup chunk, along with a special `## ---- chunkname` annotation in the R file from which you intend to read code. Here is a minimal example with two files:
-
-**example.Rmd**
-
-````markdown
-`r ''````{r setup}
-knitr::read_chunk("example.R")
-```
-
-```{r chunk}
-```
-````
-
-**example.R**
-
-```r
-## ---- chunk
-1 + 1
-```
-
-When you execute the empty chunk in the notebook `example.Rmd`, code from the external file `example.R` will be inserted, and the results displayed inline, as though the chunk contained that code (Figure \@ref(fig:notebook-external-code)).
-
-```{r notebook-external-code, echo=FALSE, fig.cap='Execute a code chunk read from an external R script.', out.width='70%', fig.align='center'}
-knitr::include_graphics('images/notebook-external-code.png', dpi = NA)
-```
-
-#### Chunk output
-
-When code is executed in the notebook, its output appears beneath the code chunk that produced it. You can clear an individual chunk's output by clicking the `X` button in the upper right corner of the output, or collapse it by clicking the chevron.
-
-It is also possible to clear or collapse all of the output in the document at once using the `Collapse All Output` and `Clear All Output` menu items available on the gear menu in the editor toolbar (Figure \@ref(fig:notebook-console)).
-
-If you want to fully reset the state of the notebook, the item `Restart R and Clear Output` on the `Run` menu on the editor toolbar will do the job.
-
-Ordinary R Markdown documents are "knitted", but notebooks are "previewed". While the notebook preview looks similar to a rendered R Markdown document, the notebook preview _does not execute any of your R code chunks_. It simply shows you a rendered copy of the Markdown output of your document along with the most recent chunk output. This preview is generated automatically whenever you save the notebook (whether you are viewing it in RStudio or not); see the section beneath on the `*.nb.html` file for details.
-
-When `html_notebook` is the topmost (default) format in your YAML metadata, you will see a `Preview` button in the editor toolbar. Clicking it will show you the notebook preview (Figure \@ref(fig:notebook-preview)).
-
-```{r notebook-preview, echo=FALSE, fig.cap='Preview a notebook.', out.width='100%'}
-knitr::include_graphics('images/notebook-preview.png', dpi = NA)
-```
-
-If you have configured R Markdown previewing to use the Viewer pane (as illustrated in Figure \@ref(fig:notebook-preview)), the preview will be automatically updated whenever you save your notebook.
-
-When an error occurs while a notebook chunk is executing (Figure \@ref(fig:notebook-error)):
-
-```{r notebook-error, echo=FALSE, fig.cap='Errors in a notebook.', out.width='90%', fig.align='center'}
-knitr::include_graphics('images/notebook-error.png', dpi = NA)
-```
-
-1. Execution will stop; the remaining lines of that chunk (and any chunks that have not yet been run) will not be executed.
-
-1. The editor will scroll to the error.
-
-1. The line of code that caused the error will have a red indicator in the editor's gutter.
-
-If you want your notebook to keep running after an error, you can suppress the first two behaviors by specifying `error = TRUE` in the chunk options.
-
-In most cases, it should not be necessary to have the console open while using the notebook, as you can see all of the console output in the notebook itself. To preserve vertical space, the console will be automatically collapsed when you open a notebook or run a chunk in the notebook.
-
-If you prefer not to have the console hidden when chunks are executed, uncheck the option from the menu `Tools -> Global Options -> R Markdown -> Hide console automatically when executing notebook chunks`.
-
-### Saving and sharing
-
-#### Notebook file
-
-When a notebook `*.Rmd` file is saved, a `*.nb.html` file is created alongside it. This file is a self-contained HTML file which contains both a rendered copy of the notebook with all current chunk outputs (suitable for display on a website) and a copy of the `*.Rmd` file itself.
-
-You can view the `*.nb.html` file in any ordinary web browser. It can also be opened in RStudio; when you open there (e.g., using `File -> Open File`), RStudio will do the following:
-
-1. Extract the bundled `*.Rmd` file, and place it alongside the `*.nb.html` file.
-
-2. Open the `*.Rmd` file in a new RStudio editor tab.
-
-3. Extract the chunk outputs from the `*.nb.html` file, and place them appropriately in the editor.
-
-Note that the `*.nb.html` file is only created for R Markdown documents that are notebooks (i.e., at least one of their output formats is `html_notebook`). It is possible to have an R Markdown document that includes inline chunk output beneath code chunks, but does not produce an `*.nb.html` file, when `html_notebook` is not specified as an output format for the R Markdown document.
-
-#### Output storage
-
-The document's chunk outputs are also stored in an internal RStudio folder beneath the project's `.Rproj.user` folder. If you work with a notebook but do not have a project open, the outputs are stored in the RStudio state folder in your home directory (the location of this folder varies between the [desktop](https://support.rstudio.com/hc/en-us/articles/200534577) and the [server](https://support.rstudio.com/hc/en-us/articles/218730228)).
-
-#### Version control
-
-One of the major advantages of R Notebooks compared to other notebook systems is that they are plain-text files and therefore work well with version control. We recommend checking in both the `*.Rmd` and `*.nb.html` files into version control, so that both your source code and output are available to collaborators. However, you can choose to include only the `*.Rmd` file (with a `.gitignore` that excludes `*.nb.html`) if you want each collaborator to work with their own private copies of the output.
-
-### Notebook format
-
-While RStudio provides a set of integrated tools for authoring R Notebooks, the notebook file format itself is decoupled from RStudio. The **rmarkdown** package provides several functions that can be used to read and write R Notebooks outside of RStudio.
-
-In this section, we describe the internals of the notebook format. It is primarily intended for front-end applications using or embedding R, or other users who are interested in reading and writing documents using the R Notebook format. We recommend that beginners skip this section when reading this book or using notebooks for the first time.
-
-R Notebooks are HTML documents with data written and encoded in such a way that:
-
-1. The source Rmd document can be recovered, and
-
-2. Chunk outputs can be recovered.
-
-To generate an R Notebook, you can use `rmarkdown::render()` and specify the `html_notebook` output format in your document's YAML metadata. Documents rendered in this form will be generated with the `.nb.html` file extension, to indicate that they are HTML notebooks.
-
-To ensure chunk outputs can be recovered, the elements of the R Markdown document are enclosed with HTML comments, providing more information on the output. For example, chunk output might be serialized in the form:
-
-```html
-<!-- rnb-chunk-begin -->
-<!-- rnb-output-begin -->
-<pre><code>Hello, World!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-```
-
-Because R Notebooks are just HTML documents, they can be opened and viewed in any web browser; in addition, hosting environments can be configured to recover and open the source Rmd document, and also recover and display chunk outputs as appropriate.
-
-#### Generating R Notebooks with custom output
-
-It is possible to render an HTML notebook with custom chunk outputs inserted in lieu of the result that would be generated by evaluating the associated R code. This can be useful for front-end editors that show the output of chunk execution inline, or for conversion programs from other notebook formats where output is already available from the source format. To facilitate this, one can provide a custom "output source" to `rmarkdown::render()`. Let's investigate with a simple example:
-
-```{r comment='', class.output='markdown'}
-rmd_stub = "examples/r-notebook-stub.Rmd"
-cat(readLines(rmd_stub), sep = "\n")
-```
-
-Let's try to render this document with a custom output source, so that we can inject custom output for the single chunk within the document. The output source function will accept:
-
-- `code`: The code within the current chunk.
-
-- `context`: An environment containing active chunk options and other chunk information.
-
-- `...`: Optional arguments reserved for future expansion.
-
-In particular, the `context` elements `label` and `chunk.index` can be used to help identify which chunk is currently being rendered.
-
-```{r tidy=FALSE}
-output_source = function(code, context, ...) {
-  logo = file.path(R.home("doc"), "html", "logo.jpg")
-  if (context$label == "chunk-one") list(
-    rmarkdown::html_notebook_output_code("# R Code"),
-    paste("Custom output for chunk:", context$chunk.index),
-    rmarkdown::html_notebook_output_code("# R Logo"),
-    rmarkdown::html_notebook_output_img(logo)
-  )
-}
-```
-
-We can pass our `output_source` along as part of the `output_options` list to `rmarkdown::render()`.
-
-```{r tidy=FALSE}
-output_file = rmarkdown::render(
-  rmd_stub,
-  output_options = list(output_source = output_source),
-  quiet = TRUE
+knitr::kable(
+  head(df, 3), booktabs = TRUE,
+  caption = 'Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales'
 )
 ```
 
-We have now generated an R Notebook. Open [this document](https://rmarkdown.rstudio.com/notebook/r-notebook-stub.nb.html) in a web browser, and it will show that the `output_source` function has effectively side-stepped evaluation of code within that chunk, and instead returned the injected result.
+Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
 
-#### Implementing output sources
+```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Coefficient de corrélation et proportion de la variance expliquée', out.width='75%'}
+library(ggplot2)
+R <- seq(-1, 1, by=0.01)
+R2 <- R^2
 
-In general, you can provide regular R output in your output source function, but **rmarkdown** also provides a number of endpoints for insertion of custom HTML content. These are documented within `?html_notebook_output`.
-
-Using these functions ensures that you produce an R Notebook that can be opened in R frontends (e.g., RStudio).
-
-#### Parsing R Notebooks
-
-The `rmarkdown::parse_html_notebook()` function provides an interface for recovering and parsing an HTML notebook.
-
-```{r comment=''}
-parsed = rmarkdown::parse_html_notebook(output_file)
-str(parsed, width = 60, strict.width = 'wrap')
+ ggplot(mapping = aes(y=R2,x=R)) +
+   geom_rect(xmin=-1,xmax=-.5, ymin=0,ymax=1, size=0, fill="#91bfdb")+
+   geom_rect(xmin=-.5,xmax=-.3, ymin=0,ymax=1, size=0, fill="#e0f3f8")+ 
+   geom_rect(xmin=-.3,xmax=.3, ymin=0,ymax=1, size=0, fill="#ffffbf")+
+   geom_rect(xmin=.3,xmax=.5, ymin=0,ymax=1, size=0, fill="#fee090")+  
+   geom_rect(xmin=.5,xmax=1, ymin=0,ymax=1, size=0, fill="#fc8d59")+
+   geom_point() +
+   ggtitle("Corrélation et coefficient de détermination")+
+   xlab("Corrélation de Pearson – R")+
+   ylab(expression("Coefficient de détermination –"~ R^{2}))+
+   geom_vline(xintercept = -1, colour="black", linetype="dashed", size=.5)+
+   geom_vline(xintercept = -0.5, colour="black", linetype="dashed", size=.5)+
+   geom_vline(xintercept = -0.3, colour="black", linetype="dashed", size=.5)+
+   geom_vline(xintercept = 0.0, colour="black", linetype="dashed", size=.5)+
+   geom_vline(xintercept = 0.3, colour="black", linetype="dashed", size=.5)+
+   geom_vline(xintercept = 0.5, colour="black", linetype="dashed", size=.5)+
+   geom_vline(xintercept = 1, colour="black", linetype="dashed", size=.5) +
+   
+   annotate(geom="text", x =-.75, y=0.8, label="Forte et \nnégative", color="black", hjust = 0.5, size = 3.5)+
+   annotate(geom="text", x =.75, y=0.8, label="Forte et \npositive", color="black", hjust = 0.5, size = 3.5)+
+   annotate(geom="text", x =-.4, y=0.8, label="Modérée \n et négative", color="black", hjust = 0.5, size = 3.5)+  
+   annotate(geom="text", x =.4, y=0.8, label="Modérée \n et positive", color="black", hjust = 0.5, size = 3.5)+   
+   annotate(geom="text", x =-.15, y=0.8, label="Faible et \n négative", color="black", hjust = 0.5, size = 3.5)+   
+   annotate(geom="text", x =.15, y=0.8, label="Faible et \n positive", color="black", hjust = 0.5, size = 3.5)
 ```
 
-This interface can be used to recover the original Rmd source, and also (with some more effort from the front-end) the ability to recover chunk outputs from the document itself.
+**Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes (extrêmes). D’ailleurs, plus le nombre d’observations sera réduit, plus la présence de valeurs aberrantes aura un impact important sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, au nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui pourraient être supprimées du jeu de données : six observations avec une densité de population supérieures à 20 000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55%. Une fois ces huit observations supprimées – soit moins d'un pourcent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
 
-```{r, include=FALSE}
-rm(parsed)
+```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Illustation de l’effet des valeurs extrêmes sur le coefficient de Pearson', out.width='75%'}
+library(ggplot2)
+library(ggpubr)
+library(moments)
+
+df1 <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+
+cor1 <- cor(df1$HabKm2, df1$A65plus, method = "pearson")
+
+df2 <- subset(df1, HabKm2 < 20000 & A65plus < 50)
+cor2 <- cor(df2$HabKm2, df2$A65plus, method = "pearson")
+
+plot1 <- ggplot(data=df1, mapping = aes(x=A65plus,HabKm2))+
+  geom_point(colour="red")+
+  ggtitle(paste0("N = ", nrow(df1)), subtitle = paste0("Corrélation = ",round(cor1,3)))+
+  xlab("65 ans et plus (%)")+
+  ylab(expression("Densité de population : 1000 habitants au"~km^{2}))+
+  stat_smooth(method="lm", se=FALSE)+
+  annotate(geom="text", x =60, y=50000, label=paste0("Skewness = ", round(skewness(df1$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=48000, label=paste0("Kurtosis = ", round(kurtosis(df1$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=46000, label=paste0("Shapiro = ", round(shapiro.test(df1$HabKm2)$statistic,3)), color="black", hjust = 1, size = 3.5)
+
+plot2 <- ggplot(data=df2, mapping = aes(x=A65plus,HabKm2))+
+  geom_point(colour="red")+
+  ggtitle(paste0("N = ", nrow(df2)), subtitle = paste0("Corrélation = ",round(cor2,3)))+
+  xlab("65 ans et plus (%)")+
+  ylab(expression("Densité de population : 1000 habitants au"~km^{2}))+
+  stat_smooth(method="lm", se=FALSE)+
+  annotate(geom="text", x =60, y=20000, label=paste0("Skewness = ", round(skewness(df2$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=19200, label=paste0("Kurtosis = ", round(kurtosis(df2$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=18400, label=paste0("Shapiro = ", round(shapiro.test(df2$HabKm2)$statistic,3)), color="black", hjust = 1, size = 3.5)
+
+ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ```
 
-## PDF document
 
-To create a PDF document from R Markdown, you specify the `pdf_document` output format in the YAML metadata:
+#### Autres coefficients de corrélation (coefficients de Spearman et Tau de kendall) {#sect3133} 
 
-```yaml
----
-title: "Habits"
-author: John Doe
-date: March 22, 2005
-output: pdf_document
----
+Lorsque les variables sont fortement anormalement distribuées, il est conseillé d'utiliser deux statistiques non-paramétriques : principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le coefficient de Kendall (Tau, $\tau$) qui varient aussi tous deux de −1 à 1. 
+Calculé sur les rangs des deux variables, **le coefficient de Spearman** est le rapport entre la covariance des deux variables de rangs sur les écart-types des variables de rangs. En d'autres termes, il représente simplement le coefficient de Pearson calculé sur les rangs des deux variables :
+
+\begin{equation} 
+r_{xy} = \frac{cov(rg_{x},rg_{y})}{\sigma_{rg_{x}}\sigma_{rg_{y}}}
+(\#eq:spearman)
+\end{equation}
+
+La syntaxe ![](images/Rlogo.png) ci-dessous démontre clairement que le coefficient de Spearman est bien le coefficient de Pearson calculé sur les rangs.
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+
+# Transformation des deux variables en rangs
+df$HabKm2_rang <- rank(df$HabKm2)
+df$A65plus_rang <- rank(df$A65plus)
+
+# Coefficient de Spearman avec la fonction cor et la méthode spearman
+cat("Coefficient de Spearman = ", 
+    round(cor(df$HabKm2, df$A65plus, method = "spearman"),5))
+
+# Coefficient de Pearson sur les variables transformées en rangs
+cat("Coefficient de Pearson calculé sur les variables transformées en rangs = ", 
+    round(cor(df$HabKm2_rang, df$A65plus_rang, method = "pearson"),5))
+
+# Vérification avec l'équation
+cat("Covariance divisée par le produit des écart-types sur les rangs :",
+    round(cov(df$HabKm2_rang, df$A65plus_rang) / (sd(df$HabKm2_rang)*sd(df$A65plus_rang)),5))
 ```
 
-Within R Markdown documents that generate PDF output, you can use raw LaTeX\index{LaTeX}, and even define LaTeX macros. See Pandoc's documentation on the [raw_tex extension](http://pandoc.org/MANUAL.html#extension-raw_tex) for details.
+Le **coefficient de Kendall** est une autre mesure non-paramétrique calculé comme suit :
 
-Note that PDF output (including Beamer slides) requires an installation of LaTeX (see Chapter \@ref(installation)).
+\begin{equation} 
+\tau = \frac{n_{c}-n_{d}}{\frac{1}{2}n(n-1)}
+(\#eq:tau)
+\end{equation}
 
-### Table of contents
+avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observations **c**oncordantes et **d**iscordantes; et le dénominateur étant le nombre totale de paires d'observations. Des paires sont dites corcondantes quand les valeurs des deux observations vont dans les même sens pour les deux variables ($x_{i}>x_{j}$ et $y_{i}>y_{j}$ ou  $x_{i}<x_{j}$ et $y_{i}<y_{j}$), et discordantes quand elles vont sens en contraire ($x_{i}>x_{j}$ et $y_{i}<y_{j}$ ou $x_{i}<x_{j}$ et $y_{i}>y_{j}$). Contrairement au calcul du coefficient de Spearman, celui de Kendall peut être chronophage : plus le nombre d'observations sera élevé, plus les temps de calcul et la mémoire utilisée sont importantes. En effet, avec _n_=1000, le nombre de paires d'observations (${0.5*n(n-1)}$) sera de 499500, contre près de 50 millions avec _n_=10000 (49 995 000).
 
-You can add a table of contents using the `toc` option and specify the depth of headers that it applies to using the `toc_depth` option. For example:
 
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    toc: true
-    toc_depth: 2
----
+```{r fig8, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Comparaison des coefficients de Pearson, Spearman et Kendall sur deux variables anormalement distribuées', out.width='75%'}
+library(moments)
+library(ggpubr)
+
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+
+df$HabKm2 <- df$HabKm2 / 1000
+p <- round(cor(df$HabKm2, df$A65plus, method = "pearson"),3)
+s <- round(cor(df$HabKm2, df$A65plus, method = "spearman"),3)
+k <- round(cor(df$HabKm2, df$A65plus, method = "kendall"),3)
+
+Plot1 <- ggplot(mapping = aes_string(x=df$HabKm2))+
+  geom_histogram(color="white",fill="#B22222", aes(y=..density..))+
+  stat_function(fun = dnorm, args = list(mean = mean(df$HabKm2), sd = sd(df$HabKm2)), color="blue",size=1.2)+
+  labs(title="Histogramme")+
+  xlab(expression("1000 habitants au"~km^{2}))+
+  ylab("Densité")+
+  annotate(geom="text", x =60, y=0.130, label=paste0("Skewness = ", round(skewness(df$HabKm2,na.rm=TRUE),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=0.124, label=paste0("Kurtosis = ", round(kurtosis(df$HabKm2,na.rm=TRUE),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=0.118, label=paste0("Shapiro = ", round(shapiro.test(df$HabKm2)$statistic,3)), color="black", hjust = 1, size = 3.5)
+
+Plot2 <- ggplot(mapping = aes_string(x=df$A65plus))+
+  geom_histogram(color="white",fill="#B22222", aes(y=..density..))+
+  stat_function(fun = dnorm, args = list(mean = mean(df$A65plus), sd = sd(df$A65plus)), color="blue",size=1.2)+
+  labs(title="Histogramme")+
+  xlab("65 ans et plus (%)")+
+  ylab("Densité")+
+  annotate(geom="text", x =60, y=0.072, label=paste0("Skewness = ", round(skewness(df$A65plus,na.rm=TRUE),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=0.069, label=paste0("Kurtosis = ", round(kurtosis(df$A65plus,na.rm=TRUE),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=0.066, label=paste0("Shapiro = ", round(shapiro.test(df$A65plus)$statistic,3)), color="black", hjust = 1, size = 3.5)
+
+Plot3 <- ggplot(data=df, mapping = aes(x=A65plus,HabKm2))+
+  geom_point(colour="red")+
+  labs(title="Nuage de points")+
+  xlab("65 ans et plus (%)")+
+  ylab(expression("1000 habitants au"~km^{2}))+
+  stat_smooth(method="lm", se=FALSE, cor.coef = TRUE, cor.method = "pearson")+
+  annotate(geom="text", x =60, y=50, label=paste0("Pearson = ", p), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=48, label=paste0("Spearman = ", s), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =60, y=46, label=paste0("Kendall = ", k), color="black", hjust = 1, size = 3.5)  
+
+ggarrange(Plot1, Plot2, Plot3, ncol=3,nrow=1)
 ```
 
-If the TOC depth is not explicitly specified, it defaults to 2 (meaning that all level 1 and 2 headers will be included in the TOC), while it defaults to 3 in `html_document`.
+#### Significativité des coefficients de corrélation {#sect3134} 
 
-You can add section numbering to headers using the `number_sections` option:
+Quelle que soit la méthode utilisée (Pearson, Spearman, Kendall), il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté : $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant le coefficient de corrélation et le nombre d'observations. De manière classique, on utilisera la table des valeurs critiques de la valeur de $t$ : si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et _dl_), alors le coefficient de significatif à 5%. La courte syntaxe ![](images/Rlogo.png) illustre comment calculer la valeur de $t$, le nombre de degrés de liberté et la valeur de _p_ pour une corrélation donnée.
 
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    toc: true
-    number_sections: true
----
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+
+r <- cor(df$A65plus, df$LogTailInc)     # Corrélation
+n <- nrow(df)                           # Nombre d'observations
+dl <- nrow(df)-2                        # degrés de liberté
+t <-  r*sqrt((n-2)/(1-r^2))             # Valeur de T
+p <- 2*(1-pt(abs(t),dl))                # Valeur de p
+cat("\nCorrélation =", round(r, 4),       
+    "\nValeur de t =", round(t, 4),
+    "\nDegrés de liberté =", dl,
+    "\np=", round(p, 4))        
 ```
 
-If you are familiar with LaTeX, `number_sections: true` means `\section{}`, and `number_sections: false` means `\section*{}` for sections in LaTeX (it also applies to other levels of "sections" such as `\chapter{}`, and `\subsection{}`).
+Toutefois, on préviligera l'utilisation de la fonction `cor.test` qui permet d'obtenir en une seule ligne de code le coefficient de corrélation, l'intervalle de confiance à 95%, les valeurs de _t_ et de _p_, tel qu'illustré dans la syntaxe ![](images/Rlogo.png) ci-dessous. Si l'intervalle de confiance est à cheval sur 0, c'est-à-dire que la borne inférieure est négative et la borne supérieure positive, alors le coefficient de corrélation n'est pas significatif au seuil choisi (95% habituellement). Dans l'exemple ci-dessous, le relation linéaire entre les deux variables est significativement négative avec une corrélation de Pearson de −0,158 (P=0,000) avec un intervalle de confiance de [−0,219 −0,095].
 
-### Figure options
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Intervalle de confiance à 95%
+cor.test(df$HabKm2, df$A65plus, conf.level = .95)
 
-There are a number of options that affect the output of figures within PDF documents:
+# Vous pouvez accéder à chaque sortie de la fonction cor.test comme suit :
+p <- cor.test(df$HabKm2, df$A65plus)
+cat("Valeur de corrélation = ", round(p$estimate,3), "\n",
+    "Intervalle à 95% = [", round(p$conf.int[1],3), " ", round(p$conf.int[2],3), "]", "\n",
+    "Valeur de t = ", round(p$statistic,3), "\n",
+    "Valeur de p = ", round(p$p.value,3), sep="")
 
-- `fig_width` and `fig_height` can be used to control the default figure width and height (6.5x4.5 is used by default).
+# Corrélation de Spearman
+cor.test(df$HabKm2, df$A65plus, method = "spearman")
 
-- `fig_crop` controls whether the `pdfcrop` utility, if available in your system, is automatically applied to PDF figures (this is `true` by default).
-
-    - If you are using [TinyTeX](https://yihui.name/tinytex/) as your LaTeX distribution, we recommend that you run `tinytex::tlmgr_install("pdfcrop")` to install the LaTeX package `pdfcrop`. You also have to make sure the system package [`ghostscript`](https://www.ghostscript.com) is available in your system for `pdfcrop` to work. For macOS users who have installed Homebrew, `ghostscript` can be installed via `brew install ghostscript`.
-
-    - If your graphics device is `postscript`, we recommend that you disable this feature (see more info in the **knitr** issue [#1365](https://github.com/yihui/knitr/issues/1365)).
-
-- `fig_caption` controls whether figures are rendered with captions (this is `true` by default).
-
-- `dev` controls the graphics device used to render figures (defaults to `pdf`).
-
-For example:
-
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    fig_width: 7
-    fig_height: 6
-    fig_caption: true
----
+# Corrélation de Kendall
+cor.test(df$HabKm2, df$A65plus, method="kendall")
 ```
 
-### Data frame printing
+On pourra aussi modifier l'intervalle de confiance, par exemple à 90% ou 99%. 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Intervalle à 90%
+cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .90)
 
-You can enhance the default display of data frames via the `df_print` option. Valid values are presented in Table \@ref(tab:df-print-pdf).
-
-Table: (\#tab:df-print-pdf) The possible values of the `df_print` option for the `pdf_document` format.
-
-| Option  | Description  |
-|------------|-------------------------------------------|
-| default  | Call the `print.data.frame` generic method |
-| kable  | Use the `knitr::kable()` function |
-| tibble  | Use the `tibble::print.tbl_df()` function |
-
-For example:
-
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    df_print: kable
----
+# Intervalle à 99%
+cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .99)
 ```
 
-### Syntax highlighting
+**Corrélation et _boostrap_.** Dans le premier chapitre, nous avons abordé la notion de _bootstrap_, soit des méthodes d'inférence statistique basée des réplications des données initiales par rééchantillonnage. Il est alors possible d'obtenir la valeur d'un coefficient de corrélation et de son intervalle de confiance avec _r_ réplications à partir de la syntaxe ![](images/Rlogo.png) ci-dessous.
 
-The `highlight` option specifies the syntax highlighting style. Its usage in `pdf_document` is the same as `html_document` (Section \@ref(appearance-and-style)). For example:
 
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    highlight: tango
----
+```{r fig9, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Histogramme pour les valeurs de corrélation issues du Bootstrap', out.width='75%'}
+library(boot)
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+
+# Fonction pour la corrélation
+correlation <- function(df, i, X, Y, cor.type="pearson"){
+  # Paramètres de la fonction :
+  # data : dataframe
+  # X et Y : noms des variables X et Y
+  # cor.type : type de corrélation : c("pearson","spearman","kendall")
+  # i : indice qui sera utilisé par les réplications (à ne pas modifier)
+  cor(df[[X]][i], df[[Y]][i], method=cor.type)
+}
+
+# Calcul du Bootstrap avec 5000 réplications
+monBootstrap <- boot(data=df, # nom du tableau
+                     statistic = correlation, # appel de la fonction à répliquer 
+                     R=5000, # nombre de réplications
+                     X = "A65plus",
+                     Y ="HabKm2", 
+                     cor.type="pearson")
+
+# Histogramme pour les valeurs de corrélation issues du Bootstrap
+plot(monBootstrap)
+# Corrélation "boostrapée"
+monBootstrap
+# Intervalle de confiance du boostrap à 95%
+boot.ci(boot.out = monBootstrap, conf = 0.95, type = "all")
+# Comparaison l'intervalle classique basé sur la valeur de T
+p <- cor.test(df$HabKm2, df$A65plus)
+cat(round(p$estimate,5), " [", round(p$conf.int[1],4), " ",round(p$conf.int[2],4), "]", sep="")
 ```
 
-### LaTeX options
+Le _boostrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Les intervalles de confiance obtenues à partir des différentes méthodes d'estimation (normale, basique, percentage et bca) ne sont pas à cheval sur 0, indiquant que le coefficient est significatif à 5%.
 
-Many aspects of the LaTeX template used to create PDF documents can be customized using _top-level_ YAML metadata (note that these options do not appear underneath the `output` section, but rather appear at the top level along with `title`, `author`, and so on). For example:
+#### Corrélation partielle {#sect3135} 
 
-```yaml
----
-title: "Crop Analysis Q3 2013"
-output: pdf_document
-fontsize: 11pt
-geometry: margin=1in
----
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+
+**Quelle est la relation entre deux variables continues une fois en pris en compte une ou plusieurs variables dites de contrôle ?** Cette démarche est fréquente en sociales sociales, et plus particulièrement en études urbaines. 
+
+En études urbaines, on pourrait vouloir vérifier si deux variables sont ou non associées une fois contrôlée la densité de population ou encore la distance au centre-ville.
+
+La corrélation partielle\index{corrélation partielle} permet d'évaluer la relation linéaire entre deux variables quantitatives continues, une fois contrôlé une ou plusieurs autres variables quantitatives (dites variables de contrôle).
+
+
+:::
+
+Le coefficient de corrélation partielle peut être calculé pour les trois méthodes (Pearson, Spearman et Kendall). Variant aussi de −1 à 1, il est calculé comme suit :
+
+\begin{equation} 
+r_{ABC} = \frac{r_{AB}-r_{AC}r_{BC}}{\sqrt{(1-r_{AC}^2)(1-r_{BC}^2)}}
+(\#eq:corpartielle)
+\end{equation}
+
+avec _A_ et _B_ étant les deux variables pour lesquelles on souhaite évaluer la relation linéaire, une fois contrôlé la variable _C_; $r$ étant le coefficient de corrélation (Pearson, Spearman ou Kendall) entre deux variables.
+
+Dans l'exemple ci-dessous, nous voulons estimer la relation linéaire entre le pourcentage de personnes à faible revenu et la couverture végétale au niveau des îlots de l'île de Montréal, une fois contrôlé la densité de population. En effet, plus cette dernière sera forte, plus la couverture végétale sera faible ($r$ de Pearson = −0,603). La valeur du $r$ de Pearson s'élève à −0,546 entre le pourcentage de personnes à faible revenu dans la population totale de l'îlot et la couverture végétale. Une fois la densité de population contrôlée, il chute à −0,316. Pour calculer la corrélation partielle, on pourra utiliser soit la fonction `pcor.test` du package **ppcor** ou `pcor` du package **ggm**.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(foreign)
+library(ppcor)
+
+dfveg <- read.dbf("data/bivariee/IlotsVeg2006.dbf")
+
+# Corrélation entre les trois variables
+round(cor(dfveg[, c("VegPct", "Pct_FR","LogDens")], method="p"), 3)
+
+# Corrélation partielle entre :
+# la couverture végétale de l'îlot (%) et
+# le pourcentage de personnes à faible revenu
+# une fois contrôlé le densité de population
+pcor.test(dfveg$Pct_FR, dfveg$VegPct, dfveg$LogDens, method="p")
+
+# Calcul de la corrélation partielle avec la formule :
+corAB <- cor(dfveg$VegPct, dfveg$Pct_FR, method = "p")
+corAC <- cor(dfveg$VegPct, dfveg$LogDens, method = "p")
+corBC <- cor(dfveg$Pct_FR, dfveg$LogDens, method = "p")
+CorP  <- (corAB - (corAC*corBC)) / sqrt((1-corAC^2)*(1-corBC^2))
+cat("Corr. partielle avec ppcor  = ", 
+    round(pcor.test(dfveg$Pct_FR,  dfveg$VegPct, dfveg$LogDens, method="p")$estimate,5),
+    "\nCorr. partielle (formule)  = ", round(CorP, 5))
 ```
 
-A few available metadata variables are displayed in Table \@ref(tab:latex-vars) (consult the Pandoc manual for the full list):
+#### Mise en oeuvre dans R {#sect3136}
 
-Table: (\#tab:latex-vars) Available top-level YAML metadata variables for LaTeX output.
+Dans les syntaxes précédentes, nous avons utilisé les fonctions de base `cor` et `cor.test` pour calculer les corrélations. Il est aussi possible de recourir à des fonctions d'autres _packages_ :
 
-Variable|Description
-------------------------|--------------------------------------------------------------------
-lang|Document language code
-fontsize|Font size (e.g., `10pt`, `11pt`, or `12pt`)
-documentclass|LaTeX document class (e.g., `article`)
-classoption|Options for documentclass (e.g., `oneside`)
-geometry|Options for geometry class (e.g., `margin=1in`)
-mainfont, sansfont, monofont, mathfont|Document fonts (works only with `xelatex` and `lualatex`)
-linkcolor, urlcolor, citecolor|Color for internal, external, and citation links
+* **Hmisc** dont la fonction `rcorr` permet de calculer des corrélations de Pearson et Spearman (mais non celui de Kendall) avec la valeur de _p_.
+* **psych** dont la fonction `corr.test` permet d'obtenir la matrice de corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de _p_.
+* **stargazer** pour créer des beaux tableaux d'une matrice de corrélation en *Html* ou en *LaTeX* ou en ASCII.
+* **apaTables**  pour créer un tableau avec un matrice de corrélation dans un fichier Word.
 
-### LaTeX packages for citations
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 
-By default, citations\index{citation} are processed through `pandoc-citeproc`, which works for all output formats. For PDF output, sometimes it is better to use LaTeX packages to process citations, such as `natbib` or `biblatex`. To use one of these packages, just set the option `citation_package` to be `natbib` or `biblatex`, e.g.
+library(Hmisc)
+library(stargazer)
+library(apaTables)
+library(psych)
 
-```yaml
----
-output:
-  pdf_document:
-    citation_package: natbib
----
+# Corrélations de Pearson et Spearman et valeurs de p 
+# avec la fonction rcorr de Hmisc pour deux variables
+Hmisc::rcorr(df$RevMedMen, df$Locataire, type="pearson")
+Hmisc::rcorr(df$RevMedMen, df$Locataire, type="spearman")
+
+# Matrice de corrélation avec la fonction rcorr de Hmisc pour plus de variables
+# On créer un vecteur avec les noms des variables à sélectionner
+Vars <- c("RevMedMen","Locataire", "LogTailInc","A65plus","ImgRec", "HabKm2", "FaibleRev")
+Hmisc::rcorr(df[, Vars] %>% as.matrix())
+
+# Avec la fonction corr.test de psych pour avoir la matrice de corrélation
+# (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p
+print(psych::corr.test(df[, Vars], 
+             method = "kendall", 
+             ci=TRUE, alpha = 0.05), short=FALSE) 
+
+# Création d'un tableau pour une matrice de corrélation
+# changer le paramètre type pour 'html' or 'LaTex'
+p <- cor(df[, Vars], method="pearson")
+stargazer(p, title="Correlation Matrix", type = "text")
+# stargazer(p, title="Correlation Matrix", type = "html")
+# stargazer(p, title="Correlation Matrix", type = "latex")
+
+# Créer un tableau avec la matrice de corrélation 
+# dans un fichier Word (.doc)
+apaTables::apa.cor.table(df[, c("RevMedMen","Locataire","LogTailInc")], 
+                         filename = "data/bivariee/TitiLaMatrice.doc",
+                         show.conf.interval = TRUE,
+                         landscape = TRUE)
 ```
 
-### Advanced customization
 
-#### LaTeX engine
+::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+**Une image vaut mille mots, surtout pour une matrice de corrélation !** Le package **corrplot** permet justement de construire de belles figures avec une matrice de corrélation (figures \@ref(fig:figcorrplot1) et \@ref(fig:figcorrplot2)).
+:::
 
-By default, PDF documents are rendered using `pdflatex`. You can specify an alternate engine using the `latex_engine` option. Available engines are `pdflatex`, `xelatex`, and `lualatex`. For example:
+```{r figcorrplot1, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Matrice de corrélation avec corrplot (chiffres)', out.width='60%'}
+library(corrplot)
+library(ggpubr)
 
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    latex_engine: xelatex
----
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+Vars <- c("RevMedMen","Locataire", "LogTailInc","A65plus","ImgRec", "HabKm2", "FaibleRev")
+p <- cor(df[, Vars], method="pearson")
+couleurs <- colorRampPalette(c("#053061", "#2166AC","#4393C3", "#92C5DE",
+                               "#D1E5F0", "#FFFFFF", "#FDDBC7", "#F4A582",
+                               "#D6604D", "#B2182B", "#67001F"))
+corrplot(p, addrect = 3, method="number", diag=FALSE, col=couleurs(100))
 ```
 
-The main reasons you may want to use `xelatex` or `lualatex` are: (1) They support Unicode better; (2) It is easier to make use of system fonts. See some posts on Stack Overflow for more detailed explanations, e.g., https://tex.stackexchange.com/q/3393/9128 and https://tex.stackexchange.com/q/36/9128.
-
-#### Keeping intermediate TeX
-
-R Markdown documents are converted to PDF by first converting to a TeX file and then calling the LaTeX engine to convert to PDF. By default, this TeX file is removed, however if you want to keep it (e.g., for an article submission), you can specify the `keep_tex` option. For example:
-
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    keep_tex: true
----
+```{r figcorrplot2, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Matrice de corrélation avec corrplot (chiffres et ellipses)', out.width='60%'}
+fig2 <- corrplot.mixed(p, lower="number", lower.col = "black", 
+                      upper = "ellipse", upper.col=couleurs(100))
 ```
 
-#### Includes
 
-You can do more advanced customization of PDF output by including additional LaTeX directives and/or content or by replacing the core Pandoc template entirely. To include content in the document header or before/after the document body, you use the `includes` option as follows:
+#### Comment rapporter des valeurs de corrélations? {#sect3137}
 
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    includes:
-      in_header: preamble.tex
-      before_body: doc-prefix.tex
-      after_body: doc-suffix.tex
----
+Bien qu'il n'y a pas une seule manière de reporter des corrélations, voici quelques consignes pour vous guider : 
+
+* signaler si la corrélation est faible, modérée ou forte.
+* Indiquer si la corrélation est positive ou négative. Toutefois, ce n'est pas une obligation car l'on peut rapidement le constater avec le signe du coefficient.
+* mettre le *r* et *p* en italique et en minuscule.
+* deux décimales uniquement pour le $r$.
+* trois décimales pour la valeur de *p*. Si elle est inférieur à 0,001, écrire plutôt *p* < 0,001.
+* indiquer éventuellement le nombre de degrés de liberté, soit $r(dl)=...$
+
+Voici des exemples :
+
+* La corrélation entre les variables revenu médian des ménages et pourcentage de locataire est fortement négative (*r* = −0,78, *p* < 0,001).
+* La corrélation entre les variables revenu médian des ménages et pourcentage de locataire est forte (*r*(949) = −0,78, *p* < 0,001).
+* La corrélation entre les variables densité de population et le pourcentage de logements de taille est modérée (*r* = 0,48, *p* < 0,001).
+* La corrélation entre les variables densité de population et pourcentage de 65 ans et plus n'est pas significative (*r* = −0,08, *p* = 0,07).
+
+Pour un texte en anglais, vous pourrez consulter : [https://www.socscistatistics.com/tutorials/correlation/default.aspx](https://www.socscistatistics.com/tutorials/correlation/default.aspx){target="_blank"}.
+
+### Régression linéaire simple  {#sect314}
+
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+
+**Comment expliquer et prédire une variable continue en fonction d'une autre variable?** Répondre à cette question relève de la statistique inférentielle. Il s'agit en effet d'établir une équation simple du type $Y = aX+ b$, pour expliquer, puis prédire les valeurs d'une variable dépendante (*Y*) à partir d'une variable indépendante (*X*). Il y a donc un échantillon dit d'apprentissage sur lequel le modèle de régression est calculé; et éventuellement, un échantillon pour lequel les valeurs de la variable *Y* sont inconnues, mais qui peuvent être aisément prédites avec l'équation du modèle. La régression linéaire simple se distingue ainsi de la **covariance** et la **corrélation** précédemment décrites relevant de la statistique descriptive et exploratoire. 
+
+Par exemple, on pourrait expliquer les notes d'un groupe d'étudiants à un examen en fonction du nombre d'heures qu'ils ont consacrés à la révision des notes de cours. Une fois l'équation de régression déterminée, si le modèle est efficace, nous pourrons prédire précisement les notes d'autres étudiants inscrits au cours la session suivante, et ce, avant même qu'ils aient passé l'examen. 
+
+Tentons de formuler un exemple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions à prédire efficacement la température moyenne des îlots uniquement avec la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc.
+
+On distinguera alors la **régression linéaire simple** (une variable indépendante, explicative) de la **régression linéaire multiple** (plusieurs variables indépendantes); cette dernière sera largement abordée au chapitre \@ref(chapitre4).
+
+:::
+
+#### Principe de base {#sect3141}
+
+#### Régression polynomiale {#sect3142}
+
+#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3143}
+
+
+## Relation entre deux variables qualitatives {#sect32}
+
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+**Deux variables qualitatives sont-elles associées entre elles?** Plus spécifiquement, certaines modalités d'une variable qualitative sont-elles associées significativement à certaines modalités d'une variable qualitative.
+
+Prenons l'exemple deux variables qualitative : l'une intitulée *groupe d'âge* comprenant trois modalités (15 à 29 ans, 30 à 44 ans, 45 à 64 ans); l'autre intitulée *mode de transport habituel pour se rendre au travail* comprenant quatre modalités (véhicule motorisé, transport en commun, vélo, marche). 
+
+Comparativement aux deux autres groupes, on pourrait supposer que les jeunes se déplacent proportionnellement plus en modes de transport actifs (vélo et marche) et en transports en commun. À l'inverse, il est possible que les 45 à 64 ans se déplacent majoritairement en véhicule motorisé.
+
+Pour vérifier l'existence d'associations significatives entre les modalités de deux variables qualitatives, il faut construire un **tableau de contingence**\index{tableau de contingence} (section \@ref(sect321)), puis réaliser le **test du khi^2^**\index{khi2} (section \@ref(sect322)).
+:::
+
+
+### Construction de tableau de contigence {#sect321}
+
+Les données du tableau de contigence ci-dessous décrivent 279 projets d'habitation à loyer modique (HLM) dans l'ancienne ville de Montréal, croisant les modalités de la période de construction (en colonnes) et de la taille (en ligne) des projets HLM [@TheseApparicio]. Les différents éléments du tableau sont décrits ci-dessous.
+
+* **Les fréquences observées**, nommées communément $f_{ij}$, correspondent aux observations appartenant à la fois à la *i^ème^* modalité de la variable en ligne et à la *j^ème^* modalité de la variable en colonne. À titre d’exemple, on compte 14 habitants HLM construits entre 1985 et 1989.
+
+* **Les marges** du tableau sont les totaux pour chaque modalité en ligne ($n_{i.}$) et en colonne ($n_{j.}$). En guise d’exemple, sur les 279 projets HLM, 53 comprennent de 25 à 49 logements et 56 ont été construits entre 1968 et 1974. Bien entenu, la somme des marges en ligne ($n_{i.}$) est égale au nombre total d'observations ($n_{ij}$), tout comme la somme de marges en colonne ($n_{.j}$).
+
+* **Trois pourcentages** sont disponibles (total, en ligne, en colonne). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}×100$), par la marge en ligne ($f_{ij}/n_{i.}×100$) et en colonne ($f_{ij}/n_{.j}100$). En guise d'exemple, 5% des 279 projets HLM ont été construits entre 1985 et 1989 et comprend moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
+
+* **Les fréquences théoriques**, représentent les valeurs que l'on devrait avoir s'il y a indépendance entre les modalités des deux variables. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalité *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06.
+
+* **La déviation** est la différence est la fréquence observée et théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*.
+
+
+* **La contribution au khi^2^** est égal à la déviation au carré divisée par la fréquence théorique ($\chi_{ij}^2 = (f_{ij}-ft_{ij})^2/ft_{ij}$). Plus sa valeur est forte, plus il y a association entre les deux modalités. La somme des contributions au khi^2^ représente le *khi^2^* totale pour l'ensemble du tableau de contigence (ici à 63,54) que nous abordons dans la section suivante.
+
+
+```{r tablecontigence, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+library(gmodels)
+TableauKhi2 <- read.csv("data/bivariee/hlm.csv")
+# Création d'un facteur pour les modalités de la période de construction
+TableauKhi2$Periode <- factor(TableauKhi2$Periode, 
+                              levels = c(1,2,3,4,5), 
+                              labels = c("Avant 1975", "1975-1979", "1980-1984", "1985-1989", "1990 et plus"))
+# Création d'un facteur pour les modalités de la taille
+TableauKhi2$Taille <- factor(TableauKhi2$Taille, 
+                             levels = c(1,2,3,4), 
+                             labels = c("Moins de 25 log.", "25 à 49 log.", "50 à 99 log.", "100 et plus"))
+
+# Tableau de contingence en utilisant la fonction CrossTable du package gmodels
+CrossTable(TableauKhi2$Taille, TableauKhi2$Periode,
+           expected=TRUE, chisq = TRUE, resid = TRUE, digits = 2, format="SPSS")
 ```
 
-#### Custom templates
+### Test du khi^2^ {#sect322}
+Avec le test du khi^2^, on postule qu'il y a indépendance entre les modalités des deux variables qualitatives, soit l'hypothèse nulle (h<sub>0</sub>). Puis, on cacule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contigence, nous avons 12 degrés de libertés : $(4-1)(5-1)=12$. Avec 12 degrés de liberté et une valeur de p=0,05, la valeur critique de khi^2^ est de 21,03 (voir le tableau des valeurs critiques du khi^2^, section \@ref(annexe1)). Puis que le khi^2^ calculé dans le tableau de contigence est bien supérieure (63,54), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. Autrement dit, il y a une association significative entre les deux variables quantitatives. Notez que cette hypothèse peut être aussi rejetée avec p=0,01 et p=0,001 puisque les valeurs critiques sont de 26,22 et 32,91.
 
-You can also replace the underlying Pandoc template using the `template` option:
+Bien entendu, une fois que l'on connait le nombre de degrés de liberté, on peut directement calculer les valeurs critiques pour différents seuils de signification et éviter ainsi de recourir à la table ci-dessus. Dans la même veine, on peut aussi calculer la valeur de *p* d'un tableau de contigence en spécifiant le nombre de degrés de liberté et la valeur du khi^2^ observé.
 
-```yaml
----
-title: "Habits"
-output:
-  pdf_document:
-    template: quarterly-report.tex
----
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+cat("Valeurs critiques du khi2 avec le nombre de degrés de liberté", "\n",
+    round(qchisq(p=0.95,  df=12, lower.tail = FALSE),3), "avec p=0,05", "\n",
+    round(qchisq(p=0.99,  df=12, lower.tail = FALSE),3), "avec p=0,01", "\n",
+    round(qchisq(p=0.999, df=12, lower.tail = FALSE),3), "avec p=0,0001")
+
+cat("Valeurs de p du Khi observé (63.54291) avec 12 degrés de liberté :", "\n",
+    pchisq(q=63.54291, df=12, lower.tail = FALSE))
 ```
 
-Consult the documentation on [Pandoc templates](https://pandoc.org/README.html#templates) for additional details on templates. You can also study the [default LaTeX template](https://github.com/jgm/pandoc-templates/blob/master/default.latex) as an example.
 
-### Other features
+::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+Outre le khi^2^, d'autres mesures d'association permettent de mesure le degré d'association entre deuc variables qualitatives. Les plus courantes sont reportées au tableau ci-dessous. À des fins de comparaison, le khi^2^ décrit précédemment est aussi reporté sur la première ligne du tableau.
 
-Similar to HTML documents, you can enable or disable certain Markdown extensions for generating PDF documents. See Section \@ref(markdown-extensions) for details. You can also pass more custom Pandoc arguments through the `pandoc_args` option (Section \@ref(pandoc-arguments)), and define shared options in `_output.yml` (Section \@ref(shared-options)).
+Statistique | Formule | Propriété et interprétation
+-------- | ------- | -----------------------------
+khi^2^  | $\chi^2 = \sum \frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$ | Mesure classique du Khi^2^ calculé à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible.
+Ratio de vraissemblance du  khi^2^ | $G^2 = 2 \sum f_{ij} \ln{(\frac{f_{ij}}{ft_{ij}})}$ | Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible.
+khi^2^ de Mantel-Haenszel | $Q_{MH}=(N−1)r^2$ | avec $r$ étant le coefficient de corrélation entre entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.
+Coefficient Phi | $\phi=\sqrt{\frac{\chi^2}{n}}$ | Simplement le Khi^2^ divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune (tableau 2x2 dimensions) alors $\phi$ varie de −1 à 1; sinon de 0 à $min(\sqrt{c-1}, \sqrt{l-1})$ avec $c$ et $l$ étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est peu utile pour les tableaux de plus de 2x2 dimensions. Pas de valeur de *p* disponible.
+V de Cramer | $V=\sqrt{\frac{\chi^2/n}{min(c-1,l-1)}}$ | Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que pour un tableau de 2 x 2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.
+:::
 
-## Word document
+### Mise en oeuvre dans ![](images/Rlogo.png) {#sect324}
 
-To create a Word\index{Word} document from R Markdown, you specify the `word_document` output format in the YAML metadata of your document:
+Pour calculer le Khi^2^ entre deux variables qualitatives, on utilise la fonction de base : `chisq.test(x = ..., y = ...)` qui renvoie le nombre de degré de liberté, les valeurs du Khi^2^ et de *p*.
 
-```yaml
----
-title: "Habits"
-author: John Doe
-date: March 22, 2005
-output: word_document
----
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Importation du csv
+dataHLM <- read.csv("data/bivariee/hlm.csv")
+
+# Calcul du Khi2 avec la fonction de base chisq.test
+chisq.test(x = dataHLM$Taille, y = dataHLM$Periode)
 ```
 
-The most notable feature of Word documents is the Word template, which is also known as the "style reference document". You can specify a document to be used as a style reference in producing a `*.docx` file (a Word document). This will allow you to customize things such as margins and other formatting characteristics. For best results, the reference document should be a modified version of a `.docx` file produced using **rmarkdown** or Pandoc. The path of such a document can be passed to the `reference_docx` argument of the `word_document` format. Pass `"default"` to use the default styles. For example:
+Pour la construction du tableau de contigence, deux options sont possibles dépendamment de la structuration de votre tableau de données initial. Premier cas de figure, votre tableau est issu d'un questionnaire et comprend une ligne par observation avec les différentes modalités dans deux colonnes (ici *Periode* et *Taille*). Dans la syntaxe ci-dessous, pour chacune des deux variables qualitatives, on pourra créer un facteur afin de spécifier un intitulé à chaque modalité (`factor(levels =c(....), labels = c(..)`). Puis, on utilisera la fonction `CrossTable` du package **gmodels**. Pour obtenir les fréquences théoriques, les contributions locales au Khi^2^ et les déviations, on spécifiera les options suivantes : `expected=TRUE, chisq = TRUE, resid = TRUE`.
 
-```yaml
----
-title: "Habits"
-output:
-  word_document:
-    reference_docx: my-styles.docx
----
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(gmodels)
+
+#Premiers enregistrements du tableau
+head(dataHLM)
+# La variable Periode comprend 5 modalités (de 1 à 5)
+table(dataHLM$Periode)
+# La variable Periode comprend 4 modalités (de 1 à 4)
+table(dataHLM$Taille)
+
+#Création d'un facteur pour les cinq modalités de la période de construction
+dataHLM$Periode <- factor(dataHLM$Periode, 
+                          levels = c(1,2,3,4,5), 
+                          labels = c("Avant 1975", 
+                                     "1975-1979", 
+                                     "1980-1984", 
+                                     "1985-1989", 
+                                     "1990 et plus"))
+#Création d'un facteur pour les quatre modalités de la taille des habitations
+dataHLM$Taille <- factor(dataHLM$Taille, 
+                         levels = c(1,2,3,4), 
+                         labels = c("Moins de 25 log.", 
+                                    "25 à 49 log.", 
+                                    "50 à 99 log.", 
+                                    "100 et plus"))
+
+# Pour construire un tableau de contingence on utilise la fonction CrossTable 
+# (package gmodels) les deux lignes ci-dessous sont mises en commentaire 
+# pour ne pas répéter le tableau
+#CrossTable(x=dataHLM$Taille, y=dataHLM$Periode, digits = 2,
+#           expected=TRUE, chisq = TRUE, resid = TRUE, format="SPSS")
 ```
 
-For more on how to create and use a reference document, you may watch this short video: https://vimeo.com/110804387, or read this detailed article: https://rmarkdown.rstudio.com/articles_docx.html.
+Deuxième cas de figure, vous disposez déjà d'un tableau de contigence, soit les fréquences observées ($f_{ij}$). On n'utilisera pas donc la fonction `CrossTable`, mais directement la fonction `chisq.test`.
 
-### Other features
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Importation des données
+df <-  read.csv("data/bivariee/data_transport.csv", stringsAsFactors = FALSE)
+df # Visualisation du tableau
+Matrice <- as.matrix(df[, c("Homme","Femme")])
+dimnames(Matrice) <- list(unique(df$ModeTransport), Sexe=c("Homme","Femme"))
 
-Refer to Section \@ref(html-document) for the documentation of most features of Word documents, including figure options (Section \@ref(figure-options)), data frame printing (Section \@ref(data-frame-printing)), syntax highlighting (Section \@ref(appearance-and-style)), keeping Markdown (Section \@ref(keeping-markdown)), Markdown extensions (Section \@ref(markdown-extensions)), Pandoc arguments (Section \@ref(pandoc-arguments)), and shared options (Section \@ref(shared-options)).
+# Notez que vous pouvez saisir vos données directement si vous avez peu d'observations
+Femme <- c(689400, 21315, 181435, 43715, 24295, 8395) # Vecteur de valeurs pour les femmes
+Homme <- c(561830, 40010, 238330, 54360, 13765, 6970) # Vecteur de valeurs pour les hommes
+Matrice <- as.table(cbind(Femme, Homme)) # Création du tableau
+# Nom des deux variables et de leurs modalités respectives
+dimnames(Matrice) <- list(transport=c("Automobile (conducteur)",
+                                      "Automobile (passager)",
+                                      "Transport en commun",                            
+                                      "A pied",
+                                      "Bicyclette",
+                                      "Autre moyen"),
+                          sexe=c("Homme","Femme"))
 
-## OpenDocument Text document
+# Test du Khi2
+test <- chisq.test(Matrice)
+print(test)
 
-To create an OpenDocument Text (ODT) document from R Markdown, you specify the `odt_document` output format in the YAML metadata of your document:
-
-```yaml
----
-title: "Habits"
-author: John Doe
-date: March 22, 2005
-output: odt_document
----
+# Fréquences observées (Fij)
+test$observed
+# Fréquences théoriques (FTij)
+round(test$expected,0)
+# Déviations (Fij - FTij)
+round(test$observed-test$expected,0)
+# Contributions au Khi2
+round((test$observed-test$expected)^2/test$expected,2)
+# Marges en lignes et en colonnes
+colSums(Matrice)
+rowSums(Matrice)
+# Grand total
+sum(Matrice)
+# Pourcentages
+round(Matrice/sum(Matrice)*100,2)
+# Pourcentages en ligne
+round(Matrice/rowSums(Matrice)*100,2)
+# Pourcentages en colonne
+round(Matrice/colSums(Matrice)*100,2)
 ```
 
-Similar to `word_document,` you can also provide a style reference document to `odt_document` throught the `reference_odt` option. For best results, the reference ODT document should be a modified version of an ODT file produced using **rmarkdown** or Pandoc. For example:
+Pour obtenir les autres mesures d'association, on pourra utiliser la syntaxe ![](images/Rlogo.png) suivante :
 
-```yaml
----
-title: "Habits"
-output:
-  odt_document:
-    reference_odt: my-styles.odt
----
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+df <- read.csv("data/bivariee/hlm.csv")
+
+# Fonction pour calculer les autres mesures d'association
+  AutresMesuresKhi2 <- function(x, y){
+  testChi2 <- chisq.test(x, y) # Calcul du Chi2
+  n <- sum(testChi2$observed)  # Nombre d'observations
+  c <- ncol(testChi2$observed) # Nombre de colonnes
+  l <- nrow(testChi2$observed) # Nombre de lignes
+  dl <- (c-1)*(l-1)            # Nombre de degrés de libertés
+  chi2 <- testChi2$statistic   # Khi2
+  Pchi2 <- testChi2$p.value    # P pour le Khi2
+  
+  #Ratio de vraissemblance du khi2
+  G <- 2*sum(testChi2$observed*log(testChi2$observed/testChi2$expected)) # G2
+  PG <- pchisq(G, df=dl, lower.tail = FALSE) # P pour le G22
+  
+  # khi2 de Mantel-Haenszel avec la librarie DescTools
+  library(DescTools)
+  MHTest <- MHChisqTest(testChi2$observed)
+  MH <- MHTest$statistic
+  PMH <- MHTest$p.value
+  
+  # Coefficient Phi et V de Cramer
+  phi <- sqrt(chi2/n)
+  vc <- sqrt(chi2/(n*min(c-1,l-1)))
+  
+  # Tableau pour les sortie
+  dfsortie <- data.frame(
+        Statistique = c("Khi2", 
+                        "Ratio de vraissemblance du  khi", 
+                        "Khi2 de Mantel-Haenszel",
+                        "Coefficient de Phi",
+                        "V de Cramer"), 
+        Valeur = round(c(Pchi2, G, MH, phi, vc),3), 
+        P = round(c(Pchi2, PG, PMH, NA, NA),10))
+  return(dfsortie)
+}
+
+library(stargazer)
+stargazer(AutresMesuresKhi2(df$Periode, df$Taille),
+          type="text",  
+          summary=FALSE,  
+          rownames=FALSE, 
+          align = FALSE, 
+          digits = 3,
+          title="Mesures d'association entre deux variables qualitatives")          
 ```
 
-### Other features
+### Interprétation d'un tableau de contigence {#sect325}
 
-Refer to Section \@ref(html-document) for the documentation of most features of ODT documents, including figure options (Section \@ref(figure-options)), keeping Markdown (Section \@ref(keeping-markdown)), header and before/after body inclusions (Section \@ref(includes)), custom templates (Section \@ref(custom-templates)), Markdown extensions (Section \@ref(markdown-extensions)), Pandoc arguments (Section \@ref(pandoc-arguments)), and shared options (Section \@ref(shared-options)).
+Nous vous proposons une démarche très simple pour vérifier l'association entre deux variables qualitatives avec les étapes suivantes :
 
-## Rich Text Format document
+* On pose l'hypothèse nulle (h<sub>0</sub>), soit l'indépendance entre les deux variables. Si le Khi^2^ total du tableau de contingence est inférieur à la valeur du critique du Khi^2^ avec *p*=0,05 et le nombre de degré de liberté de la table *T*, alors il y a bien indépendance. La valeur de *p* sera alors supérieur à 0,05. L'analyse s'arrête donc là ! Autrement dit, il n'est pas nécessaire d'analyser votre tableau de contigence puisqu'il n'y pas d'associations significatives entre les modalités des deux variables. Vous pouvez simplement signaler que : selon les résultats du test du Khi^2^, il n'y a pas d'association significative entre les deux variables ($\chi$ = ... avec *p*= ...).
 
-To create a Rich Text Format (RTF) document from R Markdown, you specify the `rtf_document` output format in the YAML metadata of your document:
+* S'il y a dépendance ($khi_{observé}^2 > khi_{critique}^2$), trouver les cellules *ij* où les contributions au Khi^2^ sont les plus fortes, c'est-à-dire où les liens entre les modalités *i* de la variable en ligne et les modalités *j* de la variable en colonne sont les plus marqués. Pour ces cellules, le phénomène *ij* est surreprésenté si la déviation est positive ou sous-représenté si la déviation est négative. Commentez ces associations et utilisez les pourcentages en lignes ou en colonnes pour appuyer vos propos.
 
-```yaml
----
-title: "Habits"
-author: John Doe
-date: March 22, 2005
-output: rtf_document
----
+**Exemple d'interprétation.** "Les résultats du test du khi^2^ signale qu'il existe des associations entre les modalités de la taille et de la période construction des projets d'habitation ($\chi$ =63,5, *p* < 0,001). Les fortes contributions au khi^2^ et le signe positif ou négatif des déviations correspondantes permettent de repérer cinq associations majeures entre les modalités de taille et de période de construction des projets HLM : **1)** la répulsion entre les projets d’habitation de moins de 25 logements et la période de construction 1964-1974; **2)** l’attraction entre les projets d’habitation de 100 logements et plus et la période de construction de 1969-1974; **3)** l’attraction entre les projets d’habitation de moins de 25 logements et la période de construction de 1990-1994; **4)** la répulsion entre les projets d’habitation de 50 à 99 logements et la période de construction 1990-1994; **5)** la répulsion entre les projets d’habitation de 100 logements et plus et la période de construction 1990-1994.
+De ces cinq liaisons se dégage une tendance bien marquée dans l’évolution du type de construction entre 1970 et 1994 : entre 1996 et 1974, on construit habituellement de grandes habitations dépassant souvent 100 logements; du milieu des années 1970 à la fin des années 1980, on privilégie la construction d’habitation de taille plus modeste, entre 50 et 100 logements; tandis qu’au début des années 1990, on opte plutôt pour des habitations de taille réduite (moins de 50 logements). Quelques chiffres à l’appui : sur les 56 habitations réalisées entre 1969 et 1974, 20 ont plus de 100 logements, 20 comprennent entre 50 et 99 logements et seuls 10 ont moins de 25 logements. Près de la moitié des habitations construites entre 1975 et 1989 regroupent 50 à 99 logements (43,8% pour la période 1975-1979, 45,8% pour 1980-1984 et 44,7% pour 1985-1989). Par contre, 51% des logements érigés à partir de 1990 disposent moins de 25 logements" (Apparicio, 2002, 117-118).
+
+Vous pouvez aussi construire un graphique pour appuyer vos constats, soit avec les pourcentages en ligne ou en colonne (figure \@ref(fig:fighlm) tirée de @apparicio2006).
+
+```{r fighlm, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Taille des ensembles HLM selon la période de construction",  out.width='60%'}
+knitr::include_graphics('images/bivariee/figurehlm.png', dpi = NA)
 ```
 
-If you know the RTF format really well, you can actually embed raw RTF content in R Markdown. For example, you may create a table in RTF using other software packages, and insert it to your final RTF output document. An RTF document is essentially a plain-text document, so you can read it into R using functions like `readLines()`. Now suppose you have an RTF table in the file `table.rtf`. To embed it in R Markdown, you read it and pass to `knitr::raw_output()`, e.g.,
+**Comment rapporter succinctement les résultats d'un Test du Khi^2^?**
 
-````markdown
-`r ''````{r, echo=FALSE}
-knitr::raw_output(readLines('table.rtf'))
+Le test du Khi^2^ a été réalisé pour examiner la relation entre la taille et la période de construction des habitations HLM. Cette relation est significative : $\chi^2$(12, N = 279) = 63,5, *p* < 0,001. Plus les projets ont été construits récemment, plus ils sont de taille réduite.
+
+Pour un texte en anglais, vous pourrez consulter [https://www.socscistatistics.com/tutorials/chisquare/default.aspx](https://www.socscistatistics.com/tutorials/chisquare/default.aspx){target="_blank"}.
+
+
+
+## Relation entre une variable quantitative et une variable qualitative à deux modalités {#sect33}
+
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+
+**Les moyennes de deux groupes de population sont-elles significativement différentes?** On souhaite ici comparer deux groupes de population en fonction d'une variable continue. 
+Par exemple, pour deux échantillons respectivement d'hommes et de femmes travaillant dans le même secteur d'activité, on souhaite vérifier si les moyennes des salaires des hommes et des femmes sont différentes; on pourrait supposer malheureusement que celle des hommes est supérieure. En études urbaines, dans le cadre d'une étude sur un espace public, on pourrait vouloir vérifier si la différence des moyennes du sentiment de sécurité des femmes et des hommes est significative (c'est-à-dire différente de 0).
+
+**Pour un même groupe, la moyenne de la différence d'un phémonène donné mesuré à deux moments est-elle ou non égale à zéro?** Autrement dit, on cherche à comparer un même groupe d'individus avant et après une expérimentation. Prenons un exemple d'application en études urbaines. Dans le cadre d'une étude sur la perception des risques associés à la pratique du vélo en ville, 50 individus utilisant habituellement l'automobile pour se rendre au travail sont recrutés. L'expérimentation pourrait consister à leur donner une formation sur la pratique du vélo en ville et à les accompagner quelques jours durant leurs déplacements domicile-travail. On évaluera la différence de leurs perceptions des risques associés à la pratique du vélo sur une échelle de 0 à 100 avant et après l'expérimentation. On pourrait supposer que la moyenne des différences est significativement négative, ce qui indiquerait que la perception du risque a diminué après l'expérimentation; autrement dit, la perception du risque est plus faible en fin de période. 
+:::
+
+
+### Test *t* et ses différentes variantes {#sect331}
+
+Le **t de student**, appelé aussi **test _t_** (*t-test* en anglais), est un test paramétrique permettant de comparer les moyennes de deux groupes (échantillons), qui peuvent être indépendantes ou non :
+
+* **Échantillons indépendants (dits non appariés)**, les observations des deux groupes n'ont aucun lien entre eux. Par exemple, on souhaite vérifier si les moyennes du sentiment de sécurité des hommes et des femmes, ou encore, les moyennes des loyers entre deux villes sont statistiquement différentes. Ainsi, les tailles des deux échantillons peuvent être différentes ($n_a \neq n_b$).
+
+* **Échantillons dépendants (dits appariés)**, les individus des deux groupes sont les mêmes et constituent des paires. Autrement dit, on a deux séries de valeurs de taille identique ($n_a = n_b$). Ce type d'analyse est utilisée en études cliniques : pour $n$ individus, on dispose d'une mesure quantitative de leur état de santé pour deux séries (l'un avant le traitement, l'autre une fois le traitement terminé). Cela permet de comparer les mêmes individus avant et après un traitement, une expérimentation; on parle alors d'étude, d'expérience et d'analyse pré-post. Concrètement, on cherche à savoir si la moyenne des différences des observations avant et après est significativement différente de 0. Si c'est le cas, on peut en conclure que l'expérimentation a eu un impact sur le phénomène mesuré (variable continue). Ce type d'analyse pré-post peut aussi être utilisée pour évaluer l'impact du réaménagement d'un espace public (rue commerciale, place publique, parc, etc.). Par exemple, on pourrait questionner le même échantillon de commerçants ou d'usagers avant et après le réaménagement d'une artère commerciale.
+
+**Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect332)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
+
+* Test de Student (test *t*) avec échantillons indépendants et variances similaires (méthode *pooled*).  Les variances de deux groupes sont semblables quand leur ratio varie de 0,5 à 2 ($0,5< (S^2_{X_A}/S^2_{X_B})<2$).
+* Test de Welch (appelé aussi Satterthwaite) avec échantillons indépendants quand les variances des deux groupes sont dissemblables.
+* Test de Student (test *t*) avec échantillons dépendants.
+
+Il s'agit de vérifier si les moyennes des deux groupes sont statistiquement différentes avec les étapes suivantes :
+
+* On pose l'hypothèse nulle (H<sub>0</sub>), soit que les moyennes des deux groupes *A* et *B* ne sont pas différentes ($\bar{X}_{A}=\bar{X}_{B}$) ou autrement dit, la différence des deux moyennes est nulle ($\bar{X}_{A}-\bar{X}_{B}=0$). L'hypothèse alternative (H<sub>1</sub>) est donc $\bar{X}_{A}\ne\bar{X}_{B}$.
+* On calcule la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* sera négative quand la moyenne du groupe A est inférieure au groupe B et inversement.
+* On compare la valeur absolue de *t* ($\mid T \mid$) avec celle critique issue la table T avec le nombre de degrés de liberté et un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
+* Si les moyennes sont statistiquement différentes, on peut calculer l'effet de taille.
+
+
+**Test de student pour des échantillons indépendants avec variances égales (méthode *pooled*).** La valeur de *t* est le ratio entre la différence des moyennes des deux groupes (numérateur) et l'erreur-type groupé des deux échantillons (dénominateur) :
+
+$t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_p}{n_A}+\frac{S^2_p}{n_B}}}$ avec 
+$S^2_p = \frac{(n_A-1)S^2_{X_A}+(n_B-1)S^2_{X_B}}{n_A+n_B-2}$
+
+avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d'observations et les variances pour les groupes *A* et *B*, $S^2_p$ étant la variance groupée des deux échantillon et $n_A+n_B-2$ étant le nombre de degrés de liberté.
+
+**Test de Welch pour des échantillons indépendants (avec variances différentes).** Le test de Welch est très similaire au test de student; seuls les calculs de la valeur de *t* du nombre de degrés de liberté sont diffèrent légèrement :
+
+$t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_A}{n_A}+\frac{S^2_B}{n_B}}}$ et $dl = \frac{ \left( \frac{S^2_{X_A}}{n_A}+\frac{S^2_{X_B}}{n_B} \right)^2} {\frac{S^4_{X_A}}{n^2_A(n_A-1)}+\frac{S^4_{X_B}}{n^2_B(n_B-1)}}$
+
+Il en résulte que les résultats du test de Student (avec variances égales) et du test de Welch (variances différentes) sont habituellement relativement similaires.
+
+Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit rapidement une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculés les moyennes, nombres d'observations et variances pour les deux groupes, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement au mode de transport pour se rendre au travail :
+
+* Au cas 1, 50 personnes âgées de 18 à 35 ans utilisant le vélo et 60 personnes âgées de 25 à 50 ans prévilégiant l'automobile.
+* Au cas 2, 50 personnes âgées de 18 à 50 ans utilisant le vélo et 60 personnes âgées de 20 à 50 ans prévilégiant l'automobile.
+
+D'emblée, l'analyse visuelle des boites à moustaches (figure \@ref(fig:figttest1)) semblent signaler qu'au cas 1 comparativement au cas 2 : 1) les groupes sont plus homogènes (boites plus compactes) et 2) les moyennes semblent différentes (les boites sont centrées différemment sur l'axe des ordonnées). Cela est confirmé par les résultats des tests.
+
+```{r figttest1, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Boites à moustache sur des échantillons fictifs non appariées', out.width='75%'}
+library(ggplot2)
+library(ggpubr)
+# fonction ------------------
+tstudent_independants <- function(A, B){
+    x_a <- mean(A)           # Moyenne du groupe A
+    x_b <- mean(B)           # Moyenne du groupe B
+    var_a <- var(A)          # Variance du groupe A
+    var_b <- var(B)          # Variance du groupe B
+    sd_a <- sqrt(var_a)      # Écart-type du groupe A
+    sd_b <- sqrt(var_b)      # Écart-type du groupe B
+    ratio_v <- var_a / var_b # ratio des variances
+    n_a <- length(A)         # nombre d'observation du groupe A
+    n_b <- length(B)         # nombre d'observation du groupe B
+    
+    # T-test (variances égales)
+    dl_test <- n_a+n_b-2       # degrés de liberté
+    PooledVar <- (((n_a-1)*var_a)+((n_b-1)*var_b))/dl_test
+    t_test <- (x_a-x_b) / sqrt(((PooledVar/n_a)+(PooledVar/n_b)))
+    p_test <-  2*(1-(pt(abs(t_test), dl_test)))     
+    # Test Welch-Sattherwaite (variances inégales)
+    t_welch <- (x_a-x_b) / sqrt( (var_a/n_a) + (var_b/n_b))
+    dl_num = ((var_a/n_a) + (var_b/n_b))^2
+    dl_dem = ((var_a/n_a)^2/(n_a-1))  + ((var_b/n_b)^2/(n_b-1))
+    dl_welch = dl_num / dl_dem # degrés de liberté
+    p_welch <- 2*(1-(pt(abs(t_welch), dl_welch)))     
+    
+    cat("\n groupe A (n = ", n_a,"), moy = ", round(x_a,1),", 
+           variance = ", round(var_a,1),", écart-type = ", round(sd_a,1),
+        "\n groupe B (n = ", n_b,"), moy = ", round(x_b,1),", 
+          variance = ", round(var_b,1),", écart-type = ", round(sd_b,1),
+        "\n ratio variance = ",round(ratio_v,2),
+        "\n t-test (variances égales): t(dl = ", dl_test, ") = ",round(t_test,4),
+         ", p = ", round(p_test,6),
+         "\n t-Welch (variances inégales): t(dl = ", round(dl_welch,3), ") = ",
+        round(t_welch,4), ", p = ", round(p_welch,6),  sep="")    
+  
+    if (ratio_v > 0.5 && ratio_v < 2)  {
+      cat("\n Variances similaires. Utilisez le test de Student !")
+      p <- p_test
+    } else {
+      cat("\n Variances dissemblables. Utilisez le test de Welch-Satterwaithe !")
+      p <- p_welch
+    }
+    
+    if (p <=.05){
+      cat("\n Les moyennes des deux groupes sont significativement différentes.")
+    } else {
+      cat("\n Les moyennes des deux groupes ne sont pas significativement différentes.")
+    }
+}
+
+# CAS 1 : données fictives ------------------
+# Création du groupe A : 50 observations avec des valeurs aléatoires entre 18 et 35
+Velo1 <- sample(18:35, 50, replace=T)
+# Création du groupe B : 60 observations avec des valeurs aléatoires entre 25 et 50
+Auto1 <- sample(25:50, 60, replace=T)
+df1 <- data.frame(id=c(1:(length(Velo1)+length(Auto1))),
+                 age=c(Velo1,Auto1))
+df1$transport <- ifelse(df1$id <= length(Velo1), "A. vélo", "B. auto")
+
+boxplot1 <- ggplot(data=df1, mapping=aes(x=transport,y=age, colour=transport)) +
+  geom_boxplot(width=0.2)+
+  ggtitle("Données fictives (cas 1)")+
+  xlab("Mode de transport")+
+  ylab("Age")
+
+# CAS 2 : données fictives ------------------
+# Création du groupe A : 50 observations avec des valeurs aléatoires entre 18 et 50
+Velo2 <- sample(18:50, 50, replace=T)
+# Création du groupe B : 60 observations avec des valeurs aléatoires entre 20 et 50
+Auto2 <- sample(20:50, 60, replace=T)
+df2 <- data.frame(id=c(1:(length(Velo2)+length(Auto2))),
+                 age=c(Velo2,Auto2))
+df2$transport <- ifelse(df2$id <= length(Velo2), "A. vélo", "B. auto")
+
+boxplot2 <- ggplot(data=df2, mapping=aes(x=transport,y=age, colour=transport)) +
+  geom_boxplot(width=0.2)+
+  ggtitle("Données fictives (cas 2)")+
+  xlab("Mode de transport")+
+  ylab("Age")
+
+ggarrange(boxplot1, boxplot2, ncol = 2, nrow = 1)
+
+# Appel de la fonction pour le cas 1
+tstudent_independants(Velo1, Auto1)
+# Appel de la fonction pour le cas 2
+tstudent_independants(Velo2, Auto2)
 ```
-````
 
-### Other features
 
-Refer to Section \@ref(html-document) for the documentation of most features of RTF documents, including table of contents (Section \@ref(table-of-contents)), figure options (Section \@ref(figure-options)), keeping Markdown (Section \@ref(keeping-markdown)), Markdown extensions (Section \@ref(markdown-extensions)), Pandoc arguments (Section \@ref(pandoc-arguments)), and shared options (Section \@ref(shared-options)).
+#### Principe de base et formulation pour des échantillons dépendants (appariés) {#sect3311}
 
-## Markdown document
+Nous disposons de plusieurs observations pour lesquelles nous avons mesuré un phénomène (variable continue) à deux temps différents : généralement avant et après une expérimentation (analyse pré-post). Il s'agit de vérifier si la moyenne des différences des observations avant et après la période est différente de 0. Pour ce faire, on réalise les étapes suivantes :
 
-In some cases, you might want to produce plain Markdown output from R Markdown (e.g., to create a document for a system that accepts Markdown input like [Stack Overflow](https://stackoverflow.com/editing-help)).
+* On pose l'hypothèse nulle (H<sub>0</sub>), soit que la moyenne des différences entre les deux séries est égale à 0 ($\bar{D} = 0$ avec $d = {x}_{t_1}- {x}_{t_1}$). L'hypothèse alternative (H<sub>1</sub>) est donc $\bar{D} \ne 0$. Notez que l'on peut tester une autre valeur que 0.
+* On calcule la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* sera négative quand la moyenne des différences entre ${X}_{t_1}$ et ${X}_{t_2}$ est négative et inversement.
+* On compare la valeur absolue de *t* ($\mid t \mid$) avec celle critique issue la table T avec le nombre de degrés de liberté et un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors la différence des moyennes est statistiquement différente de 0 au degré de signification retenu.
 
-To create a Markdown document from R Markdown, you specify the `md_document` output format in the front-matter of your document:
+Pour le test de student avec des échantillons appariées, la valeur de *t* se calcule comme suit :
 
-```yaml
----
-title: "Habits"
-author: John Doe
-date: March 22, 2005
-output: md_document
----
+$$t = \frac{\bar{D}-\mu_0}{\sigma_D / \sqrt{n}}$$
+avec $\bar{D}$ étant la moyenne des différences entre les observations appariées de la série A et de la série B, $\sigma_D$ l'écart des différences, *n* le nombre d'observations, et finalement $\mu_0$ la valeur de l'hypothèse nulle ($h_0 = \mu_0$) que l'on veut tester (habituellement 0). Bien entendu, il est possible fixer une autre valeur pour $\mu_0$ : par exemple, avec $\mu_0 = 10$, on chercherait ainsi à vérifier si la moyenne des différences est significativement différente de 10. Le nombre de degrés de liberté sera égal à $n-1$.
+
+Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit rapidement une fonction dénommée `tstudent_dependants` permettant de réaliser le test de student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
+
+Puis, nous avons créé aléatoirement deux jeux de données avec 50 personnes utilisant habituellement l'automobile pour se rendre au travail. Pour ces personnes, nous avons généré des valeurs du risque perçu de l'utilisation du vélo (de 0 à 100), et ce, avant et après une période de 20 jours ouvrables durant lesquels ils devaient impérativement se rendre au travail à vélo.
+
+* Au cas 1, les valeurs de risque varient aléatoirement de 65 à 85 avant l'expérimentation et de 40 à 60 après l'expérimentation.
+* Au as 2, les valeurs de 65 à 85 avant et 60 à 90 après.
+
+D'emblée, l'analyse visuelle des boites à moustaches (figure \@ref(fig:figttest2)) pairées montrent que le risque semble avoir nettement diminé après l'expérimentation contrairement au cas 2. Cela est confirmé par les résultats des tests.
+
+
+```{r figttest2, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Boites à moustache sur des échantillons fictifs appariées', out.width='75%'}
+library(ggplot2)
+library(ggpubr)
+
+tstudent_dependants <- function(A, B, mu=0){
+  d <- A-B           # différences entre les observations pairées
+  moy <- mean(d)     # Moyenne des différences
+  e_t <- sd(d)       # Écart-type des différences
+  n   <- length(A)   # nombre d'observations
+  dl  <- n-1         # nombre de degrés de liberté (variances égales)
+  
+  t <- (moy- mu) / (e_t/sqrt(n)) # valeur de t
+  p <-  2*(1-(pt(abs(t), dl)))
+  
+  cat("\n groupe A : moy = ", round(mean(A),1),", var = ", 
+         round(var(A),1),", sd = ", round(sqrt(var(A)),1),
+      "\n groupe B : moy = ", round(mean(B),1),", var = ", 
+         round(var(B),1),", sd = ", round(sqrt(var(B)),1),
+      "\n Moyenne des différences = ", round(mean(moy),1),
+      "\n Ecart-type des différences = ", round(mean(e_t),1),
+      "\n t(dl = ", dl, ") = ",round(t,2),
+      ", p = ", round(p,3),  sep="")
+  
+  if (p <=.05){
+    cat("\n La moyenne des différences entre les échantillons est significative")
+  }
+  else{
+    cat("\n La moyenne des différences entre les échantillons n'est pas significative")
+  }
+}
+
+# CAS 1 : données fictives ------------------
+Avant1 <- sample(65:85, 50, replace=T)
+Apres1 <- sample(40:60, 50, replace=T)
+df1 <- data.frame(Avant=Avant1, Apres=Apres1)
+boxplot1 <- ggpaired(df1, cond1 = "Avant", cond2 = "Apres", fill = "condition", 
+                     palette = "jco", title = "Données fictives (cas 1)")
+
+# CAS 2 : données fictives ------------------
+Avant2 <- sample(65:85, 50, replace=T)
+Apres2 <- sample(60:90, 50, replace=T)
+df2 <- data.frame(Avant=Avant2, Apres=Apres2)
+boxplot2 <- ggpaired(df2, cond1 = "Avant", cond2 = "Apres", fill = "condition", 
+                     palette = "jco", title = "Données fictives (cas 2)")
+
+ggarrange(boxplot1, boxplot2, ncol = 2, nrow = 1)
+
+# Test t : appel de la fonction tstudent_dependants
+tstudent_dependants(Avant1, Apres1, mu=0)
+tstudent_dependants(Avant2, Apres2, mu=0)
 ```
 
-### Markdown variants
 
-By default, the `md_document` format produces "strict" Markdown (i.e., conforming to the original Markdown specification with no extensions). You can generate a different flavor of Markdown using the `variant` option. For example:
+#### Mesurer la taille de l'effet {#sect3312}
 
-```yaml
----
-output:
-  md_document:
-    variant: markdown_github
----
+Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas de comparaisons de moyennes (avec des échantillons pairées ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le dernier étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test student ou de Welch s'est révélé significatif (p<0,05).
+
+**Pourquoi utiliser le *d* de cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de taille différente, il s'écrit : 
+
+$$d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{(n_A-1)S^2_A+(n_B-1)S^2_B}{n_A+n_B-2}}}$$
+avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d'observations et les variances pour les groupes *A* et *B*, $S^2_p$.
+
+Juste pour le fun, si les échantillons sont de taille identiques ($n_A=n_B$), alors *d* peut s'écrire :
+$$d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{(S^2_A+\S^2_A)/2}} = \frac{\bar{X}_{A}-\bar{X}_{B}}{(\sigma_A+\sigma_B)/2}$$
+avec $\sigma_A$ et $\sigma_B$ étant les écart-types des deux groupes (rappel : l'écart-type est la racine carrée de la variance!).
+
+Le *g* de Hedge est simplement une correction de *d*, particulièrement importante quand les échantillons sont de taille réduite.
+$$g = d- \left(1- \frac{3}{4(n_A+n_B)-9} \right)$$
+
+Moins utilisées en sciences sociales, mais surtout en études cliniques, le delta de Glass est simplement la différence des moyennes des groupes indépendants (numérateur) sur l'écar-type du deuxième groupe (démoninateur). Dans une étude clinique, on a habituellement un groupe qui subit un traitement (groupe de traitement) et un groupe qui a reçu un placebo (groupe de contrôle ou groupe témoin). L'effet de taille est ainsi évalué par rapport au groupe de contrôle : 
+$$\Delta = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sigma_B}$$
+
+
+Finalement, pour des échantillons dépendants (pairés), il s'écrit simplement $d = \bar{D}/{\sigma_D}$ avec $\bar{D}$ et $\sigma_D$ étant la moyenne et l'écart-type des différences entre les observations.
+
+**Commment interpréter le *d* de cohen ?** Un effet sera considéré comme faible avec $\lvert d \rvert$ à 0,2, modéré à 0,50 et fort à 0,80 [@cohen1992]. Notez que ces seuils ne sont que des conventions pour vous guider à interpréter la mesure de Cohen. D'ailleurs, dans son livre intitulé *Statistical power analysis for the behavioral sciences*, il écrit : "all conventions are arbitrary. One can only demand of them that they not be unreasonable" [@cohen2013]. Plus récemment, [@sawilowsky2009] a ajouté d'autres seuils à ceux proposés par Cohen (tableau \@ref(tab:tableconvcohen)).
+
+
+```{r tableconvcohen, echo=FALSE, message=FALSE, warning=FALSE}
+df <- data.frame(
+        Sawilowsky = c("0,1 : Très faible", "0,2 : Faible", "0,5 : Moyen","0,8 : Fort", "1,2 : Très fort", "2,0 : Énorme"), 
+        Cohen = c("", "0,2 : Faible", "0,5 : Moyen","0,8 : Fort", "", ""))
+
+knitr::kable(
+  head(df, nrow(df)), booktabs = TRUE,
+  caption = 'Conventions pour l’interprétation du d de Cohen'
+)
 ```
 
-Valid values are:
 
-* `markdown` (Full Pandoc Markdown)
-* `markdown_strict` (Original Markdown specification; the default)
-* `markdown_github` (GitHub Flavored Markdown)
-* `markdown_mmd` (MultiMarkdown)
-* `markdown_phpextra` (PHP Markdown extra)
+#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3313}
 
-You can also compose custom Markdown variants. For example:
+Surtout pas de panique ! Nous avons écrit les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe de fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux test avec une seule ligne de code.
 
-```yaml
----
-output:
-  md_document:
-    variant: markdown_strict+backtick_code_blocks+autolink_bare_uris
----
+La fonction `t.test` permet ainsi de calculer les test de Student et de Welch :
+
+* `t.test(x ~ y, data=, mu = 0, paired = FALSE, var.equal = FALSE,  conf.level = 0.95)` ou `t.test(x =, y =, mu = 0, paired = FALSE, var.equal = FALSE,  conf.level = 0.95)`. 
+* Le paramètre `paired` sera utilisé pour spécifier si les échantillons sont dépendants (`paired=TRUE`) ou indépendants (`paired=FALSE`).
+* Le paramètre *var.equal* sera utilisé pour spécifier pour signaler si les variances sont égales pour le test de Student (`var.equal=TRUE`) ou dissemblables pour le test de Welch (`var.equal=FALSE`).
+* `var.test(x, y)` ou `var.test(x ~ y, data=)` pour vérifier au préalable si les variances sont égales ou non et choisir ainsi un t de Student ou un t de Welch.
+
+Les fonctions `cohens_d` et `hedges_g` renvoient respectivement les mesures de *d* de Cohen et du *g* de Hedge :
+
+* `cohens_d(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou  cohens_`d(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou
+* `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
+
+* `glass_delta(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `glass_delta(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
+
+
+Notez que pour toutes ces fonctions deux écritures sont possibles :
+
+* `x ~ y, data=` avec un `dataframe` dans lequel `x` est une variable continue et `y` et un facteur binaire
+* `x, y` qui sont tous deux des vecteurs numériques (variable continue)
+
+**Exemple de test pour des échantillons indépendants**
+
+La figure \@ref(fig:figlocataires) représente la cartographie du pourcentage de locataires par secteur de recensement (SR) pour la région métropolitaine de recensement (RMR) en 2016, soit une variable continue. L'objectif est de vérifier si la moyenne de ce pourcentage des SR de l'agglomération de Montréal est significativement différente de celle de SR hors de l'agglomération. 
+
+Les résultats de la syntaxe ![](images/Rlogo.png) ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%); cette différence de 32,5 points de pourcentage est d'ailleurs significative (t = -23,95; p ˂ 0,001, d de Cohen = 1,54).
+
+
+```{r figlocataires, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Pourcentage de locataires par secteur de recensement, RMR de Montréal, 2016",  out.width='95%'}
+knitr::include_graphics('images/bivariee/FigureLocataires.jpg', dpi = NA)
 ```
 
-See Pandoc's Manual for all of the Markdown extensions and their names to be used in composing custom variants.
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(foreign)
+library(effectsize)
+library(ggplot2)
+library(dplyr)
 
-#### Publishing formats
+# Importation du fichier
+dfRMR <- read.dbf("data/bivariee/SRRMRMTL2016.dbf")
 
-Many popular publishing systems now accept Markdown as input. Table \@ref(tab:markdown-variant) shows the correct Markdown variants to use for some popular systems.
+# Définition d'un facteur binaire                  
+dfRMR$Montreal <- factor(dfRMR$Montreal, 
+                           levels=  c(0,1), 
+                           labels = c("Hors de Montréal","Montréal"))
 
-Table: (\#tab:markdown-variant) Markdown variants for some popular publishing systems.
+# Comparaison des moyennes ------------------------
+#Boite à moustache (boxplot)
+ggplot(data = dfRMR, mapping=aes(x=Montreal,y=Locataire,colour=Montreal)) +
+  geom_boxplot(width=0.2)+
+  theme(legend.position="none")+
+  xlab("Zone")+ ylab("Pourcentage de locataires")+
+  ggtitle("Locataires par secteur de recensement", subtitle="RMR de Montréal, 2006")
 
-System|Markdown Variant
---------|-----------
-GitHub Wikis|`markdown_github`
-Drupal|`markdown_phpextra`
-WordPress.com|`markdown_phpextra+backtick_code_blocks`
-StackOverflow|`markdown_strict+autolink_bare_uris`
+# nombre d'observations, moyennes et écart-types pour les deux échantillons
+group_by(dfRMR, Montreal) %>%
+  summarise(
+    n = n(),
+    moy = mean(Locataire, na.rm = TRUE),
+    ecarttype = sd(Locataire, na.rm = TRUE)
+  )
 
-In many cases, you can simply copy and paste the Markdown generated by `rmarkdown::render()` into the editing interface of the system you are targeting. Note, however, that if you have embedded plots or other images, you will need to upload them separately and fix up their URLs to point to the uploaded location. If you intend to build websites based on R Markdown, we recommend that you use the more straightforward solutions such as **blogdown** [@xie2017; @R-blogdown] as introduced in Section \@ref(websites) instead of manually copying the Markdown content.
+# On vérifie si les variances sont égales avec la fonction var.test
+# quand la valeur de P est inférieure à 0,05 alors les variances diffèrent
+v <- var.test(Locataire ~ Montreal, alternative='two.sided', conf.level=.95, data=dfRMR)
+v
 
-### Other features
+# Calcul du T de Student ou du T de Welch
+p <- v$p.value
+if(p >= 0.05){
+  cat("\nLes variances ne diffèrent pas !",
+     "\nOn utilise le test de student avec l'option var.equal=TRUE", sep="")
+    t.test(Locataire ~ Montreal,  # variable continue ~ facteur binaire 
+           data=dfRMR,            # nom du dataframe
+           conf.level=.95,        # intervalle de confiance pour la valeur de t
+           paired = FALSE,        # échantillons non pairés (indépendants)
+           var.equal=TRUE)        # variances égales
+} else {
+  cat("\nLes variances diffèrent !",
+      "\nOn utilise le test de Welch avec l'option var.equal=FALSE", sep="")
+  t.test(Locataire ~ Montreal,   # variable continue ~ facteur binaire 
+         data=dfRMR,             # nom du dataframe
+         conf.level=.95,         # intervalle de confiance pour la valeur de t
+         paired = FALSE,         # échantillons non pairés (indépendants)
+         var.equal=FALSE)        # variances égales
+}
 
-Refer to Section \@ref(html-document) for the documentation of other features of Markdown documents, including table of contents (Section \@ref(table-of-contents)), figure options (Section \@ref(figure-options)), header and before/after body inclusions (Section \@ref(includes)), Pandoc arguments (Section \@ref(pandoc-arguments)), and shared options (Section \@ref(shared-options)).
+# Effet de taille à analyser uniquement si le test est significatif
+cohens_d(Locataire ~ Montreal, data = dfRMR, paired = FALSE)
+hedges_g(Locataire ~ Montreal, data = dfRMR, paired = FALSE)
 
-## R package vignette
-
-The `html_vignette` format provides a lightweight alternative to `html_document` suitable for inclusion in packages to be released to CRAN. It reduces the size of a basic vignette\index{R package vignette} from 600Kb to around 10Kb. The format differs from a conventional HTML document as follows:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom lightweight CSS stylesheet
-
-To use `html_vignette`, you specify it as the output format and add some additional vignette related settings via the `\Vignette*{}` macros:
-
-```yaml
----
-title: "Your Vignette Title"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Your Vignette Title}
-  %\VignetteEncoding{UTF-8}
----
 ```
 
-Note that you should change the `title` field and the `\VignetteIndexEntry{}` to match the title of your vignette.
+#### Comparer des moyennes pondérées {#sect3314}
 
-Most options for `html_document` (Section \@ref(html-document)) also work for `html_vignette`, except `fig_retina` and `theme`, which have been set to `null` internally in this format.
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+En études urbaines et en géographie, le recours aux données agrégées (non individuelles) est fréquent, par exemple au niveau des secteurs de recensement (comprenant généralement entre 2500 à 8000 habitants). Il est donc parfois primordial de pondérer le test de Student. Prenons deux exemples pour illustrer le tout :
 
-The `html_vignette` template includes a basic CSS theme. To override this theme, you can specify your own CSS in the document metadata as follows:
+* Pour chaque secteur de recensement des îles de Montréal et de Laval, nous avons diposons de la distance au parc le plus proche à travers le réseau de rues. On souhaite vérifier si les enfants âgés de moins de 15 ans résidant sur l'île de Montréal bénéficient en moyenne d'une meilleure accessibilité au parc.
 
-```yaml
-output:
-  rmarkdown::html_vignette:
-    css: mystyles.css
+* Dans une étude pour sur la concentration de polluants atmosphérique dans l'environnement autour des écoles primaires montréalaises, Carrier *et al.* [-@carrier2014] souhaitaient vérifier si les élèves fréquentant les écoles les plus défavorisés sont plus exposés au dioxyde d'azote (NO<sub>2</sub>) dans leur milieu scolaire. Pour ce faire, ils ont réalisé un test _t_ sur un tableau avec comme observations les écoles primaires et trois variables : la moyenne NO<sub>2</sub> (variable continue), les quintiles extrêmes d'un indice de défavorisation (premier et dernier quintiles, variable qualitative) et le nombres d'élèves inscrits par écoles (variable pour la pondération).
+ont réalisé une test de _t_ 
+
+Pour réalisation un test *t* pondérée, on utilise la fonction `weighted_ttest` du package **sjstats**. Pour les deux exemples ci-dessous, la syntaxe ![](images/Rlogo.png) pourrait être :
+
+* `weighted_ttest(ParcPlusProche ~ Iles + Enfants014, SR, paired = FALSE))`.
+* `weighted_ttest(NO2 ~ Q1Q5 + ElevesInscrits, Ecole, paired = FALSE))`
+
+:::
+
+En guise d'exemple, dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend (`weighted_ttest(Locataire ~ Montreal + Logement, dfRMR, paired = FALSE, ci.lvl=.95`).
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(sjstats)
+library(dplyr)
+
+# Calcul des statistiques pondérées
+group_by(dfRMR, Montreal) %>%
+  summarise(
+    n = sum(Logement),
+    MoyPond = weighted_mean(Locataire, Logement),
+    ecarttypePond = weighted_sd(Locataire, Logement)
+  )
+
+# T-Ttest non pondéré
+t.test(Locataire ~ Montreal, dfRMR, 
+               paired = FALSE, var.equal = TRUE, conf.level=.95)
+
+# T-Ttest pondérée
+weighted_ttest(Locataire ~ Montreal + Logement, dfRMR, 
+               paired = FALSE, ci.lvl=.95)
+               
 ```
 
-The default figure size is 3x3. Because the figure width is small, usually you will be able to put two images side-by-side if you set the chunk option `fig.show='hold'`, e.g.,
+**Exemple de syntaxe ![](images/Rlogo.png) pour un test de Student pour des échantillons dépendants**
 
-````markdown
-`r ''````{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(ggpubr)
+library(dplyr)
+Pre <- c(79,71,81,83,77,74,76,74,79,70,66,85,69,69,82,69,81,70,83,68,77,76,77,70,68,80,65,65,75,84)
+Post <- c(56,47,40,45,49,51,54,47,44,54,42,56,45,45,48,55,59,58,56,41,56,51,45,55,49,49,48,43,60,50)
+
+# Première façon de faire un tableau : avec deux colonnes Avant et Après
+df1 <- data.frame(Avant=Pre, Apres=Post)
+head(df1)
+ggpaired(df1, cond1 = "Avant", cond2 = "Apres", fill = "condition", palette = "jco")
+
+# Nombre d'observations, moyennes et écart-types
+cat(nrow(df1), " observations",
+    "\nPOST. moy = ", round(mean(df1$Avant),1), ", e.t. =", round(sd(df1$Avant),1),
+    "\nPRE.  moy = ", round(mean(df1$Apres),1), ", e.t. =", round(sd(df1$Apres),1), sep="")
+t.test(Pre, Post, paired = TRUE)
+
+# Deuxième façcon de faire un tableau : avec un colonne pour la variable continue et une autre pour la variable qualitative
+n <- length(Pre)*2
+df2 <- data.frame(
+       id=(1:n),
+       participant=(1:length(Pre)),
+       risque=c(Pre,Post)
+       )
+df2$periode <- ifelse(df2$id <= length(Pre), "Pré", "Post")
+head(df2)
+
+# nombre d'observations, moyennes et écart-types pour les deux échantillons
+group_by(df2, periode) %>%
+  summarise(
+    n = n(),
+    moy = mean(risque, na.rm = TRUE),
+    et = sd(risque, na.rm = TRUE)
+    )
+
+ggpaired(data=df2, x= "periode", y="risque", fill = "periode")
+t.test(risque ~ periode, data=df2, paired = TRUE)
 ```
-````
 
-If you want larger figure sizes you can change the `fig_width` and `fig_height` in the document output options or alternatively override the default options on a per-chunk basis.
+#### Comment rapporter un test de student ou de Welch? {#sect3315}
+
+**Test de Student ou de Welch pour échantillons indépendants**
+
+* Dans la région métropolitaine de Montréal en 2005, le revenu total des femmes  (moyenne = 29117 dollars; écart-type = 258022) est bien inférieur à celui des homme (moyenne = 44463; écart-type = 588081). La différence entre les moyennes des deux sexes (-15345) en faveur des hommes est d’ailleurs significative (t = -27,09; *p* ˂ 0,001).
+* Il y un effet significatif selon le sexe (t = -27,09; *p* ˂ 0,001), le revenu total des hommes (moyenne= 44463; écart-type = 588081) étant bien supérieur à celui des femmes (moyenne = 29 117; écart-type = 258 022).
+* 50 personnes vont au travail à vélo pour se rendre au travail (moyenne = 33,7, écart-type = 8,5) contre 60 en automobile (moyenne = 34, écart-type = 8,7); il n'y a pas de différence significative entre les moyennes d'âge des deux groupe (t(108) = -0,79, *p* = 0,427).
+
+
+**Test de Student échantillons dépendants (pairés)**
+
+* On constaste une diminution significative de la perception du risque après l'activité (moyenne = 49,9, écart-type = 5,7) comparativement à avant (moyenne = 74,8, écart-type = 6,1), avec une différence de -24,8 (t(29) = -18,7, *p* < 0,001).
+* Les résultats de la pré-test (moyenne = 49,9, écart-type = 5,7) et de post-test (moyenne = 74,8, écart-type = 6,1) montre qu'il y une diminution significative de la perception du risque (t(29) = -18,7, *p* < 0,001).
+
+Pour un texte en anglais, vous pourrez consulter
+[https://www.socscistatistics.com/tutorials/ttest/default.aspx](https://www.socscistatistics.com/tutorials/ttest/default.aspx){target="_blank"}.
+
+
+### Test non paramétrique de Wilcoxon {#sect332}
+
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+
+Si la variable continue est fortement anormalement distribuée, il est déconseillé d'utiliser les tests de Student et de Welch. On préviligera le test des rangs signés de Wilcoxon (*Wilcoxon rank-sum test* en anglais). Attention, il est aussi appelé test U de Mann-Whitney. 
+
+Pour ce faire, on utilise la fonction `wilcox.test` dans lequel le paramètre `paired` permettra de spécifier si les échantillons sont indépendants ou non (`FALSE` ou `TRUE`).
+
+:::
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(foreign)
+library(dplyr)
+
+###############################
+# Échantillons indépendants
+###############################
+dfRMR <- read.dbf("data/bivariee/SRRMRMTL2016.dbf")
+
+# Définition d'un facteur binaire                  
+dfRMR$Montreal <- factor(dfRMR$Montreal, 
+                           levels=  c(0,1), 
+                           labels = c("Hors de Montréal","Montréal"))
+
+# nombre d'observations, moyennes et écart-types des rangs pour les deux échantillons
+group_by(dfRMR, Montreal) %>%
+  summarise(
+    n = n(),
+    moy_rang = mean(rank(Locataire), na.rm = TRUE),
+    med_rang = median(rank(Locataire), na.rm = TRUE),
+    ecarttype_rang = sd(rank(Locataire), na.rm = TRUE)
+  )
+
+# Test des rangs signés de Wilcoxon sur des échantillons indépendants
+wilcox.test(Locataire ~ Montreal, dfRMR, paired = FALSE)
+
+###############################
+# Échantillons dépendants
+###############################
+pre <- sample(60:80, 50, replace=T)
+post <- sample(30:65, 50, replace=T)
+df1 <- data.frame(Avant=pre, Apres=post)
+# Nombre d'observations, moyennes et écart-types
+cat(nrow(df1), " observations",
+    "\nPOST. median = ", round(median(df1$Avant),1), 
+             ", moy = ", round(mean(df1$Avant),1),
+    "\nPRE.  median = ", round(median(df1$Apres),1), 
+             ", moy = ", round(mean(df1$Apres),1), sep="")
+
+wilcox.test(df1$Avant, df1$Apres, paired = TRUE)
+
+```
+
+**Comment rapporter un test de Wilcoxon?**
+
+* Les résultats du test de des rangs signés de Wilcoxon signale que les rangs de l'île de Montréal sont significativement plus élevés que ceux de l'île de Laval (W = 1223, p ˂ 0,001).
+* Les résultats du test de Wilcoxon signalent que les rangs post-tests sont significativement plus faibles que ceux post-test (W = 1273.5, p ˂ 0,001).
+* Les résultats du test de Wilcoxon signalent que la médiane des rangs pré-tests (médiane = 69) est significativement plus forte que celle du post-test (médiane = 50,5) (W = 1273.5, p ˂ 0,001).
+
+
+## Relation entre une variable quantitative et une variable qualitative à plus deux modalités {#sect34}
+
+### Analyse de variance {#sect341}
+
+### Test non paramétrique de Kruskal-Wallis {#sect342}
