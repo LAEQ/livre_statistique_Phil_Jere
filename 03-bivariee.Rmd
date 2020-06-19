@@ -604,16 +604,13 @@ Pour un texte en anglais, vous pourrez consulter : [https://www.socscistatistics
 
 Par exemple, la régression linéaire simple pourrait être utilisée pour expliquer les notes d'un groupe d'étudiants à un examen (variable dépendante) en fonction du nombre d'heures qu'ils ont consacrés à la révision des notes de cours (variable indépendante). Une fois l'équation de régression déterminée et si le modèle est efficace, nous pourrons prédire précisément les notes des étudiants inscrits au cours la session suivante, et ce, avant même qu'ils aient passé l'examen. 
 
-Tentons de formuler un exemple d'application de la régression linéaire simple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). On supposerait alors que plus cette proportion est importante, plus la température est faible et inversement, soit une relation linéaire négative. Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions à prédire efficacement la température moyenne des îlots avec uniquement la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc. Il faudrait alors inclure non pas une, mais plusieurs variables explicatives (indépendantes).
+Tentons de formuler un exemple d'application de la régression linéaire simple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). On supposerait alors que plus cette proportion est importante, plus la température est faible et inversement, soit une relation linéaire négative. Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions pas à prédire efficacement la température moyenne des îlots avec uniquement la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc. Il faudrait alors inclure non pas une, mais plusieurs variables explicatives (indépendantes).
 
 Ainsi, on distinguera la **régression linéaire simple** (une variable indépendante, explicative) de la **régression linéaire multiple** (plusieurs variables indépendantes); cette dernière sera largement abordée au chapitre \@ref(chapitre4).
 
 :::
 
-Dans cette section, nous décrirons succinctement la régression linéaire simple. Concrètement, nous verrons comment déterminer la droite de régression, interpréter les différents paramètres du modèle et comment évaluer la qualité d'ajustement du modèle. Nous n'aborderons pas les hypothèses liées au modèle de régression linéaire des moindres carrés ordinaires (MCO), ni les conditions d'application. Ces éléments seront abordés en détail au chapitre \@ref(chapitre4) consacré à la régression linéaire multiple.
-
-#### Principe de base {#sect3141}
-
+Dans cette section, nous décrirons succinctement la régression linéaire simple. Concrètement, nous verrons comment déterminer la droite de régression, interpréter les différents paramètres du modèle et comment évaluer la qualité d'ajustement du modèle. Nous n'aborderons pas les hypothèses liées au modèle de régression linéaire des moindres carrés ordinaires (MCO), ni les conditions d'application. Ces éléments seront expliqués au chapitre \@ref(chapitre4) consacré à la régression linéaire multiple.
 
 ::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
 **Corrélation, régression simple et causalité**
@@ -628,17 +625,178 @@ Deuxièmement, bien qu'une variable puisse expliquer efficacement une autre vari
 
 * Dans un article intitulé *Chocolate Consumption, Cognitive Function, and Nobel Laureates*, Messerli [-@Messerli] a trouvé une corrélation positive entre la consommation de chocolat par habitant et le nombre de prix Nobel pour dix millions d'habitants pour 23 pays. Ce résultat a d'ailleurs été rapporté par de nombreux médias ([Radio Canada](https://ici.radio-canada.ca/nouvelle/582457/chocolat-consommateurs-nobels), [La Presse]("https://www.lapresse.ca/vivre/sante/nutrition/201210/11/01-4582347-etude-plus-un-pays-mange-de-chocolat-plus-il-a-de-prix-nobel.php"), [Le Point](https://www.lepoint.fr/insolite/le-chocolat-dope-aussi-l-obtention-de-prix-nobel-12-10-2012-1516159_48.php), etc.), sans pour autant que Messerli [-@Messerli] et les journalistes concluent à un lien de causalité entre les deux variables. Tout chercheur sait que la consommation de chocolat ne permet pas d'obtenir des résultats intéressants et de publier dans des revues prestigieuses; c'est plutôt le café ! Plus sérieusement, il est probable que les pays les plus riches investissent davantage dans la recherche et obtiennent ainsi plus de prix Nobel. Dans les pays les plus riches, il est aussi probable que l'on consomme plus de chocolat, considéré comme un produit de luxe dans les pays les plus pauvres.
 
-L'association entre deux variables peut être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du *data mining*, le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Par exemple, on pourrait conclure que les personnes qui aiment le rouge préfèrent le chocolat noir et celles le bleu le chocolat au lait, sans qu'il y a un lien de causalité !
+L'association entre deux variables peut être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du *data mining*, le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Par exemple, on pourrait conclure que les personnes qui aiment le rouge préfèrent le chocolat noir et celles le bleu le chocolat au lait, sans qu'on soit capable de propose un mécanisme de causalité !
 
 Pour approfondir le sujet sur la confusion entre *corrélation, régression simple et causalité*, vous pourrez visionner cette courte vidéo ludique de vulgarisation. 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/A-_naeATJ6o" frameborder="0" allowfullscreen></iframe>
-
 :::
 
-#### Régression polynomiale {#sect3142}
+#### Principe de base {#sect3141}
+La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
+\begin{equation} 
+Y_{i} = \beta_{0} + \beta_{1}X_{i}
+(\#eq:regsimple)
+\end{equation}
 
-#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3143}
+avec $Y_{i}$ et $X_{i}$ sont respectivement les valeurs des variables indépendante et dépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais), soit la valeur de variable $Y$ quand $X$ est égal à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative, et proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
+
+Considérons un exemple fictif de dix municipalités d'une région métropolitaine donnée pour lesquelles nous disposons de deux variables : le pourcentage d'actifs occupés se rendant au travail principalement à vélo au travail et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
+
+
+```{r regfictives, echo=FALSE, message=FALSE, warning=FALSE, out.width='85%'}
+df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
+names(df)[1] <- "Municipalité"
+names(df)[2] <- "Vélo"
+
+df1 <- df[1:5,]
+df2 <- df[6:10,]
+
+knitr::kable(
+   list(df1, df2),
+   caption = "Données fictives sur l'utilisation du vélo par municipalité",
+   booktabs = TRUE, valign = 't', row.names = FALSE)
+```
+
+D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relative linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient corrélation (*r* = −0,86). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit : **Velo = 30,603 - 1,448 x KmCV**.
+
+La valeur du coefficient de régression ($\beta_{1}$) est de −1,448. Le signe de ce coefficient traduit ainsi une relation négative entre les deux variables. Ainsi, à chaque ajout d'une unité de la distance au centre-ville, le pourcentage de cyclistes diminue de −1,448. Par conséquent, si la distance au centre-ville n'était pas exprimée en kilomètre, mais plutôt en mètres, $\beta_1$ sera égal à −1448.
+
+Avec, cette équation de régression, il est possible de prédire le pourcentage de cyclistes pour n'importe quelle municipalité de la région métropolitaine. Par exemple, pour des distances de 5, 10 ou 20 kilomètres, les pourcentage de cyclistes seraient de :
+
+* $\widehat{y_i} = 21.873 + (1.448 \times 5 km) = 23.363$
+* $\widehat{y_i} = 21.873 + (1.448 \times 10km) = 8.883$
+* $\widehat{y_i} = 21.873 + (1.448 \times 20km) = 1.643$
+
+```{r figreg, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Relation linéaire entre l'utilisation du vélo et la distance au centre-ville", out.width='75%'}
+library(ggplot2)
+modele <- lm(Vélo~KmCV, df)
+b0 <- round(modele$coefficients[1],3)
+b1 <- round(modele$coefficients[2],3)
+eq <- paste0("Velo = ", b0, " ", b1, " x KmCV")
+r2 <- round(summary(modele)$r.squared,3)
+pearson <- round(cor(df$Vélo, df$KmCV),3)
+
+ggplot(df, aes(x=KmCV, y=Vélo)) +
+  stat_smooth(method="lm", se=FALSE, col="red")+
+  labs(title= eq,
+     subtitle = paste0("r2 = ", r2, ", r =", pearson), sep="")+
+  xlab("Distance au centre-ville (km)")+
+  ylab("Vélo (%)")+
+  geom_point(colour="black", size=5)
+```  
+
+
+#### Formulation de la droite de régression des moindres carrés ordinaires {#sect3142}
+Reste à savoir comment sont estimées les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre la valeur observée et la valeur prédite, dénommée résidu ($\epsilon_i$). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Cela signifie que plus cet écart,c'est-à-dire le résidu $\epsilon_i$, est important, plus l'observation s'éloigne de la prédiction du modèle. Au tableau \@ref(tab:regfictives2), vous constatez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires vise alors à minimiser les écarts au carrés entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$).
+
+\begin{equation} 
+min\sum_{i=1}^n{(y_i-(\beta_0+\beta_1 x_i))^2}
+(\#eq:mco)
+\end{equation}
+
+
+\begin{equation} 
+\beta_1 = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2} = \frac{cov(X,Y)}{var(X)}
+(\#eq:b1)
+\end{equation}
+
+\begin{equation} 
+\beta_0 = \widehat{Y}-\beta_0 \widehat{X}
+(\#eq:b0)
+\end{equation}
+
+
+```{r figreg2, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Droite de régression, valeurs observées, prédites et résidus", out.width='85%'}
+df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
+modele <- lm(Velo~KmCV, df)
+df$ypredit <- round(modele$fitted.values,3)
+df$residus <- round(residuals(modele),3)
+df$sqrtRes <- round(residuals(modele),3)^2
+df
+
+b0 <- round(modele$coefficients[1],3)
+b1 <- round(modele$coefficients[2],3)
+eq <- paste0("Vélo = ", b0, " ", b1, " x KmCV")
+r2 <- round(summary(modele)$r.squared,3)
+pearson <- round(cor(df$Velo, df$KmCV),3)
+
+seg <- data.frame(x1 = df[3,3], x2 = 12, y1 = df[2,3], y2 = df[2,3]+5)
+
+
+ggplot(df) +
+  aes(
+    x = KmCV,
+    y = Velo,
+    ymin = Velo,
+    ymax = ypredit
+  ) +
+  stat_smooth(method="lm", se=FALSE, col="red")+
+  labs(title= eq,
+       subtitle = paste0("r2 = ", r2, ", r =", pearson), sep="")+
+  xlab("Distance au centre-ville (km)")+
+  ylab("Vélo (%)")+
+  geom_segment(aes(xend = df[9,3]+.2, x = df[9,3]+2,
+                   yend = df[9,2], y = df[9,2]+3),
+                   size=1.2, linetype="solid", colour="brown4",
+                   arrow = arrow(length = unit(0.2, "inches")))+
+
+  geom_segment(aes(xend = df[9,3]+.05, x = df[9,3]+2,
+                   yend = df[9,2]-abs(df[9,5]/2),
+                   y = df[9,2]-abs(df[9,5]/2)),
+                   size=1.2, linetype="solid", colour="brown4",
+                   arrow = arrow(length = unit(0.2, "inches")))+
+
+  geom_segment(aes(xend = df[9,3], x =df[9,3]-.5,
+                   yend = df[9,4]-.5, y = df[9,4]-9),
+                   size=1.2, linetype="solid", colour="brown4",
+                   arrow = arrow(length = unit(0.2, "inches")))+
+
+  annotate(geom="text", x =df[9,3]+2.2, y= df[9,2]+4,
+           label="Valeur observée pour la municipalité I", color="black", hjust = 0, size = 5)+
+
+  annotate(geom="text", x =df[9,3]+2.2, y=df[9,2]+3,
+           label="x =5,225 km, et y = 25,3%", color="black", hjust = 0, size = 5)+
+
+  annotate(geom="text", x =df[9,3]+2.2, df[9,2]-abs(df[9,5]/2)+.2,
+           label="résidu = 25,3 - 23,038 = 2,262", color="black", hjust = 0, size = 5)+
+
+  annotate(geom="text", x =df[9,3], y= df[9,4]-9.5,
+           label="Valeur prédite pour I", color="black", hjust = 0.5, size = 5)+
+  
+    annotate(geom="text", x =df[9,3], y= df[9,4]-10.5,
+           label="30,603 - 1,448 x 5,225 = 23,038", color="black", hjust = 0.5, size = 5)+
+
+  geom_pointrange(colour="black", size=.8, linetype="solid", shape=16)+
+  geom_point(colour="blue", size=3, aes(x=KmCV, y=ypredit))
+```  
+
+```{r regfictives2, echo=FALSE, message=FALSE, warning=FALSE}
+df$sqrtRes <- round(df$residus^2,3)
+sqrtres <- round(sum(df$sqrtRes),3)
+
+df[11,1] <- "Somme"
+df[11,5] <- 0
+df[11,6] <- sqrtres
+
+df1 <- rbind(df[1:5,],df[11,])
+df2 <- rbind(df[6:10,],df[11,])
+
+# knitr::kable(
+#   list(df1, df2),
+#   caption = "Valeurs observées, prédites et résidus",
+#   booktabs = TRUE, valign = 't', row.names = FALSE)
+
+knitr::kable(
+  head(df, nrow(df)), booktabs = TRUE, valign = 't', row.names = FALSE,
+  caption = "Valeurs observées, prédites et résidus")
+
+``` 
+
+
+#### Régression polynomiale {#sect3143}
+
+#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3144}
 
 
 ## Relation entre deux variables qualitatives {#sect32}
