@@ -600,17 +600,41 @@ Pour un texte en anglais, vous pourrez consulter : [https://www.socscistatistics
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 
-**Comment expliquer et prédire une variable continue en fonction d'une autre variable?** Répondre à cette question relève de la statistique inférentielle. Il s'agit en effet d'établir une équation simple du type $Y = aX+ b$, pour expliquer, puis prédire les valeurs d'une variable dépendante (*Y*) à partir d'une variable indépendante (*X*). Il y a donc un échantillon dit d'apprentissage sur lequel le modèle de régression est calculé; et éventuellement, un échantillon pour lequel les valeurs de la variable *Y* sont inconnues, mais qui peuvent être aisément prédites avec l'équation du modèle. La régression linéaire simple se distingue ainsi de la **covariance** et la **corrélation** précédemment décrites relevant de la statistique descriptive et exploratoire. 
+**Comment expliquer et prédire une variable continue en fonction d'une autre variable?** Répondre à cette question relève de la statistique inférentielle. Il s'agit en effet d'établir une équation simple du type $Y = a + bX$, pour expliquer, puis prédire les valeurs d'une variable dépendante (*Y*) à partir d'une variable indépendante (*X*). Il y a donc un échantillon dit d'apprentissage sur lequel l'équation du modèle de régression est déterminé; et éventuellement, un échantillon pour lequel les valeurs de la variable *Y* sont inconnues, mais qui peuvent être aisément prédites à partir de l'équation du modèle. La régression linéaire simple se distingue ainsi de la **covariance** (section \@ref(sect312)) et la **corrélation** (section \@ref(sect313)) relevant de la statistique bivariée descriptive et exploratoire. 
 
-Par exemple, on pourrait expliquer les notes d'un groupe d'étudiants à un examen en fonction du nombre d'heures qu'ils ont consacrés à la révision des notes de cours. Une fois l'équation de régression déterminée, si le modèle est efficace, nous pourrons prédire précisement les notes d'autres étudiants inscrits au cours la session suivante, et ce, avant même qu'ils aient passé l'examen. 
+Par exemple, la régression linéaire simple pourrait être utilisée pour expliquer les notes d'un groupe d'étudiants à un examen (variable dépendante) en fonction du nombre d'heures qu'ils ont consacrés à la révision des notes de cours (variable indépendante). Une fois l'équation de régression déterminée et si le modèle est efficace, nous pourrons prédire précisément les notes des étudiants inscrits au cours la session suivante, et ce, avant même qu'ils aient passé l'examen. 
 
-Tentons de formuler un exemple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions à prédire efficacement la température moyenne des îlots uniquement avec la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc.
+Tentons de formuler un exemple d'application de la régression linéaire simple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). On supposerait alors que plus cette proportion est importante, plus la température est faible et inversement, soit une relation linéaire négative. Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions à prédire efficacement la température moyenne des îlots avec uniquement la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc. Il faudrait alors inclure non pas une, mais plusieurs variables explicatives (indépendantes).
 
-On distinguera alors la **régression linéaire simple** (une variable indépendante, explicative) de la **régression linéaire multiple** (plusieurs variables indépendantes); cette dernière sera largement abordée au chapitre \@ref(chapitre4).
+Ainsi, on distinguera la **régression linéaire simple** (une variable indépendante, explicative) de la **régression linéaire multiple** (plusieurs variables indépendantes); cette dernière sera largement abordée au chapitre \@ref(chapitre4).
 
 :::
 
+Dans cette section, nous décrirons succinctement la régression linéaire simple. Concrètement, nous verrons comment déterminer la droite de régression, interpréter les différents paramètres du modèle et comment évaluer la qualité d'ajustement du modèle. Nous n'aborderons pas les hypothèses liées au modèle de régression linéaire des moindres carrés ordinaires (MCO), ni les conditions d'application. Ces éléments seront abordés en détail au chapitre \@ref(chapitre4) consacré à la régression linéaire multiple.
+
 #### Principe de base {#sect3141}
+
+
+::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+**Corrélation - relation linéaire et causalité**
+
+Si une variable *X* explique et prédit efficacement une variable *Y*, cela ne veut pas dire pour autant que *X* cause *Y*. Autrement dit, la corrélation, l'association entre deux variables ne signifient qu'il existe un lien de causalité entre elles.
+
+Premièrement, la variable explicative (*X*, indépendante) doit absolument précéder la variable à expliquer (*Y*, dépendante). Par exemple, l'âge (*X*) peut influencer le sentiment de sécurité (*Y*). Mais, le sentiment de sécurité ne peut en aucun cas influencer l'âge. Par conséquent, l'âge ne peut pas être la variable dépendante (à expliquer).
+
+Deuxièmement, bien qu'une variable puisse expliquer efficacement une autre variable, elle peut être un **facteur confondant**. Prenons deux exemples en médecine bien connus :
+
+* Avoir les doigts jaunes est associé au cancer du poumon. Bien entendu, les doigts jaunes ne causent pas le cancer : c'est un facteur confondant puisque fumer régulièrement augmente les risques du cancer du poumon et jaunit aussi les doigts.
+
+* Dans un article intitulé *Chocolate Consumption, Cognitive Function, and Nobel Laureates*, Messerli [-@Messerli] a trouvé une corrélation positive entre la consommation de chocolat par habitant et le nombre de prix Nobel pour dix millions d'habitants pour 23 pays. Ce résultat a d'ailleurs été rapporté par de nombreux médias ([Radio Canada](https://ici.radio-canada.ca/nouvelle/582457/chocolat-consommateurs-nobels), [La Presse]("https://www.lapresse.ca/vivre/sante/nutrition/201210/11/01-4582347-etude-plus-un-pays-mange-de-chocolat-plus-il-a-de-prix-nobel.php"), [Le Point](https://www.lepoint.fr/insolite/le-chocolat-dope-aussi-l-obtention-de-prix-nobel-12-10-2012-1516159_48.php), etc.), sans pour autant que Messerli [-@Messerli] et les journalistes concluent à un lien de causalité entre les deux variables. Tout chercheur sait que la consommation de chocolat ne permet pas d'obtenir des résultats intéressants et de publier dans de revues prestigieuses; c'est plutôt le café ! Plus sérieusement, il est probable que les pays les plus riches investissent davantage dans la recherche et obtiennent ainsi plus de prix Nobel. Dans les pays les plus riches, il est aussi probable que l'on consomme plus de chocolat, considéré comme un produit de luxe dans les pays les plus pauvres.
+
+Aussi, l'association entre deux variables peut être simplement le fruit du hasard. Si on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du *data mining*, le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Par exemple, que les personnes qui aiment le rouge préfèrent le chocolat noir et celles le bleu le chocolat au lait !
+
+Pour approfondir le sujet sur la confusion *corrélation-causalité*, vous consulter cette courte vidéo de vulgarisation ludique.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/A-_naeATJ6o" frameborder="0" allowfullscreen></iframe>
+
+:::
 
 #### Régression polynomiale {#sect3142}
 
