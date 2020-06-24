@@ -11,17 +11,17 @@ library(stargazer)
 dl <- c(1:30, 40, 50, 100, 250, 500) 
 # la fonction qchisq permet d'obtenir la valeur théorique en fonction 
 # d'une valeur de p et d'un nombre de degrés de liberté
-TableT <- cbind(dl,
+tableT <- cbind(dl,
                 p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
                 p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = FALSE),3),
                 p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = FALSE),3))
 # Impression du tableau avec la library stargazer
-stargazer(TableT, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 3,
+stargazer(tableT, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 3,
           title="Distribution des valeurs critiques du Khi2")
 ```
 
 
-```{r tableCrtiqueT, echo=FALSE, message=FALSE, warning=FALSE}
+```{r tableCritiqueT, echo=FALSE, message=FALSE, warning=FALSE}
 dl <- c(1:30, 40, 50, 100, 250, 500)
 TableT <- cbind(dl,
                 p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
@@ -30,6 +30,52 @@ TableT <- cbind(dl,
 
 knitr::kable(
   head(TableT, n=nrow(TableT)), booktabs = TRUE,
+  col.names=c("dl", "p=0,05", "p=0,01", "p=0,001"),
   caption = 'Distribution des valeurs critiques du khi2'
   )
+```
+
+## Tableau des valeurs critiques de F {#annexe2}
+
+La courte syntaxe ![](Images/Rlogo.png) ci-dessous permet de générer un tableau avec les valeurs critiques de F avec _p_=0,05.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
+dl1 <- c(1:10, 15, 20, 25, 30, 50, 100, 500)
+dl2 <- c(1:30, 40, 50, 100)
+matrice <- matrix(ncol=length(dl1), nrow=length(dl2), byrow = TRUE)
+for(r in 1:length(dl1)){
+  for(c in 1:length(dl2)){
+    matrice[c,r] <- round(qf(p=0.05, dl1[r], dl2[c], lower.tail = FALSE),2)
+  }
+}
+
+tableF_p0.05 <- as.data.frame(matrice, row.names = paste0("dl2=",dl2, sep=""))
+colnames(tableF_p0.05) <- paste0("dl1=",dl1, sep="")
+
+knitr::kable(
+  head(tableF_p0.05, n=nrow(tableF_p0.05)), booktabs = TRUE,
+  row.names = TRUE,
+  caption = 'Distribution des valeurs critiques de F avec p=0,05'
+)
+```
+
+
+```{r tableCritiqueF, echo=FALSE, message=FALSE, warning=FALSE}
+dl1 <- c(1:10, 15, 20, 25, 30, 50, 100, 500)
+dl2 <- c(1:30, 40, 50, 100)
+matrice <- matrix(ncol=length(dl1), nrow=length(dl2), byrow = TRUE)
+for(r in 1:length(dl1)){
+  for(c in 1:length(dl2)){
+    matrice[c,r] <- round(qf(p=0.05, dl1[r], dl2[c], lower.tail = FALSE),2)
+  }
+}
+
+tableF_p0.05 <- as.data.frame(matrice, row.names = paste0("dl2=",dl2, sep=""))
+colnames(tableF_p0.05) <- paste0("dl1=",dl1, sep="")
+
+knitr::kable(
+  head(tableF_p0.05, n=nrow(tableF_p0.05)), booktabs = TRUE,
+  row.names = TRUE,
+  caption = 'Distribution des valeurs critiques de F avec p=0,05'
+)
 ```

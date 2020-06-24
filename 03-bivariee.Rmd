@@ -60,7 +60,7 @@ cov(x,y) = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{n-1} = \frac{covar
 (\#eq:cov)
 \end{equation} 
 
-avec $n$ étant le nombre d’observations; $\bar{x}$ et $\bar{y}$ étant les moyennes respectives des variables *X* et *Y*.
+avec $n$ étant le nombre d’observations; $\bar{x}$ et $\bar{y}$ (prononcez x et y barre) étant les moyennes respectives des variables *X* et *Y*.
 
 #### Interprétation {#sect3122} 
 
@@ -202,12 +202,13 @@ Concrètement, le signe du coefficient de corrélation indique si la relation es
 
 ```{r tableIntervallesCorrelation, echo=FALSE, message=FALSE, warning=FALSE}
 df <- data.frame(
-        Corrélation = c("Faible","Moyenne", "Forte"), 
-        Négative = c("de −0,3 à 0,0","de −0,5 à −0,3", "de −1,0 à −0,5"), 
+        Correlation = c("Faible","Moyenne", "Forte"), 
+        Negative = c("de −0,3 à 0,0","de −0,5 à −0,3", "de −1,0 à −0,5"), 
         Positive = c("de 0,0 à 0,3","de 0,3 à 0,5", "de 0,5 à 1,0"))
 
 knitr::kable(
   head(df, 3), booktabs = TRUE,
+  col.names = c("Corrélation","Négative","Positive"),
   caption = 'Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales'
 )
 ```
@@ -285,7 +286,7 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 
 #### Autres coefficients de corrélation (coefficients de Spearman et Tau de kendall) {#sect3133} 
 
-Lorsque les variables sont fortement anormalement distribuées, il est conseillé d'utiliser deux statistiques non-paramétriques : principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le coefficient de Kendall (Tau, $\tau$) qui varient aussi tous deux de −1 à 1. 
+Lorsque les variables sont fortement anormalement distribuées, il est conseillé d'utiliser deux statistiques non-paramétriques : principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le coefficient de Kendall ($\tau$, prononcez Tau) qui varient aussi tous deux de −1 à 1. 
 Calculé sur les rangs des deux variables, **le coefficient de Spearman** est le rapport entre la covariance des deux variables de rangs sur les écart-types des variables de rangs. En d'autres termes, il représente simplement le coefficient de Pearson calculé sur les rangs des deux variables :
 
 \begin{equation} 
@@ -635,32 +636,30 @@ Pour approfondir le sujet sur la confusion entre *corrélation, régression simp
 #### Principe de base {#sect3141}
 La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
 \begin{equation} 
-Y_{i} = \beta_{0} + \beta_{1}X_{i}
+\widehat{y_i} = \beta_{0} + \beta_{1}x_{i}
 (\#eq:regsimple)
 \end{equation}
 
-avec $Y_{i}$ et $X_{i}$ sont respectivement les valeurs des variables indépendante et dépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais), soit la valeur de variable $Y$ quand $X$ est égal à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative, et proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
+avec $\widehat{y_i}$ et $x_{i}$ sont respectivement la valeur prédite de la variable indépendante et la valeur de la variable dépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais), soit la valeur de variable $Y$ quand $X$ est égal à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative, et proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
 
-Considérons un exemple fictif de dix municipalités d'une région métropolitaine donnée pour lesquelles nous disposons de deux variables : le pourcentage d'actifs occupés se rendant au travail principalement à vélo au travail et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
+Considérons un exemple fictif de dix municipalités d'une région métropolitaine donnée pour lesquelles nous disposons de deux variables : le pourcentage d'actifs occupés se rendant au travail principalement à vélo et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
 
 
 ```{r regfictives, echo=FALSE, message=FALSE, warning=FALSE, out.width='85%'}
 df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
-names(df)[1] <- "Municipalité"
-names(df)[2] <- "Vélo"
-
 df1 <- df[1:5,]
 df2 <- df[6:10,]
 
-knitr::kable(
-   list(df1, df2),
+knitr::kable(list(df1, df2),
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+   col.names = c("Municipalité","Vélo","KMCV"),
    caption = "Données fictives sur l'utilisation du vélo par municipalité",
    booktabs = TRUE, valign = 't', row.names = FALSE)
 ```
 
-D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relative linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient corrélation (*r* = −0,86). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit : **Velo = 30,603 - 1,448 x KmCV**.
+D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relative linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient corrélation (*r* = −0,86). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit alors : **Velo = 30,603 - 1,448 x KmCV**.
 
-La valeur du coefficient de régression ($\beta_{1}$) est de −1,448. Le signe de ce coefficient traduit ainsi une relation négative entre les deux variables. Ainsi, à chaque ajout d'une unité de la distance au centre-ville, le pourcentage de cyclistes diminue de −1,448. Par conséquent, si la distance au centre-ville n'était pas exprimée en kilomètre, mais plutôt en mètres, $\beta_1$ sera égal à −1448.
+La valeur du coefficient de régression ($\beta_{1}$) est de −1,448. Le signe de ce coefficient traduit une relation négative entre les deux variables. Ainsi, à chaque ajout d'une unité de la distance au centre-ville, le pourcentage de cyclistes diminue de −1,448. Retenez que l'unité de mesure de la variable dépendante est très importante pour bien interpréter le coefficient de régression. En effet, si la distance au centre-ville n'était pas exprimée en kilomètres, mais plutôt en mètres, $\beta_1$ sera égal à −1448.
 
 Avec, cette équation de régression, il est possible de prédire le pourcentage de cyclistes pour n'importe quelle municipalité de la région métropolitaine. Par exemple, pour des distances de 5, 10 ou 20 kilomètres, les pourcentage de cyclistes seraient de :
 
@@ -668,16 +667,16 @@ Avec, cette équation de régression, il est possible de prédire le pourcentage
 * $\widehat{y_i} = 21.873 + (1.448 \times 10km) = 8.883$
 * $\widehat{y_i} = 21.873 + (1.448 \times 20km) = 1.643$
 
-```{r figreg, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Relation linéaire entre l'utilisation du vélo et la distance au centre-ville", out.width='75%'}
+```{r figreg, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Relation linéaire entre l'utilisation du vélo et la distance au centre-ville", out.width='65%'}
 library(ggplot2)
-modele <- lm(Vélo~KmCV, df)
+modele <- lm(Velo~KmCV, df)
 b0 <- round(modele$coefficients[1],3)
 b1 <- round(modele$coefficients[2],3)
 eq <- paste0("Velo = ", b0, " ", b1, " x KmCV")
 r2 <- round(summary(modele)$r.squared,3)
-pearson <- round(cor(df$Vélo, df$KmCV),3)
+pearson <- round(cor(df$Velo, df$KmCV),3)
 
-ggplot(df, aes(x=KmCV, y=Vélo)) +
+ggplot(df, aes(x=KmCV, y=Velo)) +
   stat_smooth(method="lm", se=FALSE, col="red")+
   labs(title= eq,
      subtitle = paste0("r2 = ", r2, ", r =", pearson), sep="")+
@@ -688,13 +687,14 @@ ggplot(df, aes(x=KmCV, y=Vélo)) +
 
 
 #### Formulation de la droite de régression des moindres carrés ordinaires {#sect3142}
-Reste à savoir comment sont estimées les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre la valeur observée et la valeur prédite, dénommée résidu ($\epsilon_i$). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Cela signifie que plus cet écart,c'est-à-dire le résidu $\epsilon_i$, est important, plus l'observation s'éloigne de la prédiction du modèle. Au tableau \@ref(tab:regfictives2), vous constatez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires vise alors à minimiser les écarts au carrés entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$).
+Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre le valeur observée et la valeur prédite, dénommée résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Cela signifie que plus cet écart,c'est-à-dire le résidu $\epsilon_i$, est important, plus l'observation s'éloigne de la prédiction du modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires vise alors à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
 
 \begin{equation} 
 min\sum_{i=1}^n{(y_i-(\beta_0+\beta_1 x_i))^2}
 (\#eq:mco)
 \end{equation}
 
+Pour minimiser ces écarts, le coefficient de régression $\beta_1$ est alors le rapport entre covariance entre *X* et *Y* et la variance de *Y* (équation \@ref(eq:b1)) tandis que la constante $\beta_0$ est la moyenne de la variable *Y* moins le produit de la moyenne et *X* et son coefficient de régression (équation \@ref(eq:b0)).
 
 \begin{equation} 
 \beta_1 = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2} = \frac{cov(X,Y)}{var(X)}
@@ -702,18 +702,17 @@ min\sum_{i=1}^n{(y_i-(\beta_0+\beta_1 x_i))^2}
 \end{equation}
 
 \begin{equation} 
-\beta_0 = \widehat{Y}-\beta_0 \widehat{X}
+\beta_0 = \widehat{Y}-\beta_1 \widehat{X}
 (\#eq:b0)
 \end{equation}
 
 
-```{r figreg2, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Droite de régression, valeurs observées, prédites et résidus", out.width='85%'}
+```{r figreg2, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Droite de régression, valeurs observées, prédites et résidus", out.width='65%'}
 df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
 modele <- lm(Velo~KmCV, df)
 df$ypredit <- round(modele$fitted.values,3)
 df$residus <- round(residuals(modele),3)
 df$sqrtRes <- round(residuals(modele),3)^2
-df
 
 b0 <- round(modele$coefficients[1],3)
 b1 <- round(modele$coefficients[2],3)
@@ -782,21 +781,176 @@ df[11,6] <- sqrtres
 df1 <- rbind(df[1:5,],df[11,])
 df2 <- rbind(df[6:10,],df[11,])
 
-# knitr::kable(
-#   list(df1, df2),
-#   caption = "Valeurs observées, prédites et résidus",
-#   booktabs = TRUE, valign = 't', row.names = FALSE)
-
+opts <- options(knitr.kable.NA = "--")
 knitr::kable(
   head(df, nrow(df)), booktabs = TRUE, valign = 't', row.names = FALSE,
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Municipalité","Vélo","KMCV","Valeur prédite","Résidu", "Résidu au carré"),
   caption = "Valeurs observées, prédites et résidus")
 
 ``` 
 
+#### Mesurer la qualité d'ajustement du modèle {#sect3143}
+Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (en anglais, *root-mean-square error*, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
 
-#### Régression polynomiale {#sect3143}
+\begin{equation} 
+y_i = \beta_0 + \beta_1 x_1+ \epsilon_i \Rightarrow Y= \beta_0 + \beta_1 X + \epsilon
+(\#eq:reg2)
+\end{equation}
 
-#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3144}
+et qu'elle comprend ainsi une partie de *Y* qui est expliquée par le modèle et une autre partie non expliquée ($\epsilon$ appelé généralement le terme d'erreur). Ce terme d'erreur pourrait représenter d'autres variables explicatives qui n'ont pas été prises en compte pour prédire la variable indépendante. 
+
+
+\begin{equation} 
+Y  = \underbrace{\beta_0 + \beta_1 X}_{\mbox{partie expliquée par le modèle}}+ \underbrace{\epsilon}_{\mbox{partie non expliquée}}
+(\#eq:reg3)
+\end{equation}
+
+Par exemple, pour la municipalité *A* au tableau \@ref(tab:regfictives2),on a : $y_A = \widehat{y}_A - \epsilon_A \Rightarrow 12.5 = 10.138+2.362$. Souvenez-vous que la variance d'une variable est la somme des écarts à la moyenne, divisée par le nombre d'observations. Par extension, il est alors possible de décomposer la variance de *Y* comme suit :
+
+\begin{equation} 
+\underbrace{\sum_{i=1}^n (y_{i}-\bar{y})^2}_{\mbox{variance de Y}} = \underbrace{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}_{\mbox{var. expliquée}} + \underbrace{\sum_{i=1}^n (y_{i}-\widehat{y})^2}_{\mbox{var. non expliquée}} \Rightarrow 
+SCT = SCE + SCR
+(\#eq:reg4)
+\end{equation}
+
+avec :
+
+* *SCT* est la somme des écarts au carré des valeurs observées à la moyenne (en anglais, _total sum of squares_)
+* *SCE* est la somme des écarts au carré des valeurs prédites à la moyenne (en anglais, _regression sum of squares_)
+* *SCR* est la somme des carrés des résidus (en anglais, _sum of squared errors_).
+
+Autrement dit, la variance totale est donc égale à la variance expliquée plus la variance non expliquée. Au tableau \@ref(tab:computeR), vous pouvez repérer les valeurs de *SCT*, *SCE* et *SCR* et constater que 279,30 = 227,04 + 52,26 ou 27,93 = 22,70 + 5,23.
+
+```{r computeR, echo=FALSE, message=FALSE, warning=FALSE, out.width='85%'}
+df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
+modele <- lm(Velo~KmCV, df)
+
+df$yi <- df$Velo
+df$ypredit <- modele$fitted.values
+df$ei <- modele$residuals
+df$Velo <- NULL
+df$KmCV <- NULL
+
+n <- nrow(df)
+moy_y <- mean(df$yi)
+sumy <- sum(df$yi)
+
+df$yi_ymean2 <- (df$yi - moy_y)^2
+df$ypredit_ymean2 <- (df$ypredit - moy_y)^2
+df$ei2 <- (df$ei)^2
+
+df[11,1] <- "N"
+df[11,2] <- n
+df[12,1] <- "Somme"
+df[13,1] <- "Moyenne"
+
+for (i in c(2,4:7))
+{
+  df[12,i] <- sum(df[1:10,i])
+  df[13,i] <- mean(df[1:10,i])
+  df[i] <- round(df[i], 2)
+}
+df[3] <- round(df[3], 2)
+
+colnames(df) <- c("Municipalité", "$y_i$", "$\\widehat{y}_i$", "$\\epsilon_i$","$(y_i-\\bar{y})^2$","$(\\widehat{y}_i-y_i)^2$", "$\\epsilon_i^2$")
+
+opts <- options(knitr.kable.NA = "--")
+knitr::kable(head(df, nrow(df)),
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+   caption = "Calcul du coefficient de détermination",
+   booktabs = TRUE, valign = 't', row.names = FALSE)
+```
+
+
+**Calcul de l'erreur quadratique moyenne**
+
+La somme des résidus au carré (*SCR*) divisée par le nombre d'observations représente donc le carré moyen des erreurs (en anglais, *mean square error - MSE*), soit la variance résiduelle du modèle ($52,26 / 10 = 5,23$). Plus sa valeur sera faible, plus le modèle sera efficace pour prédire la variable indépendante. L'erreur quadratique moyenne (en anglais, *root-mean-square error - RMSE*) est simplement la racine carrée de la somme des résidus au carré divisé par le nombre d'observation ($n$):
+
+\begin{equation} 
+\frac{\sqrt{\sum_{i=1}^n (y_{i}-\widehat{y})^2}}{n}
+(\#eq:reg5)
+\end{equation}
+
+Elle représente ainsi une **mesure absolue des erreurs** qui est exprimée dans l'unité de mesure de la variable dépendante. Dans le cas présent $\sqrt{5,23}=2,29$. Cela signifie qu'en moyenne, l'écart absolu entre les valeurs observées et prédits est de 2,29 points de pourcentage. De nouveau, une plus faible valeur de **RMSE** indique un meilleur ajustement du modèle et surtout avec quelle précision le modèle est capable de prédire la variable dépendante. Il est donc particulièrement important si l'objectif du modèle est de prédire des valeurs sur un échantillon d'observations pour lequel la variable dépendante est inconnue.
+
+**Calcul du coefficient de détermination**
+
+Nous avons largement démontré la variance totale est égale à la variance expliquée plus la variance non expliquée. La qualité du modèle peut donc être évaluée avec le coefficient de détermination ($R^2$), soit le rapport entre les variances expliquée et totale : 
+
+\begin{equation} 
+R^2 = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
+(\#eq:reg6)
+\end{equation}
+
+Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une mesure relative qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, sa valeur est élevée, plus *X* influence *Y*. Tel que signalé dans la section \@ref(sect3132), la racine carrée de coefficient de déterminée ($r^2$) est égale au coefficient de corrélation ($r$) entre les deux variables.
+
+**Calcul de la statistique F de Fisher**
+
+La statistique _F_ de Fisher permet de vérifier la significativité globale du modèle; autrement dit, de vérifier si le coefficient de détermination obtenu est fiable ($R^2$) :
+
+\begin{equation} 
+F = (n-2)\frac{R^2}{1-R^2} = (n-2)\frac{SCE}{SCR}
+(\#eq:reg7)
+\end{equation}
+
+L'hypothèse nulle (h<sub>0</sub> avec $\beta_1=0$, soit $R^2=0$) est rejetée si la valeur calculée de *F* est supérieure à la valeur critique de la table *F* avec (1, n-2) degrés de liberté et un seuil $\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de F, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `pf(f calculé, 1, n-2, lower.tail = FALSE)` l'on obtient directement la valeur de *p* associée à la valeur de *F*. Concrètement, si le test F est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus le modèle sera efficace (et plus le $R^2$ sera aussi élevé).
+
+#### Régression polynomiale {#sect3144}
+
+#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3145}
+Comment calculer une régression linéaire simple dans ![](images/Rlogo.png)? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
+## Création d'un objet pour le modèle
+monmodele <- lm(Velo ~ KmCV, df)
+## Sorties du modèle avec la fonction summary
+summary(monmodele)
+## Calcul du MSE et du RMSE
+MSE <- mean(monmodele$residuals^2)
+RMSE <- sqrt(MSE)
+cat("MSE=", round(MSE, 2), "; RMSE=", round(RMSE,2), sep="")
+```
+
+Pour mettre en oeuvre des régressions polynomiales, on utilisera la fonction `poly(x = variable indépendante, degree = nombre de degrés pour la polynomiale)`.
+
+```{r regpoly, echo=TRUE, message=FALSE, warning=FALSE, out.width='85%', fig.cap="Exemple de régression polynomiale (ordre 1 à 4)",}
+library(ggplot2)
+library(ggpubr)
+
+df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+df <- subset(df, Hab1000Km2< 20) 
+
+# Avec poly(x =, degree =)
+# le paramètre degree permet ainsi fixer l'ordre de la polynomiale
+summary(lm(Locataire ~ Hab1000Km2, df))
+summary(lm(Locataire ~ poly(Hab1000Km2,2), df))
+summary(lm(Locataire ~ poly(Hab1000Km2,3), df))
+summary(lm(Locataire ~ poly(Hab1000Km2,4), df))
+
+plot1 <- ggplot(df, aes(x = Hab1000Km2, y = Locataire)) +
+         geom_point() + 
+         stat_smooth(method = "lm", formula = y ~ x, size = 1)
+
+plot2 <- ggplot(df, aes(x = Hab1000Km2, y = Locataire)) + 
+         geom_point() + 
+         stat_smooth(method = "lm", formula = y ~ poly(x, 2), size = 1)
+
+plot3 <- ggplot(df, aes(x = Hab1000Km2, y = Locataire)) + 
+          geom_point() + 
+          stat_smooth(method = "lm", formula = y ~ poly(x, 3), size = 1)
+
+plot4 <- ggplot(df, aes(x = Hab1000Km2, y = Locataire)) + 
+  geom_point() + 
+  stat_smooth(method = "lm", formula = y ~ poly(x, 4), size = 1)
+
+
+ggarrange(plot1, plot2, plot3, plot4, ncol=2, nrow=2)
+```
+
+
+#### Comment rapporter une régression linéaire simple {#sect3146}
 
 
 ## Relation entre deux variables qualitatives {#sect32}
@@ -810,6 +964,8 @@ Comparativement aux deux autres groupes, on pourrait supposer que les jeunes se 
 
 Pour vérifier l'existence d'associations significatives entre les modalités de deux variables qualitatives, il faut construire un **tableau de contingence**\index{tableau de contingence} (section \@ref(sect321)), puis réaliser le **test du khi^2^**\index{khi2} (section \@ref(sect322)).
 :::
+
+Comment calculer une régression linéaire simple dans ![](images/Rlogo.png)? Rien de plus simple avec la fonction `lm(y~x, dataframe)`.
 
 
 ### Construction de tableau de contigence {#sect321}
