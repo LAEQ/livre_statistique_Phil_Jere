@@ -746,9 +746,9 @@ La régression linéaire simple vise à déterminer une droite (une fonction lin
 (\#eq:regsimple)
 \end{equation}
 
-avec $\widehat{y_i}$ et $x_{i}$ sont respectivement la valeur prédite de la variable indépendante et la valeur de la variable dépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais), soit la valeur de variable $Y$ quand $X$ est égal à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative, et proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée (plus la pente est forte), plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
+avec $\widehat{y_i}$ et $x_{i}$ sont respectivement la valeur prédite de la variable indépendante <span class="revision_prop">(≠ de la vraie valeur de *Y*)</span> et la valeur de la variable dépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais), soit la valeur prédite de variable $Y$ quand $X$ est égal à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative, et proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la pente est forte, et plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
 
-Considérons un exemple fictif de dix municipalités d'une région métropolitaine donnée pour lesquelles nous disposons de deux variables : le pourcentage d'actifs occupés se rendant au travail principalement à vélo et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
+Considérons un exemple fictif de dix municipalités d'une région métropolitaine pour lesquelles nous disposons de deux variables : le pourcentage d'actifs occupés se rendant au travail principalement à vélo et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
 
 
 ```{r regfictives, echo=FALSE, message=FALSE, warning=FALSE, out.width='85%'}
@@ -763,9 +763,9 @@ knitr::kable(list(df1, df2),
    booktabs = TRUE, valign = 't', row.names = FALSE)
 ```
 
-D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relative linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient de corrélation (*r* = −0,86). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit alors : **Velo = 30,603 − 1,448 x KmCV**.
+D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relation linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient de corrélation (*r* = −0,86). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit alors : **Velo = 30,603 − 1,448 x KmCV**.
 
-La valeur du coefficient de régression ($\beta_{1}$) est de −1,448. Le signe de ce coefficient traduit une relation négative entre les deux variables. Ainsi, à chaque ajout d'une unité de la distance au centre-ville (exprimée en kilomètres), le pourcentage de cyclistes diminue de −1,448. Retenez que l'unité de mesure de la variable dépendante est très importante pour bien interpréter le coefficient de régression. En effet, si la distance au centre-ville n'était pas exprimée en kilomètres, mais plutôt en mètres, $\beta_1$ sera égal à −1448. Dans la même, l'ajout de 10 km de distance entre une municipalité et le centre-ville fait diminuer le pourcentage de cyclistes de −14,48 points de pourcentage.
+La valeur du coefficient de régression ($\beta_{1}$) est de −1,448. Le signe de ce coefficient décrit une relation négative entre les deux variables. Ainsi, à chaque ajout d'une unité de la distance au centre-ville (exprimée en kilomètres), le pourcentage de cyclistes diminue de 1,448. Retenez que l'unité de mesure de la variable dépendante est très importante pour bien interpréter le coefficient de régression. En effet, si la distance au centre-ville n'était pas exprimée en kilomètres, mais plutôt en mètres, $\beta_1$ sera égal à <span class="revision_rem">−1448</span><span class="revision_prop">0.001448</span>. Dans la même optique, l'ajout de 10 km de distance entre une municipalité et le centre-ville fait diminuer le pourcentage de cyclistes de −14,48 points de pourcentage.
 
 Avec, cette équation de régression, il est possible de prédire le pourcentage de cyclistes pour n'importe quelle municipalité de la région métropolitaine. Par exemple, pour des distances de 5, 10 ou 20 kilomètres, les pourcentages de cyclistes seraient de :
 
@@ -793,7 +793,7 @@ ggplot(df, aes(x=KmCV, y=Velo)) +
 
 
 #### Formulation de la droite de régression des moindres carrés ordinaires {#sect3142}
-Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre le valeur observée et la valeur prédite, dénommée résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Cela signifie que plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise alors à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
+Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre le valeur observée et la valeur prédite, dénommée résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle <span clas="revision_prop"> et par extension moins bon est le modèle</span>. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
 
 \begin{equation} 
 min\sum_{i=1}^n{(y_i-(\beta_0+\beta_1 x_i))^2}
@@ -898,12 +898,14 @@ knitr::kable(
 #### Mesurer la qualité d'ajustement du modèle {#sect3143}
 Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (en anglais, *root-mean-square error*, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
 
+<span class="revision_prop">Pourquoi deux fois la même équation ?</span>
+
 \begin{equation} 
 y_i = \beta_0 + \beta_1 x_1+ \epsilon_i \Rightarrow Y= \beta_0 + \beta_1 X + \epsilon
 (\#eq:reg2)
 \end{equation}
 
-Elle comprend ainsi une partie de *Y* qui est expliquée par le modèle et une autre partie non expliquée ($\epsilon$ appelé habituellement le terme d'erreur). Ce terme d'erreur pourrait représenter d'autres variables explicatives qui n'ont pas été prises en compte pour prédire la variable indépendante. 
+Elle comprend ainsi une partie de *Y* qui est expliquée par le modèle et une autre partie non expliquée : $\epsilon$ appelé habituellement le terme d'erreur. Ce terme d'erreur pourrait représenter d'autres variables explicatives qui n'ont pas été prises en compte pour prédire la variable indépendante, <span class="revision_prop">ou une forme de variation aléatoire inexplicable présente lors de la mesure.</span>
 
 
 \begin{equation} 
@@ -911,7 +913,7 @@ Y  = \underbrace{\beta_0 + \beta_1 X}_{\mbox{partie expliquée par le modèle}}+
 (\#eq:reg3)
 \end{equation}
 
-Par exemple, pour la municipalité *A* au tableau \@ref(tab:regfictives2),on a : $y_A = \widehat{y}_A - \epsilon_A \Rightarrow 12.5 = 10.138+2.362$. Souvenez-vous que la variance d'une variable est la somme des écarts à la moyenne, divisée par le nombre d'observations. Par extension, il est alors possible de décomposer la variance de *Y* comme suit :
+Par exemple, pour la municipalité *A* au tableau \@ref(tab:regfictives2),nous avons : $y_A = \widehat{y}_A - \epsilon_A \Rightarrow 12.5 = 10.138+2.362$. Souvenez-vous que la variance d'une variable est la somme des écarts à la moyenne, divisée par le nombre d'observations. Par extension, il est alors possible de décomposer la variance de *Y* comme suit :
 
 \begin{equation} 
 \underbrace{\sum_{i=1}^n (y_{i}-\bar{y})^2}_{\mbox{variance de Y}} = \underbrace{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}_{\mbox{var. expliquée}} + \underbrace{\sum_{i=1}^n (y_{i}-\widehat{y})^2}_{\mbox{var. non expliquée}} \Rightarrow 
@@ -925,26 +927,27 @@ avec :
 * *SCE* est la somme des écarts au carré des valeurs prédites à la moyenne (en anglais, _regression sum of squares_)
 * *SCR* est la somme des carrés des résidus (en anglais, _sum of squared errors_).
 
-Autrement dit, la variance totale est donc égale à la variance expliquée plus la variance non expliquée. Au tableau \@ref(tab:computeR), vous pouvez repérer les valeurs de *SCT*, *SCE* et *SCR* et constater que 279,30 = 227,04 + 52,26 et 27,93 = 22,70 + 5,23.
+Autrement dit, la variance totale est égale à la variance expliquée plus la variance non expliquée. Au tableau \@ref(tab:computeR), vous pouvez repérer les valeurs de *SCT*, *SCE* et *SCR* et constater que 279,30 = 227,04 + 52,26 et 27,93 = 22,70 + 5,23.
 
 ```{r computeR, echo=FALSE, message=FALSE, warning=FALSE, out.width='85%'}
-df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
-modele <- lm(Velo~KmCV, df)
+data <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
+modele <- lm(Velo~KmCV, data)
 
-df$yi <- df$Velo
-df$ypredit <- modele$fitted.values
-df$ei <- modele$residuals
-df$Velo <- NULL
-df$KmCV <- NULL
+data$yi <- data$Velo
+data$ypredit <- modele$fitted.values
+data$ei <- modele$residuals
+data$Velo <- NULL
+data$KmCV <- NULL
 
-n <- nrow(df)
-moy_y <- mean(df$yi)
-sumy <- sum(df$yi)
+n <- nrow(data)
+moy_y <- mean(data$yi)
+sumy <- sum(data$yi)
 
-df$yi_ymean2 <- (df$yi - moy_y)^2
-df$ypredit_ymean2 <- (df$ypredit - moy_y)^2
-df$ei2 <- (df$ei)^2
+data$yi_ymean2 <- (data$yi - moy_y)^2
+data$ypredit_ymean2 <- (data$ypredit - moy_y)^2
+data$ei2 <- (data$ei)^2
 
+df <- data
 df[11,1] <- "N"
 df[11,2] <- n
 df[12,1] <- "Somme"
@@ -988,20 +991,48 @@ R^2 = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
 (\#eq:reg6)
 \end{equation}
 
-Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence *Y*. Dans le cas présent, on a : $R^2 = 227.04 / 279.3 = 0.8129$, ce qui signale que 81,3% de la variance du pourcentage de cyclistes est expliquée par la distance au centre-ville. Tel que signalé dans la section \@ref(sect3132), la racine carrée de coefficient de déterminée ($R^2$) est égale au coefficient de corrélation ($r$) entre les deux variables. 
+Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* <span class="revision_rem">influence</span><span class="revision_prop">est capable de prédire</span> *Y*. Dans le cas présent, on a : $R^2 = 227.04 / 279.3 = 0.8129$, ce qui signale que 81,3% de la variance du pourcentage de cyclistes est expliquée par la distance au centre-ville. Tel que signalé dans la section \@ref(sect3132), la racine carrée de coefficient de déterminée ($R^2$) est égale au coefficient de corrélation ($r$) entre les deux variables. 
 
 **Calcul de la statistique F de Fisher**
 
-La statistique _F_ de Fisher permet de vérifier la significativité globale du modèle; autrement dit, de vérifier si le coefficient de détermination obtenu est fiable ($R^2$) :
+La statistique _F_ de Fisher permet de vérifier la significativité globale du modèle; autrement dit, de vérifier si <span class="revision_prop">le modèle de régression parvient à expliquer une plus grande part de la variance de *Y* qu'un modèle qui se limiterait à prédire *Y* avec sa simple moyenne.</span><span class="revision_rem">le coefficient de détermination obtenu est fiable ($R^2$)</span> :
 
 \begin{equation} 
 F = (n-2)\frac{R^2}{1-R^2} = (n-2)\frac{SCE}{SCR}
 (\#eq:reg7)
 \end{equation}
+<span class="revision_prop">Il faudrait qu'on check ensemble pour l'interprétation du Test de Fisher. Il ne me semble pas que ce soit relié au R2 : https://en.wikipedia.org/wiki/F-test</span>
 
-L'hypothèse nulle (h<sub>0</sub> avec $\beta_1=0$, soit $R^2=0$) est rejetée si la valeur calculée de *F* est supérieure à la valeur critique de la table *F* avec *(1, n-2)* degrés de liberté et un seuil $\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de F, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `pf(f obtenu, 1, n-2, lower.tail = FALSE)` l'on obtient directement la valeur de *p* associée à la valeur de *F*. Concrètement, si le test F est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus le modèle sera efficace (et plus le $R^2$ sera également élevé). 
+L'hypothèse nulle (h<sub>0</sub> avec $\beta_1=0$, soit $R^2=0$) est rejetée si la valeur calculée de *F* est supérieure à la valeur critique de la table *F* avec *(1, n-2)* degrés de liberté et un seuil $\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de F, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `pf(f obtenu, 1, n-2, lower.tail = FALSE)` l'on obtient directement la valeur de *p* associée à la valeur de *F*. Concrètement, si le test F est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus le modèle sera efficace (et plus le $R^2$ sera également élevé).
 
-Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}{52.26} = 34.75$ avec un valeur de $p < 0.001$. Par conséquent, le modèle est significatif.
+<span class="revision_prop">En d'autres termes, le test de Fisher nous permet de décider si l'équation
+$y_i = \beta_0 + \beta_1 x_1+ \epsilon_i$ (modèle complet) est significativement mieux ajustée aux données que l'équation $y_i = \bar{y} + \epsilon_i$ (modèle restreint). Plus spécifiquement, ce test compare la différence des sommes des résidus au carré des deux modèle, divisée par le nombre de degré de liberté \@ref(eq:fisher)). Cette quantité est connue pour suivre une distribution de _F_, d'où l'appelation du test.</span>
+
+\begin{equation} 
+F = \frac{(\frac{RSS_{1} - RSS_{2}}{p_{2}-p_{1}})}{(\frac{RSS_{2}}{n-p_{2}})}
+(\#eq:fisher)
+\end{equation}
+<span class="revision_prop">
+Dans le cas présent, $F = \frac{(\frac{279.305 - 52.263}{2-1})}{(\frac{52.263}{10-2})}  = 34.75$ avec une valeur de $p < 0.001$. On peut donc affirmer que le modèle présenté est signifiactivement mieux ajusté que le modèle vide.
+
+Il est possible de retrouver ces résultats à la main, ou simplement d'utiliser la fonction *summary* pour extraire les résultats du modele
+</span>
+```{r fbyhand, echo=TRUE, message=FALSE, warning=FALSE, out.width='85%'}
+# calculer le test de F à la main
+rss2 <- sum(data$ei2)
+p2 <- 2 #seulement deux parametres pour le modele 2
+rss1 <- sum((mean(data$yi) - data$yi)**2)
+p1 <- 1 #seulement 1 parametre pour le modele 1
+n <- nrow(data)
+fval <- ((rss1 - rss2) / (p2-p1)) / ((rss2/(n-p2)))
+pval <- stats::pf(q = fval, df1 = 1, df2 = 8, lower.tail = FALSE) #obtention de la valeur de p
+cat("la valeur du F de Fisher est de ",fval," avec une p-value de ",round(pval,6),"\n")
+# utiliser la fonction summary
+summary(modele)
+
+```
+<span class="revision_rem">
+Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}{52.26} = 34.75$ avec un valeur de $p < 0.001$. Par conséquent, le modèle est significatif.</span>
 
 #### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3144}
 Comment calculer une régression linéaire simple dans ![](images/Rlogo.png)? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
@@ -1020,36 +1051,34 @@ cat("MSE=", round(MSE, 2), "; RMSE=", round(RMSE,2), sep="")
 
 #### Comment rapporter une régression linéaire simple {#sect3145}
 
-Nous avons caculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance au centre-ville (en kilomètre). Le modèle de régression s'est avéré significatif (*F*(1,8)= 34,75, *p* < 0,001) avec un $R^2$ de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante : 30,603 - 1,448 x (distance au centre-ville en km).
+Nous avons caculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance au centre-ville (en kilomètre). <span class="revision_rem">Le modèle de régression s'est avéré significatif (*F*(1,8)= 34,75, *p* < 0,001) avec</span><span class="revision_prop">Le modèle obtient un *F* de Fisher significatif (*F*(1,8)= 34,75, *p* < 0,001) et </span>un $R^2$ de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante : 30,603 - 1,448 x (distance au centre-ville en km).
 
 ## Relation entre deux variables qualitatives {#sect32}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 **Deux variables qualitatives sont-elles associées entre elles?** Plus spécifiquement, certaines modalités d'une variable qualitative sont-elles associées significativement à certaines modalités d'une variable qualitative.
 
-Prenons l'exemple deux variables qualitative : l'une intitulée *groupe d'âge* comprenant trois modalités (15 à 29 ans, 30 à 44 ans, 45 à 64 ans); l'autre intitulée *mode de transport habituel pour se rendre au travail* comprenant quatre modalités (véhicule motorisé, transport en commun, vélo, marche). 
+Prenons l'exemple de deux variables qualitatives : l'une intitulée *groupe d'âge* comprenant trois modalités (15 à 29 ans, 30 à 44 ans, 45 à 64 ans); l'autre intitulée *mode de transport habituel pour se rendre au travail* comprenant quatre modalités (véhicule motorisé, transport en commun, vélo, marche). 
 
 Comparativement aux deux autres groupes, on pourrait supposer que les jeunes se déplacent proportionnellement plus en modes de transport actifs (vélo et marche) et en transports en commun. À l'inverse, il est possible que les 45 à 64 ans se déplacent majoritairement en véhicule motorisé.
 
-Pour vérifier l'existence d'associations significatives entre les modalités de deux variables qualitatives, il faut construire un **tableau de contingence**\index{tableau de contingence} (section \@ref(sect321)), puis réaliser le **test du khi^2^**\index{khi2} (section \@ref(sect322)).
+Pour vérifier l'existence d'associations significatives entre les modalités de deux variables qualitatives, il est possible de construire un **tableau de contingence**\index{tableau de contingence} (section \@ref(sect321)), puis de réaliser le **test du khi^2^**\index{khi2} (section \@ref(sect322)).
 :::
-
-Comment calculer une régression linéaire simple dans ![](images/Rlogo.png)? Rien de plus simple avec la fonction `lm(y~x, dataframe)`.
 
 
 ### Construction de tableau de contigence {#sect321}
 
 Les données du tableau de contigence ci-dessous décrivent 279 projets d'habitation à loyer modique (HLM) dans l'ancienne ville de Montréal, croisant les modalités de la période de construction (en colonnes) et de la taille (en ligne) des projets HLM [@TheseApparicio]. Les différents éléments du tableau sont décrits ci-dessous.
 
-* **Les fréquences observées**, nommées communément $f_{ij}$, correspondent aux observations appartenant à la fois à la *i^ème^* modalité de la variable en ligne et à la *j^ème^* modalité de la variable en colonne. À titre d’exemple, on compte 14 habitants HLM construits entre 1985 et 1989.
+* **Les fréquences observées**, nommées communément $f_{ij}$, correspondent aux observations appartenant à la fois à la *i^ème^* modalité de la variable en ligne et à la *j^ème^* modalité de la variable en colonne. À titre d’exemple, on compte 14 HLM construits entre 1985 et 1989 comprenant moins de 25 logements.
 
 * **Les marges** du tableau sont les totaux pour chaque modalité en ligne ($n_{i.}$) et en colonne ($n_{j.}$). En guise d’exemple, sur les 279 projets HLM, 53 comprennent de 25 à 49 logements et 56 ont été construits entre 1968 et 1974. Bien entenu, la somme des marges en ligne ($n_{i.}$) est égale au nombre total d'observations ($n_{ij}$), tout comme la somme de marges en colonne ($n_{.j}$).
 
-* **Trois pourcentages** sont disponibles (total, en ligne, en colonne). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}×100$), par la marge en ligne ($f_{ij}/n_{i.}×100$) et en colonne ($f_{ij}/n_{.j}100$). En guise d'exemple, 5% des 279 projets HLM ont été construits entre 1985 et 1989 et comprend moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
+* **Trois pourcentages** sont disponibles (total, en ligne, en colonne). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}×100$), par la marge en ligne ($f_{ij}/n_{i.}×100$) et en colonne ($f_{ij}/n_{.j}100$). En guise d'exemple, 5% des 279 projets HLM ont été construits entre 1985 et 1989 et comprennent moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
 
-* **Les fréquences théoriques**, représentent les valeurs que l'on devrait avoir s'il y a indépendance entre les modalités des deux variables. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalité *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06.
+* **Les fréquences théoriques**, représentent les valeurs que l'on devrait observer théoriquement s'il y avait indépendance entre les modalités des deux variables <span class="revision_prop"> : si les modalités des deux variables étaient associées au hasard</span>. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalité *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06. Nous observons ici que la valeur théorique (16,06) est bien supérieure à la valeur réelle (6). <span class="revision_prop">On observe donc moins de HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre de la part du hasard.</span>
 
-* **La déviation** est la différence est la fréquence observée et théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*.
+* **La déviation** est la différence est la fréquence observée et théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*. <span class="revision_prop">Dans le cas précédent, on observait moins de HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre de la part du hasard, soit une sous-représentation du phénomène.</span>
 
 
 * **La contribution au khi^2^** est égal à la déviation au carré divisée par la fréquence théorique ($\chi_{ij}^2 = (f_{ij}-ft_{ij})^2/ft_{ij}$). Plus sa valeur est forte, plus il y a association entre les deux modalités. La somme des contributions au khi^2^ représente le *khi^2^* totale pour l'ensemble du tableau de contigence (ici à 63,54) que nous abordons dans la section suivante.
@@ -1073,7 +1102,7 @@ CrossTable(TableauKhi2$Taille, TableauKhi2$Periode,
 ```
 
 ### Test du khi^2^ {#sect322}
-Avec le test du khi^2^, on postule qu'il y a indépendance entre les modalités des deux variables qualitatives, soit l'hypothèse nulle (h<sub>0</sub>). Puis, on cacule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contigence, nous avons 12 degrés de libertés : $(4-1)(5-1)=12$. Avec 12 degrés de liberté et une valeur de p=0,05, la valeur critique de khi^2^ est de 21,03 (voir le tableau des valeurs critiques du khi^2^, section \@ref(annexe1)). Puis que le khi^2^ calculé dans le tableau de contigence est bien supérieure (63,54), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. Autrement dit, il y a une association significative entre les deux variables quantitatives. Notez que cette hypothèse peut être aussi rejetée avec p=0,01 et p=0,001 puisque les valeurs critiques sont de 26,22 et 32,91.
+Avec le test du khi^2^, <span class="revision_rem">on postule qu'il y a</span><span class="revision_prop">On formule l'hypothèse nulle de l'</span>indépendance entre les modalités des deux variables qualitatives<span class="revision_rem">, soit l'hypothèse nulle </span>(h<sub>0</sub>). Puis, on cacule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contigence, nous avons 12 degrés de libertés : $(4-1)(5-1)=12$. <span class="revision_rem">Avec 12 degrés de liberté et une valeur de p=0,05</span><span class="revision_prop">À partir du nombre de degré de liberté et d'un seuil critique de significativité (prenons 5% ici), nous pouvons trouver</span> la valeur critique de khi^2^ <span class="revision_prop">dans le tableau des valeurs critiques du khi^2^ : 21,03</span><span class="revision_rem">est de 21,03 (voir le tableau des valeurs critiques du khi^2^,</span> section \@ref(annexe1)). Puisque le khi^2^ calculé dans le tableau de contigence est bien supérieure <span class="revision_prop"> à celle obtenue dans le tableau des valeurs critiques</span>(63,54), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. <span class="revision_rem">Autrement dit, il y a une association significative entre les deux variables quantitatives</span><span class="revision_prop">Autrement dit, si en réalité les deux variables n'étaient pas associées, nous aurions eu moins de 5% de chance de collecter des données avec ce niveau d'association, ce qui nous permet de rejeter l'hypothèse nulle (absence d'association). Notez que <span class="revision_rem">cette hypothèse peut être aussi rejetée avec p=0,01 et p=0,001</span> dans notre cas, le test reste significatif avec des seuils de 1% (p=0.01) et 0.1% (p=0.001) puisque les valeurs critiques sont de 26,22 et 32,91.
 
 Bien entendu, une fois que l'on connait le nombre de degrés de liberté, on peut directement calculer les valeurs critiques pour différents seuils de signification et éviter ainsi de recourir à la table ci-dessus. Dans la même veine, on peut aussi calculer la valeur de *p* d'un tableau de contigence en spécifiant le nombre de degrés de liberté et la valeur du khi^2^ observé.
 
@@ -1090,13 +1119,14 @@ cat("Valeurs de p du Khi observé (63.54291) avec 12 degrés de liberté :", "\n
 
 
 ::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
-Outre le khi^2^, d'autres mesures d'association permettent de mesure le degré d'association entre deuc variables qualitatives. Les plus courantes sont reportées au tableau ci-dessous. À des fins de comparaison, le khi^2^ décrit précédemment est aussi reporté sur la première ligne du tableau.
+Outre le khi^2^, d'autres mesures d'association permettent de mesure le degré d'association entre deux variables qualitatives. Les plus courantes sont reportées au tableau ci-dessous. À des fins de comparaison, le khi^2^ décrit précédemment est aussi reporté sur la première ligne du tableau.
 
 Statistique | Formule | Propriété et interprétation
 -------- | ------- | -----------------------------
 khi^2^  | $\chi^2 = \sum \frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$ | Mesure classique du Khi^2^ calculé à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible.
 Ratio de vraissemblance du  khi^2^ | $G^2 = 2 \sum f_{ij} \ln{(\frac{f_{ij}}{ft_{ij}})}$ | Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible.
 khi^2^ de Mantel-Haenszel | $Q_{MH}=(N−1)r^2$ | avec $r$ étant le coefficient de corrélation entre entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.
+Corrélation Polychoric | obtenue itérativement par maximum de vraissemblance | Dans le même esprit que le khi^2^ de Mantel-Haenszel, la corrélation Polychoric s'applique à deux variables ordinales. Plus spécifiquement, elle formule le postulat que deux variables théoriques normalement distribuées ont été mesurées de façon approximative avec deux échelles ordinales. Par exemple, en psychologie, le sentiment de bien être et le sentiment de sécurité peuvent être conceptualisés comme deux variables continues normalement distribuées. Cependant, les mesurer directement est très difficile, on a donc recours à des échelles de Likert allant de 1 à 10. Pour cet exemple, il serait pertinent d'utiliser la corrélation Polychoric. Comme une corrélation de Pearson, la corrélation Polychoric varie de -1 à 1, une valeur négative indiquant une relation inverse entre les deux variables théoriques et inversement. Une valeur de p peut être obtenues
 Coefficient Phi | $\phi=\sqrt{\frac{\chi^2}{n}}$ | Simplement le Khi^2^ divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune (tableau 2x2 dimensions) alors $\phi$ varie de −1 à 1; sinon de 0 à $min(\sqrt{c-1}, \sqrt{l-1})$ avec $c$ et $l$ étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est peu utile pour les tableaux de plus de 2x2 dimensions. Pas de valeur de *p* disponible.
 V de Cramer | $V=\sqrt{\frac{\chi^2/n}{min(c-1,l-1)}}$ | Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que pour un tableau de 2 x 2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.
 :::
@@ -1113,7 +1143,7 @@ dataHLM <- read.csv("data/bivariee/hlm.csv")
 chisq.test(x = dataHLM$Taille, y = dataHLM$Periode)
 ```
 
-Pour la construction du tableau de contigence, deux options sont possibles dépendamment de la structuration de votre tableau de données initial. Premier cas de figure, votre tableau est issu d'un questionnaire et comprend une ligne par observation avec les différentes modalités dans deux colonnes (ici *Periode* et *Taille*). Dans la syntaxe ci-dessous, pour chacune des deux variables qualitatives, on pourra créer un facteur afin de spécifier un intitulé à chaque modalité (`factor(levels =c(....), labels = c(..)`). Puis, on utilisera la fonction `CrossTable` du package **gmodels**. Pour obtenir les fréquences théoriques, les contributions locales au Khi^2^ et les déviations, on spécifiera les options suivantes : `expected=TRUE, chisq = TRUE, resid = TRUE`.
+Pour la construction du tableau de contigence, deux options sont possibles dépendamment de la structuration de votre tableau de données initial. Premier cas de figure, votre tableau <span class="revision_rem>"est issu d'un questionnaire et </span>comprend une ligne par observation avec les différentes modalités dans deux colonnes (ici *Periode* et *Taille*). Dans la syntaxe ci-dessous, pour chacune des deux variables qualitatives, on crée un facteur afin de spécifier un intitulé à chaque modalité (`factor(levels =c(....), labels = c(..)`). Puis, on utilise la fonction `CrossTable` du package **gmodels**. Pour obtenir les fréquences théoriques, les contributions locales au Khi^2^ et les déviations, on spécifie les options suivantes : `expected=TRUE, chisq = TRUE, resid = TRUE`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(gmodels)
@@ -1148,7 +1178,7 @@ dataHLM$Taille <- factor(dataHLM$Taille,
 #           expected=TRUE, chisq = TRUE, resid = TRUE, format="SPSS")
 ```
 
-Deuxième cas de figure, vous disposez déjà d'un tableau de contigence, soit les fréquences observées ($f_{ij}$). On n'utilisera pas donc la fonction `CrossTable`, mais directement la fonction `chisq.test`.
+Deuxième cas de figure, vous disposez déjà d'un tableau de contigence, soit les fréquences observées ($f_{ij}$). On n'utilise donc pas la fonction `CrossTable`, mais directement la fonction `chisq.test`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Importation des données
@@ -1220,6 +1250,14 @@ df <- read.csv("data/bivariee/hlm.csv")
   MH <- MHTest$statistic
   PMH <- MHTest$p.value
   
+  #Polychoric Correlation Coefficient
+  library(correlation)
+  df <- data.frame("x" = as.factor(x),
+                 "y" = as.factor(y))
+  polychoricCorr <- cor_test(df,"x","y",method = "polychoric")
+  polyR <- polychoricCorr$rho
+  polyP <- polychoricCorr$p
+  
   # Coefficient Phi et V de Cramer
   phi <- sqrt(chi2/n)
   vc <- sqrt(chi2/(n*min(c-1,l-1)))
@@ -1229,33 +1267,38 @@ df <- read.csv("data/bivariee/hlm.csv")
         Statistique = c("Khi2", 
                         "Ratio de vraissemblance du  khi", 
                         "Khi2 de Mantel-Haenszel",
+                        "Corrélation Polychoric",
                         "Coefficient de Phi",
                         "V de Cramer"), 
-        Valeur = round(c(Pchi2, G, MH, phi, vc),3), 
-        P = round(c(Pchi2, PG, PMH, NA, NA),10))
+        Valeur = round(c(Pchi2, G, MH, polyR, phi, vc),3), 
+        P = round(c(Pchi2, PG, PMH, polyP , NA, NA),10))
   return(dfsortie)
 }
 
-library(stargazer)
-stargazer(AutresMesuresKhi2(df$Periode, df$Taille),
-          type="text",  
-          summary=FALSE,  
-          rownames=FALSE, 
-          align = FALSE, 
+# library(stargazer)
+# stargazer(AutresMesuresKhi2(df$Periode, df$Taille),
+#           type="text",  
+#           summary=FALSE,  
+#           rownames=FALSE, 
+#           align = FALSE, 
+#           digits = 3,
+#           title="Mesures d'association entre deux variables qualitatives")
+kableExtra::kable(AutresMesuresKhi2(df$Periode, df$Taille),
           digits = 3,
-          title="Mesures d'association entre deux variables qualitatives")          
+          caption="Mesures d'association entre deux variables qualitatives")
+
 ```
 
 ### Interprétation d'un tableau de contigence {#sect325}
 
 Nous vous proposons une démarche très simple pour vérifier l'association entre deux variables qualitatives avec les étapes suivantes :
 
-* On pose l'hypothèse nulle (h<sub>0</sub>), soit l'indépendance entre les deux variables. Si le Khi^2^ total du tableau de contingence est inférieur à la valeur du critique du Khi^2^ avec *p*=0,05 et le nombre de degré de liberté de la table *T*, alors il y a bien indépendance. La valeur de *p* sera alors supérieur à 0,05. L'analyse s'arrête donc là ! Autrement dit, il n'est pas nécessaire d'analyser votre tableau de contigence puisqu'il n'y pas d'associations significatives entre les modalités des deux variables. Vous pouvez simplement signaler que : selon les résultats du test du Khi^2^, il n'y a pas d'association significative entre les deux variables ($\chi$ = ... avec *p*= ...).
+* On pose l'hypothèse nulle (h<sub>0</sub>), soit l'indépendance entre les deux variables. Si le Khi^2^ total du tableau de contingence est inférieur à la valeur du critique du Khi^2^ avec *p*=0,05 et le nombre de degré de liberté de la table *T*, alors il y a bien indépendance. <span class="revision_rem">La valeur de *p* sera alors supérieur à 0,05.</span> L'analyse s'arrête donc là ! Autrement dit, il n'est pas nécessaire d'analyser <span class="revision_prop"> le contenu de </span>votre tableau de contigence puisqu'il n'y pas d'associations significatives entre les modalités des deux variables. Vous pouvez simplement signaler que : selon les résultats du test du Khi^2^, il n'y a pas d'association significative entre les deux variables ($\chi$ = ... avec *p*= ...).
 
 * S'il y a dépendance ($khi_{observé}^2 > khi_{critique}^2$), trouver les cellules *ij* où les contributions au Khi^2^ sont les plus fortes, c'est-à-dire où les liens entre les modalités *i* de la variable en ligne et les modalités *j* de la variable en colonne sont les plus marqués. Pour ces cellules, le phénomène *ij* est surreprésenté si la déviation est positive ou sous-représenté si la déviation est négative. Commentez ces associations et utilisez les pourcentages en lignes ou en colonnes pour appuyer vos propos.
 
 **Exemple d'interprétation.** "Les résultats du test du khi^2^ signale qu'il existe des associations entre les modalités de la taille et de la période construction des projets d'habitation ($\chi$ =63,5, *p* < 0,001). Les fortes contributions au khi^2^ et le signe positif ou négatif des déviations correspondantes permettent de repérer cinq associations majeures entre les modalités de taille et de période de construction des projets HLM : **1)** la répulsion entre les projets d’habitation de moins de 25 logements et la période de construction 1964-1974; **2)** l’attraction entre les projets d’habitation de 100 logements et plus et la période de construction de 1969-1974; **3)** l’attraction entre les projets d’habitation de moins de 25 logements et la période de construction de 1990-1994; **4)** la répulsion entre les projets d’habitation de 50 à 99 logements et la période de construction 1990-1994; **5)** la répulsion entre les projets d’habitation de 100 logements et plus et la période de construction 1990-1994.
-De ces cinq liaisons se dégage une tendance bien marquée dans l’évolution du type de construction entre 1970 et 1994 : entre 1996 et 1974, on construit habituellement de grandes habitations dépassant souvent 100 logements; du milieu des années 1970 à la fin des années 1980, on privilégie la construction d’habitation de taille plus modeste, entre 50 et 100 logements; tandis qu’au début des années 1990, on opte plutôt pour des habitations de taille réduite (moins de 50 logements). Quelques chiffres à l’appui : sur les 56 habitations réalisées entre 1969 et 1974, 20 ont plus de 100 logements, 20 comprennent entre 50 et 99 logements et seuls 10 ont moins de 25 logements. Près de la moitié des habitations construites entre 1975 et 1989 regroupent 50 à 99 logements (43,8% pour la période 1975-1979, 45,8% pour 1980-1984 et 44,7% pour 1985-1989). Par contre, 51% des logements érigés à partir de 1990 disposent moins de 25 logements" (Apparicio, 2002, 117-118).
+<span class="revision_rem">De ces cinq liaisons se dégage</span><span class="revision_prop">On observe donc</span> une tendance bien marquée dans l’évolution du type de construction entre 1970 et 1994 : entre 1996 et 1974, on construit habituellement de grandes habitations dépassant souvent 100 logements; du milieu des années 1970 à la fin des années 1980, on privilégie la construction d’habitation de taille plus modeste, entre 50 et 100 logements; tandis qu’au début des années 1990, on opte plutôt pour des habitations de taille réduite (moins de 50 logements). Quelques chiffres à l’appui : sur les 56 habitations réalisées entre 1969 et 1974, 20 ont plus de 100 logements, 20 comprennent entre 50 et 99 logements et seuls 10 ont moins de 25 logements. Près de la moitié des habitations construites entre 1975 et 1989 regroupent 50 à 99 logements (43,8% pour la période 1975-1979, 45,8% pour 1980-1984 et 44,7% pour 1985-1989). Par contre, 51% des logements érigés à partir de 1990 disposent moins de 25 logements" (Apparicio, 2002, 117-118). <span class="revision_prop"> Notez que cette évolution décroissante est aussi soutenue par le coefficient négatif de la corrélation Polychoric.</span>
 
 Vous pouvez aussi construire un graphique pour appuyer vos constats, soit avec les pourcentages en ligne ou en colonne (figure \@ref(fig:fighlm) tirée de @apparicio2006).
 
