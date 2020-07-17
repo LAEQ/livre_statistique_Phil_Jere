@@ -1319,9 +1319,9 @@ Pour un texte en anglais, vous pourrez consulter [https://www.socscistatistics.c
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 
 **Les moyennes de deux groupes de population sont-elles significativement différentes?** On souhaite ici comparer deux groupes de population en fonction d'une variable continue. 
-Par exemple, pour deux échantillons respectivement d'hommes et de femmes travaillant dans le même secteur d'activité, on souhaite vérifier si les moyennes des salaires des hommes et des femmes sont différentes; on pourrait supposer malheureusement que celle des hommes est supérieure. En études urbaines, dans le cadre d'une étude sur un espace public, on pourrait vouloir vérifier si la différence des moyennes du sentiment de sécurité des femmes et des hommes est significative (c'est-à-dire différente de 0).
+Par exemple, pour deux échantillons respectivement d'hommes et de femmes travaillant dans le même secteur d'activité, on pourrait souhaiter vérifier si les moyennes des salaires des hommes et des femmes sont différentes<span class="revision_rem">; on pourrait supposer malheureusement que celle des hommes est supérieure.</span><span class="revision_prop"> et ainsi vérifier la présence ou l'absence d'une iniquité systématique.</span> En études urbaines, dans le cadre d'une étude sur un espace public, on pourrait vouloir vérifier si la différence des moyennes du sentiment de sécurité des femmes et des hommes est significative (c'est-à-dire différente de 0).
 
-**Pour un même groupe, la moyenne de la différence d'un phémonène donné mesuré à deux moments est-elle ou non égale à zéro?** Autrement dit, on cherche à comparer un même groupe d'individus avant et après une expérimentation. Prenons un exemple d'application en études urbaines. Dans le cadre d'une étude sur la perception des risques associés à la pratique du vélo en ville, 50 individus utilisant habituellement l'automobile pour se rendre au travail sont recrutés. L'expérimentation pourrait consister à leur donner une formation sur la pratique du vélo en ville et à les accompagner quelques jours durant leurs déplacements domicile-travail. On évaluera la différence de leurs perceptions des risques associés à la pratique du vélo sur une échelle de 0 à 100 avant et après l'expérimentation. On pourrait supposer que la moyenne des différences est significativement négative, ce qui indiquerait que la perception du risque a diminué après l'expérimentation; autrement dit, la perception du risque est plus faible en fin de période. 
+**Pour un même groupe, la moyenne de la différence d'un phémonène donné mesuré à deux moments est-elle ou non égale à zéro?** Autrement dit, on cherche à comparer un même groupe d'individus avant et après une expérimentation, <span class="revision_prop"> ou dans deux contextes différents</span>. Prenons un exemple d'application en études urbaines. Dans le cadre d'une étude sur la perception des risques associés à la pratique du vélo en ville, 50 individus utilisant habituellement l'automobile pour se rendre au travail sont recrutés. L'expérimentation pourrait consister à leur donner une formation sur la pratique du vélo en ville et à les accompagner quelques jours durant leurs déplacements domicile-travail. On évaluera la différence de leurs perceptions des risques associés à la pratique du vélo sur une échelle de 0 à 100 avant et après l'expérimentation. On pourrait supposer que la moyenne des différences est significativement négative, ce qui indiquerait que la perception du risque a diminué après l'expérimentation; autrement dit, la perception du risque <span class="revision_rem">est</span> <span class="revision_prop">serait</span> plus faible en fin de période. 
 :::
 
 
@@ -1331,9 +1331,9 @@ Le **t de student**, appelé aussi **test _t_** (*t-test* en anglais), est un te
 
 * **Échantillons indépendants (dits non appariés)**, les observations des deux groupes n'ont aucun lien entre eux. Par exemple, on souhaite vérifier si les moyennes du sentiment de sécurité des hommes et des femmes, ou encore, les moyennes des loyers entre deux villes sont statistiquement différentes. Ainsi, les tailles des deux échantillons peuvent être différentes ($n_a \neq n_b$).
 
-* **Échantillons dépendants (dits appariés)**, les individus des deux groupes sont les mêmes et constituent des paires. Autrement dit, on a deux séries de valeurs de taille identique ($n_a = n_b$). Ce type d'analyse est utilisée en études cliniques : pour $n$ individus, on dispose d'une mesure quantitative de leur état de santé pour deux séries (l'un avant le traitement, l'autre une fois le traitement terminé). Cela permet de comparer les mêmes individus avant et après un traitement, une expérimentation; on parle alors d'étude, d'expérience et d'analyse pré-post. Concrètement, on cherche à savoir si la moyenne des différences des observations avant et après est significativement différente de 0. Si c'est le cas, on peut en conclure que l'expérimentation a eu un impact sur le phénomène mesuré (variable continue). Ce type d'analyse pré-post peut aussi être utilisée pour évaluer l'impact du réaménagement d'un espace public (rue commerciale, place publique, parc, etc.). Par exemple, on pourrait questionner le même échantillon de commerçants ou d'usagers avant et après le réaménagement d'une artère commerciale.
+* **Échantillons dépendants (dits appariés)**, les individus des deux groupes sont les mêmes et <span class="revision_rem">constituent des paires</span><span class="revision_prop"> peuvent donc être associés par paires</span>. Autrement dit, on a deux séries de valeurs de taille identique $n_a = n_b$ <span class="revision_prop">et $n_{ai}$ est le même individu que $n_{bi}$</span>. Ce type d'analyse est souvent utilisée en études cliniques : pour $n$ individus, on dispose d'une mesure quantitative de leur état de santé pour deux séries (l'un avant le traitement, l'autre une fois le traitement terminé). Cela permet de comparer les mêmes individus avant et après un traitement, une expérimentation; on parle alors d'étude, d'expérience et d'analyse pré-post. Concrètement, on cherche à savoir si la moyenne des différences des observations avant et après est significativement différente de 0. Si c'est le cas, on peut en conclure que l'expérimentation a eu un impact sur le phénomène mesuré (variable continue). Ce type d'analyse pré-post peut aussi être utilisée pour évaluer l'impact du réaménagement d'un espace public (rue commerciale, place publique, parc, etc.). Par exemple, on pourrait questionner le même échantillon de commerçants ou d'usagers avant et après le réaménagement d'une artère commerciale.
 
-**Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect332)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
+**Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement distribuée<span class="revision_prop">Du coup la plupart des exemples donnés au dessus ne marchent pas...<span>. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect332)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
 
 * Test de Student (test *t*) avec échantillons indépendants et variances similaires (méthode *pooled*).  Les variances de deux groupes sont semblables quand leur ratio varie de 0,5 à 2 ($0,5< (S^2_{X_A}/S^2_{X_B})<2$).
 * Test de Welch (appelé aussi Satterthwaite) avec échantillons indépendants quand les variances des deux groupes sont dissemblables.
@@ -1343,27 +1343,35 @@ Il s'agit de vérifier si les moyennes des deux groupes sont statistiquement dif
 
 * On pose l'hypothèse nulle (H<sub>0</sub>), soit que les moyennes des deux groupes *A* et *B* ne sont pas différentes ($\bar{X}_{A}=\bar{X}_{B}$) ou autrement dit, la différence des deux moyennes est nulle ($\bar{X}_{A}-\bar{X}_{B}=0$). L'hypothèse alternative (H<sub>1</sub>) est donc $\bar{X}_{A}\ne\bar{X}_{B}$.
 * On calcule la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* sera négative quand la moyenne du groupe A est inférieure au groupe B et inversement.
-* On compare la valeur absolue de *t* ($\mid T \mid$) avec celle critique issue la table T avec le nombre de degrés de liberté et un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
-* Si les moyennes sont statistiquement différentes, on peut calculer l'effet de taille.
+* On compare la valeur absolue de *t* ($\mid T \mid$) avec celle issue de la table des valeurs critiques T avec le bon nombre de degrés de liberté et en choisissant un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
+* Si les moyennes sont statistiquement différentes, on peut calculer <span class="revision_rem">l'effet de taille</span><span class="revision_prop">la taille de l'effet</span>.
 
 
-**Test de student pour des échantillons indépendants avec variances égales (méthode *pooled*).** La valeur de *t* est le ratio entre la différence des moyennes des deux groupes (numérateur) et l'erreur-type groupé des deux échantillons (dénominateur) :
+**<span class="revision_prop">Cas 1</span> Test de student pour des échantillons indépendants avec variances égales (méthode *pooled*).** La valeur de *t* est le ratio entre la différence des moyennes des deux groupes (numérateur) et l'erreur-type groupé des deux échantillons (dénominateur) :
 
 $t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_p}{n_A}+\frac{S^2_p}{n_B}}}$ avec 
 $S^2_p = \frac{(n_A-1)S^2_{X_A}+(n_B-1)S^2_{X_B}}{n_A+n_B-2}$
 
 avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d'observations et les variances pour les groupes *A* et *B*, $S^2_p$ étant la variance groupée des deux échantillon et $n_A+n_B-2$ étant le nombre de degrés de liberté.
 
-**Test de Welch pour des échantillons indépendants (avec variances différentes).** Le test de Welch est très similaire au test de student; seuls les calculs de la valeur de *t* du nombre de degrés de liberté sont diffèrent légèrement :
+**<span class="revision_prop">Cas 2</span> Test de Welch pour des échantillons indépendants (avec variances différentes).** Le test de Welch est très similaire au test de student; <span class="revision_rem">seuls les calculs de la valeur de *t* du</span><span class="revision_prop">seul le calcul du</span> nombre de degrés de liberté <span class="revision_rem">sont diffèrent légèrement</span><span class="revision_prop">est différent, pour tenir compte des variances respectives des groupes</span> :
 
 $t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_A}{n_A}+\frac{S^2_B}{n_B}}}$ et $dl = \frac{ \left( \frac{S^2_{X_A}}{n_A}+\frac{S^2_{X_B}}{n_B} \right)^2} {\frac{S^4_{X_A}}{n^2_A(n_A-1)}+\frac{S^4_{X_B}}{n^2_B(n_B-1)}}$
 
-Il en résulte que les résultats du test de Student (avec variances égales) et du test de Welch (variances différentes) sont habituellement relativement similaires.
+<span class="revision_rem">Il en résulte que les résultats du test de Student (avec variances égales) et du test de Welch (variances différentes) sont habituellement relativement similaires.</span>
 
-Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit rapidement une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculés les moyennes, nombres d'observations et variances pour les deux groupes, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement au mode de transport pour se rendre au travail :
+Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculés les moyennes, nombres d'observations et variances pour les deux groupes, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données <span class="revision_rem">relativement au mode de transport pour se rendre au travail :</span><span class="revision_prop">pour tester cette fonction. Imaginons que ces données représentent la vitesse de déplacement de cyclistes utilisant un vélo personnel ou un vélo en libre service (généralement plus lourd et moins utilisé par des cyclistes expérimentés)</span>
 
+<span class="revision_rem">
 * Au cas 1, 50 personnes âgées de 18 à 35 ans utilisant le vélo et 60 personnes âgées de 25 à 50 ans prévilégiant l'automobile.
 * Au cas 2, 50 personnes âgées de 18 à 50 ans utilisant le vélo et 60 personnes âgées de 20 à 50 ans prévilégiant l'automobile.
+</span>
+
+<span class="revision_prop">
+* Au cas 1, admettons que les cyclistes utilisant un vélo personnel roulent en moyenne à 18 km/h avec un écart type de 1.5, alors que les utilisateurs du système de vélo partage ont une vitesse moyenne de 15 km/h avec le même écart type. Nous prenons 50 cyclistes dans chaque groupe.
+* Au cas 2, on va changer la moyenne et l'écart type du groupe 1 pour les valeurs suivantes : 16km/h et 3. Ce faible écart de moyenne, combinée à une plus forte variance va réduire la significativité de la différence entre les deux groupes
+</span>
+
 
 D'emblée, l'analyse visuelle des boites à moustaches (figure \@ref(fig:figttest1)) semblent signaler qu'au cas 1 comparativement au cas 2 : 1) les groupes sont plus homogènes (boites plus compactes) et 2) les moyennes semblent différentes (les boites sont centrées différemment sur l'axe des ordonnées). Cela est confirmé par les résultats des tests.
 
@@ -1420,65 +1428,71 @@ tstudent_independants <- function(A, B){
 }
 
 # CAS 1 : données fictives ------------------
-# Création du groupe A : 50 observations avec des valeurs aléatoires entre 18 et 35
-Velo1 <- sample(18:35, 50, replace=T)
-# Création du groupe B : 60 observations avec des valeurs aléatoires entre 25 et 50
-Auto1 <- sample(25:50, 60, replace=T)
-df1 <- data.frame(id=c(1:(length(Velo1)+length(Auto1))),
-                 age=c(Velo1,Auto1))
-df1$transport <- ifelse(df1$id <= length(Velo1), "A. vélo", "B. auto")
+# Création du groupe A : 50 observations avec une vitesse moyenne de 18 et un écart type de 1.5
+Velo1A <- rnorm(50,18,1.5)
+# Création du groupe B : 50 observations avec une vitesse moyenne de 15 et un écart type de 1.5
+Velo1B <- rnorm(50,15,1.5)
 
-boxplot1 <- ggplot(data=df1, mapping=aes(x=transport,y=age, colour=transport)) +
+
+df1 <- data.frame(
+  vitesse = c(Velo1A,Velo1B), 
+  type = c(rep("velo personnel",length(Velo1A)), rep("velo partage",length(Velo1B)))
+)
+
+
+boxplot1 <- ggplot(data=df1, mapping=aes(x=type,y=vitesse, colour=type)) +
   geom_boxplot(width=0.2)+
   ggtitle("Données fictives (cas 1)")+
-  xlab("Mode de transport")+
-  ylab("Age")
+  xlab("Type de vélo")+
+  ylab("vitesse de déplacement")
 
 # CAS 2 : données fictives ------------------
-# Création du groupe A : 50 observations avec des valeurs aléatoires entre 18 et 50
-Velo2 <- sample(18:50, 50, replace=T)
-# Création du groupe B : 60 observations avec des valeurs aléatoires entre 20 et 50
-Auto2 <- sample(20:50, 60, replace=T)
-df2 <- data.frame(id=c(1:(length(Velo2)+length(Auto2))),
-                 age=c(Velo2,Auto2))
-df2$transport <- ifelse(df2$id <= length(Velo2), "A. vélo", "B. auto")
+# Création du groupe A : 50 observations avec une vitesse moyenne de 18 et un écart type de 3
+Velo2A <- rnorm(50,16,3)
+# Création du groupe B : 50 observations avec une vitesse moyenne de 15 et un écart type de 1.5
+Velo2B <- rnorm(50,15,1.5)
 
-boxplot2 <- ggplot(data=df2, mapping=aes(x=transport,y=age, colour=transport)) +
+df2 <- data.frame(
+  vitesse = c(Velo2A,Velo2B), 
+  type = c(rep("velo personnel",length(Velo2A)), rep("velo partage",length(Velo2B)))
+)
+
+boxplot2 <- ggplot(data=df2, mapping=aes(x=type,y=vitesse, colour=type)) +
   geom_boxplot(width=0.2)+
-  ggtitle("Données fictives (cas 2)")+
-  xlab("Mode de transport")+
-  ylab("Age")
+  ggtitle("Données fictives (cas 1)")+
+  xlab("Type de vélo")+
+  ylab("vitesse de déplacement")
 
 ggarrange(boxplot1, boxplot2, ncol = 2, nrow = 1)
 
 # Appel de la fonction pour le cas 1
-tstudent_independants(Velo1, Auto1)
+tstudent_independants(Velo1A, Velo1B)
 # Appel de la fonction pour le cas 2
-tstudent_independants(Velo2, Auto2)
+tstudent_independants(Velo2A, Velo2B)
 ```
 
 
 #### Principe de base et formulation pour des échantillons dépendants (appariés) {#sect3311}
 
-Nous disposons de plusieurs observations pour lesquelles nous avons mesuré un phénomène (variable continue) à deux temps différents : généralement avant et après une expérimentation (analyse pré-post). Il s'agit de vérifier si la moyenne des différences des observations avant et après la période est différente de 0. Pour ce faire, on réalise les étapes suivantes :
+Nous disposons de plusieurs <span class="revision_rem">observations</span><span class="revision_prop">individus</span> pour lesquelles nous avons mesuré un phénomène (variable continue) à deux temps différents : généralement avant et après une expérimentation (analyse pré-post). Il s'agit de vérifier si la moyenne des différences des observations avant et après la période est différente de 0. Pour ce faire, on réalise les étapes suivantes :
 
-* On pose l'hypothèse nulle (H<sub>0</sub>), soit que la moyenne des différences entre les deux séries est égale à 0 ($\bar{D} = 0$ avec $d = {x}_{t_1}- {x}_{t_1}$). L'hypothèse alternative (H<sub>1</sub>) est donc $\bar{D} \ne 0$. Notez que l'on peut tester une autre valeur que 0.
+* On pose l'hypothèse nulle (H<sub>0</sub>), soit que la moyenne des différences entre les deux séries est égale à 0 ($\bar{D} = 0$ avec $d = {x}_{t_1}- {x}_{t_2}$). L'hypothèse alternative (H<sub>1</sub>) est donc $\bar{D} \ne 0$. Notez que l'on peut tester une autre valeur que 0.
 * On calcule la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* sera négative quand la moyenne des différences entre ${X}_{t_1}$ et ${X}_{t_2}$ est négative et inversement.
-* On compare la valeur absolue de *t* ($\mid t \mid$) avec celle critique issue la table T avec le nombre de degrés de liberté et un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors la différence des moyennes est statistiquement différente de 0 au degré de signification retenu.
+* On compare la valeur absolue de *t* ($\mid T \mid$) avec celle issue de la table des valeurs critiques T avec le bon nombre de degrés de liberté et en choisissant un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
 
 Pour le test de student avec des échantillons appariées, la valeur de *t* se calcule comme suit :
 
 $$t = \frac{\bar{D}-\mu_0}{\sigma_D / \sqrt{n}}$$
-avec $\bar{D}$ étant la moyenne des différences entre les observations appariées de la série A et de la série B, $\sigma_D$ l'écart des différences, *n* le nombre d'observations, et finalement $\mu_0$ la valeur de l'hypothèse nulle ($h_0 = \mu_0$) que l'on veut tester (habituellement 0). Bien entendu, il est possible fixer une autre valeur pour $\mu_0$ : par exemple, avec $\mu_0 = 10$, on chercherait ainsi à vérifier si la moyenne des différences est significativement différente de 10. Le nombre de degrés de liberté sera égal à $n-1$.
+avec $\bar{D}$ étant la moyenne des différences entre les observations appariées de la série A et de la série B, $\sigma_D$ l'écart des différences, *n* le nombre d'observations, et finalement $\mu_0$ la valeur de l'hypothèse nulle que l'on veut tester (habituellement 0). Bien entendu, il est possible fixer une autre valeur pour $\mu_0$ : par exemple, avec $\mu_0 = 10$, on chercherait ainsi à vérifier si la moyenne des différences est significativement différente de 10. Le nombre de degrés de liberté sera égal à $n-1$.
 
-Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit rapidement une fonction dénommée `tstudent_dependants` permettant de réaliser le test de student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
+Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit une fonction dénommée `tstudent_dependants` permettant de réaliser le test de student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
 
-Puis, nous avons créé aléatoirement deux jeux de données avec 50 personnes utilisant habituellement l'automobile pour se rendre au travail. Pour ces personnes, nous avons généré des valeurs du risque perçu de l'utilisation du vélo (de 0 à 100), et ce, avant et après une période de 20 jours ouvrables durant lesquels ils devaient impérativement se rendre au travail à vélo.
+Pour illustrer l'utilisation de la fonction, nous avons créé aléatoirement deux jeux de données. Imaginons que ces données décrivent 50 personnes utilisant habituellement l'automobile pour se rendre au travail. Pour ces personnes, nous avons généré des valeurs du risque perçu de l'utilisation du vélo (de 0 à 100), et ce, avant et après une période de 20 jours ouvrables durant lesquels ils devaient impérativement se rendre au travail à vélo.
 
-* Au cas 1, les valeurs de risque varient aléatoirement de 65 à 85 avant l'expérimentation et de 40 à 60 après l'expérimentation.
-* Au as 2, les valeurs de 65 à 85 avant et 60 à 90 après.
+* Au cas 1, les valeurs de risque ont une moyenne de 70 avant l'expérimentation et de 50 après l'expérimentation, avec des écarts types de 5.
+* Au cas 2, les valeurs de risque ont une moyenne de 70 avant et 66 après, avec des écarts types de 5 .
 
-D'emblée, l'analyse visuelle des boites à moustaches (figure \@ref(fig:figttest2)) pairées montrent que le risque semble avoir nettement diminé après l'expérimentation contrairement au cas 2. Cela est confirmé par les résultats des tests.
+D'emblée, l'analyse visuelle des boites à moustaches (figure \@ref(fig:figttest2)) pairées montrent que le risque semble avoir nettement diminé après l'expérimentation pour le cas 1 mais pas pour le cas 2. Cela est confirmé par les résultats des tests.
 
 
 ```{r figttest2, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Boites à moustache sur des échantillons fictifs appariées', out.width='75%'}
@@ -1513,15 +1527,15 @@ tstudent_dependants <- function(A, B, mu=0){
 }
 
 # CAS 1 : données fictives ------------------
-Avant1 <- sample(65:85, 50, replace=T)
-Apres1 <- sample(40:60, 50, replace=T)
+Avant1 <- rnorm(50,70,5)
+Apres1 <- rnorm(50,50,5)
 df1 <- data.frame(Avant=Avant1, Apres=Apres1)
 boxplot1 <- ggpaired(df1, cond1 = "Avant", cond2 = "Apres", fill = "condition", 
                      palette = "jco", title = "Données fictives (cas 1)")
 
 # CAS 2 : données fictives ------------------
-Avant2 <- sample(65:85, 50, replace=T)
-Apres2 <- sample(60:90, 50, replace=T)
+Avant2 <- rnorm(50,70,5)
+Apres2 <- rnorm(50,66,5)
 df2 <- data.frame(Avant=Avant2, Apres=Apres2)
 boxplot2 <- ggpaired(df2, cond1 = "Avant", cond2 = "Apres", fill = "condition", 
                      palette = "jco", title = "Données fictives (cas 2)")
@@ -1538,14 +1552,14 @@ tstudent_dependants(Avant2, Apres2, mu=0)
 
 Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas de comparaisons de moyennes (avec des échantillons pairées ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le dernier étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test student ou de Welch s'est révélé significatif (p<0,05).
 
-**Pourquoi utiliser le *d* de cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de taille différente, il s'écrit : 
+**Pourquoi utiliser le *d* de cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie que quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de taille différente, il s'écrit : 
 
 $$d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{(n_A-1)S^2_A+(n_B-1)S^2_B}{n_A+n_B-2}}}$$
 avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d'observations et les variances pour les groupes *A* et *B*, $S^2_p$.
 
-Juste pour le fun, si les échantillons sont de taille identiques ($n_A=n_B$), alors *d* peut s'écrire :
+Si les échantillons sont de taille identiques ($n_A=n_B$), alors *d* peut s'écrire :
 $$d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{(S^2_A+\S^2_A)/2}} = \frac{\bar{X}_{A}-\bar{X}_{B}}{(\sigma_A+\sigma_B)/2}$$
-avec $\sigma_A$ et $\sigma_B$ étant les écart-types des deux groupes (rappel : l'écart-type est la racine carrée de la variance!).
+avec $\sigma_A$ et $\sigma_B$ étant les écart-types des deux groupes (rappel : l'écart-type est la racine carrée de la variance !).
 
 Le *g* de Hedge est simplement une correction de *d*, particulièrement importante quand les échantillons sont de taille réduite.
 $$g = d- \left(1- \frac{3}{4(n_A+n_B)-9} \right)$$
