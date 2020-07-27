@@ -1,52 +1,113 @@
-\mainmatter
-
-# (PART) Get Started {-}
-
 # Prise en main de R
 
-We assume you have already installed R (https://www.r-project.org) [@R-base] and the RStudio IDE (https://www.rstudio.com). RStudio is not required but recommended, because it makes it easier for an average user to work with R Markdown. If you do not have RStudio IDE installed, you will have to install Pandoc\index{Pandoc} (http://pandoc.org), otherwise there is no need to install Pandoc separately because RStudio has bundled it. Next you can install the **rmarkdown** package in R:
+Dans ce chapitre, nous reviendrons brièvement sur l'histoire de ![](images/logos/Rlogo.png) et la philosophie qui entourre le logiciel. Nous donnerons quelques conseils pour son installation et la mise en place d'un environnement de développement. Nous présenterons ensuite les principaux objets qui sous-tendent tout le travail effectué avec ![](images/logos/Rlogo.png) (dataframe, vecteur, matrice etc.) et comment les manipuler avec des exemples appliqués. Enfin, nous terminerons cette section avec un tour d'horizon des capacité graphiques de ![](images/logos/Rlogo.png).
 
-```{r eval=FALSE, tidy=FALSE}
-# Install from CRAN
-install.packages('rmarkdown')
+## Histoire et Philosophie {#sect11}
 
-# Or if you want to test the development version,
-# install from GitHub
-if (!requireNamespace("devtools"))
-  install.packages('devtools')
-devtools::install_github('rstudio/rmarkdown')
+R est un langage de programmation et un logiciel libre (sous la licence GNU General Public Licence) dédié à l'analyse statistique et supporté par la fondation : *R foundation for Statistical computing*. Il est principalement écrit en C et Fortran.
+
+R est l'héritier de S, un autre langage de programmation dédié à l'analyse statistique publié pour la première fois en 1976 et créé par John Chambers pour l'entreprise Nokia (Bell Laboratories). S a donné naissance à S-PLUS (logiciel propriétaire) et à son frère ![](images/logos/Rlogo.png) (logiciel libre). L'idée centrale derrière le développement de S était de faciliter le passage rapide et fidèle de l'idée à l'implémentation [@chambers1998programming]. Cet état d'esprit est encore une des fondations de la philosophie de ![](images/logos/Rlogo.png).
+
+R a été créé par Ross Ihaka et Robert Gentleman à l'Université d'Auckland en Nouvelle Zélande. Si vous avez un jour l'occasion de passer dans le coin, une plaque est affichée dans le département de statistique de l'université, ça mérite le détour (figure \@ref(fig:fig01)). Une première version a été publié en 1995, mais la première version stable ne date que de 2000, il s'agit donc d'un logiciel relativement récent si on le compare à ses concurrents SAS (1976) et SPSS (1968).
+
+```{r fig01, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Lieu de pélerinage",  out.width='33%'}
+knitr::include_graphics('images/introduction/plaque.jpg', dpi = NA)
 ```
 
-If you want to generate PDF output, you will need to install LaTeX. For R Markdown users who have not installed LaTeX before, we recommend that you install TinyTeX (https://yihui.name/tinytex/):
+R a cepedant su se faire une place de choix tant dans la recherche que dans le milieu privé. Pour s'en convaincre, il suffit de faire un petit détour par le site [r4stats.com](r4stats.com) et l'article concernant [la popularité des logiciels d'analyse de données](http://r4stats.com/articles/popularity/) (figure \@ref(fig:fig02)). 
 
-```{r eval=FALSE}
-install.packages('tinytex')
-tinytex::install_tinytex()  # install TinyTeX
+```{r fig02, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Nombre d'articles trouvés sur Google Scholar (Source : Robert A. Muenchen)",  out.width='33%'}
+knitr::include_graphics('images/introduction/r_citations.jpg', dpi = NA)
 ```
 
-TinyTeX\index{TinyTeX} is a lightweight, portable, cross-platform, and easy-to-maintain LaTeX distribution. The R companion package **tinytex** [@R-tinytex]\index{tinytex} can help you automatically install missing LaTeX packages when compiling LaTeX or R Markdown documents to PDF, and also ensures a LaTeX document is compiled for the correct number of times to resolve all cross-references. If you do not understand what these two things mean, you should probably follow our recommendation to install TinyTeX, because these details are often not worth your time or attention.
+Les nombreux atouts de ![](images/logos/Rlogo.png) justifient largement cette évolution : 
 
-With the **rmarkdown** package, RStudio/Pandoc, and LaTeX, you should be able to compile most R Markdown documents. In some cases, you may need other software packages, and we will mention them when necessary.
+* ![](images/logos/Rlogo.png) est open source, donc gratuit et le code source est accessible à tous.
+* Le développement du langage ![](images/logos/Rlogo.png) est centralisé, mais la communauté peut créer et partager facilement des packages. Les dernières méthodes sont ainsi rapidement implémentées comparativement aux logiciels propriétaires,
+* ![](images/logos/Rlogo.png) est cross plateforme, ce qui veut dire que l'on peut l'utiliser sur Windows, Linux et Mac.
+* Comparativement à ses concurrents, ![](images/logos/Rlogo.png) dispose d'excellentes solutions pour manipuler des données et réaliser des graphiques,
+* ![](images/logos/Rlogo.png) dispose de nombreuses interfaces lui permettant de communiquer par exemple avec des systèmes de bases de données SQL et non SQL (MySQL, PostgresSQL, Mongodb etc.), à des système de big data (Spark, Hadoop), à des logiciels de SIG (Qgis) et même à des services en lignes comme Microsoft Azure ou Amazon AWS, 
+* ![](images/logos/Rlogo.png) est un langage de programmation à part entière, ce qui lui donne plus de flexibilité que ses concurrents dans le domaine privé (SPSS, SAS, STATA). Avec R, vous pouvez accomplir des tâches aussi variées que : monter un site web, créer un robot collectant des données en ligne, effectuer une analyse qualitative d'un recueil de texte, combiner des fichiers pdf, composer des diapositives pour une présentation ou même éditer un livre (comme celui-ci).
 
+Un des principaux attrait de ![](images/logos/Rlogo.png) est la quantité de packages actuellement disponible. Un package est un ensemble de nouvelles fonctionnalités développées par des utilisateurs de R et mises à disposition de toute la communauté. Par exemple, le package *ggplot2* permet de réaliser des graphiques, les packages *data.table* et *plyr* permettent de manipuler des tableaux de données, le package *car* apporte de nombreux outils pour faciliter l'analyse de modèles de régressions etc. Ce partage des packages rend accessible à tous des méthodes d'analyses complexes et récentes et favorise grandement la reproductibilité de la recherche. Cependant, ce fonctionnement implique quelques désavantages : 
 
-## Historique et philosphie de R
+* il existe généralement plusieurs packages pour effectuer le même type d'analyse ce qui peut devenir une source de confusion,
+* certains packages cessent d'être mis à jour au fil des années, ce qui nécessite de leur trouver des rempaçants
+* il est nécessaire de s'assurer de la fiabilité des packages que l'on emploie car n'importe qui peut proposer un package.
 
-S Plus et Fondateur.
-Notion OpenSource
-CRAN 
+Il nous semble important de tout de suite relativiser la portée du dernier point. Il est rarement nécessaire de rentrer dans le détail du code d'un package pour s'assurer de sa fiabilité. Nous ne sommes pas des spécialistes de tous les sujets et il peut être extrèmement ardu de comprendre la logique du code de quelqu'un d'autre. Nous vous recommandons donc de privilégier l'utilisation de package qui : 
 
-### Notion de _package_
-### Ressources de R 
+* ont fait l'objet d'une publication dans une revue à commité de lecture, ou qui ont été cités dans plusieurs articles publiés dans ce type de revue,
+* font partie de projets comme [ROpensci](https://ropensci.github.io/reproducibility-guide/sections/introduction/) pronant la vérification  par les pairs, ou subventionné par des organisations comme [R Consortium](https://www.r-consortium.org/).
+* sont disponibles sur l'un des deux principaux répertoires de packages R [CRAN](https://cran.r-project.org/) ou [Bioconductor](https://www.bioconductor.org/).
 
+Toujours pour nuancer notre propos, il ne faut pas oublier qu'il y a package et package. Certains d'entre eux sont des ensembles très complexes de fonctions permettant de réaliser des analyses poussées alors que d'autres sont des projets plus modestes dont l'objectif principal est de simplifier le travail des utilisateurs. Ces derniers ressemblent à des petites boites à outil et font généralement moins l'objet d'une vérification intensive.
 
-## Installation de R et R Studio {#sect11}
+Nous avons un faible pour la représentation de la figure \@ref(fig:fig03), partagée sur Twitter par Darren L Dahly. R apparait comme une communauté hétéroclyte mais diversifiée et adaptable, ce qui illustre parfaitement notre propos.
+```{r fig03, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Métaphore sur les langages et programmes d'analyse statistique",  out.width='60%'}
+knitr::include_graphics('images/introduction/softwares_and_cars.jpeg', dpi = NA)
+```
 
-### Interface de _R Studio_
+Dans ce livre, nous détaillerons les packages utilisés dans chaque section avec un encadré spécifique, accompagné de l'îcone suivant : 
 
-## Relation linéaire entre deux variables quantitatives {#sect31}
+```{r fig04, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Icone des encadrés dédiés aux packages",  out.width='20%'}
+knitr::include_graphics('css/images/package.png', dpi = NA)
+```
 
+## Installation de ![](images/logos/Rlogo.png) et RStudio {#sect12}
 
-## Relation linéaire entre deux variables quantitatives {#sect31}
+La première étape pour travailler avec ![](images/logos/Rlogo.png) est bien sûr de l'installer, pour cela, il suffit de faire un détour par le site web de [CRAN](https://cran.r-project.org/) et de télécharger la dernière version de R en fonction de votre système d'exploitation : Windows, Linux ou Mac. Lancez l'installation du logiciel une fois l'installeur téléchargé et le tour est joué.
+Si vous démarrez ![](images/logos/Rlogo.png) immédiatement, vous aurez alors accès à une console attendant sagement vos instructions (figure \@ref(fig:fig05)).
+
+```{r fig05, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="La console de base de R",  out.width='70%'}
+knitr::include_graphics('images/introduction/r_console.jpeg', dpi = NA)
+```
+
+Certaines personnes préfèrent directement travailler dans la console et écrire leur code dans un fichier séparé en utilisant un éditeur de texte. Cependant, nous vous recommandons vivement d'utiliser à la place RStudio. RStudio est un environnement de développement dédié à ![](images/logos/Rlogo.png), offrant une intégration très intéressante d'une console, d'un éditeur de texte, d'une fenètre de visualisation des données et graphiques, d'un accès à la documentation et l'aide etc. En d'autres termes, si ![](images/logos/Rlogo.png) est vélo minimaliste, Rstudio permet d'y rajouter des freins, des vitesses, des plateaux, les gardes boues, et une selle confortable. Vous pouvez [télécharger](https://rstudio.com/products/rstudio/download) et installer Rstudio sur Windows, Linux et Mac. La version de base est gratuite et Open Source, mais l'entreprise qui développe ce logiciel propose aussi des versions commerciales du logiciel qui assure essentiellement un support. Il existe d'autres environnements de développements pour travailler avec ![](images/logos/Rlogo.png) (VisualStudio, Jupyter, Tinn-R, Radiant, RIDE etc.), mais Rstudio offre à ce jour la meilleure option en terme de facilité d'installation, de prise en main et de fonctionnalités proposées.
+
+Une fois que Rstudio est installé, vous pouvez l'exécuter, il devrait trouver de lui-même le chemin d'installation de ![](images/logos/Rlogo.png). La fenêtre suivante s'ouvre : 
+
+```{r fig06, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Environnement de base de Rstudio",  out.width='70%'}
+knitr::include_graphics('images/introduction/r_studio_01.jpeg', dpi = NA)
+```
+
+Avant d'aller plus loin, notez deux choses : 
+
+* La console actuellement ouverte dans Rstudio vous informe de la version de ![](images/logos/Rlogo.png) que vous utilisez. Vous pouvez en effet avoir plusieurs versions de ![](images/logos/Rlogo.png) installées sur votre ordinateur et passer de l'une à la'autre avec Rstudio. Pour cela, naviguez dans l'onglet *Tools/Global Options* et dans le volet  *General*, vous pouvez sélectionner la version de R que vous souhaitez utiliser.
+* L'aspect de Rstudio peut être modifié en navigant dans l'onglet *Tools/Global Options*, et dans le volet *Appareance*. Nous avons une préférence pour le mode sombre avec le style *pastel on dark*, mais libre à chacun de choisir en fonction de ses préférences.
+
+```{r fig07, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Rstudio avec le style pastel on dark",  out.width='70%'}
+knitr::include_graphics('images/introduction/r_studio_02.jpeg', dpi = NA)
+```
+
+Une fois ces détails réglés, vous pouvez ouvrir votre première feuille de code en allant dans l'onglet *File/New File/R Script*, votre environnement est maintenant découper en quatre fenêtres (figure \@ref(fig:fig08)) : 
+
+```{r fig08, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les quatre fenêtres de Rstudio",  out.width='70%'}
+knitr::include_graphics('images/introduction/r_studio_03.jpeg', dpi = NA)
+```
+
+1. L'éditeur de code, vous permettant d'écrire le script que vous voulez exécuter et permettant de garder une trace de votre travail. Ce script peut être enregistré sur votre ordinateur avec l'extension .R, mais reste un simple fichier texte.
+2. La console, vous permettant d'exécuter votre code R et de voir les résultats s'afficher au fur et à mesure.
+3. La fenêtre d'environnement, vous montrant quels objets, fonctions et jeux de données actuellement disponibles dans votre session (chargés dans la mémoire vive).
+4. La fenêtre de l'aide, des graphiques et l'explorateur de fichiers. Vous pouvez accéder ici à la documentation de ![](images/logos/Rlogo.png) et des packages que vous utilisez, aux sorties graphiques que vous produisez et aux dossier de votre environnement de travail.
+
+Prenons un bref exemple, tappez la syntaxe suivante dans l'éditeur de code: 
+
+```{r ma_somme}
+ma_somme <- 4+4
+```
+
+Sélectionnez ensuite cette syntaxe et que vous utilisez le raccourci crt+Enter, ou cliquez sur le bouton *Run* (avec la flèche verte), cette syntaxe est envoyée à la console qui l'exécute immédiatement. Notez que rien ne se passe tant que le code n'est pas envoyé à la console. Il s'agit donc de deux étapes distinctes : écrire son code, puis l'envoyer à la console. Vous allez également constater que un objet *ma_somme* est apparu dans votre environnement et que sa valeur est bien 8. Votre console se "souvient" de cette valeur, elle est actuellement stockée dans votre mémoire vive sous le nom ede *ma_somme* (figure \@ref(fig:fig09)).
+
+```{r fig09, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les quatre fenêtres de Rstudio",  out.width='70%'}
+knitr::include_graphics('images/introduction/r_studio_04.jpeg', dpi = NA)
+```
+
+Pour terminer sur cette section, nous vous invitons à enregistrer votre feuille de code actuelle (*File/Save As*) dans un fichier .R que vous pouvez appeler par exemple "mon_premier_script.R". Fermez ensuite Rstudio, redémarrez le et ouvrez (*File/Open File*) votre fichier "mon_premier_script.R". Vous pouvez constater que votre code est toujours présent, mais que votre environnement est vide tant que vous n'exécutez pas votre syntaxe. En effet, lorsque vous fermez Rstudio, l'environnement est vidé pour libérer la mémoire vive. Ceci peut poser problème lorsque certains codes sont très long à exécuter, nous verrons donc plus tard comment enregistrer l'environnement en cours pour le recharger par la suite.
+
+Vous êtes prêts à travailler dans R ! Rendez-vous dans la prochaine section pour rentrer dans le vif du sujet.
+
+## Naviguer entre Vecteurs, listes et dataframes {#sect13}
 
 	0.4 importer et manipuler des données
 		creer un dataframe
