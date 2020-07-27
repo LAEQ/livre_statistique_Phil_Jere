@@ -6,7 +6,7 @@ Dans ce chapitre, nous présentons les principales méthodes exploratoires et co
 knitr::include_graphics('images/bivariee/figure1.jpg', dpi = NA)
 ```
 
-Plus spécifiquement, nous présentrons puis mettrons en oeuvre dans le logiciel ![](images/logos/Rlogo.png) les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect31)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect32)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect33)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect34)).
+Plus spécifiquement, nous présentrons puis mettrons en œuvre dans le logiciel ![](images/logos/Rlogo.png) les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect31)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect32)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect33)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect34)).
 
 ## Relation linéaire entre deux variables quantitatives {#sect31}
 
@@ -74,8 +74,8 @@ Ainsi,</span> la covariance\index{covariance} correspond à un centrage des vari
 
 ```{r fig4, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Covariance et unités de mesure', out.width='75%'}
 
-library(ggplot2)
-library(ggpubr)
+library("ggplot2")
+library("ggpubr")
 
 df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 
@@ -123,7 +123,7 @@ r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1
 La syntaxe ![](images/Rlogo.png) ci-dessous démontre que le coefficient de corrélation de Pearson est bien égale à la moyenne du produit de deux variables centrées-réduites.
 
 ```{r message=FALSE, warning=FALSE}
-library(MASS)
+library("MASS")
 N <- 1000      # nombre d'observations
 moy_x <- 50   # moyenne de x
 moy_y <- 40   # moyenne de y
@@ -161,9 +161,9 @@ Le coefficient de corrélation $r$ varie de −1 à 1 avec :
 
 
 ```{r fig5, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Relations entre deux variables continues et coefficients de corrélation de Pearson', out.width='75%'}
-library(MASS)
-library(ggplot2)
-library(ggpubr)
+library("MASS")
+library("ggplot2")
+library("ggpubr")
 N <- 1000      # nombre d'observations
 moy_x <- 50   # moyenne de x
 moy_y <- 40   # moyenne de y
@@ -219,7 +219,7 @@ knitr::kable(
 Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
 
 ```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Coefficient de corrélation et proportion de la variance expliquée', out.width='75%'}
-library(ggplot2)
+library("ggplot2")
 R <- seq(-1, 1, by=0.01)
 R2 <- R^2
 
@@ -252,9 +252,9 @@ R2 <- R^2
 **Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes (extrêmes). D’ailleurs, plus le nombre d’observations sera réduit, plus la présence de valeurs aberrantes aura un impact important sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, dans le nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui se démarquent nettement dans le jeu de données : six observations avec une densité de population supérieures à 20 000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55%. Si l'on supprime ces observations (ce qui est défendable dans ce contexte) – soit moins d'un pourcent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
 
 ```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Illustation de l’effet des valeurs extrêmes sur le coefficient de Pearson', out.width='75%'}
-library(ggplot2)
-library(ggpubr)
-library(moments)
+library("ggplot2")
+library("ggpubr")
+library("moments")
 
 df1 <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 
@@ -331,8 +331,8 @@ avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observat
 
 
 ```{r fig8, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Comparaison des coefficients de Pearson, Spearman et Kendall sur deux variables anormalement distribuées', out.width='75%'}
-library(moments)
-library(ggpubr)
+library("moments")
+library("ggpubr")
 
 df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 
@@ -407,7 +407,7 @@ Enfin, une autre option est l'utilisation de la corrélation $pi$ de Sherphred [
 Appliquons ces corrélations aux données précédentes. Notez que ce simple code d'une dizaine de lignes permettant d'explorer rapidement la corrélation entre deux variables selon six mesures de corrélations.
 
 ```{r robcorr, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
-library(correlation)
+library("correlation")
 
 df1 <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 
@@ -481,7 +481,7 @@ cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .99)
 
 
 ```{r fig9, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Histogramme pour les valeurs de corrélation issues du Bootstrap', out.width='75%'}
-library(boot)
+library("boot")
 df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 
 # Fonction pour la corrélation
@@ -538,8 +538,8 @@ avec _A_ et _B_ étant les deux variables pour lesquelles on souhaite évaluer l
 Dans l'exemple ci-dessous, nous voulons estimer la relation linéaire entre le pourcentage de personnes à faible revenu et la couverture végétale au niveau des îlots de l'île de Montréal, une fois contrôlé la densité de population. En effet, plus cette dernière sera forte, plus la couverture végétale sera faible ($r$ de Pearson = −0,603). La valeur du $r$ de Pearson s'élève à −0,546 entre le pourcentage de personnes à faible revenu dans la population totale de l'îlot et la couverture végétale. Une fois la densité de population contrôlée, il chute à −0,316. Pour calculer la corrélation partielle, on pourra utiliser la fonction `pcor.test` du package **ppcor**.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-library(foreign)
-library(ppcor)
+library("foreign")
+library("ppcor")
 
 dfveg <- read.dbf("data/bivariee/IlotsVeg2006.dbf")
 
@@ -562,7 +562,7 @@ cat("Corr. partielle avec ppcor  = ",
     "\nCorr. partielle (formule)  = ", round(CorP, 5))
 ```
 
-#### Mise en oeuvre dans R {#sect3137}
+#### Mise en œuvre dans ![](images/Rlogo.png) {#sect3137}
 
 Comme vous l'aurez compris, il est souvent possible d'arriver au même résultat dans ![](images/Rlogo.png) par différents moyens. Pour les corrélations, nous avons utilisé les fonctions de base `cor` et `cor.test` pour calculer les corrélations. Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
 
@@ -575,11 +575,10 @@ Comme vous l'aurez compris, il est souvent possible d'arriver au même résultat
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 
-library(Hmisc)
-library(stargazer)
-library(apaTables)
-library(dplyr)
-#library(psych)
+library("Hmisc")
+library("stargazer")
+library("apaTables")
+library("dplyr")
 
 # Corrélations de Pearson et Spearman et valeurs de p 
 # avec la fonction rcorr de Hmisc pour deux variables
@@ -618,8 +617,8 @@ apaTables::apa.cor.table(df[, c("RevMedMen","Locataire","LogTailInc")],
 :::
 
 ```{r figcorrplot1, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Matrice de corrélation avec corrplot (chiffres)', out.width='60%'}
-library(corrplot)
-library(ggpubr)
+library("corrplot")
+library("ggpubr")
 
 df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 Vars <- c("RevMedMen","Locataire", "LogTailInc","A65plus","ImgRec", "HabKm2", "FaibleRev")
@@ -695,7 +694,7 @@ L'association entre deux variables peut aussi être simplement le fruit du hasar
 
 
 ```{r corraleatoire, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Corrélations significatives obtenues aléatoirement', out.width='60%'}
-library(Hmisc)
+library("Hmisc")
 
 nbVars <- 100 # nous utilisons 100 variables générées aléatoirement pour l'expérience
 nbExperiment <- 1000 # nous reproduirons 1000  fois l'expérience avec les 100 variables
@@ -771,7 +770,7 @@ Avec, cette équation de régression, il est possible de prédire le pourcentage
 * $\widehat{y_i} = 21.873 + (1.448 \times 20km) = 1.643$
 
 ```{r figreg, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Relation linéaire entre l'utilisation du vélo et la distance au centre-ville", out.width='65%'}
-library(ggplot2)
+library("ggplot2")
 modele <- lm(Velo~KmCV, df)
 b0 <- round(modele$coefficients[1],3)
 b1 <- round(modele$coefficients[2],3)
@@ -1007,7 +1006,7 @@ summary(modele)
 
 Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}{52.26} = 34.75$ avec un valeur de $p < 0.001$. Par conséquent, le modèle est significatif.
 
-#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3144}
+#### Mise en œuvre dans ![](images/Rlogo.png) {#sect3144}
 Comment calculer une régression linéaire simple dans ![](images/Rlogo.png)? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -1058,7 +1057,7 @@ Les données du tableau de contigence ci-dessous décrivent 279 projets d'habita
 
 
 ```{r tablecontigence, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
-library(gmodels)
+library("gmodels")
 TableauKhi2 <- read.csv("data/bivariee/hlm.csv")
 # Création d'un facteur pour les modalités de la période de construction
 TableauKhi2$Periode <- factor(TableauKhi2$Periode, 
@@ -1104,7 +1103,7 @@ Coefficient Phi | $\phi=\sqrt{\frac{\chi^2}{n}}$ | Simplement le Khi^2^ divisé 
 V de Cramer | $V=\sqrt{\frac{\chi^2/n}{min(c-1,l-1)}}$ | Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que pour un tableau de 2 x 2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.
 :::
 
-### Mise en oeuvre dans ![](images/Rlogo.png) {#sect324}
+### Mise en œuvre dans ![](images/Rlogo.png) {#sect324}
 
 Pour calculer le Khi^2^ entre deux variables qualitatives, on utilise la fonction de base : `chisq.test(x = ..., y = ...)` qui renvoie le nombre de degré de liberté, les valeurs du Khi^2^ et de *p*.
 
@@ -1119,7 +1118,7 @@ chisq.test(x = dataHLM$Taille, y = dataHLM$Periode)
 Pour la construction du tableau de contigence, deux options sont possibles dépendamment de la structuration de votre tableau de données initial. Premier cas de figure, votre tableau comprend une ligne par observation avec les différentes modalités dans deux colonnes (ici *Periode* et *Taille*). Dans la syntaxe ci-dessous, pour chacune des deux variables qualitatives, on crée un facteur afin de spécifier un intitulé à chaque modalité (`factor(levels =c(....), labels = c(..)`). Puis, on utilise la fonction `CrossTable` du package **gmodels**. Pour obtenir les fréquences théoriques, les contributions locales au Khi^2^ et les déviations, on spécifie les options suivantes : `expected=TRUE, chisq = TRUE, resid = TRUE`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-library(gmodels)
+library("gmodels")
 
 #Premiers enregistrements du tableau
 head(dataHLM)
@@ -1218,13 +1217,13 @@ df <- read.csv("data/bivariee/hlm.csv")
   PG <- pchisq(G, df=dl, lower.tail = FALSE) # P pour le G22
   
   # khi2 de Mantel-Haenszel avec la librarie DescTools
-  library(DescTools)
+  library("DescTools")
   MHTest <- MHChisqTest(testChi2$observed)
   MH <- MHTest$statistic
   PMH <- MHTest$p.value
   
   # Cofficient de correlation Polychorique
-  library(correlation)
+  library("correlation")
   df <- data.frame("x" = as.factor(x),
                  "y" = as.factor(y))
   polychoricCorr <- cor_test(df,"x","y",method = "polychoric")
@@ -1296,7 +1295,7 @@ Le **t de student**, appelé aussi **test _t_** (*t-test* en anglais), est un te
 
 * **Échantillons indépendants (dits non appariés)**, les observations des deux groupes n'ont aucun lien entre eux. Par exemple, on souhaite vérifier si les moyennes du sentiment de sécurité des hommes et des femmes, ou encore, les moyennes des loyers entre deux villes sont statistiquement différentes. Ainsi, les tailles des deux échantillons peuvent être différentes ($n_a \neq n_b$).
 
-* **Échantillons dépendants (dits appariés)**, les individus des deux groupes sont les mêmes et  peuvent donc être associés par paires. Autrement dit, on a deux séries de valeurs de taille identique $n_a = n_b$ et $n_{ai}$ est le même individu que $n_{bi}$. Ce type d'analyse est souvent utilisée en études cliniques : pour $n$ individus, on dispose d'une mesure quantitative de leur état de santé pour deux séries (l'un avant le traitement, l'autre une fois le traitement terminé). Cela permet de comparer les mêmes individus avant et après un traitement, une expérimentation; on parle alors d'étude, d'expérience et d'analyse pré-post. Concrètement, on cherche à savoir si la moyenne des différences des observations avant et après est significativement différente de 0. Si c'est le cas, on peut en conclure que l'expérimentation a eu un impact sur le phénomène mesuré (variable continue). Ce type d'analyse pré-post peut aussi être utilisée pour évaluer l'impact du réaménagement d'un espace public (rue commerciale, place publique, parc, etc.). Par exemple, on pourrait questionner le même échantillon de commerçants ou d'usagers avant et après le réaménagement d'une artère commerciale.
+* **Échantillons dépendants (dits appariés)**, les individus des deux groupes sont les mêmes et  sont donc être associés par paires. Autrement dit, on a deux séries de valeurs de taille identique $n_a = n_b$ et $n_{ai}$ est le même individu que $n_{bi}$. Ce type d'analyse est souvent utilisée en études cliniques : pour $n$ individus, on dispose d'une mesure quantitative de leur état de santé pour deux séries (l'un avant le traitement, l'autre une fois le traitement terminé). Cela permet de comparer les mêmes individus avant et après un traitement, une expérimentation; on parle alors d'étude, d'expérience et d'analyse pré-post. Concrètement, on cherche à savoir si la moyenne des différences des observations avant et après est significativement différente de 0. Si c'est le cas, on peut en conclure que l'expérimentation a eu un impact sur le phénomène mesuré (variable continue). Ce type d'analyse pré-post peut aussi être utilisée pour évaluer l'impact du réaménagement d'un espace public (rue commerciale, place publique, parc, etc.). Par exemple, on pourrait questionner le même échantillon de commerçants ou d'usagers avant et après le réaménagement d'une artère commerciale.
 
 **Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement distribuée. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect332)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
 
@@ -1332,8 +1331,8 @@ Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit une fonction
 D'emblée, l'analyse visuelle des boites à moustaches (figure \@ref(fig:figttest1)) signale qu'au cas 1 contrairement au cas 2 que les groupes sont plus homogènes (boîtes plus compactes) et que les moyennes semblent différentes (les boîtes sont centrées différemment sur l'axe des ordonnées). Cela est confirmé par les résultats des tests.
 
 ```{r figttest1, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Boites à moustache sur des échantillons fictifs non appariées', out.width='75%'}
-library(ggplot2)
-library(ggpubr)
+library("ggplot2")
+library("ggpubr")
 # fonction ------------------
 tstudent_independants <- function(A, B){
     x_a <- mean(A)           # Moyenne du groupe A
@@ -1452,8 +1451,8 @@ D'emblée, l'analyse visuelle des boîtes à moustaches (figure \@ref(fig:figtte
 
 
 ```{r figttest2, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Boites à moustache sur des échantillons fictifs appariées', out.width='75%'}
-library(ggplot2)
-library(ggpubr)
+library("ggplot2")
+library("ggpubr")
 
 tstudent_dependants <- function(A, B, mu=0){
   d <- A-B           # différences entre les observations pairées
@@ -1541,7 +1540,7 @@ knitr::kable(
 ```
 
 
-#### Mise en oeuvre dans ![](images/Rlogo.png) {#sect3313}
+#### Mise en œuvre dans ![](images/Rlogo.png) {#sect3313}
 
 Surtout pas de panique ! Nous avons écrit les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe de fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux test avec une seule ligne de code.
 
@@ -1577,10 +1576,10 @@ knitr::include_graphics('images/bivariee/FigureLocataires.jpg', dpi = NA)
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-library(foreign)
-library(effectsize)
-library(ggplot2)
-library(dplyr)
+library("foreign")
+library("effectsize")
+library("ggplot2")
+library("dplyr")
 
 # Importation du fichier
 dfRMR <- read.dbf("data/bivariee/SRRMRMTL2016.dbf")
@@ -1657,8 +1656,8 @@ Pour réalisation un test *t* pondérée, on utilise la fonction `weighted_ttest
 En guise d'exemple, dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend (`weighted_ttest(Locataire ~ Montreal + Logement, dfRMR, paired = FALSE, ci.lvl=.95`).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-library(sjstats)
-library(dplyr)
+library("sjstats")
+library("dplyr")
 
 # Calcul des statistiques pondérées
 group_by(dfRMR, Montreal) %>%
@@ -1681,8 +1680,8 @@ weighted_ttest(Locataire ~ Montreal + Logement, dfRMR,
 **Exemple de syntaxe ![](images/Rlogo.png) pour un test de Student pour des échantillons dépendants**
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-library(ggpubr)
-library(dplyr)
+library("ggpubr")
+library("dplyr")
 Pre <- c(79,71,81,83,77,74,76,74,79,70,66,85,69,69,82,69,81,70,83,68,77,76,77,70,68,80,65,65,75,84)
 Post <- c(56,47,40,45,49,51,54,47,44,54,42,56,45,45,48,55,59,58,56,41,56,51,45,55,49,49,48,43,60,50)
 
@@ -1740,17 +1739,15 @@ Pour un texte en anglais, vous pourrez consulter
 ### Test non paramétrique de Wilcoxon {#sect332}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
-
-Si la variable continue est fortement anormalement distribuée, il est déconseillé d'utiliser les tests de Student et de Welch. On préviligera le test des rangs signés de Wilcoxon (*Wilcoxon rank-sum test* en anglais). Attention, il est aussi appelé test U de Mann-Whitney. 
+Si la variable continue est fortement anormalement distribuée, il est déconseillé d'utiliser les tests de Student et de Welch. On préviligera le test des rangs signés de Wilcoxon (*Wilcoxon rank-sum test* en anglais). Attention, il est aussi appelé test U de Mann-Whitney. Ce test permet alors de vérifier si les deux groupes présentent des médianes différentes.
 
 Pour ce faire, on utilise la fonction `wilcox.test` dans lequel le paramètre `paired` permettra de spécifier si les échantillons sont indépendants ou non (`FALSE` ou `TRUE`).
-
 :::
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-library(foreign)
-library(dplyr)
+library("foreign")
+library("dplyr")
 
 ###############################
 # Échantillons indépendants
@@ -1793,13 +1790,515 @@ wilcox.test(df1$Avant, df1$Apres, paired = TRUE)
 
 **Comment rapporter un test de Wilcoxon?**
 
-* Les résultats du test de des rangs signés de Wilcoxon signale que les rangs de l'île de Montréal sont significativement plus élevés que ceux de l'île de Laval (W = 1223, p ˂ 0,001).
+* Les résultats du test des rangs signés de Wilcoxon signale que les rangs de l'île de Montréal sont significativement plus élevés que ceux de l'île de Laval (W = 1223, p ˂ 0,001).
 * Les résultats du test de Wilcoxon signalent que les rangs post-tests sont significativement plus faibles que ceux post-test (W = 1273,5, p ˂ 0,001).
 * Les résultats du test de Wilcoxon signalent que la médiane des rangs pré-tests (médiane = 69) est significativement plus forte que celle du post-test (médiane = 50,5) (W = 1273,5, p ˂ 0,001).
 
 
 ## Relation entre une variable quantitative et une variable qualitative à plus deux modalités {#sect34}
 
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+
+**Existe-il une dépendance entre une variable continue et une variable qualitative comprenant plus de deux modalités?** Pour répondre à cette question, on pourra recourir à deux méthodes : l’analyse de variance – **ANOVA**, _**AN**alysis Of **VA**riance_ en anglais – et le test non paramétrique de Kruskal-Wallis. La première permet de vérifier si les moyennes de plusieurs groupes d'une population donnée sont ou non significativement différentes; la seconde si leurs médianes sont différentes.
+:::
+
 ### Analyse de variance {#sect341}
 
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+
+L’analyse de variance (ANOVA) est largement utilisée en psychologie, médecine et pharmacologie. Prenons un exemple classique en pharmacologie pour tester l'efficacité du médicament. Quatre groupes de population sont constitués :
+
+* un premier groupe d'individus pour lequel on administre un placebo (un médicament sans substance active), soit le groupe de contrôle ou le groupe témoin;
+* un second groupe auquel l'on administre le médicament avec un faible dosage;
+* un troisième avec un dosage moyen;
+* un quatrième avec un dosage élevé.
+
+La variable continue permettra d'évaluer l'évolution de l'état de santé des individus (par exemple, la variation du taux de globules rouges dans le sang avant et après le traitement). On s'attendrait alors que les moyennes du deuxième, troisième et quatrième groupes soient plus élevées que celle du groupe de contrôle. Statistiquement parlant, si les moyennes sont significativement différentes ou autrement dit, si l’état de santé s’est nettement plus amélioré chez les membres des second et troisième et quatrième groupes comparativement à celui des membres du groupe contrôle, le médicament est efficace. Les différences de moyennes entre les second, troisième et quatrième groupe permettront aussi de repérer quel dosage est le plus efficace.
+
+L'ANOVA est aussi très utilisée en études urbaines, principalement pour vérifier si un phénomène urbain varie selon plusieurs groupes d'une population donnée ou de régions géographiques. En guise d'exemple, le recours à l'ANOVA permettrait de répondre aux questions suivantes :
+
+* les moyennes des niveaux d'exposition à un polluant atmosphérique (variable continue) varient-elles significativement selon le mode de transport utilisé (automobile, vélo, transport en commun) pour des trajets similaires en heures de pointe?
+
+* pour une métropole donnée, les moyennes des loyers (variable continue) sont-elles différentes entre les logements de la ville centre versus ceux localisés dans la première et de la seconde couronnes?
+:::
+
+#### Le calcul des trois variances pour l'ANOVA {#sect3411}
+
+L'ANOVA repose sur le calcul de trois variances :
+
+* **la variance totale** (*VT*) de la variable dépendante continue, soit la somme des carrés des écarts à la moyenne de l'ensemble de la population (équation \@ref(eq:anova1);
+
+* la **variance intergroupe** (*Var~inter~*) ou variance expliquée (*VE*), soit la somme des carrés des écarts entre la moyenne de chaque groupe et la moyenne de l’ensemble du jeu de données multipliées par le nombre d’individus appartenant à chacun des groupes (équation \@ref(eq:anova2);
+
+* la **variance intragroupe**  (*Var~intra~*) ou variance non expliquée (*VNE*) ou , soit la somme des variances des groupes de la variable indépendante (équation \@ref(eq:anova3).
+
+\begin{equation} 
+VT=\sum_{i=1}^n (y_{i}-\overline{y})^2
+(\#eq:anova1)
+\end{equation}
+
+\begin{equation} 
+Var_{inter} \mbox{ ou } VE=\sum_{i\in{g_1}}(\overline{y_{g_1}}-\overline{y})^2 + \sum_{i\in{g_2}}(\overline{y_{g_2}}-\overline{y})^2 + ... + \sum_{i\in{g_n}}(\overline{y_{g_k}}-\overline{y})^2
+(\#eq:anova2)
+\end{equation}
+
+\begin{equation} 
+Var_{intra} \mbox{ ou } VNE=\sum_{i\in{g_1}}(y_{i}-\overline{y_{g_1}})^2 + \sum_{i\in{g_2}}(y_{i}-\overline{y_{g_2}})^2 + ... + \sum_{i\in{g_n}}(y_{i}-\overline{y_{g_k}})^2 
+(\#eq:anova3)
+\end{equation}
+
+avec $\overline{y}$ est la moyenne de l'ensemble de la population; $\overline{y_{g_1}}$, $\overline{y_{g_1}}$, $\overline{y_{g_k}}$ sont respectivements les moyennes des groupes 1 à _k_ (_k_ étant le nombre de modalités de la variables qualitative) .
+
+La variance totale (*VT*) est égale à la somme de la variance intergroupe (expliquée) et la variance intragroupe (non expliquée) (équation \@ref(eq:anova5)). Le ratio entre la variance intergroupe (expliquée) et la variance totale est dénommé *Eta^2^* (équation \@ref(eq:anova6)). Il varie de 0 à 1 et exprime la proportion de la variance de la variable continue qui est expliquée par les différentes modalités de la variable qualitative.
+
+\begin{equation} 
+VT = Var_{inter} + Var_{intra} \mbox{ ou } VT = VNE + VE
+(\#eq:anova5)
+\end{equation}
+
+\begin{equation} 
+\eta^2= \frac{Var_{inter}}{VT} \mbox{ ou }  \eta^2= \frac{VE}{VT}
+(\#eq:anova6)
+\end{equation}
+
+
+::: {.bloc_astuce .bloc_astuce_png data-latex="{.bloc_astuce}"}
+**La décomposition de la variance totale** – égale à la somme des variances intragroupe et intergroupe – est fondamentale en statistique. Nous verrons qu'elle est aussi utilisée pour évaluer la qualité d'une partition d'une population dans le chapitre sur les méthodes de classification (LIEN A METTRE PLUS TARD). En ANOVA, on retiendra que :
+
+* plus la variance intragroupe est faible, plus les différents groupes sont homogènes;
+* plus la variance intergroupe est forte, plus les moyennes des groupes sont différentes et donc plus les groupes sont dissembables. 
+
+Autrement dit, plus la variance intergroupe (**dissimilarité** des groupes) est maximisée et corollairement plus la variance intragroupe (**homogénéité** de chacun des groupes) est minimisée, plus l'ANOVA sera performante.
+:::
+
+Examinons un premier jeu de données fictif sur la vitesse de déplacements de cyclistes (variable continue exprimée en km/h) et une variable qualitative comprenant trois groupes de cyclistes utilisant soit un vélo personnel (*n~A~* = 5), soit en libre service (*n~B~* = 7), soit électrique (*n~C~* = 6) (tableau \@ref(tab:aovfictive1)). D'emblée, on note que les moyennes de vitesse des trois groupes sont différentes : 17,6 km/h pour les cyclistes avec leur vélo personnel, 12,3  km/h les utilisateurs des vélos en libre service et 23,1 km/h pour les cyclistes avec un vélo électrique. 
+
+Pour chaque observation, la troisième colonne du tableau représente la dévation à la grande moyenne mise au carré, tandis que les colonnes suivantes représentent la dévation au carré de chaque observation à la moyenne de son groupe d'appartenance. En guise, pour la première observation, on a : $(16,900 - 17,339)^2 = 0,193$ et $(16,900 - 17,580)^2~ = 0,46$. La variance totale (*VT*) est donc égale à la somme de la troisième colonne (424,663), tandis que la variance intragroupe (non expliquée, VNE) est égale à $11,228+21,537+13,993=46,758$. Quant à la variance intergroupe (expliquée, VE), elle est égale à $5\times(17,580-17,339)^2+7\times(12,257-17,339)^2+6\times(23,067-17,339)^2 = 377,904$.
+
+On a donc $VT = Var_{inter} + Var_{intra}$, soit $424,663 = 377,904 + 46,758$ et $\eta_2 = 377,904 / 424,663 = 0,89$. Cela signale que 89% de la variance de la vitesse des cyclistes est expliquée par le type de vélo utilisé.
+
+```{r aovfictive1, echo=FALSE, message=FALSE, warning=FALSE}
+VeloA <- c(16.9, 20.4, 16.1, 17.7, 16.8)
+VeloB <- c(13.4, 11.3, 14.0, 12.4, 13.7, 8.5, 12.5)
+VeloC <- c(22.9, 26.0, 23.6, 21.0, 22.3, 22.6)
+
+moyA <- mean(VeloA)
+moyB <- mean(VeloB)
+moyC <- mean(VeloC)
+grandmoy <- mean(c(VeloA,VeloB,VeloC))
+
+nA <- length(VeloA)
+nB <- length(VeloB)
+nC <- length(VeloC)
+n <- nA + nB + nC
+
+VT <- sum((c(VeloA,VeloB, VeloC)-grandmoy)^2)
+VNE_A <- sum((VeloA-moyA)^2)
+VNE_B <- sum((VeloB-moyB)^2)
+VNE_C <- sum((VeloC-moyC)^2)
+VNE <- VNE_A + VNE_B + VNE_C
+VE <- nA*(moyA-grandmoy)^2 + nB*(moyB-grandmoy)^2 + nC*(moyC-grandmoy)^2
+Eta2 <- round(VE / VT, 4)
+  
+df <- data.frame(
+  velo = c(rep("A. personnel",length(VeloA)), 
+           rep("B. libre service",length(VeloB)),
+           rep("C. électrique",length(VeloC))),
+  kmh = c(VeloA,VeloB, VeloC))
+
+df$VT <- (df$kmh - grandmoy)^2
+df$VNE_A <- ifelse(df$velo == "A. personnel", (df$kmh - moyA)^2, NA)
+df$VNE_B <- ifelse(df$velo == "B. libre service", (df$kmh - moyB)^2, NA)
+df$VNE_C <- ifelse(df$velo == "C. électrique", (df$kmh - moyC)^2, NA)
+df_cas1 <- df
+
+tabl <- df
+tabl$velo <- as.character(tabl$velo)
+tabl[19,1] <- "grande moyenne"
+tabl[20,1] <- "moyenne groupe A"
+tabl[21,1] <- "moyenne groupe B"
+tabl[22,1] <- "moyenne groupe C "
+tabl[19,2] <- round(grandmoy,3)
+tabl[20,2] <- round(moyA,3)
+tabl[21,2] <- round(moyB,3)
+tabl[22,2] <- round(moyC,3)
+tabl[23,1] <- "Variance totale"
+tabl[24,1] <- "Variance intragroupe"
+tabl[23,3] <- sum(tabl$VT, na.rm = TRUE)
+tabl[24,4] <- sum(tabl$VNE_A, na.rm = TRUE)
+tabl[24,5] <- sum(tabl$VNE_B, na.rm = TRUE)
+tabl[24,6] <- sum(tabl$VNE_C, na.rm = TRUE)
+tabl$VT <- round(tabl$VT,3)
+tabl$VNE_A <- round(tabl$VNE_A,3)
+tabl$VNE_B <- round(tabl$VNE_B,3)
+tabl$VNE_C <- round(tabl$VNE_C,3)
+
+opts <- options(knitr.kable.NA = "--")
+knitr::kable(
+  head(tabl, nrow(tabl)), booktabs = TRUE, valign = 't', row.names = FALSE,
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Type de vélo",
+                "km/h",
+                "$(y_{i}-\\overline{y})^2$",
+                "$(y_{i}-\\overline{y_{A}})^2$",
+                "$(y_{i}-\\overline{y_{B}})^2$",
+                "$(y_{i}-\\overline{y_{C}})^2$"
+                ),
+  caption = "Données fictives et calcul des trois variances (cas 1)")
+```
+
+Examinons un deuxième jeu de données fictives pour lequel le type de vélo utilisé n'aurait que peu d'effet sur la vitesse des cyclistes (tableau \@ref(tab:aovfictive2)). D'emblée, les moyennes des trois groupes semblent très similaires (19,3, 17,9 et 18,7). Les valeurs des trois variances sont les suivantes :
+
+* la variance totale est égale à 121,756.
+* la variance intragroupe (non expliquée, VNE) est égale à $9,140+50,254+56,275 = 115,669$
+* la variance intragroupe (expliquée, VE) est égale à $5\times(19,300-18,528)^2+7\times(17,871-18,528)^2+6\times(18,650-18,528)^2 = 6,087$.
+
+On a donc $VT = Var_{inter} + Var_{intra}$, soit $121,756 = 6,087 + 115,669$ et $\eta_2 = 6,087 / 121,756 = 0,05$. Cela signale que 5% de la variance de la vitesse des cyclistes est uniquement expliquée par le type de vélo utilisé.
+
+```{r aovfictive2, echo=FALSE, message=FALSE, warning=FALSE}
+VeloA <- c(17.5, 19.0, 19.7, 18.7, 21.6)
+VeloB <- c(13.7, 20.8, 15.1, 18.8, 21.5, 16.5, 18.7)
+VeloC <- c(16.6, 16.3, 15.6, 20.0, 24.6, 18.8)
+
+moyA <- mean(VeloA)
+moyB <- mean(VeloB)
+moyC <- mean(VeloC)
+grandmoy <- mean(c(VeloA,VeloB,VeloC))
+
+nA <- length(VeloA)
+nB <- length(VeloB)
+nC <- length(VeloC)
+n <- nA + nB + nC
+
+VT <- sum((c(VeloA,VeloB, VeloC)-grandmoy)^2)
+VNE_A <- sum((VeloA-moyA)^2)
+VNE_B <- sum((VeloB-moyB)^2)
+VNE_C <- sum((VeloC-moyC)^2)
+VNE <- VNE_A + VNE_B + VNE_C
+VE <- nA*(moyA-grandmoy)^2 + nB*(moyB-grandmoy)^2 + nC*(moyC-grandmoy)^2
+Eta2 <- round(VE / VT, 4)
+  
+df <- data.frame(
+  velo = c(rep("A. personnel",length(VeloA)), 
+           rep("B. libre service",length(VeloB)),
+           rep("C. électrique",length(VeloC))),
+  kmh = c(VeloA,VeloB, VeloC))
+
+df$VT <- (df$kmh - grandmoy)^2
+df$VNE_A <- ifelse(df$velo == "A. personnel", (df$kmh - moyA)^2, NA)
+df$VNE_B <- ifelse(df$velo == "B. libre service", (df$kmh - moyB)^2, NA)
+df$VNE_C <- ifelse(df$velo == "C. électrique", (df$kmh - moyC)^2, NA)
+df_cas2 <- df
+
+tabl <- df
+tabl$velo <- as.character(tabl$velo)
+tabl[19,1] <- "grande moyenne"
+tabl[20,1] <- "moyenne groupe A"
+tabl[21,1] <- "moyenne groupe B"
+tabl[22,1] <- "moyenne groupe C "
+tabl[19,2] <- round(grandmoy,3)
+tabl[20,2] <- round(moyA,3)
+tabl[21,2] <- round(moyB,3)
+tabl[22,2] <- round(moyC,3)
+tabl[23,1] <- "Variance totale"
+tabl[24,1] <- "Variance intragroupe"
+tabl[23,3] <- sum(tabl$VT, na.rm = TRUE)
+tabl[24,4] <- sum(tabl$VNE_A, na.rm = TRUE)
+tabl[24,5] <- sum(tabl$VNE_B, na.rm = TRUE)
+tabl[24,6] <- sum(tabl$VNE_C, na.rm = TRUE)
+tabl$VT <- round(tabl$VT,3)
+tabl$VNE_A <- round(tabl$VNE_A,3)
+tabl$VNE_B <- round(tabl$VNE_B,3)
+tabl$VNE_C <- round(tabl$VNE_C,3)
+
+opts <- options(knitr.kable.NA = "--")
+knitr::kable(
+  head(tabl, nrow(tabl)), booktabs = TRUE, valign = 't', row.names = FALSE,
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Type de vélo",
+                "km/h",
+                "$(y_{i}-\\overline{y})^2$",
+                "$(y_{i}-\\overline{y_{A}})^2$",
+                "$(y_{i}-\\overline{y_{B}})^2$",
+                "$(y_{i}-\\overline{y_{C}})^2$"
+                ),
+  caption = "Données fictives et calcul des trois variances (cas 2)")
+```
+
+
+#### Le test de Fisher {#sect3412}
+
+Pour vérifier si les moyennes sont satistiquement différentes, on a recours au test *F* de Fisher. Pour ce faire, on pose l'hypothèse nulle (H~0~), soit que les moyennes des groupes sont égales; autrement dit que la variable qualitative n'a pas d'effet sur la variable continue (indépendance entre les deux variables). L'hypothèse alternative (H~1~) est donc que les moyennes sont différentes. Pour nos deux jeux de données fictifs ci-dessus comprenant trois groupes, H~0~ signifie que $\overline{y_{A}}=\overline{y_{B}}=\overline{y_{C}}$. La statistique *F* se calcule comme suit :
+
+
+\begin{equation} 
+F = \frac{\frac{Var{inter}}{k-1}}{\frac{Var{intra}}{n-k}}\mbox{ ou } F = \frac{\frac{VE}{k-1}}{\frac{VNE}{n-k}}
+(\#eq:anovaF)
+\end{equation}
+
+avec $n$ et $k$ étant respectivement les nombres d'observations et de modalités de la variable qualitative. L'hypothèse nulle (les moyennes sont égales) sera rejetée si la valeur du *F* calculé est supérieure à la valeur critique de la table *F* avec *(k-1, n-k)* et un seuil 
+$\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de *F*, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `aov` calcule directement la valeur *F* et celle de *p* qui lui est associée. Concrètement, si le test _F_ est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus les moyennes seront statistiquement différentes.
+
+Appliquons rapidement la démarche du test *F* à nos deux jeux de données fictifs qui comprennent 3 modalités pour la variable qualitative et 18 observations. Avec $\alpha$=0,05, 2 degrés de liberté (3-1) au numérateur et 15 au dénominateur (18-3), la valeur critique de F est de 3,68. On en conclut alors que :
+
+* pour le cas A, le F calculé est égal à $F = (377,904 /2) / (46,758 / 15) = 60,62$. Il est  supérieur à la valeur F critique; les moyennes sont donc statistiquement différentes avec *p*<0,05.
+* pour le cas B, le F calculé est égal à $F = (6,087/2)/ (115,669 / 15) = 0,39$. Il est inférieur à la valeur F critique; les moyennes ne sont donc pas statistiquement différentes.
+
+#### Conditions d'application de l'ANOVA et solutions alternatives {#sect3414}
+Trois conditions d'application doivent être vérifiées avant de calculer une analyser de variance sur un jeu de données :
+
+* **Normalité des groupes.** Le test de Fisher nécessite que les échantillons (groupes) doivent être idéalement normalement distribués. Pour le vérifier, on a recours au test de normalité de Shapiro–Wilk (REF CHAPITRE 1 à METTRE PLUS TARD). Une autre option de vérifier la normalité des résidus, toujours avec le test de Shapiro–Wilk. Notez toutefois que ce test est très restrictif, notamment pour des grands échantillons. Par conséquent, la condition de la normalité est particulièrement importante quand les échantillons sont de taille réduite; corollairement, elle ne doit être appliquée avec sévérité lorsque l'on analyse de grands échantillons. En effet, de nombreux auteurs s'entendent sur le fait que l'ANOVA peut être utilisée même si les distributions des groupes sont légèrement anormalement distribuées. 
+* **Homoscédasticité**. La variance dans les échantillons doit être la même (homogénéité des variances). Pour vérifier cette condition, on utilisera les tests de Levene, de Bartlett ou de Breusch-Pagan.
+
+* **Indépendance des observations (pseudo-réplication).** chaque individu doit appartenir à un et un seul groupe. En d'autres termes, les observations ne sont pas indépendantes si plusieurs mesures (variable continue) sont faites sur un même individu. Si c'est le cas, on utilisera alors une analyse de variance sur des mesures répétées (voir le bloc à la fin du chapitre).
+
+**Que faire quand les conditions d'application relatives à la normalité ou à l'homoscédaticité ne sont vraiment pas respectées ?** Signalons d'emblée que le non respect de ces conditions ne change rien à la décomposition de la variance (VT=V~intra~+V~inter~). Cela signifie que vous pouvez toujours calculer Eta^2^. Par contre, le test de Fisher ne peut pas être utilisé car il sera biaisé. Quatre solutions sont envisageables :
+
+* Lorsque les échantillons sont fortement anormalement distribués, certains auteurs vont simplement transformer leur variable continue en *log* et reporter le test de fisher calculé sur cette transformation. Attention toutefois ! La transformation logarithme n'est pas une panacée puisqu'elle ne corrige pas systématiquement l'anormalité d'une distribution. Par conséquent, avant de recalculer votre test *F*, il convient de réaliser un test de normalité de Shapiro–Wilk et un test d'homoscédasticité (Levene, Bartlett ou/et Breusch-Pagan) sur la variable continue transformée en logarithme.
+
+* Détecter à l'aide de graphiques, les observations qui contribuent le plus à l'anormalité et l'hétéroscédasticité, dites valeurs aberrantes (*outliers* en anglais). Supprimez les et refaites votre ANOVA, en vous assurant que les conditions sont désormais respectées. J'avoue ne pas être féru de cette solution. Si vos échantillons sont bien constitués et que la mesure collectée n'est pas erronée, pourquoi donc la supprimer? Si vous optez pour cette solution, prenez soin de comparer les résultats avant et après la suppression des valeurs aberrantes. Si les conditions sont respectées après suppression et que les résultats de l'ANOVA (Eta^2^ et test *F* de Fisher) sont très semblables, conservez donc les résultats l'ANOVA intitiale.
+
+* Lorsque les variances des groupes sont dissemblables, vous pouvez utiliser le test de Welch pour l'ANOVA au lieu de test *F* de Fisher. 
+
+* Dernière solution, lors les deux conditions ne sont vraiment pas respectées, utilisez le test non paramétrique de Kruskal-Wallis. Par analogie au *t* de student, il correspond au test des rangs signés de Wilcoxon. Ce test est décrit dans la section suivante.
+
+Vous l'aurez compris, la statistique et sa mise en œuvre dans ![](images/Rlogo.png) s'apparentent souvent à la cuisine : pour un même plat plusieurs recettes sont possibles, dépendamment de vos ingrédients et (multi)cultures culinaires; à vous de trouver celle qui convient le mieux à vos papilles ou à votre jeu de données. 
+
 ### Test non paramétrique de Kruskal-Wallis {#sect342}
+
+Le test non paramétrique de Kruskal-Wallis est une alternative à l'ANOVA classique lorsque le jeu de données présentent de graves problèmes de normalité et d'homoscédaticité. Cette méthode représente une ANOVA appliquée à une variable continue transformée préalablement en rangs. Du fait de la transformation en rangs, on ne vérifie plus si les moyennes sont différentes, mais bel et bien si les médianes de la variable continue sont différentes. Pour ce faire, on utilisera la fonction `kruskal.test`.
+
+### Mise en œuvre dans ![](images/Rlogo.png) {#sect343}
+
+Dans une étude récente, Apparicio *et al.* [-@apparicio2018exposure] ont comparé les expositions au bruit et à la pollution atmosphérique en heures de pointe à Montréal en fonction du mode de transport utilisé. Pour ce faire, trois équipes de trois personnes ont été constituées : un cycliste, un automobiliste et un utilisateur du transport en commun équipés de capteurs de pollution, de sonomètres, de vêtements biométriques et d’une montre GPS. Chaque matin, à huit heures précises, les membres de chaque équipe ont réalisé un trajet d'un quartier périphérique de Montréal vers un pôle d'enseignement (université) ou d'emploi localisé au centre-ville. Le trajet inverse était réalisé le soir à 17h. Au total, une centaine de trajets ont ainsi été réalisés. Des analyses de variance ont ainsi permis de comparer entre les trois modes (automobile, vélo et transport en commun) : les temps de déplacement, les niveaux d'exposition au bruit, les niveaux d'exposition au dioxyde d'azote et la dose totale inhalée de dioxyde d'azote. Nous vous proposons ici d'analyser une partie de ces données.
+
+
+#### Première ANOVA : différences entre les temps déplacements
+Comme première analyse de variance, nous allons vérifier si les moyennes des temps de déplacements sont différentes entre les trois modes de transport. 
+
+Dans un premier temps, nous pouvons calculer les moyennes des différents groupes. On peut alors constater que les moyennes sont très sembables : 37,7 minutes pour l'automobile versus 38,4 et 41,6 pour le vélo et le transport en commun. Aussi, les variances des trois groupes sont relativement similaires.
+
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library("rstatix")
+
+# chargement des dataframes
+setwd("D:/Articles et colloque/Livre en cours/AnalysesQuanti/Livre/livre_statistique_Phil_Jere/data/bivariee")
+load("dataPollution.RData")
+
+# Statistiques descriptives pour les groupes (moyenne et écart-type)
+ df_TrajetsDuree %>%                                 # Nom du dataframe
+   group_by(Mode) %>%                                # Variable qualitative
+   get_summary_stats(DureeMinute, type = "mean_sd")  # Variable continue 
+```
+
+Pour visualiser la distribution des données pour les trois groupes, vous pouvez créer des graphiques de densité et violons (figure \@ref(fig:figAnova1a)). La juxtaposition des trois histogrammes montre que les distributions des valeurs pour les trois groupes sont globalement similaires. Cela est corroboré par le fait que les boîtes du graphique en violons sont situées à la même hauteur. Autrement dit, à la lecture des deux graphiques, ils ne semblent pas y avoir de différences significatives entre les trois groupes.
+
+```{r figAnova1a, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Graphiques de densité et en violons', out.width='75%'}
+library("ggplot2")
+library("ggpubr")
+# Graphique de densité
+GraphDens <- ggplot(data = df_TrajetsDuree, 
+  mapping=aes(x=DureeMinute,colour=Mode,fill=Mode)) +
+  geom_density(alpha=0.55,mapping=aes(y=..scaled..))+
+    labs(title="a. graphique de densité",
+         x = "Durée du trajet en minutes",
+         y = "Durée du trajets (en minutes)")
+
+# Graphique en violons
+GraphViol <- ggplot(df_TrajetsDuree, aes(x=Mode, y=DureeMinute)) +
+  geom_violin(fill="white") +
+  geom_boxplot(width=0.1, aes(x=Mode, y=DureeMinute,fill=Mode))+
+  labs(title="b. Graphique en violons",
+       x = "Mode de transport",
+       y = "Durée du trajets (en minutes)")+
+  theme(legend.position = "none")
+
+ggarrange(GraphDens, GraphViol)
+
+``` 
+
+Pour vérifier si les échantillons sont normalement distribués avec la fonction `shapiro_test` du package **rstatix**. À titre de rappel, l'hypothèse nulle (h<sub>0</sub>) de ce test est que la distribution est normale. Par conséquent, quand la valeur de *P* associée à la statistique de Shapiro est supérieure à 0,05 alors la distribution est normale. À la lecture des sorties ci-dessous, seul le groupe des utilisateurs en transport en commun présente une distribution normale (p=0,0504). Ce test étant très restrictif, il est fortement conseillé de visualiser le graphique QQ plot (figure \@ref(fig:figQqplot)). Ces graphiques rélèvent que la quasi-totalité des observations sont dans l'intervalle de confiance (en gris), excepté deux observations pour le vélo et deux autres pour l'automobile. Par conséquent, on peut considérer que ces trois distributions s'approchent d'une situation de normalité.
+
+```{r figQqplot, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='QQ Plot pour les groupes', out.width='75%'}
+
+library("dplyr")
+library("ggpubr")
+library("rstatix")
+
+# Condition 1 : normalité des échantillons
+# Test pour la normalité des échantillons (groupes) : test de Shapiro
+ df_TrajetsDuree %>%          # Nom du dataframe
+   group_by(Mode) %>%         # Variable qualitative
+   shapiro_test(DureeMinute)  # Variable continue 
+# Graphiques qqplot pour les groupes
+ggqqplot(df_TrajetsDuree, "DureeMinute", facet.by = "Mode")
+
+``` 
+
+Pour vérifier l’hypothèse d’homogénéité des variances, vous pouvez utiliser les tests de Levene, de Bartlett ou de Breusch-Pagan. Les valeurs de *P*, toutes supérieures à 0,05, signalent que la condition d'homogénéité des variances est respectée. La valeur de *P* associée à la statistique *F* (0,444) nous permet de conclure qu'il n'y a pas de différences significatives entre les moyennes des temps de déplacements des trois modes de transport.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library("rstatix")
+library("lmtest")
+library("car")
+
+# Condition 2 : homogénéité des variances (homocédasticité)
+leveneTest(DureeMinute ~ Mode, data = df_TrajetsDuree)
+bartlett.test(DureeMinute ~ Mode, data = df_TrajetsDuree)
+bptest(DureeMinute ~ Mode, data = df_TrajetsDuree)
+```
+
+Deux fonctions peuvent être utilisées pour calculer l'analyse de variance : la fonction de base `aov(variable continue ~ variable qualitative, data = votre dataframe)` ou bien la fonction `anova_test(variable continue ~ variable qualitative, data = votre dataframe)` du package **rstatix**. Comparativement à `aov`, l'avantage de la fonction `anova_test` est qu'elle calcule aussi le Eta^2^.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library("rstatix")
+library("lmtest")
+library("car")
+
+# ANOVA avec la fonction aov
+aov1 <- aov(DureeMinute ~ Mode, data = df_TrajetsDuree)
+summary(aov1)
+# calcul de Eta2 avec la fonction eta_sq du package lmtest
+eta_sq(aov1)
+
+# ANOVA avec la fonction anova_test du package rstatix
+anova_test(DureeMinute ~ Mode, data = df_TrajetsDuree)
+```
+
+#### Deuxième ANOVA : différences entre les niveaux d'exposition au bruit
+
+Dans ce second exercice, nous allons analyser les différences d'exposition au bruit. D'emblée les statistiques descriptives révèlent que les moyennes sont dissemblables : 66,8 dB(A) pour l’automobile versus 68,8 et 74 pour le vélo et le transport en commun. Aussi, la variance du transport en commun est très différente des autres.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library("rstatix")
+
+# chargement des dataframes
+setwd("D:/Articles et colloque/Livre en cours/AnalysesQuanti/Livre/livre_statistique_Phil_Jere/data/bivariee")
+load("dataPollution.RData")
+
+# Statistiques descriptives pour les groupes (moyenne et écart-type)
+ df_Bruit %>%                                 # Nom du dataframe
+   group_by(Mode) %>%                                # Variable qualitative
+   get_summary_stats(laeq, type = "mean_sd")  # Variable continue 
+```
+
+À la lecture des graphiques de densité et en violon figure \@ref(fig:figAnova1b)), il semble clair que les niveaux d'exposition au bruit sont plus faibles pour les automobilistes et plus élevés pour les cyclistes et surtout les utilisateurs du transport en commun. En outre, la distribution des valeurs d'exposition au bruit dans le transport en commun semble bimodale. Cela s'explique par le fait que les niveaux de bruit sont beaucoup élevés dans le métro que dans les autobus.
+
+```{r figAnova1b, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Graphique en densité et en violons', out.width='75%'}
+library("ggplot2")
+library("ggpubr")
+# Graphique en densité
+GraphDens <- ggplot(data = df_Bruit, 
+  mapping=aes(x=laeq,colour=Mode,fill=Mode)) +
+  geom_density(alpha=0.55,mapping=aes(y=..scaled..))+
+  labs(title="a. graphique de densité",
+       x="Exposition au bruit (dB(A))")
+
+# Graphique en violons
+GraphViol <- ggplot(df_Bruit, aes(x=Mode, y=laeq)) +
+  geom_violin(fill="white") +
+  geom_boxplot(width=0.1, aes(x=Mode, y=laeq,fill=Mode))+
+  labs(title="b. Graphique en violons",
+       x = "Mode de transport",
+       y="Exposition au bruit (dB(A))")+
+  theme(legend.position = "none")
+
+ggarrange(GraphDens, GraphViol)
+
+``` 
+
+
+Le test de Shapiro et les graphiques QQ plot (figure \@ref(fig:figQqplot2)) rélèvent que les distributions des trois groupes sont anormales.
+
+```{r figQqplot2, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='QQ Plot pour les groupes', out.width='75%'}
+
+library("dplyr")
+library("ggpubr")
+library("rstatix")
+
+# Condition 1 : normalité des échantillons
+# Test pour la normalité des échantillons (groupes) : test de Shapiro
+df_Bruit %>%          # Nom du dataframe
+  group_by(Mode) %>%         # Variable qualitative
+  shapiro_test(laeq)  # Variable continue 
+# Graphiques qqplot pour les groupes
+ggqqplot(df_Bruit, "laeq", facet.by = "Mode")
+
+``` 
+
+En outre, selon les valeurs des tests de Levene, de Bartlett ou de Breusch-Pagan, les variances ne sont pas égales.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library("rstatix")
+library("lmtest")
+library("car")
+
+# Condition 2 : homogénéité des variances (homocédasticité)
+leveneTest(laeq ~ Mode, data = df_Bruit)
+bartlett.test(laeq ~ Mode, data = df_Bruit)
+bptest(laeq ~ Mode, data = df_Bruit)
+```
+
+Étant donné que les deux conditions (normalité et homogénéité des variances) ne sont pas respectées, il serait préférable d'utiliser un test non paramétrique de Kruskal-Wallis. Calculons toutefois préalablement l'ANOVA classique et l'ANOVA de Welch puisque les variances ne sont pas égales). Les valeurs de *P* deux tests (Fisher et Welch) signalent que les moyennes d'exposition au bruit sont statistiquement différentes entre les trois modes de transport.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library("rstatix")
+
+# ANOVA avec la fonction anova_test du package rstatix
+anova_test(laeq ~ Mode, data = df_Bruit)
+
+# ANOVA avec le test de Welch puisque les variances ne sont pas égales
+welch_anova_test(laeq ~ Mode, data = df_Bruit)
+```
+
+Une fois démontré que les moyennes sont différentes, le test de Tukey est particulièrement intéressant puisqu'il nous permet de repérer les différences de moyennes significatives deux à deux. Ci-dessous, on constate que toutes les paires sont statistiquement différentes et que la différence de moyennes entre les automobilistes et les cyclistes est de 1,9 dB(A) et surtout de 7.1 dB(A) entre les automobilistes et le transport en commun.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+aov2 <- aov(laeq ~ Mode, data = df_Bruit)
+# Test de Tukey pour comparer les moyennes entre elles
+TukeyHSD(aov2, conf.level = 0.95)
+```
+
+Le calcul de test non paramétrique de Kruskal-Wallis avec la fonction `kruskal.test` démontre aussi que les médianes des groupes sont différentes (*p*< 0,001). De manière comparable au test de Tukey, la fonction `pairwise.wilcox.test` permet aussi de reperer les différences significatives entre les paires de groupes. Pour conclure, tant l'ANOVA et que le test non paramétrique de Kruskal-Wallis démontrent que les trois modes de transport sont significativement différentes quant à l'exposition au bruit, avec des valeurs plus faibles pour les automobilistes comparativement aux cyclistes et aux usagers du transport en commun.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+
+# Test de Kruskal-Wallis
+kruskal.test(laeq ~ Mode, data = df_Bruit)
+
+# Calcul de la moyenne des rangs pour les trois groupes
+df_Bruit$laeqRank <- rank(df_Bruit$laeq)
+df_Bruit %>%
+  group_by(Mode) %>%
+  get_summary_stats(laeqRank, type = "mean")
+
+# Comparison des groupes avec la fonction pairwise.wilcox.test
+pairwise.wilcox.test(df_Bruit$laeq, df_Bruit$Mode, p.adjust.method = "BH")
+```
+
+### Comment rapporter les résultats d'une ANOVA et du test de Kruskal-Wallis {#sect344}
+
+* Les résultats de l'analyse de variance à un facteur démontre que le mode de transport utilisé n'a pas d'effet significatif sur le temps de déplacement en heures de pointe à Montréal (*F*(2,96)=0,82, *p*=0,444). En effet, pour des trajets de dix kilomètres entre un quartier périphérique et le centre-ville, les cyclistes (Moy=38,4, ET=15,2) arrivent en moyenne moins d'une minute après les automobilistes (Moy=37,7, ET=12,8) et les usagers du transport en commun moins de quatre minutes (Moy=41,6, ET=11,4). 
+
+* Les résultats de l'analyse de variance à un facteur démontre que le mode transport utilisé a un impact significatif sur le niveau d'exposition en heures de pointe à Montréal (*F*(2,96)=544, *p*<0,001 et *Welch*(2,96)=446, *p*<0,001). En effet, les usagers du transport en commun (Moy=74,0, ET=6,79) et les cyclistes (Moy=68,8, ET=4,3) sont significativement plus exposés au bruit que les automobilistes (Moy=66,8, ET=4,56). 
+
+* les résultats du test de Kruskal-Wallis démontre qu'il existe des différences significatives d'exposition au bruit entre trois les modes de transport  (χ2(2) = 784,74, p <0.001) avec des moyennes de rangs de 1094 pour l'automobile, 1124 pour le vélo et 1207 pour le transport en commun.
+
+::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+Nous avons vu que l'ANOVA permet de comparer les moyennes d'une variable continue à partir d'une variable qualitative comprenant plusieurs modalités (facteur) pour des observations indépendantes. Il y a un donc une seule variable dépendante (continue) et une seule variable indépendante (facteur). Sachez qu'il existe de nombreuses extensions de l'ANOVA classique : 
+
+* **une ANOVA à deux facteurs**, soit avec une variable dépendante continue et deux variables indépendantes qualitatives (_two-way ANOVA_ en anglais). On évalue ainsi les effets des deux variables (*a*, *b*) et de leur interaction (*ab*) sur une variable continue.
+
+* **une ANOVA multifacteur** avec une variable dépendante continue et plus de deux variables indépendantes qualitatives. Par exemple, avec trois variables qualitatives pour expliquer la variable continue, on inclut les effets de chaque variable qualitative (*a*, *b*, *c*) ainsi que de leurs interactions (*ab*, *ac*, *bc*, *abc*).
+
+* **L'analyse de covariance** (**ANCOVA**, **AN**alysis of **COVA**riance en anglais) comprend une variable dépendante continue, une variable indépendante qualitative (facteurs) et plusieurs variables indépendantes continues dits covariables. Concrètement, elle représente une combinaison entre une analyse de variance et une régression. L'objectif est alors de vérifier si les moyennes d'une variable dépendante sont différentes pour plusieurs groupes d'une population donnée, après avoir contrôlé une ou plusieurs variables continues. Par exemple, pour une métropole donnée, on pourra vouloir comparer les moyennes de loyers entre la ville-centre et la première et de la seconde couronnes (facteur), une fois contrôlé la taille de ces derniers (variable covariée continue). En effet, une partie de la variance des loyers s'explique certainement par la taille des logements.
+
+* **L'analyse de variance multivariée** (**MANOVA**, _**M**ultivariate **AN**alysis of **VA**riance_ en anglais) comprend deux ou plus variables dépendantes continues et une variable indépendante qualitative (facteur). Par exemple, on souheterait comparer les moyennes d'exposition au bruit et à différents polluants (dioxyde d'azote, particules fines, ozone) (variables dépendantes continues) selon le mode de transport utilisé (automobile, vélo, transport en commun, soit le facteur).
+
+* **L'analyse de covariance multivariée** (**MANCOVA**, **M**ultivariate **AN**alysis of **COVA**riance en anglais), soit une analyse qui comprend deux ou plus variables dépendantes continues (comme la MANOVA) et une variable qualitative comme variable indépendante (facteur) et un ou plus covariables continues.
+
+Pour le test *t*, nous avons vu qu'il peut s'appliquer soit à deux échantillons indépendants (non appariées), soit à deux échantillons dépendants (appariées). Notez qu'il existe aussi des extensions de l'ANOVA pour des échantillons pairés. On parle alors d'**analyse de variance sur des mesurées répétées**. Par exemple, on pourrait évaluer la perception du sentiment de sécurité relativement à la pratique vélo d'hiver pour un échantillon de cyclistes ayant décidé de l'adopter récemment, et ce, à plusieurs moments : avant leur première saison, à la fin de leur premier hiver, à la fin de leur second hiver. Autre exemple, on pourrait sélectionner un échantillon d'individus (100 par exemple) pour lesquels on évaluerait leurs perceptions de l'environnement sonore dans différents lieux de la ville. Comme pour l'ANOVA classique (échantillons non appariées), il existe des extensions de l'ANOVA sur des mesures répétées permettant d'inclure plusieurs facteurs (groupes de population); on mesure alors une variable continue pour plusieurs groupes d'individus à différents moments ou conditions différentes. Il est aussi possible de réaliser une ANOVA pour des mesures répétées avec une ou plusieurs covariables continues. 
+
+Bref, si l'ANOVA était un roman, elle serait certainement « un monde sans fin » de Ken Follett!
+:::
