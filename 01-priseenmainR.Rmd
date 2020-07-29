@@ -108,7 +108,171 @@ Pour terminer sur cette section, nous vous invitons à enregistrer <span class="
 
 Vous êtes prêts à travailler dans R ! Rendez-vous dans la prochaine section pour rentrer dans le vif du sujet.
 
-## Naviguer entre Vecteurs, listes et dataframes {#sect13}
+## Hello World ! {#sect13}
+
+Une introduction à un langage de programmation se doit de commencer par le rite de passage Hello World. Il s'agit d'une forme de tradition consistant à montrer aux nouveaux utilisateurs comment afficher le message "Hello World" à l'écran avec le langage en question.
+
+En C, cela donne : 
+```
+#include <stdio.h>
+
+main()
+{
+    printf("hello, world\n");
+}
+```
+En COBOL : 
+```
+IDENTIFICATION DIVISION.
+PROGRAM-ID. HELLO-WORLD.
+
+ENVIRONMENT DIVISION.
+
+DATA DIVISION.
+
+PROCEDURE DIVISION.
+    DISPLAY "Hello, world!".
+    STOP RUN.
+```
+
+et plus simplement en ![](images/logos/Rlogo.png) :
+```{r}
+print("Hello World")
+```
+
+Bravo ! Vous venez officiellement de faire votre premier pas dans ![](images/logos/Rlogo.png) !
+
+## Naviguer entre Vecteurs, listes et dataframes {#sect14}
+
+Dans cette section, nous allons aborder la base de langage ![](images/logos/Rlogo.png). Nous resterons largement en surface pour nous concentrer sur les principaux objets que vous aurez besoin de manipuler pour charger, structurer et analyser des données. Une autre section détaillera plus en profondeur le fonctionnement du langage, mais ces éléments ne sont pas nécessaires pour débuter dans ![](images/logos/Rlogo.png). Commençons donc par la base : déclarer des variables.
+
+### Déclarer des variables et les principaux types de variables
+
+Dans ![](images/logos/Rlogo.png), il existe trois principaux types de données de base : 
+
+* Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats*), ex `15` et `15.3`: .
+* Les données textuelles, qui sont des chaîne de caratères (appelées *strings*) et déclaré entre guillemets `"abcdefg"`
+* Les données booléennes (*booleans*) qui représentent les concepts de vrai : `TRUE` ou de faux `FALSE`.
+
+Pour pouvoir manipuler ces données, il faut préalablement les déclarer. Ceci signifie réserver un espace dans la mémoire vive de votre ordinateur, lui donner un nom, et lui associer une valeur, on appelle cette opération déclarer une variable. Une fois cette opération effectuée, la donnée en question est accessible pour effectuer des traitements. Déclarons ensemble quelques variables : 
+
+```{r}
+age <- 35
+taille <- 175.5
+adresse <- '4225 rue de la gauchetiere'
+proprietaire <- TRUE
+```
+
+Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. ![](images/logos/Rlogo.png) est sensible à la casse, en d'autre termes, les variables `age`, `Age`, `AGe`, et `agE` indiquent toutes un objet différent. Attention donc aux fautes de frappes.
+
+Si vous déclarez une variable en utilisant le nom d'une variable existante, la première est écrasée par la seconde : 
+
+```{r}
+age <- 35
+
+print(age)
+
+age <- 45
+
+print(age)
+```
+
+Attention donc aux noms de variables que vous utilisez.
+
+### Du vecteur au DataFrame
+
+Nous venons de déclarer (en utilisant le symbole `<-`) quatre variables, nommées respectivement age, taille, adresse et proprietaire, ayant pour types respectifs integer, float, string et boolean. Ces variables pourraient correspondre aux réponses d'un individu à un questionnaire. Jusque là, rien de très impressionnant : les variables déclarées ne décrivent qu'un seul individu. Lors d'une analyse statistique, nous allons travailler avec des volumes de données bien plus conséquents. Pour stocker plusieurs valeurs, nous allons travailler avec ce que l'on appelle des *vecteurs*. Pour déclarer un vecteur, on utilise la fonction *c()* : 
+
+```{r}
+ages <- c(35,45,72,56,62)
+tailles <- c(175.5,180.3,168.2,172.8,167.6)
+adresses <- c('4225 rue de la gauchetiere','4223 rue de la gauchetiere','4221 rue de la gauchetiere','4219 rue de la gauchetiere','4217 rue de la gauchetiere')
+proprietaires <- c(TRUE,TRUE,FALSE,TRUE,TRUE)
+```
+
+Nous venons ainsi de déclarer 4 nouvelles variables étant chacune des vecteurs de longueur 5 (comprenant chacun 5 valeurs). Ces vecteurs représentent les réponses de plusieurs répondants à un questionnaire par exemple.
+Notez tout de suite qu'un vecteur ne peut contenir qu'un seul type de données. Vous ne pouvez pas créer de vecteurs combinant à la fois du texte et des valeurs numériques. Le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), quasiment toutes les fonctions vont utiliser des vecteurs. Par exemple, on pourrait calculer la moyenne du vecteur *ages* en utilisant la fonction *mean* présente de base dans ![](images/logos/Rlogo.png).
+
+```{r}
+mean(ages)
+```
+
+Quand nous disons que le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), ce n'est pas juste une façon de parler. Techniquement les variables age, taille, adresse et propritaire definies plus haut sont aussi des vecteurs ... mais de longueur 1 !
+
+Il est assez rare de travailler ainsi avec des vecteurs séparés, on préfère généralement avoir ces données stockées dans une structure appelée un *DataFrame* (tableau de données en français). Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une information pour ces individus. Créons ensemble un DataFrame à partir de nos quatres vecteurs.
+
+```{r}
+df <- data.frame(
+  "age" = ages,
+  "taille" = tailles,
+  "adresse" = adresses,
+  "proprietaire" = proprietaires
+)
+```
+
+Dans Rstudio, vous pouvez visualiser votre tableau de données avec la fonction `View(df)`. Comme vous pouvez le constater, chaque vecteur est devenu une colonne de votre tableau de données *df*.
+
+La figure \@ref(fig:fig010) résume ce passage d'une simple donnée à un DataFrame en passant par un vecteur.
+
+```{r fig010, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="De la données au DataFrame",  out.width='60%'}
+knitr::include_graphics('images/introduction/vecteur_to_dataframe.png', dpi = NA)
+```
+
+Plusieurs fonctions de base de ![](images/logos/Rlogo.png) peuvent nous donner des informations importantes sur nos Dataframes : 
+
+* *names*, nous donne le noms des colonnes de notre DataFrame,
+* *nrow*, le nombre de lignes,
+* *ncol*, le nombre de colonnes
+
+```{r}
+names(df)
+nrow(df)
+ncol(df)
+```
+
+vous pouvez accéder à chaque colonne de *df* en utilisant le symbole $ ou [["nom_de_la_colonne"]], recalculons ainsi la moyenne des âges
+
+```{r}
+mean(df$age)
+mean(df[["age"]])
+```
+
+### Charger un DataFrame depuis un fichier
+
+Rassurez-vous, il sera rarement nécessaire de créer vos DataFrame à la main comme nous venons de le faire dans l'exemple précédent. Le plus souvent, vous disposerez de fichiers contenant vos données et certaines fonctions vous permettrons de les importer dans ![](images/logos/Rlogo.png) directement sous forme d'un DataFrame. Les formats les plus répandus sont : 
+
+* .csv, il s'agit d'un fichier texte dont chaque ligne représente une ligne du tableau de données dont les colonnes sont séparées par un délimiteur (généralement une virgule ou un point-virgule).
+* .dbf, ou fichier dBase, souvent associés à des fichiers d'information géographique ShapeFile,
+* .xls et .xlsx, des fichiers générés par Excel
+* .json, il s'agit d'un ficher texte utilisant une norme d'écriture propre au langage JavaScript.
+
+Plus rarement, il se peut que vous ayez à charger des fichiers provenant de logiciels concurrents à ![](images/logos/Rlogo.png) : 
+
+* .sas7bdat, provenant du logiciel SAS,
+* .sav, provenant du logiciel SPSS,
+* .dta, provenant du logiciel STATA.
+
+Pour lire la plupart de ces fichiers, nous allons utiliser le package **foreign**, qui a été développé à cette fin. Pour installer un package, vous devez être connecté à internet, en effet, ![](images/logos/Rlogo.png) va se connecter au répertoire de package *CRAN* pour télécharger le package et l'installer sur votre machine. Cette opération est réalisée avec la fonction `install.packages`
+
+```{r message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("foreign")
+```
+
+Notez qu'une fois que le package est installé, vous n'aurez plus besoin de le refaire. Le package est disponible localement sur votre ordinateur, à moins de le désinstaller explicitement avec la fonction `remove.packages`.
+
+Pour charger le package dans votre session actuelle de ![](images/logos/Rlogo.png) et accéder aux fonctions qu'il propose, il suffit d'utiliser la fonction `library`. Notez que conventionnellement, l'appel des packages se fait au tout début du script que vous rédigez. Rien ne vous empêche de le faire au fur et à mesure de votre code mais vous perdez alors en lisibilité. 
+
+```{r message=FALSE, warning=FALSE}
+library(foreign)
+```
+
+Si vous obtenez un message d'erreur du type : 
+
+<span class="error_message">Error in library(mon_package) : aucun package nommé ‘mon_package’ n'est trouvé</span>
+
+C'est que le package que vous tentez de charger n'est pas encore installé sur votre ordinateur. Dans ce cas, réessayer de l'installer avec la fonction `install.packages`. Si le problème persiste, vérifiez que vous n'avez pas fait de faut de frappe dans le nom du package. Vous pouvez également redémarrer RStudio et réessayer d'installer le package.
+
+
 
 	0.4 importer et manipuler des données
 		creer un dataframe
