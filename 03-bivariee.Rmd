@@ -13,20 +13,27 @@ Dans cette section, nous utiliserons principalement les packages suivants :
 
 * Pour créer des graphiques :
   - **ggplot2**, le seul, l'unique
-  - **ggpubr**, pour combiner des graphiques et faire des diagrammes quantiles-quantiles
+  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles
 * Pour manipuler des données : 
   - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
-* Pour la section sur les corrélations : 
+* Pour les corrélations ((section \@ref(sect311))) : 
   - **correlation**, de l'ensemble de package **easy_stats**, offrant une large gamme de méthodes de corrélations
+  - **boot** pour réaliser des corrélations avec *bootstrap* 
+  - **Hmisc** pour calculer des corrélations de Pearson et Spearman
   - **ppcor**, notamment pour des corrélations partielles
-  - **corrplot**, pour créer des graphiques de matrices de corrélations
-* Pour la section sur les test du $chi^2$ et les test de *t* : 
-  - **gmodels**, pour construire des tableaux de contingences
-  - **effectsize**, pour calculer les tailles d'effets de tests de t
-* Pour la section sur les ANOVA : 
+  - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
+  - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
+  - **corrplot**, pour créer des graphiques de matrices de corrélation
+* Pour le tableau de contignence ((section \@ref(sect312))) :
+  - **gmodels**, pour construire des tableaux de contingence et * Calculer les test *t* et ses différentes variantes ((section \@ref(sect313))) :
+* Pour les test *t* : 
+  - **sjstats** pour réaliser des test *t* pondérés
+  - **effectsize**, pour calculer les tailles d'effet de tests de *t*
+* Pour la section sur les ANOVA ((section \@ref(sect314))) : 
   - **car**, pour les ANOVA classiques
-  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) dans la logique **tidyverse**
-  
+  - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
+  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
+
 :::
 
 ## Relation linéaire entre deux variables quantitatives {#sect31}
@@ -68,7 +75,7 @@ Prenons un exemple concret. Dans une étude sur portant sur l'équité environne
 knitr::include_graphics('images/bivariee/figure3.jpg', dpi = NA)
 ```
 
-Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives et exploratoires – la covariance (section \@ref(sect312)) et la corrélation (section \@ref(sect313)) – utilisées pour évaluer la relation **linéaire** entre deux variables continues. Ces deux mesures permettent de mesurer le degré d'association entre deux variables sans que l'une soit la variable dépendante (variable à expliquer) et l'autre, la variable dépendante (variable explicative). Puis, nous décrirons la régression linéaire simple (section \@ref(sect314))  qui permet justement de prédire une variable dépendante (_Y_) à partir d'une variable indépendante (_X_).
+Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives et exploratoires – la covariance (section \@ref(sect312)) et la corrélation (section \@ref(sect313)) – utilisées pour évaluer la **relation linéaire** entre deux variables continues. Ces deux mesures permettent de mesurer le degré d'association entre deux variables, sans que l'une soit la variable dépendante (variable à expliquer) et l'autre, la variable dépendante (variable explicative). Puis, nous décrirons la régression linéaire simple (section \@ref(sect314))  qui permet justement de prédire une variable dépendante (_Y_) à partir d'une variable indépendante (_X_).
 
 ### Covariance {#sect312}
 
@@ -91,7 +98,7 @@ Le numérateur de l'équation \@ref(eq:cov) représente la covariation\index{cov
 * positive quand les deux variables varient dans le même sens, c'est-à-dire que lorsque les valeurs de la variable _X_ s'éloignent de la moyenne, les valeurs de _Y_ s'éloignent aussi dans le même sens; et négative pour une situation inverse. 
  * Quand la covariance est égale à 0, il n’y a pas de relation entre les variables _X_ et _Y_. Plus sa valeur absolue est élevée, plus la relation entre les deux variables *X* et *Y* est importante. 
  
-Ainsi,</span> la covariance\index{covariance} correspond à un centrage des variables, c’est-à-dire à soustraire à chaque valeur de la variable sa moyenne correspondante. L'inconvénient majeur de l'utilisation de la covariance est qu'elle est tributaire des unités de mesure des deux variables. Par exemple, si nous calculons la covariance entre le pourcentage de personnes à faible revenu et la densité de population (habitants au km^2^) au niveau des secteurs de recensement de la région métropolitaine de Montréal, nous obtenons une valeur de covariance de 34934. En revanche, si la densité de population est exprimée en milliers d'habitants au km^2^, la valeur de la covariance sera de 34,934 alors que la relation linéaire entre les deux variables reste la même, tel qu'illustré à la figure \@ref(fig:fig4). Pour rémédier à ce problème, on prévilégie l'utilisation du coefficient de corrélation.
+Ainsi, la covariance\index{covariance} correspond à un centrage des variables, c’est-à-dire à soustraire à chaque valeur de la variable sa moyenne correspondante. L'inconvénient majeur de l'utilisation de la covariance est qu'elle est tributaire des unités de mesure des deux variables. Par exemple, si nous calculons la covariance entre le pourcentage de personnes à faible revenu et la densité de population (habitants au km^2^) au niveau des secteurs de recensement de la région métropolitaine de Montréal, nous obtenons une valeur de covariance de 34934. En revanche, si la densité de population est exprimée en milliers d'habitants au km^2^, la valeur de la covariance sera de 34,934 alors que la relation linéaire entre les deux variables reste la même tel qu'illustré à la figure \@ref(fig:fig4). Pour rémédier à ce problème, on prévilégie l'utilisation du coefficient de corrélation.
 
 ```{r fig4, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Covariance et unités de mesure', out.width='75%'}
 
@@ -442,12 +449,13 @@ dfCorr <- data.frame(do.call(rbind,rs))
 names(dfCorr) <- c("r","IC_05","CI_95")
 dfCorr$method <- methods
 
-kableExtra::kable(dfCorr,digits = 2, caption = 'Comparaison de différentes corrélations pour les variables densité de population et pourcentage de personnes ayant 65 ans et plus',
+kableExtra::kable(dfCorr,digits = 2, 
+                  caption = 'Comparaison de différentes corrélations pour les variables densité de population et pourcentage de personnes ayant 65 ans et plus',
                   col.names=c("r","IC 5%","IC 95%", "Méthode"))
 
 ```
 
-Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche. Les méthodes les plus connues sont les plus utilisées car elles sont plus facilement acceptées par les autres chercheurs. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumission pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
+Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche : les méthodes les plus connues sont les plus utilisées car elles sont plus facilement acceptées par les autres chercheurs. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumission pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
 
 #### Significativité des coefficients de corrélation {#sect3135} 
 
@@ -585,7 +593,7 @@ cat("Corr. partielle avec ppcor  = ",
 
 #### Mise en œuvre dans ![](images/Rlogo.png) {#sect3137}
 
-Comme vous l'aurez compris, il est souvent possible d'arriver au même résultat dans ![](images/Rlogo.png) par différents moyens. Pour les corrélations, nous avons utilisé les fonctions de base `cor` et `cor.test` pour calculer les corrélations. Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
+Comme vous l'aurez compris, il est possible d'arriver au même résultat dans ![](images/Rlogo.png) par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test` . Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
 
 * **Hmisc** dont la fonction `rcorr` permet de calculer des corrélations de Pearson et Spearman (mais non celui de Kendall) avec la valeur de _p_.
 * **psych** dont la fonction `corr.test` permet d'obtenir la matrice de corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de _p_.
@@ -634,7 +642,7 @@ apaTables::apa.cor.table(df[, c("RevMedMen","Locataire","LogTailInc")],
 
 
 ::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
-**Une image vaut mille mots, surtout pour une matrice de corrélation !** Le package **corrplot** permet justement de construire de belles figures avec une matrice de corrélation (figures \@ref(fig:figcorrplot1) et \@ref(fig:figcorrplot2)). L'intérêt de ce type de figure est de repérer rapidemment des associations intéressantes lorsque l'on calcule les corrélations entre un grand nombre de variables.
+**Une image vaut mille mots, surtout pour une matrice de corrélation !** Le package **corrplot** vous permet justement de construire de belles figures avec une matrice de corrélation (figures \@ref(fig:figcorrplot1) et \@ref(fig:figcorrplot2)). L'intérêt de ce type de figure est de repérer rapidemment des associations intéressantes lorsque l'on calcule les corrélations entre un grand nombre de variables.
 :::
 
 ```{r figcorrplot1, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Matrice de corrélation avec corrplot (chiffres)', out.width='60%'}
@@ -699,7 +707,7 @@ Dans cette section, nous décrirons succinctement la régression linéaire simpl
 
 Si une variable *X* explique et prédit efficacement une variable *Y*, cela ne veut pas dire pour autant que *X* cause *Y*. Autrement dit, la corrélation, l'association entre deux variables ne signifient qu'il existe un lien de causalité entre elles.
 
-Premièrement, la variable explicative (*X*, indépendante) doit absolument précéder la variable à expliquer (*Y*, dépendante). Par exemple, l'âge (*X*) peut influencer le sentiment de sécurité (*Y*). Mais, le sentiment de sécurité ne peut en aucun cas influencer l'âge. Par conséquent, l'âge ne peut <span class="revision_prop"> conceptuellement</span> pas être la variable dépendante dans cette relations.
+Premièrement, la variable explicative (*X*, indépendante) doit absolument précéder la variable à expliquer (*Y*, dépendante). Par exemple, l'âge (*X*) peut influencer le sentiment de sécurité (*Y*). Mais, le sentiment de sécurité ne peut en aucun cas influencer l'âge. Par conséquent, l'âge ne peut conceptuellement pas être la variable dépendante dans cette relation.
 
 Deuxièmement, bien qu'une variable puisse expliquer efficacement une autre variable, elle peut être un **facteur confondant**. Prenons deux exemples bien connus :
 
@@ -711,15 +719,17 @@ Pour approfondir le sujet sur la confusion entre *corrélation, régression simp
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/A-_naeATJ6o" frameborder="0" allowfullscreen></iframe>
 
-L'association entre deux variables peut aussi être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du *data mining*, le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret, admettons que l'on ait collecté 100 variables et que l'on calcule les corrélations entre chaque paire de variables. On obtient une matrice de corrélation de 100 x 100, à laquelle on peut enlever la diagonale, et une moitié de la matrice ce qui nous laisse un total de 4950 corrélations différentes. Admettons que l'on choisisse un seuil de significativité de 5%, on doit alors s'attendre à ce que le hasard produise des résultats significatifs dans 5% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément l'illustrer avec la syntaxe ![](images/Rlogo.png) suivante
+ 
+L'association entre deux variables peut aussi être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du *data mining*, le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret, admettons que l'on ait collecté 100 variables et que l'on calcule les corrélations entre chaque paire de variables. On obtient une matrice de corrélation de 100 x 100, à laquelle on peut enlever la diagonale, et une moitié de la matrice ce qui nous laisse un total de 4950 corrélations différentes. Admettons que l'on choisisse un seuil de significativité de 5%, on doit alors s'attendre à ce que le hasard produise des résultats significatifs dans 5% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément l'illustrer avec la syntaxe ![](images/Rlogo.png) suivante :
 
 
 ```{r corraleatoire, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Corrélations significatives obtenues aléatoirement', out.width='60%'}
 library("Hmisc")
 
 nbVars <- 100 # nous utilisons 100 variables générées aléatoirement pour l'expérience
-nbExperiment <- 1000 # nous reproduirons 1000  fois l'expérience avec les 100 variables
-Results <- c() # nous enregistrons le nombre de variable significatives par expérience dans Results
+nbExperiment <- 1000 # nous reproduirons 1000 fois l'expérience avec les 100 variables
+# Le nombre de variables significatives par expérience est enregistrée dans Results
+Results <- c()
 
 # iterons pour chaque experimentation (1000 fois)
 for(i in 1:nbExperiment){
@@ -750,7 +760,8 @@ ggplot(df, aes(x = Values)) +
                 sd = sd(df$Values)),color="blue")+
   geom_vline(xintercept = mean(df$Values),color="red", size=1.2)+
   annotate("text", x=250, y = 0.028, 
-           label = paste("nombre moyen de corrélations significatives\n sur 1000 replications :",
+           label = paste("nombre moyen de corrélations significatives\n 
+                         sur 1000 replications :",
            round(mean(df$Values),0),sep=""), hjust="left")+
   xlab("Nombre de corrélations significatives")
 
@@ -810,7 +821,7 @@ ggplot(df, aes(x=KmCV, y=Velo)) +
 
 
 #### Formulation de la droite de régression des moindres carrés ordinaires {#sect3142}
-Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre le valeur observée et la valeur prédite, dénommée résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle <span clas="revision_prop"> et par extension moins bon est le modèle</span>. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
+Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre le valeur observée et la valeur prédite, dénommée résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle, et par extension moins bon est le modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
 
 \begin{equation} 
 min\sum_{i=1}^n{(y_i-(\beta_0+\beta_1 x_i))^2}
@@ -987,7 +998,7 @@ knitr::kable(head(df, nrow(df)),
 
 **Calcul de l'erreur quadratique moyenne**
 
-La somme des résidus au carré (*SCR*) divisée par le nombre d'observations représente donc le carré moyen des erreurs (en anglais, *mean square error - MSE*), soit la variance résiduelle du modèle ($52,26 / 10 = 5,23$). Plus sa valeur sera faible, plus le modèle sera efficace pour prédire la variable indépendante. L'erreur quadratique moyenne (en anglais, *root-mean-square error - RMSE*) est simplement la racine carrée de la somme des résidus au carré divisé par le nombre d'observation ($n$):
+La somme des résidus au carré (*SCR*) divisée par le nombre d'observations représente donc le carré moyen des erreurs (en anglais, *mean square error - MSE*), soit la variance résiduelle du modèle ($52,26 / 10 = 5,23$). Plus sa valeur sera faible, plus le modèle sera efficace pour prédire la variable indépendante. L'erreur quadratique moyenne (en anglais, *root-mean-square error - RMSE*) est simplement la racine carrée de la somme des résidus au carré divisé par le nombre d'observation ($n$) :
 
 \begin{equation} 
 RMSE = \frac{\sqrt{\sum_{i=1}^n (y_{i}-\widehat{y})^2}}{n}
@@ -1044,7 +1055,7 @@ cat("MSE=", round(MSE, 2), "; RMSE=", round(RMSE,2), sep="")
 
 #### Comment rapporter une régression linéaire simple {#sect3145}
 
-Nous avons caculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance au centre-ville (en kilomètre). Le modèle obtient un *F* de Fisher significatif (*F*(1,8)= 34,75, *p* < 0,001) et </span>un $R^2$ de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante : 30,603 - 1,448 x (distance au centre-ville en km).
+Nous avons caculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance au centre-ville (en kilomètre). Le modèle obtient un *F* de Fisher significatif (*F*(1,8)= 34,75, *p* < 0,001) et un $R^2$ de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante : 30,603 - 1,448 x (distance au centre-ville en km).
 
 ## Relation entre deux variables qualitatives {#sect32}
 
@@ -1071,7 +1082,7 @@ Les données du tableau de contigence ci-dessous décrivent 279 projets d'habita
 
 * **Les fréquences théoriques**, représentent les valeurs que l'on devrait observer théoriquement s'il y avait indépendance entre les modalités des deux variables : si la répartition des deux modalités des deux variables étaient dûes au hasard. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalité *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06. Nous observons ici que la valeur théorique (16,06) est bien supérieure à la valeur réelle (6). On observe donc moins de HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre du hasard.
 
-* **La déviation** est la différence est la fréquence observée et théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*. <span class="revision_prop">Dans le cas précédent, on observait moins de HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre de la part du hasard, soit une sous-représentation du phénomène.</span>
+* **La déviation** est la différence est la fréquence observée et théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*. Dans le cas précédent, on observait 6 habitatations de moins de 25 logements construits avant 1975 et une fréquence théorique de 16,0. La dévdéviation est donc -10,06, soit une sous-représentation du phénomène.
 
 
 * **La contribution au khi^2^** est égal à la déviation au carré divisée par la fréquence théorique ($\chi_{ij}^2 = (f_{ij}-ft_{ij})^2/ft_{ij}$). Plus sa valeur est forte, plus il y a association entre les deux modalités. La somme des contributions au khi^2^ représente le *khi^2^* totale pour l'ensemble du tableau de contigence (ici à 63,54) que nous abordons dans la section suivante.
@@ -1095,7 +1106,7 @@ CrossTable(TableauKhi2$Taille, TableauKhi2$Periode,
 ```
 
 ### Test du khi^2^ {#sect322}
-Avec le test du khi^2^, on postule qu'il y a indépendance entre les modalités des deux variables qualitatives, soit l'hypothèse nulle </span>(h<sub>0</sub>). Puis, on cacule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contigence, nous avons 12 degrés de libertés : $(4-1)(5-1)=12$. À partir du nombre de degré de liberté et d'un seuil critique de significativité (prenons 5% ici), nous pouvons trouver la valeur critique de khi^2^ dans le tableau des valeurs critiques du khi^2^ : 21,03 section \@ref(annexe1)). Puisque le khi^2^ calculé dans le tableau de contigence est bien supérieure à celle obtenue dans le tableau des valeurs critiques (63,54), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. Autrement dit, si les deux variables n'étaient pas associées, nous aurions eu moins de 5% de chances de collecter des données avec ce niveau d'association, ce qui nous permet de rejeter l'hypothèse nulle (absence d'association). Notez que le test reste significatif avec des seuils de 1% (*p*=0,01) et 0,1% (*p*=0,001) puisque les valeurs critiques sont de 26,22 et 32,91.
+Avec le test du khi^2^, on postule qu'il y a indépendance entre les modalités des deux variables qualitatives, soit l'hypothèse nulle (h<sub>0</sub>). Puis, on cacule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contigence, nous avons 12 degrés de libertés : $(4-1)(5-1)=12$. À partir du nombre de degré de liberté et d'un seuil critique de significativité (prenons 5% ici), nous pouvons trouver la valeur critique de khi^2^ dans le tableau des valeurs critiques du khi^2^ : 21,03 section \@ref(annexe1)). Puisque le khi^2^ calculé dans le tableau de contigence est bien supérieure à celle obtenue dans le tableau des valeurs critiques (63,54), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. Autrement dit, si les deux variables n'étaient pas associées, nous aurions eu moins de 5% de chances de collecter des données avec ce niveau d'association, ce qui nous permet de rejeter l'hypothèse nulle (absence d'association). Notez que le test reste significatif avec des seuils de 1% (*p*=0,01) et 0,1% (*p*=0,001) puisque les valeurs critiques sont de 26,22 et 32,91.
 
 Bien entendu, une fois que l'on connait le nombre de degrés de liberté, on peut directement calculer les valeurs critiques pour différents seuils de signification et éviter ainsi de recourir à la table ci-dessus. Dans la même veine, on peut aussi calculer la valeur de *p* d'un tableau de contigence en spécifiant le nombre de degrés de liberté et la valeur du khi^2^ observé.
 
@@ -1276,7 +1287,7 @@ kableExtra::kable(AutresMesuresKhi2(df$Periode, df$Taille),
 
 Nous vous proposons une démarche très simple pour vérifier l'association entre deux variables qualitatives avec les étapes suivantes :
 
-* On pose l'hypothèse nulle (h<sub>0</sub>), soit l'indépendance entre les deux variables. Si le Khi^2^ total du tableau de contingence est inférieur à la valeur du critique du Khi^2^ avec *p*=0,05 et le nombre de degré de liberté de la table *T*, alors il y a bien indépendance. La valeur de *p* sera alors supérieur à 0,05. L'analyse s'arrête donc là ! Autrement dit, il n'est pas nécessaire d'analyser <span class="revision_prop"> le contenu de </span>votre tableau de contigence puisqu'il n'y pas d'associations significatives entre les modalités des deux variables. Vous pouvez simplement signaler que : selon les résultats du test du Khi^2^, il n'y a pas d'association significative entre les deux variables ($\chi$ = ... avec *p*= ...).
+* On pose l'hypothèse nulle (h<sub>0</sub>), soit l'indépendance entre les deux variables. Si le Khi^2^ total du tableau de contingence est inférieur à la valeur du critique du Khi^2^ avec *p*=0,05 et le nombre de degré de liberté de la table *T*, alors il y a bien indépendance. La valeur de *p* sera alors supérieure à 0,05. L'analyse s'arrête donc là ! Autrement dit, il n'est pas nécessaire d'analyser le contenu de votre tableau de contigence puisqu'il n'y pas d'associations significatives entre les modalités des deux variables. Vous pouvez simplement signaler que : selon les résultats du test du Khi^2^, il n'y a pas d'association significative entre les deux variables ($\chi$ = ... avec *p*= ...).
 
 * S'il y a dépendance ($khi_{observé}^2 > khi_{critique}^2$), trouver les cellules *ij* où les contributions au Khi^2^ sont les plus fortes, c'est-à-dire où les liens entre les modalités *i* de la variable en ligne et les modalités *j* de la variable en colonne sont les plus marqués. Pour ces cellules, le phénomène *ij* est surreprésenté si la déviation est positive ou sous-représenté si la déviation est négative. Commentez ces associations et utilisez les pourcentages en lignes ou en colonnes pour appuyer vos propos.
 
@@ -1524,7 +1535,7 @@ tstudent_dependants(Avant2, Apres2, mu=0)
 
 #### Mesurer la taille de l'effet {#sect3312}
 
-Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas de comparaisons de moyennes (avec des échantillons pairées ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le <span class="revision_rem">dernier</span><span class="revision_prop">second</span> étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test student ou de Welch s'est révélé significatif (p<0,05).
+Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas de comparaisons de moyennes (avec des échantillons pairées ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le second étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test student ou de Welch s'est révélé significatif (p<0,05).
 
 **Pourquoi utiliser le *d* de cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie que quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de tailles différentes, il s'écrit : 
 
@@ -1544,7 +1555,7 @@ $$\Delta = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sigma_B}$$
 
 Finalement, pour des échantillons dépendants (pairés), il s'écrit simplement $d = \bar{D}/{\sigma_D}$ avec $\bar{D}$ et $\sigma_D$ étant la moyenne et l'écart-type des différences entre les observations.
 
-**Commment interpréter le *d* de cohen ?** Un effet sera considéré comme faible avec $\lvert d \rvert$ à 0,2, modéré à 0,50 et fort à 0,80 [@cohen1992]. Notez que ces seuils ne sont que des conventions pour vous guider à interpréter la mesure de Cohen. D'ailleurs, dans son livre intitulé *Statistical power analysis for the behavioral sciences*, il écrit : "all conventions are arbitrary. One can only demand of them that they not be unreasonable" [@cohen2013]. Plus récemment, [@sawilowsky2009] a ajouté d'autres seuils à ceux proposés par Cohen (tableau \@ref(tab:tableconvcohen)).
+**Commment interpréter le *d* de cohen ?** Un effet sera considéré comme faible avec $\lvert d \rvert$ à 0,2, modéré à 0,50 et fort à 0,80 [@cohen1992]. Notez que ces seuils ne sont que des conventions pour vous guider à interpréter la mesure de Cohen. D'ailleurs, dans son livre intitulé *Statistical power analysis for the behavioral sciences*, il écrit : « all conventions are arbitrary. One can only demand of them that they not be unreasonable » [@cohen2013]. Plus récemment, [@sawilowsky2009] a ajouté d'autres seuils à ceux proposés par Cohen (tableau \@ref(tab:tableconvcohen)).
 
 
 ```{r tableconvcohen, echo=FALSE, message=FALSE, warning=FALSE}
@@ -1561,7 +1572,7 @@ knitr::kable(
 
 #### Mise en œuvre dans ![](images/Rlogo.png) {#sect3313}
 
-<span class="revision_rem">Surtout pas de panique !</span>Nous avons écrit <span class="revision_prop"> précédemment</span> les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe des fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux test avec une seule ligne de code.
+Nous avons écrit précédemment les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe des fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux tests avec une seule ligne de code.
 
 La fonction `t.test` permet ainsi de calculer les test de Student et de Welch :
 
@@ -1570,7 +1581,7 @@ La fonction `t.test` permet ainsi de calculer les test de Student et de Welch :
 * Le paramètre *var.equal* sera utilisé pour spécifier pour signaler si les variances sont égales pour le test de Student (`var.equal=TRUE`) ou dissemblables pour le test de Welch (`var.equal=FALSE`).
 * `var.test(x, y)` ou `var.test(x ~ y, data=)` pour vérifier au préalable si les variances sont égales ou non et choisir ainsi un t de Student ou un t de Welch.
 
-Les fonctions `cohens_d` et `hedges_g` <span class="revision_prop">du package **effectsize**</span> renvoient respectivement les mesures de *d* de Cohen et du *g* de Hedge :
+Les fonctions `cohens_d` et `hedges_g` du *package* **effectsize** renvoient respectivement les mesures de *d* de Cohen et du *g* de Hedge :
 
 * `cohens_d(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou  `cohens_d(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou
 * `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `hedges_g(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
@@ -1581,13 +1592,13 @@ Les fonctions `cohens_d` et `hedges_g` <span class="revision_prop">du package **
 Notez que pour toutes ces fonctions deux écritures sont possibles :
 
 * `x ~ y, data=` avec un `dataframe` dans lequel `x` est une variable continue et `y` et un facteur binaire
-* `x, y` qui sont tous deux des vecteurs numériques (variable continue)
+* `x, y` qui sont tous deux des vecteurs numériques (variable continue).
 
 **Exemple de test pour des échantillons indépendants**
 
 La figure \@ref(fig:figlocataires) représente la cartographie du pourcentage de locataires par secteur de recensement (SR) pour la région métropolitaine de recensement de Montréal (RMR) en 2016, soit une variable continue. L'objectif est de vérifier si la moyenne de ce pourcentage des SR de l'agglomération de Montréal est significativement différente de celle de SR hors de l'agglomération. 
 
-Les résultats de la syntaxe ![](images/Rlogo.png) ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%); cette différence de 32,5 points de pourcentage est d'ailleurs significative <span class="revision_prop"> et très forte</span> (t = -23,95; p ˂ 0,001, d de Cohen = 1,54).
+Les résultats de la syntaxe ![](images/Rlogo.png) ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%); cette différence de 32,5 points de pourcentage est d'ailleurs significative et très forte (t = -23,95; p ˂ 0,001, d de Cohen = 1,54).
 
 
 ```{r figlocataires, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Pourcentage de locataires par secteur de recensement, RMR de Montréal, 2016",  out.width='95%'}
@@ -1629,7 +1640,7 @@ group_by(dfRMR, Montreal) %>%
 v <- var.test(Locataire ~ Montreal, alternative='two.sided', conf.level=.95, data=dfRMR)
 print(v)
 ```
-<span class="revision_prop">Le test indique que nous n'avons aucune raison de rejeter l'hypothèse nulle selon laquelle les variances sont égales. Pour l'île de Montréal, l'écart type est de 21.4 et 20.1 hors de l'île, soit une différence négligeable.</span>
+Le test indique que nous n'avons aucune raison de rejeter l'hypothèse nulle selon laquelle les variances sont égales. Pour l'île de Montréal, l'écart type est de 21,4 et de 20,1 hors de l'île, soit une différence négligeable.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Calcul du T de Student ou du T de Welch
@@ -1657,51 +1668,8 @@ cohens_d(Locataire ~ Montreal, data = dfRMR, paired = FALSE)
 hedges_g(Locataire ~ Montreal, data = dfRMR, paired = FALSE)
 
 ```
-<span class="revision_prop">Notez que le *d* de Cohen et le *g* de Hedge sont très proches ici, rappelons que le second est une correction du premier pour des échantillons de taille réduite. Avec 951 observations, nous disposons d'un échantillon suffisamment grand pour que cette correction soit négligeable.</span>
+Notez que le *d* de Cohen et le *g* de Hedge sont très proches ici, rappelons que le second est une correction du premier pour des échantillons de taille réduite. Avec 951 observations, nous disposons d'un échantillon suffisamment grand pour que cette correction soit négligeable.
 
-#### Comparer des moyennes pondérées {#sect3314}
-
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
-En études urbaines et en géographie, le recours aux données agrégées (non individuelles) est fréquent, par exemple au niveau des secteurs de recensement (comprenant généralement entre 2500 à 8000 habitants). <span class="revision_prop">Dans ce contexte, un secteur de recensement plus peuplé devrait avoir un poids plus important dans l'analyse. Il est possible d'utiliser les versions pondérées des tests présentés précédemment.</span><span class="revision_rem">Il est donc parfois primordial de pondérer le test de Student.</span> Prenons deux exemples pour illustrer le tout :
-
-* Pour chaque secteur de recensement des îles de Montréal et de Laval, nous  <span class="revision_rem">diposons de</span><span class="revision_prop">avons calculé</span> la distance au parc le plus proche à travers le réseau de rues <span class="revision_prop">avec un Système d'Information Géographique</span>. On souhaite vérifier si les enfants âgés de moins de 15 ans résidant sur l'île de Montréal bénéficient en moyenne d'une meilleure accessibilité au parc.
-
-* Dans une étude pour sur la concentration de polluants atmosphérique dans l'environnement autour des écoles primaires montréalaises, Carrier *et al.* [-@carrier2014] souhaitaient vérifier si les élèves fréquentant les écoles les plus défavorisés sont plus exposés au dioxyde d'azote (NO<sub>2</sub>) dans leur milieu scolaire. Pour ce faire, ils ont réalisé un test _t_ sur un tableau avec comme observations les écoles primaires et trois variables : la moyenne NO<sub>2</sub> (variable continue), les quintiles extrêmes d'un indice de défavorisation (premier et dernier quintiles, variable qualitative) et le nombres d'élèves inscrits par écoles (variable pour la pondération).
-ont réalisé une test de _t_ 
-
-Pour réalisation un test *t* pondérée, nous pouvons utiliser la fonction `weighted_ttest` du package **sjstats**. Pour les deux exemples ci-dessous, la syntaxe ![](images/Rlogo.png) pourrait être :
-
-<span class="revision_prop">Est-ce nécessaire de mettre la syntaxe ici si on donne l'exemple concret juste après ?</span>
-* `weighted_ttest(ParcPlusProche ~ Iles + Enfants014, SR, paired = FALSE))`.
-* `weighted_ttest(NO2 ~ Q1Q5 + ElevesInscrits, Ecole, paired = FALSE))`
-
-:::
-
-En guise d'exemple appliqué, dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend.
-
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-library("sjstats")
-library("dplyr")
-
-# Calcul des statistiques pondérées
-group_by(dfRMR, Montreal) %>%
-  summarise(
-    n = sum(Logement),
-    MoyPond = weighted_mean(Locataire, Logement),
-    ecarttypePond = weighted_sd(Locataire, Logement)
-  )
-
-# T-Ttest non pondéré
-t.test(Locataire ~ Montreal, dfRMR, 
-               paired = FALSE, var.equal = TRUE, conf.level=.95)
-
-# T-Ttest pondérée
-weighted_ttest(Locataire ~ Montreal + Logement, dfRMR, 
-               paired = FALSE, ci.lvl=.95)
-               
-```
-
-<span class="revision_prop">Est-ce que ce qui suit ne serait pas un fragment de code que tu voulais enlever ? c'est un peu droppé de nul part</span>
 **Exemple de syntaxe ![](images/Rlogo.png) pour un test de Student pour des échantillons dépendants**
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -1743,10 +1711,47 @@ ggpaired(data=df2, x= "periode", y="risque", fill = "periode")
 t.test(risque ~ periode, data=df2, paired = TRUE)
 ```
 
+#### Comparer des moyennes pondérées {#sect3314}
+
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+En études urbaines et en géographie, le recours aux données agrégées (non individuelles) est fréquent, par exemple au niveau des secteurs de recensement (comprenant généralement entre 2500 à 8000 habitants). Dans ce contexte, un secteur de recensement plus peuplé devrait avoir un poids plus important dans l'analyse. Il est possible d'utiliser les versions pondérées des tests présentés précédemment. Prenons deux exemples pour illustrer le tout :
+
+* Pour chaque secteur de recensement des îles de Montréal et de Laval, nous avons calculé la distance au parc le plus proche à travers le réseau de rues avec un Système d'Information Géographique (SIG). On souhaite vérifier si les enfants âgés de moins de 15 ans résidant sur l'île de Montréal bénéficient en moyenne d'une meilleure accessibilité au parc.
+
+* Dans une étude pour sur la concentration de polluants atmosphérique dans l'environnement autour des écoles primaires montréalaises, Carrier *et al.* [-@carrier2014] souhaitaient vérifier si les élèves fréquentant les écoles les plus défavorisés sont plus exposés au dioxyde d'azote (NO<sub>2</sub>) dans leur milieu scolaire. Pour ce faire, ils ont réalisé un test _t_ sur un tableau avec comme observations les écoles primaires et trois variables : la moyenne NO<sub>2</sub> (variable continue), les quintiles extrêmes d'un indice de défavorisation (premier et dernier quintiles, variable qualitative) et le nombres d'élèves inscrits par écoles (variable pour la pondération).
+ont réalisé une test de _t_ 
+
+Pour réaliser un test *t* pondérée, nous pouvons utiliser la fonction `weighted_ttest` du package **sjstats**.
+
+:::
+
+En guise d'exemple appliqué, dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library("sjstats")
+library("dplyr")
+
+# Calcul des statistiques pondérées
+group_by(dfRMR, Montreal) %>%
+  summarise(
+    n = sum(Logement),
+    MoyPond = weighted_mean(Locataire, Logement),
+    ecarttypePond = weighted_sd(Locataire, Logement)
+  )
+
+# T-Ttest non pondéré
+t.test(Locataire ~ Montreal, dfRMR, 
+               paired = FALSE, var.equal = TRUE, conf.level=.95)
+
+# T-Ttest pondérée
+weighted_ttest(Locataire ~ Montreal + Logement, dfRMR, 
+               paired = FALSE, ci.lvl=.95)
+               
+```
 
 #### Comment rapporter un test de student ou de Welch? {#sect3315}
 
-<span class="revision_prop">Pour les différentes version du test, il est important de rapporter la valeur de *t*, la valeur de *p* et les moyennes des groupes. Voici quelques exemples (VERIFIER LES CHIFFRE, NOTAMMENT POUR LE REVENU, UN ECART TYPE DE 588000 $ C'EST BCP NON ?)</span>
+Pour les différentes versions du test, il est important de rapporter la valeur de *t*, la valeur de *p* et les moyennes des groupes. Voici quelques exemples :
 
 **Test de Student ou de Welch pour échantillons indépendants**
 
@@ -1772,7 +1777,7 @@ Si la variable continue est fortement anormalement distribuée, il est fortement
 Pour ce faire, on utilise la fonction `wilcox.test` dans lequel le paramètre `paired` permettra de spécifier si les échantillons sont indépendants ou non (`FALSE` ou `TRUE`).
 :::
 
-<span class="revision_prop">Dans l'exemple suivant, nous analysons le pourcentage de locataires dans les secteurs de recensements de la région métropolitaine de Montréal. Plus spécifiquement, nous comparons ce taux entre les secteurs présents sur l'île et les secteurs hors de l'île. Il s'agit donc d'un avec échantillon indépendant.</span>
+Dans l'exemple suivant, nous analysons le pourcentage de locataires dans les secteurs de recensements de la région métropolitaine de Montréal. Plus spécifiquement, nous comparons ce pourcentage entre les secteurs présents sur l'île et les secteurs hors de l'île. Il s'agit donc d'un test avec des échantillons indépendants.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("foreign")
@@ -1801,9 +1806,9 @@ group_by(dfRMR, Montreal) %>%
 wilcox.test(Locataire ~ Montreal, dfRMR, paired = FALSE)
 ```
 
-<span class="revision_prop">Nous observons bien ici une différence significative entre le pourcentage de locataire des secteurs de recensement sur l'île (rang médian = 216) et hors de l'île (rang médian = 261).
+Nous observons bien ici une différence significative entre le pourcentage de locataire des secteurs de recensement sur l'île (rang médian = 216) et hors de l'île (rang médian = 261).
 
-Pour le second exemple, nous générons deux jeux de données au hasard représentant une mesure d'une variable pré-traitement (*pre*) et post traitement (*post*) pour un même échantillon.</span>
+Pour le second exemple, nous générons deux jeux de données au hasard représentant une mesure d'une variable pré-traitement (*pre*) et post traitement (*post*) pour un même échantillon.
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 ###############################
 # Échantillons dépendants
@@ -1822,14 +1827,14 @@ wilcox.test(df1$Avant, df1$Apres, paired = TRUE)
 
 ```
 
-<span class="revision_prop">À nouveau, nous obtenons une différence significative entre les deux variables.</span>
+À nouveau, nous obtenons une différence significative entre les deux variables.
 
 **Comment rapporter un test de Wilcoxon?**
 
-<span class="revision_prop">Lorsque l'on rapporte les résultats d'un test de Wilcoxon, il est important de rapport la valeur du test (W), le degré de significativité (valeur de p) et éventuellement la médiane des rangs ou de la variable originale pour les deux groupes. Voici quelques exemples :</span>
+Lorsque l'on rapporte les résultats d'un test de Wilcoxon, il est important de signaler la valeur du test (W), le degré de significativité (valeur de p) et éventuellement la médiane des rangs ou de la variable originale pour les deux groupes. Voici quelques exemples :
 
 * Les résultats du test des rangs signés de Wilcoxon signale que les rangs de l'île de Montréal sont significativement plus élevés que ceux de l'île de Laval (W = 1223, p ˂ 0,001).
-* Les résultats du test de Wilcoxon signalent que les rangs post-tests sont significativement plus faibles que ceux <span class="revision_rem">post-test</span><span class="revision_prop">pré-test</span> (W = 1273,5, p ˂ 0,001).
+* Les résultats du test de Wilcoxon signalent que les rangs post-tests sont significativement plus faibles que ceux pré-test (W = 1273,5, p ˂ 0,001).
 * Les résultats du test de Wilcoxon signalent que la médiane des rangs pré-tests (médiane = 69) est significativement plus forte que celle du post-test (médiane = 50,5) (W = 1273,5, p ˂ 0,001).
 
 
@@ -1837,7 +1842,7 @@ wilcox.test(df1$Avant, df1$Apres, paired = TRUE)
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 
-**Existe-il une <span class="revision_rem">dépendance</span><span class="revision_prop">relation</span> entre une variable continue et une variable qualitative comprenant plus de deux modalités?** Pour répondre à cette question, on pourra recourir à deux méthodes : l’analyse de variance – **ANOVA**, _**AN**alysis Of **VA**riance_ en anglais – et le test non paramétrique de Kruskal-Wallis. La première permet de vérifier si les moyennes de plusieurs groupes d'une population donnée sont ou non significativement différentes; la seconde si leurs médianes sont différentes.
+**Existe-il une relation entre une variable continue et une variable qualitative comprenant plus de deux modalités?** Pour répondre à cette question, on pourra recourir à deux méthodes : l’analyse de variance – **ANOVA**, _**AN**alysis Of **VA**riance_ en anglais – et le test non paramétrique de Kruskal-Wallis. La première permet de vérifier si les moyennes de plusieurs groupes d'une population donnée sont ou non significativement différentes; la seconde si leurs médianes sont différentes.
 :::
 
 ### Analyse de variance {#sect341}
@@ -1849,7 +1854,7 @@ L’analyse de variance (ANOVA) est largement utilisée en psychologie, médecin
 * un troisième avec un dosage moyen;
 * un quatrième avec un dosage élevé.
 
-La variable continue permettra d'évaluer l'évolution de l'état de santé des individus (par exemple, la variation du taux de globules rouges dans le sang avant et après le traitement). <span class="revision_prop">Si le traitement est efficace</span>, on s'attendrait alors que les moyennes du deuxième, troisième et quatrième groupes soient plus élevées que celle du groupe de contrôle. <span class="revision_rem">Statistiquement parlant, si les moyennes sont significativement différentes ou autrement dit, si l’état de santé s’est nettement plus amélioré chez les membres des second et troisième et quatrième groupes comparativement à celui des membres du groupe contrôle, le médicament est efficace</span>. Les différences de moyennes entre les second, troisième et quatrième groupe permettront aussi de repérer quel dosage est le plus efficace. <span class="revision_prop">Si nous n'observons aucune différence significative entre les groupes, cela signifie que l'effet du médicamment ne diffère pas de l'effet d'un placébo.</span>
+La variable continue permettra d'évaluer l'évolution de l'état de santé des individus (par exemple, la variation du taux de globules rouges dans le sang avant et après le traitement). Si le traitement est efficace, on s'attendrait alors que les moyennes du deuxième, troisième et quatrième groupes soient plus élevées que celle du groupe de contrôle. Les différences de moyennes entre les second, troisième et quatrième groupe permettront aussi de repérer quel dosage est le plus efficace. Si nous n'observons aucune différence significative entre les groupes, cela signifie que l'effet du médicamment ne diffère pas de l'effet d'un placébo.
 
 L'ANOVA est aussi très utilisée en études urbaines, principalement pour vérifier si un phénomène urbain varie selon plusieurs groupes d'une population donnée ou de régions géographiques. En guise d'exemple, le recours à l'ANOVA permettrait de répondre aux questions suivantes :
 
@@ -1904,7 +1909,7 @@ VT = Var_{inter} + Var_{intra} \mbox{ ou } VT = VNE + VE
 * plus la variance intragroupe est faible, plus les différents groupes sont homogènes;
 * plus la variance intergroupe est forte, plus les moyennes des groupes sont différentes et donc plus les groupes sont dissembables. 
 
-Autrement dit, plus la variance intergroupe (**dissimilarité** des groupes) est maximisée et corollairement plus la variance intragroupe (**homogénéité** de chacun des groupes) est minimisée, <span class="revision_prop">plus les groupes sont clairement distincts et</span> plus l'ANOVA sera performante.
+Autrement dit, plus la variance intergroupe (**dissimilarité** des groupes) est maximisée et corollairement plus la variance intragroupe (**homogénéité** de chacun des groupes) est minimisée, plus les groupes sont clairement distincts et plus l'ANOVA sera performante.
 :::
 
 Examinons un premier jeu de données fictif sur la vitesse de déplacements de cyclistes (variable continue exprimée en km/h) et une variable qualitative comprenant trois groupes de cyclistes utilisant soit un vélo personnel (*n~A~* = 5), soit en libre service (*n~B~* = 7), soit électrique (*n~C~* = 6) (tableau \@ref(tab:aovfictive1)). D'emblée, on note que les moyennes de vitesse des trois groupes sont différentes : 17,6 km/h pour les cyclistes avec leur vélo personnel, 12,3  km/h les utilisateurs des vélos en libre service et 23,1 km/h pour les cyclistes avec un vélo électrique. 
@@ -2064,7 +2069,7 @@ knitr::kable(
 
 #### Le test de Fisher {#sect3412}
 
-Pour vérifier si les moyennes sont satistiquement différentes (<span class="revision_prop">leurs différences significativement différentes de 0), on a recours au test *F* de Fisher. Pour ce faire, on pose l'hypothèse nulle (H~0~), soit que les moyennes des groupes sont égales; autrement dit que la variable qualitative n'a pas d'effet sur la variable continue (indépendance entre les deux variables). L'hypothèse alternative (H~1~) est donc que les moyennes sont différentes. Pour nos deux jeux de données fictifs ci-dessus comprenant trois groupes, H~0~ signifie que $\overline{y_{A}}=\overline{y_{B}}=\overline{y_{C}}$. La statistique *F* se calcule comme suit :
+Pour vérifier si les moyennes sont satistiquement différentes (autrement dit, si leurs différences significativement différentes de 0), on a recours au test *F* de Fisher. Pour ce faire, on pose l'hypothèse nulle (H~0~), soit que les moyennes des groupes sont égales; autrement dit que la variable qualitative n'a pas d'effet sur la variable continue (indépendance entre les deux variables). L'hypothèse alternative (H~1~) est donc que les moyennes sont différentes. Pour nos deux jeux de données fictifs ci-dessus comprenant trois groupes, H~0~ signifie que $\overline{y_{A}}=\overline{y_{B}}=\overline{y_{C}}$. La statistique *F* se calcule comme suit :
 
 
 \begin{equation} 
@@ -2073,33 +2078,32 @@ F = \frac{\frac{Var{inter}}{k-1}}{\frac{Var{intra}}{n-k}}\mbox{ ou } F = \frac{\
 \end{equation}
 
 avec $n$ et $k$ étant respectivement les nombres d'observations et de modalités de la variable qualitative. L'hypothèse nulle (les moyennes sont égales) sera rejetée si la valeur du *F* calculé est supérieure à la valeur critique de la table *F* avec les degrés de libertés *(k-1, n-k)* et un seuil 
-$\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de *F*, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `aov` calcule directement la valeur *F* et celle de *p* qui lui est associée. Concrètement, si le test _F_ est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus <span class="revision_rem">les moyennes seront statistiquement différentes</span><span class="revision_prop">plus la différence entre les moyennes sera élevée</span>.
+$\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de *F*, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `aov` calcule directement la valeur *F* et celle de *p* qui lui est associée. Concrètement, si le test _F_ est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus la différence entre les moyennes sera élevée.
 
 Appliquons rapidement la démarche du test *F* à nos deux jeux de données fictifs qui comprennent 3 modalités pour la variable qualitative et 18 observations. Avec $\alpha$=0,05, 2 degrés de liberté (3-1) au numérateur et 15 au dénominateur (18-3), la valeur critique de F est de 3,68. On en conclut alors que :
 
-* pour le cas A, le F calculé est égal à $F = (377,904 /2) / (46,758 / 15) = 60,62$. Il est  supérieur à la valeur F critique; les moyennes sont donc statistiquement différentes au seuil 0,05.<span class="revision_prop">Autrement dit, nous aurions eu moins de 5% de chance d'obtenir un échantillon produisant ces résultats si en réalité la différence entre les moyenne était de 0.<span>
+* pour le cas A, le F calculé est égal à $F = (377,904 /2) / (46,758 / 15) = 60,62$. Il est  supérieur à la valeur F critique; les moyennes sont donc statistiquement différentes au seuil 0,05. Autrement dit, nous aurions eu moins de 5% de chance d'obtenir un échantillon produisant ces résultats si en réalité la différence entre les moyenne était de 0.
 * pour le cas B, le F calculé est égal à $F = (6,087/2)/ (115,669 / 15) = 0,39$. Il est inférieur à la valeur F critique; les moyennes ne sont donc pas statistiquement différentes au seuil 0,05.
 
 #### Conditions d'application de l'ANOVA et solutions alternatives {#sect3414}
 Trois conditions d'application doivent être vérifiées avant d'effectuer une analyse de variance sur un jeu de données :
 
-* **Normalité des groupes.** Le test de Fisher <span class="revision_rem">nécessite</span><span class="revision_prop">repose sur le postulat que</span> que les échantillons (groupes) <span class="revision_rem">doivent être idéalement</span><span class="revision_prop">sont</span> normalement distribués. Pour le vérifier, on a recours au test de normalité de Shapiro–Wilk (REF CHAPITRE 1 à METTRE PLUS TARD). <span class="revision_rem">Une autre option de vérifier la normalité des résidus, toujours avec le test de Shapiro–Wilk</span>. Notez toutefois que ce test est très <span class="revision_rem">restrictif</span><span class="revision_prop">sensible</span>, notamment pour des grands échantillons. <span class="revision_rem">Par conséquent, la condition de la normalité est particulièrement importante quand les échantillons sont de taille réduite; corollairement, elle ne doit être appliquée avec sévérité lorsque l'on analyse de grands échantillons. En effet, de nombreux auteurs s'entendent sur le fait que l'ANOVA peut être utilisée même si les distributions des groupes sont légèrement anormalement distribuées.</span><span class="revision_prop">
+* **Normalité des groupes.** Le test de Fisher repose sur le postulat que les échantillons (groupes) sont normalement distribués. Pour le vérifier, on a recours au test de normalité de Shapiro–Wilk (REF CHAPITRE 1 à METTRE PLUS TARD). Notez toutefois que ce test est très restrictif, surtout pour des grands échantillons.
 
 * **Homoscédasticité**. La variance dans les échantillons doit être la même (homogénéité des variances). Pour vérifier cette condition, on utilisera les tests de Levene, de Bartlett ou de Breusch-Pagan.
 
 * **Indépendance des observations (pseudo-réplication).** chaque individu doit appartenir à un et un seul groupe. En d'autres termes, les observations ne sont pas indépendantes si plusieurs mesures (variable continue) sont faites sur un même individu. Si c'est le cas, on utilisera alors une analyse de variance sur des mesures répétées (voir le bloc à la fin du chapitre).
 
-<span class="revision_prop">**Quelles sont les conséquences si les conditions d'application ne sont pas respectées ?** La non vérification des conditions d'application cause deux problèmes distincts : elles affectent la puissance du test (sa capacité à détecter un effet si celui-ci existe réellement) et le taux d'erreur de type 1 (la probabilité de trouver un résultat significatif alors qu'aucune relation n'existe réellement, soit un faut-positif) [@glass1972consequences, @lix1996consequences].
+**Quelles sont les conséquences si les conditions d'application ne sont pas respectées ?** La non vérification des conditions d'application cause deux problèmes distincts : elle affecte la puissance du test (sa capacité à détecter un effet, si celui-ci existe réellement) et le taux d'erreur de type 1 (la probabilité de trouver un résultat significatif alors qu'aucune relation n'existe réellement, soit un faut-positif) [@glass1972consequences; @lix1996consequences].
 
-* Si la distribution est décalée (*skewed*) plutôt que centrée (comme pour une distribution normale), la puissance et le taux d'erreur de type 1 sont tous les deux peu affectés car le test est non-orienté (la différence de moyenne peut être négative ou positive).
-* Si la distribution est *leptokurtic* (pointue, avec des extrémités de la distribution plus importantes), le taux d'erreur de type 1 est peu affecté, en revanche la puissance du test est réduite. L'inverse s'observe si la distribution est *platykurtic* (avec des extrémités de la distribution plus fines).
-* Si les groupes ont des variances différentes, le taux d'erreur de type 1 augmente légèrement
+* Si la distribution est asymétrique (figure \@ref(fig:figanovapb).a) plutôt que centrée (comme pour une distribution normale), la puissance et le taux d'erreur de type 1 sont tous les deux peu affectés car le test est non-orienté (la différence de moyennes peut être négative ou positive).
+* Si la distribution est leptocurtique (pointue, avec des extrémités de la distribution plus importantes, figure \@ref(fig:figanovapb).b), le taux d'erreur de type 1 est peu affecté, en revanche la puissance du test est réduite. L'inverse s'observe si la distribution est platicurtique (aplatie c'est-à-dire avec des extrémités de la distribution plus réduites, figure \@ref(fig:figanovapb).c).
+* Si les groupes ont des variances différentes, le taux d'erreur de type 1 augmente légèrement.
 * Si les observations ne sont pas indépendantes, à la fois le taux d'erreurs de type 1 et la puissance du test sont fortement affectés.
 * Si les échantillons sont petits, les effets présentés ci-dessus sont démultipliés.
-* Si plusieurs conditions ne sont pas respectées, les conséquences présentées ci-dessus s'additionnent, voir se combinent. La figure \@ref(fig:figanovapb)
-</span>
+* Si plusieurs conditions ne sont pas respectées, les conséquences présentées ci-dessus s'additionnent, voir se combinent.
 
-```{r figanovapb, echo=FALSE, message=FALSE, warning=FALSE}
+```{r figanovapb, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exemples de distributions anormales",  out.width='95%', message=FALSE, warning=FALSE}
 library(SimDesign)
 library(ggplot2)
 library(ggpubr)
@@ -2121,7 +2125,7 @@ p1 <- ggplot(df) +
   xlim(-7,7)+
   ylim(0,0.55)+
   ylab("")+
-  xlab("distribution skewed VS distribution normale")
+  xlab("a. Distribution asymétrique versus distribution normale")
 
 p2 <- ggplot(df) + 
   geom_histogram(aes(x = leptokurtic,y =..density..),
@@ -2133,7 +2137,7 @@ p2 <- ggplot(df) +
   xlim(-7,7)+
   ylim(0,0.55)+
   ylab("")+
-  xlab("distribution leptokurtic VS distribution normale")
+  xlab("b. Distribution leptocurtique versus distribution normale")
 
 p3 <- ggplot(df) + 
   geom_histogram(aes(x = platykurtic,y =..density..),
@@ -2145,28 +2149,23 @@ p3 <- ggplot(df) +
   xlim(-7,7)+
   ylim(0,0.55)+
   ylab("")+
-  xlab("distribution platykurtic VS distribution normale")
+  xlab("c. Distribution platicurtique versus distribution normale")
 
 ggarrange(p1,p2,p3,nrow = 3, ncol = 1)
 
 ```
+
 **Que faire quand les conditions d'application relatives à la normalité ou à l'homoscédaticité ne sont vraiment pas respectées ?** Signalons d'emblée que le non respect de ces conditions ne change rien à la décomposition de la variance (VT=V~intra~+V~inter~). Cela signifie que vous pouvez toujours calculer Eta^2^. Par contre, le test de Fisher ne peut pas être utilisé car il sera biaisé comme décrit précédemment. Quatre solutions sont envisageables :
 
-* Lorsque les échantillons sont fortement anormalement distribués, certains auteurs vont simplement transformer leur variable <span class="revision_rem">continue en *log*</span><span class="revision_prop">em appliquant une fonction logarithme, racine carré, inverse ou exponentielle et reporter le test de fisher calculé sur cette transformation. Attention toutefois ! <span class="revision_rem">La transformation logarithme n'est pas une panacée puisqu'elle ne corrige pas systématiquement l'anormalité d'une distribution.</span><span class="revision_prop">Transformer une variable ne va pas systèmatiquement la rapprocher d'une distribution normale et complique l'interprétation finale des résultats.</span> Par conséquent, avant de recalculer votre test *F*, il convient de réaliser un test de normalité de Shapiro–Wilk et un test d'homoscédasticité (Levene, Bartlett ou/et Breusch-Pagan) sur la variable continue transformée <span class="revision_rem">en logarithme</span>.<span class="revision_prop">
+* Lorsque les échantillons sont fortement anormalement distribués, certains auteurs vont simplement transformer leur variable en appliquant une fonction logarithme (le plus souvent) ou racine carré, inverse ou exponentielle et reporter le test de fisher calculé sur cette transformation. Attention toutefois ! Transformer une variable ne va pas systématiquement la rapprocher d'une distribution normale et complique l'interprétation finale des résultats. Par conséquent, avant de recalculer votre test *F*, il convient de réaliser un test de normalité de Shapiro–Wilk et un test d'homoscédasticité (Levene, Bartlett ou/et Breusch-Pagan) sur la variable continue transformée.
 
-* Détecter <span class="revision_rem">à l'aide de graphiques,</span> les observations qui contribuent le plus à l'anormalité et l'hétéroscédasticité, dites valeurs aberrantes (*outliers* en anglais). Supprimez les et refaites votre ANOVA, en vous assurant que les conditions sont désormais respectées. <span class="revision_rem">J'avoue ne pas être féru de cette solution</span><span class="revision_prop">Notez que supprimer des observations peut être une pratique éthiquement questionnable en statistique</span>. Si vos échantillons sont bien constitués et que la mesure collectée n'est pas erronée, pourquoi donc la supprimer? Si vous optez pour cette solution, prenez soin de comparer les résultats avant et après la suppression des valeurs aberrantes. Si les conditions sont respectées après suppression et que les résultats de l'ANOVA (Eta^2^ et test *F* de Fisher) sont très semblables, conservez donc les résultats l'ANOVA intitiale <span class="revision_prop">et reportez que vous avez procédez aux deux tests</span>.
+* Détecter es observations qui contribuent le plus à l'anormalité et l'hétéroscédasticité, dites valeurs aberrantes (*outliers* en anglais). Supprimez les et refaites votre ANOVA, en vous assurant que les conditions sont désormais respectées. Notez que supprimer des observations peut être une pratique éthiquement questionnable en statistique. Si vos échantillons sont bien constitués et que la mesure collectée n'est pas erronée, pourquoi donc la supprimer? Si vous optez pour cette solution, prenez soin de comparer les résultats avant et après la suppression des valeurs aberrantes. Si les conditions sont respectées après suppression et que les résultats de l'ANOVA (Eta^2^ et test *F* de Fisher) sont très semblables, conservez donc les résultats l'ANOVA intitiale et reportez que vous avez procédez aux deux tests.
 
 * Lorsque les variances des groupes sont dissemblables, vous pouvez utiliser le test de Welch pour l'ANOVA au lieu de test *F* de Fisher. 
 
 * Dernière solution, lors les deux conditions ne sont vraiment pas respectées, utilisez le test non paramétrique de Kruskal-Wallis. Par analogie au *t* de student, il correspond au test des rangs signés de Wilcoxon. Ce test est décrit dans la section suivante.
 
-<span class="revision_rem">
-Vous l'aurez compris, la statistique et sa mise en œuvre dans ![](images/Rlogo.png) s'apparentent souvent à la cuisine : pour un même plat plusieurs recettes sont possibles, dépendamment de vos ingrédients et (multi)cultures culinaires; à vous de trouver celle qui convient le mieux à vos papilles ou à votre jeu de données.
-</span>
-<span class="revision_prop">Je vois ce que tu veux dire et je suis d'accord sur la partie concernant R. Par contre pour la statistique en générale, je trouve la tournure un peu trop relativiste. Voici ma proposition : 
-
-Vous l'aurez compris, dans de nombreux cas en statistique les choix méthodologiques dépendent de la subjectivité du chercheur. Il faut s'adapter au jeu de données et à la culture statistique en vigueur dans votre champs d'étude. N'hésitez pas à réaliser plusieurs tests différents pour tester la robustesse de vos conclusions et fiez-vous en premier lieu à ceux pour lesquels votre jeu de données est le plus adapté.
-</span>
+Vous l'aurez compris, dans de nombreux cas en statistique les choix méthodologiques dépendent de la subjectivité du chercheur. Il faut s'adapter au jeu de données et à la culture statistique en vigueur dans votre champs d'étude. N'hésitez pas à réaliser plusieurs tests différents pour évaluer la robustesse de vos conclusions et fiez-vous en premier lieu à ceux pour lesquels votre jeu de données est le plus adapté.
 
 ### Test non paramétrique de Kruskal-Wallis {#sect342}
 
@@ -2221,7 +2220,7 @@ ggarrange(GraphDens, GraphViolon)
 
 ``` 
 
-Nous pouvons vérifier si les échantillons sont normalement distribués avec la fonction `shapiro_test` du package **rstatix**. À titre de rappel, l'hypothèse nulle (h<sub>0</sub>) de ce test est que la distribution est normale. Par conséquent, quand la valeur de *P* associée à la statistique de Shapiro est supérieure à 0,05 alors <span class="revision_rem">la distribution est normale</span><span class="revision_prop"> on ne peut rejeter l'hypothèse d'une distribution normale</span>. À la lecture des sorties ci-dessous, seul le groupe des utilisateurs en transport en commun présente une distribution <span class="revision_rem">normale</span><span class="revision_prop">proche de la normalité</span> (p=0,0504). Ce test étant très restrictif, il est fortement conseillé de visualiser <span class="revision_prop">le diagramme quantile-quantile</span> (graphique QQ plot) (figure \@ref(fig:figQqplot)). <span class="revision_rem">Ces graphiques rélèvent que la quasi-totalité des observations sont dans l'intervalle de confiance (en gris), excepté deux observations pour le vélo et deux autres pour l'automobile. Par conséquent, on peut considérer que ces trois distributions s'approchent d'une situation de normalité.</span><span class="revision_prop">Ces graphiques sont utilisés pour déterminer visuellement si une distribution empirique (observées sur des données), s'approche d'une distribution théorique (ici la loi normale). Si effectivement les deux distribution sont proches, les points du diagramme devraient tous tomber sur une ligne droite parfaite. Un intervale de confiance (représenté ici en gris) peut être construit pour obtenir une interprétation plus nuancée. Dans notre cas, seules deux observations pour le vélo et deux autres pour l'automobile s'éloignent vraiment de la ligne droite. Si l'on considère ces observations comme des valeurs abhérentes, on peut considérer que ces trois distributions s'approchent d'une distribution normale.</span>
+Nous pouvons vérifier si les échantillons sont normalement distribués avec la fonction `shapiro_test` du package **rstatix**. À titre de rappel, l'hypothèse nulle (h<sub>0</sub>) de ce test est que la distribution est normale. Par conséquent, quand la valeur de *P* associée à la statistique de Shapiro est supérieure à 0,05 alors on ne peut rejeter l'hypothèse d'une distribution normale (autrement dit, la distribution est anormale). À la lecture des sorties ci-dessous, seul le groupe des utilisateurs en transport en commun présente une distribution proche de la normalité (p=0,0504). Ce test étant très restrictif, il est fortement conseillé de visualiser le diagramme quantile-quantile pour chaque groupe (graphique QQ plot) (figure \@ref(fig:figQqplot)). Ces graphiques sont utilisés pour déterminer visuellement si une distribution empirique (observées sur des données), s'approche d'une distribution théorique (ici la loi normale). Si effectivement les deux distribution sont proches, les points du diagramme devraient tous tomber sur une ligne droite parfaite. Un intervale de confiance (représenté ici en gris) peut être construit pour obtenir une interprétation plus nuancée. Dans notre cas, seules deux observations pour le vélo et deux autres pour l'automobile s'éloignent vraiment de la ligne droite. On peut considérer que ces trois distributions s'approchent d'une distribution normale.
 
 ```{r figQqplot, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='QQ Plot pour les groupes', out.width='75%'}
 
@@ -2314,7 +2313,7 @@ ggarrange(GraphDens, GraphViolon)
 ``` 
 
 
-Le test de Shapiro et les graphiques QQ plot (figure \@ref(fig:figQqplot2)) rélèvent que les distributions des trois groupes sont anormales.<span class="revision_prop"> Ce résultat n'est pas surprenant si l'on tient compte de la nature logarithmique de l'échelle décibel.</span>
+Le test de Shapiro et les graphiques QQ plot (figure \@ref(fig:figQqplot2)) rélèvent que les distributions des trois groupes sont anormales. Ce résultat n'est pas surprenant si l'on tient compte de la nature logarithmique de l'échelle décibel.
 
 ```{r figQqplot2, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='QQ Plot pour les groupes', out.width='75%'}
 
@@ -2357,7 +2356,7 @@ anova_test(laeq ~ Mode, data = df_Bruit)
 welch_anova_test(laeq ~ Mode, data = df_Bruit)
 ```
 
-Une fois démontré que les moyennes sont différentes, le test de Tukey est particulièrement intéressant puisqu'il nous permet de repérer les différences de moyennes significatives deux à deux, <span class="revision_prop">tout en ajustant les valeurs de *P* obtenues en fonction du nombre de comparaisons effectuées</span>. Ci-dessous, on constate que toutes les paires sont statistiquement différentes et que la différence de moyennes entre les automobilistes et les cyclistes est de 1,9 dB(A) et surtout de 7.1 dB(A) entre les automobilistes et le transport en commun.
+Une fois démontré que les moyennes sont différentes, le test de Tukey est particulièrement intéressant puisqu'il nous permet de repérer les différences de moyennes significatives deux à deux, tout en ajustant les valeurs de *P* obtenues en fonction du nombre de comparaisons effectuées. Ci-dessous, on constate que toutes les paires sont statistiquement différentes et que la différence de moyennes entre les automobilistes et les cyclistes est de 1,9 dB(A) et surtout de 7,1 dB(A) entre les automobilistes et le transport en commun.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 aov2 <- aov(laeq ~ Mode, data = df_Bruit)
@@ -2384,7 +2383,7 @@ pairwise.wilcox.test(df_Bruit$laeq, df_Bruit$Mode, p.adjust.method = "BH")
 
 ### Comment rapporter les résultats d'une ANOVA et du test de Kruskal-Wallis {#sect344}
 
-<span class="revision_prop">Plusieurs éléments doivent être reportés pour détailler les résultats d'une ANOVA ou d'un test de Kruskal-Wallis : la valeur de *F*, de *W* (dans le cas d'une ANOVA de Welch) ou du χ2 (Kruskal-Wallis), les valeurs de *P*, les moyennes ou médianes respectives des groupes et éventuellement un tableau détaillant les écarts intergroupes obtenus avec les test de Tuckey ou Wilcoxon par paires.</span>
+Plusieurs éléments doivent être reportés pour détailler les résultats d'une ANOVA ou d'un test de Kruskal-Wallis : la valeur de *F*, de *W* (dans le cas d'une ANOVA de Welch) ou du χ2 (Kruskal-Wallis), les valeurs de *P*, les moyennes ou médianes respectives des groupes et éventuellement un tableau détaillant les écarts intergroupes obtenus avec les test de Tuckey ou Wilcoxon par paires.
 
 * Les résultats de l'analyse de variance à un facteur démontre que le mode de transport utilisé n'a pas d'effet significatif sur le temps de déplacement en heures de pointe à Montréal (*F*(2,96)=0,82, *p*=0,444). En effet, pour des trajets de dix kilomètres entre un quartier périphérique et le centre-ville, les cyclistes (Moy=38,4, ET=15,2) arrivent en moyenne moins d'une minute après les automobilistes (Moy=37,7, ET=12,8) et les usagers du transport en commun moins de quatre minutes (Moy=41,6, ET=11,4). 
 
@@ -2399,7 +2398,7 @@ Nous avons vu que l'ANOVA permet de comparer les moyennes d'une variable continu
 
 * **une ANOVA multifacteur** avec une variable dépendante continue et plus de deux variables indépendantes qualitatives. Par exemple, avec trois variables qualitatives pour expliquer la variable continue, on inclut les effets de chaque variable qualitative (*a*, *b*, *c*) ainsi que de leurs interactions (*ab*, *ac*, *bc*, *abc*).
 
-* **L'analyse de covariance** (**ANCOVA**, **AN**alysis of **COVA**riance en anglais) comprend une variable dépendante continue, une variable indépendante qualitative (facteurs) et plusieurs variables indépendantes continues dites covariables. <span class="revision_rem">Concrètement, elle représente une combinaison entre une analyse de variance et une régression.</span> L'objectif est alors de vérifier si les moyennes d'une variable dépendante sont différentes pour plusieurs groupes d'une population donnée, après avoir contrôlé <span class="revision_prop">l'effet</span> d'une ou plusieurs variables continues. Par exemple, pour une métropole donnée, on pourra vouloir comparer les moyennes de loyers entre la ville-centre et la première et de la seconde couronnes (facteur), une fois contrôlé la taille de ces derniers (variable covariée continue). En effet, une partie de la variance des loyers s'explique certainement par la taille des logements.
+* **L'analyse de covariance** (**ANCOVA**, **AN**alysis of **COVA**riance en anglais) comprend une variable dépendante continue, une variable indépendante qualitative (facteurs) et plusieurs variables indépendantes continues dites covariables. L'objectif est alors de vérifier si les moyennes d'une variable dépendante sont différentes pour plusieurs groupes d'une population donnée, après avoir contrôlé l'effet d'une ou plusieurs variables continues. Par exemple, pour une métropole donnée, on pourra vouloir comparer les moyennes de loyers entre la ville-centre et la première et de la seconde couronnes (facteur), une fois contrôlé la taille de ces derniers (variable covariée continue). En effet, une partie de la variance des loyers s'explique certainement par la taille des logements.
 
 * **L'analyse de variance multivariée** (**MANOVA**, _**M**ultivariate **AN**alysis of **VA**riance_ en anglais) comprend deux ou plus variables dépendantes continues et une variable indépendante qualitative (facteur). Par exemple, on souheterait comparer les moyennes d'exposition au bruit et à différents polluants (dioxyde d'azote, particules fines, ozone) (variables dépendantes continues) selon le mode de transport utilisé (automobile, vélo, transport en commun, soit le facteur).
 
