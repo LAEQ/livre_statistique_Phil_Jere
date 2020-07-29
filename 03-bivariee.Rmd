@@ -1524,9 +1524,9 @@ tstudent_dependants(Avant2, Apres2, mu=0)
 
 #### Mesurer la taille de l'effet {#sect3312}
 
-Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas de comparaisons de moyennes (avec des échantillons pairées ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le dernier étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test student ou de Welch s'est révélé significatif (p<0,05).
+Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas de comparaisons de moyennes (avec des échantillons pairées ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le <span class="revision_rem">dernier</span><span class="revision_prop">second</span> étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test student ou de Welch s'est révélé significatif (p<0,05).
 
-**Pourquoi utiliser le *d* de cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie que quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de taille différente, il s'écrit : 
+**Pourquoi utiliser le *d* de cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie que quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de tailles différentes, il s'écrit : 
 
 $$d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{(n_A-1)S^2_A+(n_B-1)S^2_B}{n_A+n_B-2}}}$$
 avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d'observations et les variances pour les groupes *A* et *B*, $S^2_p$.
@@ -1561,7 +1561,7 @@ knitr::kable(
 
 #### Mise en œuvre dans ![](images/Rlogo.png) {#sect3313}
 
-Surtout pas de panique ! Nous avons écrit les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe de fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux test avec une seule ligne de code.
+<span class="revision_rem">Surtout pas de panique !</span>Nous avons écrit <span class="revision_prop"> précédemment</span> les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe des fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux test avec une seule ligne de code.
 
 La fonction `t.test` permet ainsi de calculer les test de Student et de Welch :
 
@@ -1570,12 +1570,12 @@ La fonction `t.test` permet ainsi de calculer les test de Student et de Welch :
 * Le paramètre *var.equal* sera utilisé pour spécifier pour signaler si les variances sont égales pour le test de Student (`var.equal=TRUE`) ou dissemblables pour le test de Welch (`var.equal=FALSE`).
 * `var.test(x, y)` ou `var.test(x ~ y, data=)` pour vérifier au préalable si les variances sont égales ou non et choisir ainsi un t de Student ou un t de Welch.
 
-Les fonctions `cohens_d` et `hedges_g` renvoient respectivement les mesures de *d* de Cohen et du *g* de Hedge :
+Les fonctions `cohens_d` et `hedges_g` <span class="revision_prop">du package **effectsize**</span> renvoient respectivement les mesures de *d* de Cohen et du *g* de Hedge :
 
-* `cohens_d(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou  cohens_`d(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou
-* `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
+* `cohens_d(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou  `cohens_d(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou
+* `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `hedges_g(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
 
-* `glass_delta(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `glass_delta(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
+* `glass_delta(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `glass_delta(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
 
 
 Notez que pour toutes ces fonctions deux écritures sont possibles :
@@ -1585,9 +1585,9 @@ Notez que pour toutes ces fonctions deux écritures sont possibles :
 
 **Exemple de test pour des échantillons indépendants**
 
-La figure \@ref(fig:figlocataires) représente la cartographie du pourcentage de locataires par secteur de recensement (SR) pour la région métropolitaine de recensement (RMR) en 2016, soit une variable continue. L'objectif est de vérifier si la moyenne de ce pourcentage des SR de l'agglomération de Montréal est significativement différente de celle de SR hors de l'agglomération. 
+La figure \@ref(fig:figlocataires) représente la cartographie du pourcentage de locataires par secteur de recensement (SR) pour la région métropolitaine de recensement de Montréal (RMR) en 2016, soit une variable continue. L'objectif est de vérifier si la moyenne de ce pourcentage des SR de l'agglomération de Montréal est significativement différente de celle de SR hors de l'agglomération. 
 
-Les résultats de la syntaxe ![](images/Rlogo.png) ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%); cette différence de 32,5 points de pourcentage est d'ailleurs significative (t = -23,95; p ˂ 0,001, d de Cohen = 1,54).
+Les résultats de la syntaxe ![](images/Rlogo.png) ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%); cette différence de 32,5 points de pourcentage est d'ailleurs significative <span class="revision_prop"> et très forte</span> (t = -23,95; p ˂ 0,001, d de Cohen = 1,54).
 
 
 ```{r figlocataires, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Pourcentage de locataires par secteur de recensement, RMR de Montréal, 2016",  out.width='95%'}
@@ -1627,26 +1627,29 @@ group_by(dfRMR, Montreal) %>%
 # On vérifie si les variances sont égales avec la fonction var.test
 # quand la valeur de P est inférieure à 0,05 alors les variances diffèrent
 v <- var.test(Locataire ~ Montreal, alternative='two.sided', conf.level=.95, data=dfRMR)
-v
+print(v)
+```
+<span class="revision_prop">Le test indique que nous n'avons aucune raison de rejeter l'hypothèse nulle selon laquelle les variances sont égales. Pour l'île de Montréal, l'écart type est de 21.4 et 20.1 hors de l'île, soit une différence négligeable.</span>
 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Calcul du T de Student ou du T de Welch
 p <- v$p.value
 if(p >= 0.05){
-  cat("\nLes variances ne diffèrent pas !",
-     "\nOn utilise le test de student avec l'option var.equal=TRUE", sep="")
+  cat("\n Les variances ne diffèrent pas !",
+     "\n On utilise le test de student avec l'option var.equal=TRUE", sep="")
     t.test(Locataire ~ Montreal,  # variable continue ~ facteur binaire 
            data=dfRMR,            # nom du dataframe
            conf.level=.95,        # intervalle de confiance pour la valeur de t
            paired = FALSE,        # échantillons non pairés (indépendants)
            var.equal=TRUE)        # variances égales
 } else {
-  cat("\nLes variances diffèrent !",
-      "\nOn utilise le test de Welch avec l'option var.equal=FALSE", sep="")
+  cat("\n Les variances diffèrent !",
+      "\n On utilise le test de Welch avec l'option var.equal=FALSE", sep="")
   t.test(Locataire ~ Montreal,   # variable continue ~ facteur binaire 
          data=dfRMR,             # nom du dataframe
          conf.level=.95,         # intervalle de confiance pour la valeur de t
          paired = FALSE,         # échantillons non pairés (indépendants)
-         var.equal=FALSE)        # variances égales
+         var.equal=FALSE)        # variances différentes
 }
 
 # Effet de taille à analyser uniquement si le test est significatif
@@ -1654,25 +1657,27 @@ cohens_d(Locataire ~ Montreal, data = dfRMR, paired = FALSE)
 hedges_g(Locataire ~ Montreal, data = dfRMR, paired = FALSE)
 
 ```
+<span class="revision_prop">Notez que le *d* de Cohen et le *g* de Hedge sont très proches ici, rappelons que le second est une correction du premier pour des échantillons de taille réduite. Avec 951 observations, nous disposons d'un échantillon suffisamment grand pour que cette correction soit négligeable.</span>
 
 #### Comparer des moyennes pondérées {#sect3314}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
-En études urbaines et en géographie, le recours aux données agrégées (non individuelles) est fréquent, par exemple au niveau des secteurs de recensement (comprenant généralement entre 2500 à 8000 habitants). Il est donc parfois primordial de pondérer le test de Student. Prenons deux exemples pour illustrer le tout :
+En études urbaines et en géographie, le recours aux données agrégées (non individuelles) est fréquent, par exemple au niveau des secteurs de recensement (comprenant généralement entre 2500 à 8000 habitants). <span class="revision_prop">Dans ce contexte, un secteur de recensement plus peuplé devrait avoir un poids plus important dans l'analyse. Il est possible d'utiliser les versions pondérées des tests présentés précédemment.</span><span class="revision_rem">Il est donc parfois primordial de pondérer le test de Student.</span> Prenons deux exemples pour illustrer le tout :
 
-* Pour chaque secteur de recensement des îles de Montréal et de Laval, nous avons diposons de la distance au parc le plus proche à travers le réseau de rues. On souhaite vérifier si les enfants âgés de moins de 15 ans résidant sur l'île de Montréal bénéficient en moyenne d'une meilleure accessibilité au parc.
+* Pour chaque secteur de recensement des îles de Montréal et de Laval, nous  <span class="revision_rem">diposons de</span><span class="revision_prop">avons calculé</span> la distance au parc le plus proche à travers le réseau de rues <span class="revision_prop">avec un Système d'Information Géographique</span>. On souhaite vérifier si les enfants âgés de moins de 15 ans résidant sur l'île de Montréal bénéficient en moyenne d'une meilleure accessibilité au parc.
 
 * Dans une étude pour sur la concentration de polluants atmosphérique dans l'environnement autour des écoles primaires montréalaises, Carrier *et al.* [-@carrier2014] souhaitaient vérifier si les élèves fréquentant les écoles les plus défavorisés sont plus exposés au dioxyde d'azote (NO<sub>2</sub>) dans leur milieu scolaire. Pour ce faire, ils ont réalisé un test _t_ sur un tableau avec comme observations les écoles primaires et trois variables : la moyenne NO<sub>2</sub> (variable continue), les quintiles extrêmes d'un indice de défavorisation (premier et dernier quintiles, variable qualitative) et le nombres d'élèves inscrits par écoles (variable pour la pondération).
 ont réalisé une test de _t_ 
 
-Pour réalisation un test *t* pondérée, on utilise la fonction `weighted_ttest` du package **sjstats**. Pour les deux exemples ci-dessous, la syntaxe ![](images/Rlogo.png) pourrait être :
+Pour réalisation un test *t* pondérée, nous pouvons utiliser la fonction `weighted_ttest` du package **sjstats**. Pour les deux exemples ci-dessous, la syntaxe ![](images/Rlogo.png) pourrait être :
 
+<span class="revision_prop">Est-ce nécessaire de mettre la syntaxe ici si on donne l'exemple concret juste après ?</span>
 * `weighted_ttest(ParcPlusProche ~ Iles + Enfants014, SR, paired = FALSE))`.
 * `weighted_ttest(NO2 ~ Q1Q5 + ElevesInscrits, Ecole, paired = FALSE))`
 
 :::
 
-En guise d'exemple, dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend (`weighted_ttest(Locataire ~ Montreal + Logement, dfRMR, paired = FALSE, ci.lvl=.95`).
+En guise d'exemple appliqué, dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("sjstats")
@@ -1696,6 +1701,7 @@ weighted_ttest(Locataire ~ Montreal + Logement, dfRMR,
                
 ```
 
+<span class="revision_prop">Est-ce que ce qui suit ne serait pas un fragment de code que tu voulais enlever ? c'est un peu droppé de nul part</span>
 **Exemple de syntaxe ![](images/Rlogo.png) pour un test de Student pour des échantillons dépendants**
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -1737,7 +1743,10 @@ ggpaired(data=df2, x= "periode", y="risque", fill = "periode")
 t.test(risque ~ periode, data=df2, paired = TRUE)
 ```
 
+
 #### Comment rapporter un test de student ou de Welch? {#sect3315}
+
+<span class="revision_prop">Pour les différentes version du test, il est important de rapporter la valeur de *t*, la valeur de *p* et les moyennes des groupes. Voici quelques exemples (VERIFIER LES CHIFFRE, NOTAMMENT POUR LE REVENU, UN ECART TYPE DE 588000 $ C'EST BCP NON ?)</span>
 
 **Test de Student ou de Welch pour échantillons indépendants**
 
@@ -1758,7 +1767,7 @@ Pour un texte en anglais, vous pourrez consulter
 ### Test non paramétrique de Wilcoxon {#sect332}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
-Si la variable continue est fortement anormalement distribuée, il est déconseillé d'utiliser les tests de Student et de Welch. On préviligera le test des rangs signés de Wilcoxon (*Wilcoxon rank-sum test* en anglais). Attention, il est aussi appelé test U de Mann-Whitney. Ce test permet alors de vérifier si les deux groupes présentent des médianes différentes.
+Si la variable continue est fortement anormalement distribuée, il est fortement déconseillé d'utiliser les tests de Student et de Welch. On préviligera le test des rangs signés de Wilcoxon (*Wilcoxon rank-sum test* en anglais). Attention, il est aussi appelé test U de Mann-Whitney. Ce test permet alors de vérifier si les deux groupes présentent des médianes différentes.
 
 Pour ce faire, on utilise la fonction `wilcox.test` dans lequel le paramètre `paired` permettra de spécifier si les échantillons sont indépendants ou non (`FALSE` ou `TRUE`).
 :::
