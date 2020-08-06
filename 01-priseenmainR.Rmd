@@ -1,6 +1,6 @@
 # Prise en main de R
 
-Dans ce chapitre, nous reviendrons brièvement sur l’histoire de ![](images/logos/Rlogo.png). et la philosophie qui entoure le logiciel. Nous donnerons quelques conseils pour son installation et la mise en place d’un environnement de développement. Nous présenterons les principaux objets qui sous-tendent tout le travail effectué avec ![](images/logos/Rlogo.png) (dataframe, vecteur, matrice, etc.) et comment les manipuler avec des exemples appliqués. Enfin, nous terminerons cette section avec un tour d’horizon des capacités graphiques de ![](images/logos/Rlogo.png).
+Dans ce chapitre, nous reviendrons brièvement sur l’histoire de ![](images/logos/Rlogo.png) et la philosophie qui entoure le logiciel. Nous donnerons quelques conseils pour son installation et la mise en place d’un environnement de développement. Nous présenterons les principaux objets qui sous-tendent tout le travail effectué avec ![](images/logos/Rlogo.png) (dataframe, vecteur, matrice, etc.) et comment les manipuler avec des exemples appliqués. Enfin, nous terminerons cette section avec un tour d’horizon des capacités graphiques de ![](images/logos/Rlogo.png).
 
 ## Histoire et philosophie de ![](images/logos/Rlogo.png){#sect11}
 
@@ -33,15 +33,15 @@ Un des principaux attrait de ![](images/logos/Rlogo.png) est la quantité astron
 
 * il existe généralement plusieurs *packages* pour effectuer le même type d'analyse ce qui peut devenir une source de confusion;
 * certains *packages* cessent d'être mis à jour au fil des années, ce qui nécessite de leur trouver d'autres alternatives (et ainsi apprendre la syntaxe des nouveaux *packages*);
-* il est impératif de s'assurer de la fiabilité des *packages* que souhaite utiliser car n'importe qui peut proposer un *package*.
+* il est impératif de s'assurer de la fiabilité des *packages* que vous souhaitez utiliser car n'importe qui peut proposer un *package*.
 
 Il nous semble important de relativiser d'emblée la portée du dernier point. Il est rarement nécessaire de lire et analyser le code source d'un *package* pour s'assurer de sa fiabilité. Nous ne sommes pas des spécialistes de tous les sujets et il peut être extrêmement ardu de comprendre la logique d'un code écrit par quelqu'un d'autre. Nous vous recommandons donc de privilégier l'utilisation de *packages* qui :
 
-* ont fait l'objet d'une publication dans une revue à comité de lecture, ou qui ont déjà été cités dans dans des études ayant fait l'objet d'une publication revue par les pairs;
-* font partie de projets comme [ROpensci](https://ropensci.github.io/reproducibility-guide/sections/introduction/){target="_blank"} pronant la vérification  par les pairs, ou subventionnés par des organisations comme [R Consortium](https://www.r-consortium.org/){target="_blank"}.
+* ont fait l'objet d'une publication dans une revue à comité de lecture ou qui ont déjà été cités dans dans des études ayant fait l'objet d'une publication revue par les pairs;
+* font partie de projets comme [ROpensci](https://ropensci.github.io/reproducibility-guide/sections/introduction/){target="_blank"} prônant la vérification  par les pairs ou subventionnés par des organisations comme [R Consortium](https://www.r-consortium.org/){target="_blank"}.
 * sont disponibles sur l'un des deux principaux répertoires de packages R [CRAN](https://cran.r-project.org/){target="_blank"} ou [Bioconductor](https://www.bioconductor.org/){target="_blank"}.
 
-Toujours pour nuancer notre propos, il convient de distinguer *package* de *package*! Certains d'entre eux sont des ensembles très complexes de fonctions permettant de réaliser des analyses poussées alors que d'autres sont des projets plus modestes dont l'objectif principal est de simplifier le travail des utilisateurs. Ces derniers ressemblent à des petites boites à outil et font généralement moins l'objet d'une vérification intensive.
+Toujours pour nuancer notre propos, il convient de distinguer *package* de *package*! Certains d'entre eux sont des ensembles très complexes de fonctions permettant de réaliser des analyses poussées alors que d'autres sont des projets plus modestes dont l'objectif principal est de simplifier le travail des utilisateurs. Ces derniers ressemblent à des petites boites à outils et font généralement moins l'objet d'une vérification intensive.
 
 Pour conclure cette section, l'illustration partagée sur Twitter par Darren L Dahly résume avec humour la force du logiciel ![](images/logos/Rlogo.png) et de sa communauté (\@ref(fig:fig03)) : ![](images/logos/Rlogo.png) apparait clairement comme une communauté hétéroclyte, mais diversifiée et adaptable.
 
@@ -51,7 +51,7 @@ knitr::include_graphics('images/introduction/softwares_and_cars.jpeg', dpi = NA)
 
 Dans ce livre, nous détaillerons les **packages** utilisés dans chaque section avec un encadré spécifique, accompagné de l'icône suivant : 
 
-```{r fig04, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Icone des encadrés dédiés aux packages",  out.width='20%'}
+```{r fig04, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Icône des encadrés dédiés aux packages",  out.width='20%'}
 knitr::include_graphics('css/images/package.png', dpi = NA)
 ```
 
@@ -63,7 +63,7 @@ La première étape pour travailler avec ![](images/logos/Rlogo.png) est bien s�
 knitr::include_graphics('images/introduction/r_console.jpeg', dpi = NA)
 ```
 
-Rares sont les utilisateurs de ![](images/logos/Rlogo.png) qui préfèrent  travailler directement avec la console et écrire leur code dans un fichier séparé en utilisant un éditeur de texte. Par conséquent, nous vous recommandons vivement d'utiliser RStudio, soit un environnement de développement dédié à ![](images/logos/Rlogo.png), offrant une intégration très intéressante d'une console, d'un éditeur de texte, d'une fenêtre de visualisation des données, d'une autre pour les graphiques, d'un accès à la documentation, etc. En d'autres termes, si ![](images/logos/Rlogo.png) est vélo minimaliste, RStudio permet d'y rajouter des freins, des vitesses, un porte-bagage, des gardes boues et une selle confortable. Vous pouvez [télécharger](https://rstudio.com/products/rstudio/download) et installer RStudio sur Windows, Linux et Mac. La version de base est gratuite, mais l'entreprise qui développe ce logiciel propose aussi des versions commerciales du logiciel qui assure essentiellement un support. Il existe d'autres environnements de développements pour travailler avec ![](images/logos/Rlogo.png) (VisualStudio, Jupyter, Tinn-R, Radiant, RIDE, etc.), mais RStudio offre à ce jour la meilleure option en terme de facilité d'installation, de prise en main et de fonctionnalités proposées (voir l'interface de RStudio à la figure \@ref(fig:fig06)).
+Rares sont les utilisateurs de ![](images/logos/Rlogo.png) qui préfèrent  travailler directement avec la console et écrire leur code dans un fichier séparé en utilisant un éditeur de texte. Par conséquent, nous vous recommandons vivement d'utiliser RStudio, soit un environnement de développement dédié à ![](images/logos/Rlogo.png), offrant une intégration très intéressante d'une console, d'un éditeur de texte, d'une fenêtre de visualisation des données, d'une autre pour les graphiques, d'un accès à la documentation, etc. En d'autres termes, si ![](images/logos/Rlogo.png) est vélo minimaliste, RStudio permet d'y rajouter des freins, des vitesses, un porte-bagage, des gardes boues et une selle confortable. Vous pouvez [télécharger](https://rstudio.com/products/rstudio/download) et installer RStudio sur Windows, Linux et Mac. La version de base est gratuite, mais l'entreprise qui développe ce logiciel propose aussi des versions commerciales du logiciel qui assurent essentiellement un support. Il existe d'autres environnements de développement pour travailler avec ![](images/logos/Rlogo.png) (VisualStudio, Jupyter, Tinn-R, Radiant, RIDE, etc.), mais RStudio offre à ce jour la meilleure option en terme de facilité d'installation, de prise en main et de fonctionnalités proposées (voir l'interface de RStudio à la figure \@ref(fig:fig06)).
 
 ```{r fig06, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Environnement de base de RStudio",  out.width='85%'}
 knitr::include_graphics('images/introduction/r_studio_01.jpeg', dpi = NA)
@@ -72,7 +72,7 @@ knitr::include_graphics('images/introduction/r_studio_01.jpeg', dpi = NA)
 Avant d'aller plus loin, notez que : 
 
 * la console actuellement ouverte dans RStudio vous informe de la version de ![](images/logos/Rlogo.png) que vous utilisez. Vous pouvez en effet avoir plusieurs versions de ![](images/logos/Rlogo.png) installées sur votre ordinateur et passer de l'une à l'autre avec RStudio. Pour cela, naviguez dans l'onglet *Tools / Global Options* et dans le volet  *General*, vous pouvez sélectionner la version de ![](images/logos/Rlogo.png) que vous souhaitez utiliser.
-* L'aspect de RStudio peut être modifié en navigant dans l'onglet *Tools / Global Options*, et dans le volet *Appareance*. Nous avons une préférence pour le mode sombre avec le style *pastel on dark*, mais libre à chacun de choisir le sytle qui lui convient.
+* L'aspect de RStudio peut être modifié en navigant dans l'onglet *Tools / Global Options* et dans le volet *Appareance*. Nous avons une préférence pour le mode sombre avec le style *pastel on dark*, mais libre à chacun de choisir le style qui lui convient.
 
 ```{r fig07, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="RStudio avec le style pastel on dark",  out.width='85%'}
 knitr::include_graphics('images/introduction/r_studio_02.jpeg', dpi = NA)
@@ -82,8 +82,8 @@ Une fois ces détails réglés, vous pouvez ouvrir votre première feuille de co
 
 1. L'éditeur de code, vous permettant d'écrire le script que vous voulez exécuter et permettant de garder une trace de votre travail. Ce script peut être enregistré sur votre ordinateur avec l'extension **.R**, mais ce n'est qu'un simple fichier texte.
 2. La console vous permettant d'exécuter votre code R et de voir les résultats s'afficher au fur et à mesure.
-3. La fenêtre d'environnement vous montrant quels objets, fonctions et jeux de données actuellement disponibles dans votre session (chargés dans la mémoire vive).
-4. La fenêtre de l'aide, des graphiques et l'explorateur de fichiers. Vous pouvez accéder ici à la documentation de ![](images/logos/Rlogo.png) et des *packages* que vous utilisez, aux sorties graphiques que vous produisez et aux dossier de votre environnement de travail.
+3. La fenêtre d'environnement vous montrant les objets, fonctions et jeux de données actuellement disponibles dans votre session (chargés dans la mémoire vive).
+4. La fenêtre de l'aide, des graphiques et de l'explorateur de fichiers. Vous pouvez accéder ici à la documentation de ![](images/logos/Rlogo.png) et des *packages* que vous utilisez, aux sorties graphiques que vous produisez et aux dossier de votre environnement de travail.
 
 ```{r fig08, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les quatre fenêtres de RStudio",  out.width='85%'}
 knitr::include_graphics('images/introduction/r_studio_03.jpeg', dpi = NA)
@@ -95,13 +95,13 @@ Prenons un bref exemple, tapez la syntaxe suivante dans l'éditeur de code <span
 ma_somme <- 4+4
 ```
 
-Sélectionnez ensuite cette syntaxe et quand vous utilisez le raccourci *Ctrl+Enter* ou cliquez sur le bouton *Run* (avec la flèche verte), cette syntaxe est envoyée à la console qui l'exécute immédiatement. Notez que rien ne se passe tant que le code n'est pas envoyé à la console. Il s'agit donc de deux étapes distinctes : écrire son code, puis l'envoyer à la console. Vous constaterez également qu'un objet *ma_somme* est apparu dans votre environnement et que sa valeur est bien 8. Votre console se "souvient" de cette valeur, elle est actuellement stockée dans votre mémoire vive sous le nom de *ma_somme* (figure \@ref(fig:fig09)).
+Sélectionnez ensuite cette syntaxe, quand vous utilisez le raccourci *Ctrl+Enter* ou cliquez sur le bouton *Run* (avec la flèche verte), cette syntaxe est envoyée à la console qui l'exécute immédiatement. Notez que rien ne se passe tant que le code n'est pas envoyé à la console. Il s'agit donc de deux étapes distinctes : écrire son code, puis l'envoyer à la console. Vous constaterez également qu'un objet *ma_somme* est apparu dans votre environnement et que sa valeur est bien 8. Votre console se "souvient" de cette valeur, elle est actuellement stockée dans votre mémoire vive sous le nom de *ma_somme* (figure \@ref(fig:fig09)).
 
 ```{r fig09, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les quatre fenêtres de RStudio",  out.width='90%'}
 knitr::include_graphics('images/introduction/r_studio_04.jpeg', dpi = NA)
 ```
 
-Pour terminer sur cette section, nous vous invitons à enregistrer votre première syntaxe ![](images/logos/Rlogo.png) (*File / Save As*) dans un fichier **.R** que vous pouvez appeler par exemple "mon_premier_script.R". Fermez ensuite RStudio, redémarrez le et ouvrez (*File / Open File*) votre fichier "mon_premier_script.R". Vous pouvez constater que votre code est toujours présent, mais que votre environnement est vide tant que vous n'exécutez pas votre syntaxe. En effet, lorsque vous fermez RStudio, l'environnement est vidé pour libérer la mémoire vive. Ceci peut poser problème lorsque certains codes sont très longs à exécuter, nous verrons donc plus tard comment enregistrer l'environnement en cours pour le recharger par la suite.
+Pour terminer sur cette section, nous vous invitons à enregistrer votre première syntaxe ![](images/logos/Rlogo.png) (*File / Save As*) dans un fichier **.R** que vous pouvez appeler par exemple "mon_premier_script.R". Fermez ensuite RStudio, redémarrez le et ouvrez (*File / Open File*) votre fichier "mon_premier_script.R". Vous pouvez constater que votre code est toujours présent, mais que votre environnement est vide tant que vous n'exécutez pas votre syntaxe. En effet, lorsque vous fermez RStudio, l'environnement est vidé pour libérer de la mémoire vive. Ceci peut poser problème lorsque certains codes sont très longs à exécuter, nous verrons donc plus tard comment enregistrer l'environnement en cours pour le recharger par la suite.
 
 Vous êtes prêts à travailler dans ![](images/logos/Rlogo.png) ! Rendez-vous dans la prochaine section pour rentrer dans le vif du sujet.
 
@@ -148,10 +148,10 @@ Dans cette section, nous allons aborder la base de langage ![](images/logos/Rlog
 Dans ![](images/logos/Rlogo.png), il existe trois principaux types de données de base : 
 
 * Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats*), ex `15` et `15.3`: .
-* Les données textuelles, qui sont des chaîne de caratères (appelées *strings*) et déclaré entre guillemets `"abcdefg"`
-* Les données booléennes (*booleans*) qui représentent les concepts de vrai : `TRUE` ou de faux `FALSE`.
+* Les données textuelles, qui sont des chaînes de caratères (appelées *strings*) et déclarées entre guillemets `"abcdefg"`
+* Les données booléennes (*booleans*) qui représentent les concepts de vrai (`TRUE`) ou de faux (`FALSE`).
 
-Pour pouvoir manipuler ces données, il faut préalablement les déclarer. Ceci signifie réserver un espace dans la mémoire vive de votre ordinateur, lui donner un nom, et lui associer une valeur, on appelle cette opération déclarer une variable. Une fois cette opération effectuée, la donnée en question est accessible pour effectuer des traitements. Déclarons ensemble quelques variables : 
+Pour pouvoir manipuler ces données, il faut préalablement les déclarer. Ceci signifie réserver un espace dans la mémoire vive de votre ordinateur, lui donner un nom et lui associer une valeur; on appelle cette opération déclarer une variable. Une fois cette opération effectuée, la donnée en question est accessible pour effectuer des traitements. Déclarons ensemble quelques variables : 
 
 ```{r}
 age <- 35
@@ -160,7 +160,7 @@ adresse <- '4225 rue de la gauchetiere'
 proprietaire <- TRUE
 ```
 
-Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. ![](images/logos/Rlogo.png) est sensible à la casse, en d'autre termes, les variables `age`, `Age`, `AGe`, et `agE` indiquent toutes un objet différent. Attention donc aux fautes de frappes.
+Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. ![](images/logos/Rlogo.png) est sensible à la case, en d'autre termes, les variables `age`, `Age`, `AGe`, et `agE` indiquent toutes un objet différent. Attention donc aux fautes de frappes.
 
 Si vous déclarez une variable en utilisant le nom d'une variable existante, la première est écrasée par la seconde : 
 
@@ -194,7 +194,7 @@ Notez tout de suite qu'un vecteur ne peut contenir qu'un seul type de données. 
 mean(ages)
 ```
 
-Quand nous disons que le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), ce n'est pas juste une façon de parler. Techniquement les variables age, taille, adresse et propritaire definies plus haut sont aussi des vecteurs ... mais de longueur 1 !
+Quand nous disons que le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), ce n'est pas juste une façon de parler. Techniquement les variables *age*, *taille*, adresse et *proprietaire* définies plus haut sont aussi des vecteurs, mais de longueur 1 !
 
 Il est assez rare de travailler ainsi avec des vecteurs séparés, on préfère généralement avoir ces données stockées dans une structure appelée un *DataFrame* (tableau de données en français). Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une information pour ces individus. Créons ensemble un DataFrame à partir de nos quatres vecteurs.
 
@@ -211,7 +211,7 @@ Dans Rstudio, vous pouvez visualiser votre tableau de données avec la fonction 
 
 La figure \@ref(fig:fig010) résume ce passage d'une simple donnée à un DataFrame en passant par un vecteur.
 
-```{r fig010, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="De la données au DataFrame",  out.width='60%'}
+```{r fig010, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="De la donnée au DataFrame",  out.width='60%'}
 knitr::include_graphics('images/introduction/vecteur_to_dataframe.png', dpi = NA)
 ```
 
@@ -227,7 +227,7 @@ nrow(df)
 ncol(df)
 ```
 
-vous pouvez accéder à chaque colonne de *df* en utilisant le symbole $ ou [["nom_de_la_colonne"]], recalculons ainsi la moyenne des âges
+Vous pouvez accéder à chaque colonne de *df* en utilisant le symbole $ ou [["nom_de_la_colonne"]]. Recalculons ainsi la moyenne des âges :
 
 ```{r}
 mean(df$age)
@@ -272,12 +272,12 @@ C'est que le package que vous tentez de charger n'est pas encore installé sur v
 
 
 	0.4 importer et manipuler des données
-		creer un dataframe
+		créer un dataframe
 		charger un dataframe
 		extraire une colonne ⇒ vecteur
 		opérateur mathématique
 		opérateur logique
-		creer des nouvelles colonnes (exemple de densité, % etc.)
+		créer des nouvelles colonnes (exemple de densité, % etc.)
 		subsetting
 		fusion, aggregation, jointure
 		r language essential (voir chap1 de introductory statistics with R)
