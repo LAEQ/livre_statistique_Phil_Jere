@@ -141,15 +141,21 @@ Bravo ! Vous venez officiellement de faire votre premier pas dans ![](images/log
 
 ## Naviguer entre Vecteurs, listes et dataframes {#sect14}
 
-Dans cette section, nous allons aborder la base de langage ![](images/logos/Rlogo.png). Nous resterons largement en surface pour nous concentrer sur les principaux objets que vous aurez besoin de manipuler pour charger, structurer et analyser des données. Une autre section détaillera plus en profondeur le fonctionnement du langage, mais ces éléments ne sont pas nécessaires pour débuter dans ![](images/logos/Rlogo.png). Commençons donc par la base : déclarer des variables.
+Dans cette section, nous allons aborder la base du langage ![](images/logos/Rlogo.png). Nous resterons largement en surface pour nous concentrer sur les principaux objets que vous aurez besoin de manipuler pour charger, structurer et analyser des données. Une autre section détaillera plus en profondeur le fonctionnement du langage, mais ces éléments ne sont pas nécessaires pour débuter dans ![](images/logos/Rlogo.png). Commençons donc par la base : déclarer des variables.
 
 ### Déclarer des variables et les principaux types de variables
 
 Dans ![](images/logos/Rlogo.png), il existe trois principaux types de données de base : 
 
+<<<<<<< HEAD
 * Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats*), ex `15` et `15.3`: .
 * Les données textuelles, qui sont des chaînes de caratères (appelées *strings*) et déclarées entre guillemets `"abcdefg"`
 * Les données booléennes (*booleans*) qui représentent les concepts de vrai (`TRUE`) ou de faux (`FALSE`).
+=======
+* Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats*) comme `15` et `15.3`: .
+* Les données textuelles, qui sont des chaîne de caratères (appelées *strings*) et déclaré entre guillemets `"abcdefg"`
+* Les données booléennes (*booleans*) qui représentent les concepts de vrai : `TRUE` ou de faux `FALSE`.
+>>>>>>> f32456c1683f1b57284a928633a06a70b4b7b5a6
 
 Pour pouvoir manipuler ces données, il faut préalablement les déclarer. Ceci signifie réserver un espace dans la mémoire vive de votre ordinateur, lui donner un nom et lui associer une valeur; on appelle cette opération déclarer une variable. Une fois cette opération effectuée, la donnée en question est accessible pour effectuer des traitements. Déclarons ensemble quelques variables : 
 
@@ -160,7 +166,11 @@ adresse <- '4225 rue de la gauchetiere'
 proprietaire <- TRUE
 ```
 
+<<<<<<< HEAD
 Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. ![](images/logos/Rlogo.png) est sensible à la case, en d'autre termes, les variables `age`, `Age`, `AGe`, et `agE` indiquent toutes un objet différent. Attention donc aux fautes de frappes.
+=======
+Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.), de tiret bas (_) et doit commencer par une lettre. ![](images/logos/Rlogo.png) est sensible à la casse, en d'autre termes, les variables `age`, `Age`, `AGe`, et `agE` indiquent toutes un objet différent. Attention donc aux fautes de frappes.
+>>>>>>> f32456c1683f1b57284a928633a06a70b4b7b5a6
 
 Si vous déclarez une variable en utilisant le nom d'une variable existante, la première est écrasée par la seconde : 
 
@@ -174,7 +184,7 @@ age <- 45
 print(age)
 ```
 
-Attention donc aux noms de variables que vous utilisez.
+Attention donc aux noms de variables que vous utilisez et réutilisez.
 
 ### Du vecteur au DataFrame
 
@@ -187,8 +197,8 @@ adresses <- c('4225 rue de la gauchetiere','4223 rue de la gauchetiere','4221 ru
 proprietaires <- c(TRUE,TRUE,FALSE,TRUE,TRUE)
 ```
 
-Nous venons ainsi de déclarer 4 nouvelles variables étant chacune des vecteurs de longueur 5 (comprenant chacun 5 valeurs). Ces vecteurs représentent les réponses de plusieurs répondants à un questionnaire par exemple.
-Notez tout de suite qu'un vecteur ne peut contenir qu'un seul type de données. Vous ne pouvez pas créer de vecteurs combinant à la fois du texte et des valeurs numériques. Le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), quasiment toutes les fonctions vont utiliser des vecteurs. Par exemple, on pourrait calculer la moyenne du vecteur *ages* en utilisant la fonction *mean* présente de base dans ![](images/logos/Rlogo.png).
+Nous venons ainsi de déclarer 4 nouvelles variables étant chacune un vecteur de longueur 5 (comprenant chacun 5 valeurs). Ces vecteurs représentent les réponses de plusieurs répondants à un questionnaire par exemple.
+Notez tout de suite qu'un vecteur ne peut contenir qu'un seul type de données. Vous ne pouvez pas créer de vecteurs combinant à la fois du texte et des valeurs numériques. Le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), quasiment toutes les fonctions utilisent des vecteurs. Par exemple, on pourrait calculer la moyenne du vecteur *ages* en utilisant la fonction *mean* présente de base dans ![](images/logos/Rlogo.png).
 
 ```{r}
 mean(ages)
@@ -204,6 +214,13 @@ df <- data.frame(
   "taille" = tailles,
   "adresse" = adresses,
   "proprietaire" = proprietaires
+)
+```
+
+```{r tabfirsttable, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(
+  df, booktabs = TRUE,
+  caption = 'Un premier DataFrame'
 )
 ```
 
@@ -234,7 +251,7 @@ mean(df$age)
 mean(df[["age"]])
 ```
 
-### Charger un DataFrame depuis un fichier
+### Charger un DataFrame depuis un fichier et installer un package
 
 Rassurez-vous, il sera rarement nécessaire de créer vos DataFrame à la main comme nous venons de le faire dans l'exemple précédent. Le plus souvent, vous disposerez de fichiers contenant vos données et certaines fonctions vous permettrons de les importer dans ![](images/logos/Rlogo.png) directement sous forme d'un DataFrame. Les formats les plus répandus sont : 
 
@@ -249,7 +266,7 @@ Plus rarement, il se peut que vous ayez à charger des fichiers provenant de log
 * .sav, provenant du logiciel SPSS,
 * .dta, provenant du logiciel STATA.
 
-Pour lire la plupart de ces fichiers, nous allons utiliser le package **foreign**, qui a été développé à cette fin. Pour installer un package, vous devez être connecté à internet, en effet, ![](images/logos/Rlogo.png) va se connecter au répertoire de package *CRAN* pour télécharger le package et l'installer sur votre machine. Cette opération est réalisée avec la fonction `install.packages`
+Pour lire la plupart de ces fichiers, nous allons utiliser le package **foreign**, qui a été développé à cette fin. Pour installer un package, vous devez être connecté à internet, en effet, ![](images/logos/Rlogo.png) va accéder au répertoire de packages *CRAN* pour télécharger le package et l'installer sur votre machine. Cette opération est réalisée avec la fonction `install.packages`
 
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
 install.packages("foreign")
@@ -267,7 +284,130 @@ Si vous obtenez un message d'erreur du type :
 
 <span class="error_message">Error in library(mon_package) : aucun package nommé ‘mon_package’ n'est trouvé</span>
 
-C'est que le package que vous tentez de charger n'est pas encore installé sur votre ordinateur. Dans ce cas, réessayer de l'installer avec la fonction `install.packages`. Si le problème persiste, vérifiez que vous n'avez pas fait de faut de frappe dans le nom du package. Vous pouvez également redémarrer RStudio et réessayer d'installer le package.
+C'est que le package que vous tentez de charger n'est pas encore installé sur votre ordinateur. Dans ce cas, réessayer de l'installer avec la fonction `install.packages`. Si le problème persiste, vérifiez que vous n'avez pas fait de faute de frappe dans le nom du package. Vous pouvez également redémarrer RStudio et réessayer d'installer le package.
+
+Nous allons chagrer quatre fois le même jeu de données qui a été enregistré au format csv, dbf, dta et xlsx. Nous allons également enregistrer le temps nécessaire pour lire chacun de ces fichiers avec la fonction `Sys.time`.
+
+#### Lire un fichier csv
+
+Pour le format csv, il n'y a pas besoin d'utiliser un package externe, ![](images/logos/Rlogo.png) dispose d'une fonction de base pour lire ce format.
+
+```{r message=FALSE, warning=FALSE}
+t1 <- Sys.time()
+df1 <- read.csv("data/priseenmain/SR_MTL_2016.csv", 
+         header = TRUE, sep = ",", dec = ".",
+         stringsAsFactors = FALSE)
+t2 <- Sys.time()
+d1 <- difftime(t2,t1,units="secs")
+
+cat('le dataframe df1 a ',nrow(df1),' observations\n')
+cat('les colonnes de df1 sont : ',names(df1),"\n")
+```
+
+rien de bien compliqué, notez tout de même que : 
+
+* Lorsque vous chargez un fichier csv, vous devez connaître le **séparateur**, il s'agit du caractère utilisé pour délimiter les colonnes de votre csv. Dans notre cas il s'agit d'une simple virgule : ",", mais ça pourrait tout aussi bien être un point virgule ";" une tabulation "    " etc.
+* Vous devez également connaître le symbole utilisé pour le décimales. Neuf fois sur dix, ce sera le point ".", mais il se peut que certains logiciel en configuration française vous exportes des fichers csv avec des virgules "," comme symbole de décimale.
+* Le paramètre *header* indique si la première ligne (l'entête) du fichier comprend les noms des colonnes du jeu de données. Il arrive que certains fichiers csv soient fournis sans entête, avec le nom et la description des colonnes dans un fichier à part.
+* Le paramètre *stringsAsFactors* permet d'indiquer à ![](images/logos/Rlogo.png) que les colonnes comportant du texte doivent être chargées comme des vecteurs de type texte et nom de type facteur. Nous reviendrons sur cette distinction dans la section XXX.
+
+#### Lire un fichier dbf
+
+Pour lire un fichier dbf, nous allons devoir utiliser le package foreign que nous avons installé précédemment : 
+
+```{r message=FALSE, warning=FALSE}
+library(foreign)
+
+t1 <- Sys.time()
+
+df2 <- read.dbf("data/priseenmain/SR_MTL_2016.dbf")
+
+t2 <- Sys.time()
+d2 <- difftime(t2,t1,units="secs")
+
+cat('le dataframe df2 a ',nrow(df2),' observations\n')
+cat('les colonnes de df2 sont : ',names(df2),"\n")
+```
+Comme vous pouvez le constater, nous obtenons exactement les mêmes résultats qu'avec le fichier csv
+
+#### Lire un fichier dta
+
+Si vous travaillez avec des collègues utilisant le logiciel SAS, il se peut que ces derniers vous partagent des fichiers dta. En utilisant à nouveau le package **foreign**, vous serez en mesure de les charger directement dans ![](images/logos/Rlogo.png).
+
+```{r message=FALSE, warning=FALSE}
+t1 <- Sys.time()
+
+df3 <- read.dta("data/priseenmain/SR_MTL_2016.dta")
+
+t2 <- Sys.time()
+d3 <- difftime(t2,t1,units="secs")
+
+cat('le dataframe df3 a ',nrow(df3),' observations\n')
+cat('les colonnes de df3 sont : ',names(df3),"\n")
+```
+
+#### Lire un fichier xlsx
+
+Lire un fichier excel dans ![](images/logos/Rlogo.png) n'est pas une chose facile. Généralement, nous recommandons d'exporter les fichiers en question au format csv dans un premier temps. Il est cependant possible de directement lire un fichier xlsx avec le package **xlsx**. Ce dernier requiert que le logiciel JAVA soit installé sur votre ordinateur (Windows, Mac ou Linux). Si vous utilisez la version 64 bit de ![](images/logos/Rlogo.png), vous devrez télécharger et installer la version 6
+ bit de JAVA. Une fois que ce logiciel tiers est installé, il ne vous reste plus qu'à installer le package **xlsx** (`install.packages("xlsx")`) et à le charger.
+
+```{r message=FALSE, warning=FALSE}
+library(xlsx)
+
+t1 <- Sys.time()
+
+df4 <- read.xlsx("data/priseenmain/SR_MTL_2016.xlsx",sheetIndex = 1,
+                 as.data.frame = TRUE)
+
+t2 <- Sys.time()
+d4 <- difftime(t2,t1,units="secs")
+
+
+cat('le dataframe df4 a ',nrow(df4),' observations\n')
+cat('les colonnes de df4 sont : ',names(df4),"\n")
+```
+
+Il est possible de nettement accelérer la vitesse de lecture d'un fichier xlsx en utilisant la fonction `read.xlsx2`. Il faut cependant indiquer à cette derniére le type de données que l'on doit trouver dans chaque colonne. Dans le cas présent, nous savons que les 5 premières colonnes contiennent des données au format texte (character), alors que les 43 autres sont des données numériques (numeric). Pour ces dernières, nous allons utiliser la fonction *rep* afin de ne pas avoir à écrire 43 fois le mot numeric.
+
+```{r message=FALSE, warning=FALSE}
+library(xlsx)
+
+t1 <- Sys.time()
+
+df5 <- read.xlsx2("data/priseenmain/SR_MTL_2016.xlsx",sheetIndex = 1, 
+                  as.data.frame = TRUE,
+                  colClasses = c("character","character","character","character","character",rep("numeric",43)))
+
+t2 <- Sys.time()
+d5 <- difftime(t2,t1,units="secs")
+
+cat('le dataframe df5 a ',nrow(df5),' observations\n')
+cat('les colonnes de df5 sont : ',names(df5),"\n")
+```
+
+Si l'on compare les temps d'exécution du tableau \@ref(tab:tableduration), on constate que la lecture des fichiers xlsx peut être extrèmement longue si l'on ne spécifie pas le type des colonnes. Ceci peut devenir un problème majeur pour des fichier volumineux. Notez également que la lecture des fichiers csv devient de plus en plus laborieuse à mesure que la taille du fichier csv augment. Si vous devez un jour charger des fichiers csv de plusieurs giga octets, nous vous recommandons d'utiliser la fonction `fread` du package **data.table** qui est beaucoup plus rapide.
+
+```{r tableduration, message=FALSE, warning=FALSE}
+
+durations <- data.frame(
+  "duree" = c(d1,d2,d3,d4,d5),
+  "fonction" = c("read.csv","read.dbf","read.dta","read.xlsx","read.xlsx2")
+)
+
+knitr::kable(
+  durations, booktabs = TRUE,digits = 2,
+  col.names = c("Durée (s)","fonction"),
+  caption = 'Temps nécessaire pour lire les données en fonction du type de fichier'
+)
+
+```
+### Manipuler un DataFrame
+
+Maintenant que nous savons comment définir et charger un DataFrame, nous allons apprendre à les manipuler.
+
+#### Opérateurs mathématique
+
+
 
 
 
