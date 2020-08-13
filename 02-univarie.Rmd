@@ -1,25 +1,93 @@
-# Retour sur les notions de variable et d'inférence
+# Statistiques descriptives univariées
 
-R Markdown provides an authoring framework for data science. You can use a single R Markdown file to both
+Dans ce chapitre, nous décrirons la notion de variable, considérée comme étant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variables que l’on souhaite analyser, les tests d’hypothèses et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
+
+::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
+Dans cette section, nous utiliserons principalement les packages suivants (À MODIFIER PLUS TARD) : 
+
+* Pour créer des graphiques :
+  - **ggplot2**, le seul, l'unique
+  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles
+* Pour manipuler des données : 
+  - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
+* Pour les corrélations ((section \@ref(sect311))) : 
+  - **correlation**, de l'ensemble de package **easy_stats**, offrant une large gamme de méthodes de corrélations
+  - **boot** pour réaliser des corrélations avec *bootstrap* 
+  - **Hmisc** pour calculer des corrélations de Pearson et Spearman
+  - **ppcor**, notamment pour des corrélations partielles
+  - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
+  - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
+  - **corrplot**, pour créer des graphiques de matrices de corrélation
+* Pour le tableau de contignence ((section \@ref(sect312))) :
+  - **gmodels**, pour construire des tableaux de contingence et * Calculer les test *t* et ses différentes variantes ((section \@ref(sect313))) :
+* Pour les test *t* : 
+  - **sjstats** pour réaliser des test *t* pondérés
+  - **effectsize**, pour calculer les tailles d'effet de tests de *t*
+* Pour la section sur les ANOVA ((section \@ref(sect314))) : 
+  - **car**, pour les ANOVA classiques
+  - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
+  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
+
+:::
 
 
-## Retour sur la notion de variable (PHILIPPE ET JÉRÉMY)
-Insister sur la définition des variables! Toujours aller lire les sources. Concept de proxy
-Garder les variables latentes pour l'ACP. Possibité de la faire JÉRÉMY
+## Notion de variable {#sect21}
 
-## Retour sur la statistique descriptive et la statistique inférentielle (ENCADRÉ)
+### La variable : l'opérationnalisation d'un concept {#sect211}
 
-## La notion de distribution (JÉRÉMY)
+La variable permet d'opérationnaliser un concept, soit une « idée générale et abstraite que se fait l'esprit humain d'un objet de pensée concret ou abstrait, et qui lui permet de rattacher à ce même objet les diverses perceptions qu'il en a, et d'en organiser les connaissances » ([Larouse](https://www.larousse.fr/dictionnaires/francais/concept/17875?q=concept#17749)). Autrement dit, pour valider un modèle théorique, il convient d'opérationnaliser ses différentes concepts et d'établir les relations qu'ils partagent. L'opérationnalisation d'un concept nécessite alors soit de mesurer (dans un intervalle de valeurs, c'est-à-dire de manière quantitative), soit de qualifier (avec plusieurs catégories, c'est-à-dire de manière qualitative) un phénomène. 
 
 
+Selon [Statistique Canada](https://www.statcan.gc.ca/fra/concepts/variable), « une variable est une caractéristique d'une unité statistique que l'on observe et pour laquelle une valeur numérique ou une catégorie d'une classification peut être attribuée ». Il convient alors de bien saisir à quelle unité statistique à laquelle s'applique les valeurs d'une variable : des personnes, des ménages, des municipalités, etc. 
 
-## Statistiques descriptives sur des variables continues (PHILIPPE)
+Prenons deux exemple concrets :
 
-### Les paramètres de tendance centrale
-### Les paramètres de position
-### Les paramètres de dispersion
-### Les paramètres de forme
-### La transformation des variables
+* le concept de ménages 
+*
+
+CONCEPT DE DONNÉES INDIVIDUELLES ET AGRÉGÉES
+
+DÉCOUPAGE GÉOGRAPHIQUE ET UNIVERS GÉOGRAPHIQUE
+
+CONCEPT DE POPULATION ET D'ÉCHANTILLON
+
+VARIABLE INDÉPENDANTE, DÉPENDANTE, DE CONTRÖLE, LATENTE : guide d'introduction à la régression en sciences sociales.
+
+POPULATION ET ÉCHANTILLON : voir Tabanick et Field☺
+
+
+### Les types de variables {#sect212}
+On distingue habituellement les variables qualitatives (nominale ou ordinale) des variables quantitatives (discrète ou continue). Tel qu'illustré dans la figure \@ref(fig:figunivarie1), l'opérationnalisation du concept en variable est réalisé par différents mécanismes visant à qualifier, classer, compter ou mesurer afin de caractériser les unités statistiques (observations) d'une population ou d'un échantillon.
+
+* **Une variable nomimale** permet de **qualifier** des observations (individus) en les regroupant plusieurs catégories, dénommées modalités. Par exemple, la variable _couleur des yeux_ pourrait comprendre les modalités _bleu_, _marron_, _vert_ tandis que le *types de familles* compendrait les modalités _couples marié_, _couple en union libre_ et _famille monoparentale_. 
+
+* **Une variable ordinale** permet de **classer** des observations en les regroupant plusieurs modalités hiérarchisés. L'exemple le plus connu est certainement l'échelle de Likert très utilisé dans les sondages évaluant le degré d'accord d'une personne à une affirmation avec les modalités suivantes : _Tout à fait d'accord_, _D'accord_, _Ni en désaccord ni d'accord_, _Pas d'accord_ et _Pas du tout d'accord_. 
+
+Bien entendu, aucun calcul statistiques (moyenne et écart-type) n'est possible sur une variable qualitative, nominale ou ordinale; on peut simplement calculer les fréquences pour les différentes modalités. Aussi, en fonction du nombre de modalités qu'elle comprend, une variable qualitative (nominale ou ordinale), peut être :
+
+dichtomique (binaire) ou 
+comprendre uniquement deux modalités : on parlera ainsi de variable binaire par opposition à une variable polytomique (plus de deux modalités). Par exemple, la variable **sexe**
+
+
+
+```{r figunivarie1, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les types de variables",  out.width='85%'}
+knitr::include_graphics('images/univariee/figure1.jpg', dpi = NA)
+```
+
+
+## Retour sur la statistique descriptive et la statistique inférentielle (ENCADRÉ)  {#sect22}
+
+## La notion de distribution (JÉRÉMY) {#sect23}
+
+
+
+## Statistiques descriptives sur des variables continues (PHILIPPE) {#sect24}
+
+### Les paramètres de tendance centrale {#sect241}
+### Les paramètres de position {#sect242}
+### Les paramètres de dispersion {#sect243}
+### Les paramètres de forme {#sect244}
+### La transformation des variables {#sect245}
 
 ### TEST ET INFÉRENCE
 La notion de bootstrap : 
