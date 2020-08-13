@@ -154,7 +154,6 @@ Dans ![](images/logos/Rlogo.png), il existe trois principaux types de données d
 * Les données textuelles, qui sont des chaîne de caratères (appelées *strings*) et déclaré entre guillemets `"abcdefg"`
 * Les données booléennes (*booleans*) qui représentent les concepts de vrai : `TRUE` ou de faux `FALSE`.
 
-
 Pour pouvoir manipuler ces données, il faut préalablement les déclarer. Ceci signifie réserver un espace dans la mémoire vive de votre ordinateur, lui donner un nom et lui associer une valeur; on appelle cette opération déclarer une variable. Une fois cette opération effectuée, la donnée en question est accessible pour effectuer des traitements. Déclarons ensemble quelques variables : 
 
 ```{r}
@@ -192,6 +191,57 @@ proprietaires <- c(TRUE,TRUE,FALSE,TRUE,TRUE)
 ```
 
 Nous venons ainsi de déclarer 4 nouvelles variables étant chacune un vecteur de longueur 5 (comprenant chacun 5 valeurs). Ces vecteurs représentent les réponses de plusieurs répondants à un questionnaire par exemple.
+
+::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+Il existe dans ![](images/logos/Rlogo.png) une subtilité à l'origine de nombreux malentendu : la distinctions entre un vecteur de type texte et un vecteur de type facteur. Dans l'exemple précédent, le vecteur *adresses* est un vecteur de type texte. Chaque nouvelle valeur ajoutée dans le vecteur peut être n'importe quelle nouvelle adresse. Déclarons un nouveau vecteur qui contiendrait cette fois-ci la couleur des yeux de personnes ayant répondu au questionnaire.
+
+```{r}
+couleurs_yeux <- c('marron','marron','bleu','bleu','marron','vert')
+```
+
+Contrairement aux adresses, il y a un nombre limité de couleur que nous pouvons mettre dans ce vecteur. Il serait intéressant de fixer les valeurs possible du vecteur pour s'assurer que de nouvelles ne soient pas ajoutées par erreur. Pour cela, nous pouvons convertir ce vecteur texte en vecteur de type facteur avec la fonction `as.factor`.
+
+```{r}
+couleurs_yeux_facteur <- as.factor(couleurs_yeux)
+```
+
+Notez que à présent, nous pouvons ajouter une nouvelle couleur dans le 1er vecteur, mais pas dans le second.
+
+```{r}
+couleurs_yeux[7] <- "rouge"
+couleurs_yeux_facteur[7] <- "rouge"
+```
+Le message d'erreur nous informe que nous avons tenté d'introduire une valeur invalide dans le facteur.
+
+Les facteurs peuvent sembler restrictifs et très régulièrement, on préfère travailler avec de simple vecteurs de type texte plutôt que des facteurs. Cependant, de nombreuse fonctions d'analyse nécessitent d'utiliser des facteurs car ils assurent une certaine cohérence dans les données. Il est donc essentiel de savoir passer du texte au facteur avec la fonction `as.factor`. À l'inverse, il est parfois nécessaire de revenir par une variable de type texte avec la fonction `as.character`.
+
+Notez que des vecteurs numérique peuvent aussi être converti en facteur : 
+
+```{r}
+tailles_facteur <- as.factor(tailles)
+```
+
+Cependant, si vous souhaitez reconvertir ce facteur en format numérique, il faudra passer dans un 1er temps par le format texte : 
+
+```{r}
+as.numeric(tailles_facteur)
+```
+
+Comme vous pouvez le voir, convertir un facteur en valeur numérique renvoie des nombres entiers. Ceci est du au fait que les valeurs dans un facteur sont recodées sous forme de nombres entiers, chaque nombre correspondant à une des valeurs originales (appelées niveaux). Si on convertit un facteur en valeurs numériques, on obtient donc ces nombres entiers.
+
+```{r}
+as.numeric(as.character(tailles_facteur))
+```
+Moralité de l'histoire, ne confondez pas les données de type texte et de type facteur. Dans le doute, vous pouvez demander à ![](images/logos/Rlogo.png) quel est le type d'un vecteur avec la fonction `class`.
+
+```{r}
+class(tailles)
+class(tailles_facteur)
+class(couleurs_yeux)
+class(couleurs_yeux_facteur)
+```
+:::
+
 Notez tout de suite qu'un vecteur ne peut contenir qu'un seul type de données. Vous ne pouvez pas créer de vecteurs combinant à la fois du texte et des valeurs numériques. Le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), quasiment toutes les fonctions utilisent des vecteurs. Par exemple, on pourrait calculer la moyenne du vecteur *ages* en utilisant la fonction *mean* présente de base dans ![](images/logos/Rlogo.png).
 
 ```{r}
@@ -326,7 +376,7 @@ Comme vous pouvez le constater, nous obtenons exactement les mêmes résultats q
 
 #### Lire un fichier dta
 
-Si vous travaillez avec des collègues utilisant le logiciel SAS, il se peut que ces derniers vous partagent des fichiers dta. En utilisant à nouveau le package **foreign**, vous serez en mesure de les charger directement dans ![](images/logos/Rlogo.png).
+Si vous travaillez avec des collègues utilisant le logiciel STATA, il se peut que ces derniers vous partagent des fichiers dta. En utilisant à nouveau le package **foreign**, vous serez en mesure de les charger directement dans ![](images/logos/Rlogo.png).
 
 ```{r message=FALSE, warning=FALSE}
 t1 <- Sys.time()
@@ -340,6 +390,23 @@ cat('le dataframe df3 a ',nrow(df3),' observations\n')
 cat('les colonnes de df3 sont : ',names(df3),"\n")
 ```
 
+#### Lire un fichier sas7bdat
+
+De même, il existe de nombreux milieux où le logiciel SAS est très utilisé. Si l'on vous partage un fichier sas7bdat, vous pourrez l'ouvrir avec le package **sas7bdat**
+
+```{r message=FALSE, warning=FALSE}
+library(sas7bdat)
+t1 <- Sys.time()
+
+df4 <- read.sas7bdat("data/priseenmain/SR_MTL_2016.sas7bdat")
+
+t2 <- Sys.time()
+d4 <- difftime(t2,t1,units="secs")
+
+cat('le dataframe df4 a ',nrow(df4),' observations\n')
+cat('les colonnes de df4 sont : ',names(df4),"\n")
+```
+
 #### Lire un fichier xlsx
 
 Lire un fichier excel dans ![](images/logos/Rlogo.png) n'est pas une chose facile. Généralement, nous recommandons d'exporter les fichiers en question au format csv dans un premier temps. Il est cependant possible de directement lire un fichier xlsx avec le package **xlsx**. Ce dernier requiert que le logiciel JAVA soit installé sur votre ordinateur (Windows, Mac ou Linux). Si vous utilisez la version 64 bit de ![](images/logos/Rlogo.png), vous devrez télécharger et installer la version 6
@@ -350,15 +417,15 @@ library(xlsx)
 
 t1 <- Sys.time()
 
-df4 <- read.xlsx("data/priseenmain/SR_MTL_2016.xlsx",sheetIndex = 1,
+df5 <- read.xlsx("data/priseenmain/SR_MTL_2016.xlsx",sheetIndex = 1,
                  as.data.frame = TRUE)
 
 t2 <- Sys.time()
-d4 <- difftime(t2,t1,units="secs")
+d5 <- difftime(t2,t1,units="secs")
 
 
-cat('le dataframe df4 a ',nrow(df4),' observations\n')
-cat('les colonnes de df4 sont : ',names(df4),"\n")
+cat('le dataframe df5 a ',nrow(df5),' observations\n')
+cat('les colonnes de df5 sont : ',names(df5),"\n")
 ```
 
 Il est possible de nettement accelérer la vitesse de lecture d'un fichier xlsx en utilisant la fonction `read.xlsx2`. Il faut cependant indiquer à cette derniére le type de données que l'on doit trouver dans chaque colonne. Dans le cas présent, nous savons que les 5 premières colonnes contiennent des données au format texte (character), alors que les 43 autres sont des données numériques (numeric). Pour ces dernières, nous allons utiliser la fonction *rep* afin de ne pas avoir à écrire 43 fois le mot numeric.
@@ -368,15 +435,15 @@ library(xlsx)
 
 t1 <- Sys.time()
 
-df5 <- read.xlsx2("data/priseenmain/SR_MTL_2016.xlsx",sheetIndex = 1, 
+df6 <- read.xlsx2("data/priseenmain/SR_MTL_2016.xlsx",sheetIndex = 1, 
                   as.data.frame = TRUE,
                   colClasses = c("character","character","character","character","character",rep("numeric",43)))
 
 t2 <- Sys.time()
-d5 <- difftime(t2,t1,units="secs")
+d6 <- difftime(t2,t1,units="secs")
 
-cat('le dataframe df5 a ',nrow(df5),' observations\n')
-cat('les colonnes de df5 sont : ',names(df5),"\n")
+cat('le dataframe df6 a ',nrow(df6),' observations\n')
+cat('les colonnes de df6 sont : ',names(df6),"\n")
 ```
 
 Si l'on compare les temps d'exécution du tableau \@ref(tab:tableduration), on constate que la lecture des fichiers xlsx peut être extrèmement longue si l'on ne spécifie pas le type des colonnes. Ceci peut devenir un problème majeur pour des fichier volumineux. Notez également que la lecture des fichiers csv devient de plus en plus laborieuse à mesure que la taille du fichier csv augment. Si vous devez un jour charger des fichiers csv de plusieurs giga octets, nous vous recommandons d'utiliser la fonction `fread` du package **data.table** qui est beaucoup plus rapide.
@@ -384,8 +451,9 @@ Si l'on compare les temps d'exécution du tableau \@ref(tab:tableduration), on c
 ```{r tableduration, message=FALSE, warning=FALSE}
 
 durations <- data.frame(
-  "duree" = c(d1,d2,d3,d4,d5),
-  "fonction" = c("read.csv","read.dbf","read.dta","read.xlsx","read.xlsx2")
+  "duree" = c(d1,d2,d3,d4,d5,d6),
+  "fonction" = c("read.csv","read.dbf","read.dta",
+                 'read.sas7bdat',"read.xlsx","read.xlsx2")
 )
 
 knitr::kable(
@@ -399,10 +467,227 @@ knitr::kable(
 
 Maintenant que nous savons comment définir et charger un DataFrame, nous allons apprendre à les manipuler.
 
+Avant d'aller plus loin, il est important d'introduire brièvement un débat actuel dans la communauté ![](images/logos/Rlogo.png). Depuis entre 2010 et 2020 s'est peu à peu imposé sur le devant de la scène le package **tidyverse**. Plus exactement, **tidyverse** est un ensemble de packages, pensés pour faciliter la structuration et la manipulation des données dans ![](images/logos/Rlogo.png). Développé et maintenu par Hadley Wickham, ce package introduit une philosophie et une grammaire spécifiques, qui diffèrent du langage ![](images/logos/Rlogo.png) traditionnel. Une partie de la communauté a pour ainsi dire complètement embracé le **tidyverse** et de nombreux packages en dehors du **tidyverse** ont adopté sa grammaire et sa philosophie. À l'inverse, une autre partie de la communauté est [opposée](https://blog.ephorie.de/why-i-dont-use-the-tidyverse) à cette évolution. On peut résumer les arguments des deux partis avec le tableau suivant : 
+
+Avantages du **tidyverse** | Problèmes posés par le **tidyverse**
+-------------------------- | ------------------------------------ 
+Simplicité d'écriture et d'apprentissage | Nouvelle syntaxe à apprendre
+Ajout de l'opérateur %>% permettant d'enchaîner les traitements | Perte de lisibilité avec l'opérateur ->
+La meilleure librairie pour réaliser des graphiques : **ggplot2** | Certaines fonctions de base sont remplacées par **tidyverse** lors de son chargement, pouvant créer des bugs.
+Crée un écosystème cohérent | Rajoute une dépendance dans le code
+Package en développement et de plus en plus utilisé  | Philosophie d'évolution aggressive, aucune assurance de rétro-compatibilité
+
+Le dernier point est probablement le plus problématique. Dans sa volonté d'évoluer au mieux et sans restriction, le package **tidyverse** n'offre aucune garantie de rétro-comptatibilité. En d'autre termes, des changements importants peuvent être introduit d'une version à l'autre rendant potentiellement obsolète votre propre code.
+
+Nous n'avons pas d'opinion tranchée sur le sujet. **tidyverse** est un outil très intéressant dans de nombreux cas. Nous évitons simplement de l'utiliser en permanence et préférons charger directement les sous-packages (comme **dplyr** ou **ggplot2**) du **tidyverse** dont nous avons besoin.
+
+Notez que le package **data.table** offre une alternative au **tidyverse** dans la manipulation de données. Au prix d'un syntaxe généralement un peu plus complexe **data.table** offre une vitesse de calcul bien supérieure au **tidyverse** et assure une bonne rétro-compatibilité.
+
+
+#### Gérer les colonnes d'un DataFrame
+
+Repartons du DataFrame que nous avions chargé précédemment grâce à un fichier csv.
+
+```{r message=FALSE, warning=FALSE}
+df <- read.csv("data/priseenmain/SR_MTL_2016.csv", 
+         header = TRUE, sep = ",", dec = ".",
+         stringsAsFactors = FALSE)
+```
+
+##### Sélectionner une colonne
+Pour rappel, il est possible d'accéder aux colonnes dans ce DataFrame en utilisant l'opérateur `$ma_colonne` ou les doubles crochets `[["ma_colonne"]]`
+
+```{r message=FALSE, warning=FALSE}
+#calcul de la superficie totale de l'Île de Montréal
+sum(df$KM2)
+sum(df[["KM2"]])
+```
+
+##### Sélectionner plusieurs colonnes
+Il est possible de sélectionner plusieurs colonnes d'un DataFrame. On peut ainsi filtrer des colonnes inutiles. Pour cela, on peut utiliser un vecteur contenant la position de la colonne (1 pour la première colonne, 2 pour la seconde et ainsi de suite), ou un vecteur contenant le nom des colonnes.
+
+```{r message=FALSE, warning=FALSE}
+#garder les 5 premières colonnes
+df2 <- df[1:5]
+
+#garder les colonnes 1,5,10 et 15
+df3 <- df[c(1,5,10,15)]
+
+#garder les colonnes 1 à 5, 7 à 12, 17 et 22
+df4 <- df[c(1:5,7:12,17,22)]
+
+#garder les colonnes avec leurs noms
+df5 <- df[c("SRIDU","KM2","Pop2016","MaisonIndi","LoyerMed")]
+
+```
+
+##### Supprimer des colonnes
+Il peut être plus intéressant de directement supprimer des colonnes plutôt que de recréer un nouveau DataFrame. Pour cela, on va attribuer la valeur `NULL` à ces colonnes
+
+```{r message=FALSE, warning=FALSE}
+#supprimer le colonnes 2,3 et 5
+df3[c(2,3,5)] <- list(NULL)
+
+#supprimer une colonne avec son nom
+df4$OID <- NULL
+
+#supprimer des colonnes par leur nom
+df5[c("SRIDU","LoyerMed")] <- list(NULL)
+```
+Notez que si vous supprimez une colonne, vous ne pouvez pas revenir en arrière. Il faudra recharger votre jeu de données ou relancer les calculs qui avaient produit cette colonne.
+
+##### Renommer des colonnes
+Il est possible de changer le nom d'un colonne. Cette opération est importante pour faciliter la lecture du DataFrame ou s'assurer que l'on n'aura pas de problème lorsque l'on exportera le DataFrame dans un fichier.
+
+```{r message=FALSE, warning=FALSE}
+#voici les anciens noms
+names(df5)
+
+#renommer toutes les colonnes
+names(df5) <- c('superficie_km2','population_2016', 'maison_individuelle_prt')
+names(df5)
+
+#renommer avec dplyr
+library(dplyr)
+df4 <- rename(df4, "population_2016" = "Pop2016",
+              "prs_moins_14ans_prt" = "A014",
+              "prs_15_64_ans_prt" = "A1564",
+              "prs_65plus_ans_prt" = "A65plus"
+              )
+```
+
+
 #### Opérateurs mathématique
 
+Il est possible d'utiliser les colonnes de type numérique pour calculer de nouvelles colonnes. Les opérateurs disponibles sont : 
+
+* `+` pour les additions
+* `-` pour les soustractions
+* `*` pour les multiplications
+* `/` pour les divisions
+* `^` ou `**` pour les puissances
+* `%%` pour le modulus (reste d'une division)
+
+Prenons un exemple concret et calculons la densité de population par secteur de recensement dans notre précédent DataFrame et affichons un résumé de cette nouvelle variable.
+
+```{r message=FALSE, warning=FALSE}
+
+# calcul de la densité
+df$pop_density_2016 <- df$Pop2016 / df$KM2
+
+summary(df$pop_density_2016)
+```
+
+Nous pouvons aussi calculer le ratio entre le nombre de maisons et le nombre d'appartements.
+
+```{r message=FALSE, warning=FALSE}
+
+# calcul de la densité
+df$total_maison <- (df$MaisonIndi + df$MaisJumule + df$MaisRangee + df$AutreMais)
+df$total_apt <- (df$AppDuplex + df$App5Moins + df$App5Plus)
+df$ratio_maison_apt <- df$total_maison / df$total_apt
+
+summary(df$pop_density_2016)
+```
+
+Ce qu'il faut retenir ici, c'est que ![](images/logos/Rlogo.png) va appliquer le calcul à chaque ligne de votre jeu de données et stocker le résultat dans une nouvelles colonne. On appelle cela du calcul vectorisé : toute la colonne est calculée en une seule fois. ![](images/logos/Rlogo.png) est optimisé pour faire du calcul vectoriel.
+
+#### fonctions mathématique
+
+![](images/logos/Rlogo.png) propose un ensemble de fonctions de base pour effectuer du calcul. Voici une liste des principales fonctions (non-exhaustive) : 
+
+* `abs` : calcule les valeurs absolue des valeurs d'un vecteur
+* `sqrt` : calcule les racines carrés des valeurs d'un vecteur
+* `log` : calcule les logarithmes des valeurs d'un vecteur
+* `exp` : calcule les exponentiels des valeurs d'un vecteur
+* `factorial` : calcule la factorielle des valeurs d'un vecteur
+* `round` : arrondit les valeurs d'un vecteur
+* `ceiling`, `floor` : arrondit à l'unité supérieure ou inférieure les valeurs d'un vecteur
+* `sin`,`asin`,`cos`,`acos`,`tan`,`atan` : les fonctions de trigonométrie classiques
+
+Ces fonctions sont des fonctions vectorielles. Elles s'appliquent à tous les éléments d'un vecteur. Si vous vecteur en entrée comprends 5 valeurs, le vecteur en sortie comprendra 5 valeurs également.
+
+* `sum` : calcule la somme des valeurs d'un vecteur
+* `cumSum` : calcule la somme cumulative des valeurs d'un vecteur
+* `prod` : calcule le produit des valeurs d'un vecteur
+* `min`, `max` : renvoit les valeurs maxmimales et minimale d'un vecteur
+* `mean`, `median` : renvoit la moyenne et la médiane d'un vecteur
+* `quantile` : renvoit les percentiles d'un vecteur
+
+#### fonctions pour manipuler du texte
+
+En plus des données numérique, vous aurez à travailler avec des données textuelles. Le **tidyverse** avec le packages **stringr** offre des fonctions très intéressantes pour manipuler du texte. Pour un aperçu de toutes les fonctions offertes par **stringr**, vou spouvez référer à sa [Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf). Commençons avec un DataFrame assez simple comprenant des adresses et des noms de personnes.
+
+```{r message=FALSE, warning=FALSE}
+library(stringr)
+
+df <- data.frame(
+  noms = c("Liliana ford","faram mcclure","shanice Howells","Nella Cardenas"),
+  adresses = c('152 rue Levy', '4138 Blvd René-Lévesque', '3606 rue Duké', '2457 route St Marys')
+)
+```
+
+##### Majuscules et minuscules
+
+Pour harmoniser ce dataframe, nous allons dans un 1er temps harmoniser les majuscules des noms des individus avec la fonction `str_to_title`.
+
+```{r message=FALSE, warning=FALSE}
+df$noms_corr <- str_to_title(df$noms)
+df$noms_corr
+```
+
+On pourrait également tout mettre en minuscule ou tout en majuscule.
+```{r message=FALSE, warning=FALSE}
+df$noms_min <- tolower(df$noms)
+df$noms_maj <- toupper(df$noms)
+df$noms_min
+df$noms_maj
+```
+
+##### Remplacer du texte
+
+Dans les adresses, nous avons des caractères accentués. Ce type de caractère peut poser des problèmes d'encodage et nous pourrions décider des les remplacer par des caractères simples avec la fonction `str_replace_all`.
+
+```{r message=FALSE, warning=FALSE}
+df$adresses_1 <- str_replace_all(df$adresses,'é','e')
+```
+
+Nous pouvons utiliser la même fonction pour remplacer les St par Saint et les Blvd par Boulevard.
+
+```{r message=FALSE, warning=FALSE}
+df$adresses_2 <- str_replace_all(df$adresses_1,' St ',' Saint ')
+df$adresses_3 <- str_replace_all(df$adresses_2,' Blvd ',' Boulevard ')
+df$adresses_3
+```
+##### Découper du texte
+
+Il est parfois nécessaire de découper du texte pour en extraire des éléments. On doit alors choisir un caractère de découpage. Dans notre cas, on pourrait vouloir extraire les numéros civiques des addresse, en utilisant le premier espace comme caractère de découpage. Ce qui est faisables avec la fonction `str_split_fixed`.
+
+```{r message=FALSE, warning=FALSE}
+df$num_civique <- str_split_fixed(df$adresses_3, ' ',n=2)[,1]
+```
+
+Pour être exact, sachez que dans notre example, la fonction `str_split_fixed` renvoie deux colonnes de texte : une avec le texte avec le 1er espace (donc le numéros civique) et une avec le reste du texte. En ajoutant `[,1]` à la fin, nous indiquons que nous souhaitons seulement garder la 1ère des deux colonnes. La deuxième est donc perdue, mais nous souhaitions de toute façon pas la garder.
+
+##### Coller du texte
+
+À l'inverse du découpage, il est parfois nécessaire de coller ensemble des éléments de texte, ce que nous pouvons faire avec la fonction `paste`.
+
+```{r message=FALSE, warning=FALSE}
+df$texte_complet <- paste(df$noms_corr, df$adresses_3, sep = " : ")
+df$texte_complet
+```
+
+Le paramètre *sep* permet de choisir les caractères à intercaler entre les éléments  copier. Notez qu'il est possible de coller plus que deux éléments ensembles : 
+
+```{r message=FALSE, warning=FALSE}
+df$ville <- c('Montreal','Montreal','Montreal','Montreal')
+paste(df$noms_corr, df$adresses_3, df$ville, sep = "  ")
+```
+#### Sous sélection d'un DataFrame
 
 
+toupper ; tolower ; gsub ; separate ; paste  
 
 
 	0.4 importer et manipuler des données
@@ -410,9 +695,10 @@ Maintenant que nous savons comment définir et charger un DataFrame, nous allons
 		charger un dataframe
 		extraire une colonne ⇒ vecteur
 		opérateur mathématique
-		opérateur logique
+		subsetting et opérateur logique
+		fusion, aggregation, jointure
 		créer des nouvelles colonnes (exemple de densité, % etc.)
 		subsetting
-		fusion, aggregation, jointure
+		
 		r language essential (voir chap1 de introductory statistics with R)
 	0.5 la syntaxe des graphiques (philosophie de ggplot2)
