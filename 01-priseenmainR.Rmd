@@ -55,7 +55,11 @@ Dans ce livre, nous détaillerons les **packages** utilisés dans chaque section
 knitr::include_graphics('css/images/package.png', dpi = NA)
 ```
 
-## Installation de ![](images/logos/Rlogo.png) et RStudio {#sect12}
+## Environnement de travail
+
+Dans cette section, nous vous proposons une visite de l'environnement de travail classique  ![](images/logos/Rlogo.png).
+
+### Installer ![](images/logos/Rlogo.png)
 
 La première étape pour travailler avec ![](images/logos/Rlogo.png) est bien sûr de l'installer. Pour ce faire, il suffit de visiter le site web de [CRAN](https://cran.r-project.org/){target="_blank"} et de télécharger la dernière version de ![](images/logos/Rlogo.png) en fonction de votre système d'exploitation : Windows, Linux ou Mac. Une fois installé, si vous démarrez ![](images/logos/Rlogo.png) immédiatement, vous aurez alors accès à une console, plutôt rudimentaire, attendant sagement vos instructions (figure \@ref(fig:fig05)).
 
@@ -63,7 +67,11 @@ La première étape pour travailler avec ![](images/logos/Rlogo.png) est bien s�
 knitr::include_graphics('images/introduction/r_console.jpeg', dpi = NA)
 ```
 
-Rares sont les utilisateurs de ![](images/logos/Rlogo.png) qui préfèrent  travailler directement avec la console et écrire leur code dans un fichier séparé en utilisant un éditeur de texte. Par conséquent, nous vous recommandons vivement d'utiliser RStudio, soit un environnement de développement dédié à ![](images/logos/Rlogo.png), offrant une intégration très intéressante d'une console, d'un éditeur de texte, d'une fenêtre de visualisation des données, d'une autre pour les graphiques, d'un accès à la documentation, etc. En d'autres termes, si ![](images/logos/Rlogo.png) est vélo minimaliste, RStudio permet d'y rajouter des freins, des vitesses, un porte-bagage, des gardes boues et une selle confortable. Vous pouvez [télécharger](https://rstudio.com/products/rstudio/download) et installer RStudio sur Windows, Linux et Mac. La version de base est gratuite, mais l'entreprise qui développe ce logiciel propose aussi des versions commerciales du logiciel qui assurent essentiellement un support. Il existe d'autres environnements de développement pour travailler avec ![](images/logos/Rlogo.png) (VisualStudio, Jupyter, Tinn-R, Radiant, RIDE, etc.), mais RStudio offre à ce jour la meilleure option en terme de facilité d'installation, de prise en main et de fonctionnalités proposées (voir l'interface de RStudio à la figure \@ref(fig:fig06)).
+Notez que vous pouvez aussi télécharger des version plus anciennes de ![](images/logos/Rlogo.png) en allant sur ce [lien](https://cran.r-project.org/bin/windows/base/old/){target="_blank"}. Ceci peut être intéressant lorsque vous voulez reproduire des résultats d'une autre étude ou que certains packages ne sont plus disponibles dans les nouvelles versions.
+
+### L'environnement RStudio
+
+Rares sont les utilisateurs de ![](images/logos/Rlogo.png) qui préfèrent travailler directement avec la console classique. Nous vous recommandons vivement d'utiliser RStudio, soit un environnement de développement dédié à ![](images/logos/Rlogo.png), offrant une intégration très intéressante d'une console, d'un éditeur de texte, d'une fenêtre de visualisation des données, d'une autre pour les graphiques, d'un accès à la documentation, etc. En d'autres termes, si ![](images/logos/Rlogo.png) est vélo minimaliste, RStudio permet d'y rajouter des freins, des vitesses, un porte-bagage, des gardes boues et une selle confortable. Vous pouvez [télécharger](https://rstudio.com/products/rstudio/download){target="_blank"} et installer RStudio sur Windows, Linux et Mac. La version de base est gratuite, mais l'entreprise qui développe ce logiciel propose aussi des versions commerciales du logiciel qui assurent essentiellement un support technique. Il existe d'autres environnements de développement pour travailler avec ![](images/logos/Rlogo.png) (VisualStudio, Jupyter, Tinn-R, Radiant, RIDE, etc.), mais RStudio offre à ce jour la meilleure option en terme de facilité d'installation, de prise en main et de fonctionnalités proposées (voir l'interface de RStudio à la figure \@ref(fig:fig06)).
 
 ```{r fig06, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Environnement de base de RStudio",  out.width='85%'}
 knitr::include_graphics('images/introduction/r_studio_01.jpeg', dpi = NA)
@@ -78,7 +86,7 @@ Avant d'aller plus loin, notez que :
 knitr::include_graphics('images/introduction/r_studio_02.jpeg', dpi = NA)
 ```
 
-Une fois ces détails réglés, vous pouvez ouvrir votre première feuille de code en allant dans l'onglet *File / New File/ R Script*, votre environnement est maintenant découpé en quatre fenêtres (figure \@ref(fig:fig08))</span> : 
+Une fois ces détails réglés, vous pouvez ouvrir votre première feuille de code en allant dans l'onglet *File / New File/ R Script*, votre environnement est maintenant découpé en quatre fenêtres (figure \@ref(fig:fig08)) : 
 
 1. L'éditeur de code, vous permettant d'écrire le script que vous voulez exécuter et permettant de garder une trace de votre travail. Ce script peut être enregistré sur votre ordinateur avec l'extension **.R**, mais ce n'est qu'un simple fichier texte.
 2. La console vous permettant d'exécuter votre code R et de voir les résultats s'afficher au fur et à mesure.
@@ -89,13 +97,13 @@ Une fois ces détails réglés, vous pouvez ouvrir votre première feuille de co
 knitr::include_graphics('images/introduction/r_studio_03.jpeg', dpi = NA)
 ```
 
-Prenons un bref exemple, tapez la syntaxe suivante dans l'éditeur de code <span class="revision_prop">(fenêtre 1 à la figure \@ref(fig:fig08)) : 
+Prenons un bref exemple, tapez la syntaxe suivante dans l'éditeur de code (fenêtre 1 à la figure \@ref(fig:fig08)) : 
 
 ```{r ma_somme}
 ma_somme <- 4+4
 ```
 
-Sélectionnez ensuite cette syntaxe, quand vous utilisez le raccourci *Ctrl+Enter* ou cliquez sur le bouton *Run* (avec la flèche verte), cette syntaxe est envoyée à la console qui l'exécute immédiatement. Notez que rien ne se passe tant que le code n'est pas envoyé à la console. Il s'agit donc de deux étapes distinctes : écrire son code, puis l'envoyer à la console. Vous constaterez également qu'un objet *ma_somme* est apparu dans votre environnement et que sa valeur est bien 8. Votre console se "souvient" de cette valeur, elle est actuellement stockée dans votre mémoire vive sous le nom de *ma_somme* (figure \@ref(fig:fig09)).
+Sélectionnez ensuite cette syntaxe (mettre en surbrillance avec votre souris), quand vous utilisez le raccourci *Ctrl+Enter* ou cliquez sur le bouton *Run* (avec la flèche verte), cette syntaxe est envoyée à la console qui l'exécute immédiatement. Notez que rien ne se passe tant que le code n'est pas envoyé à la console. Il s'agit donc de deux étapes distinctes : écrire son code, puis l'envoyer à la console. Vous constaterez également qu'un objet *ma_somme* est apparu dans votre environnement et que sa valeur est bien 8. Votre console se "souvient" de cette valeur, elle est actuellement stockée dans votre mémoire vive sous le nom de *ma_somme* (figure \@ref(fig:fig09)).
 
 ```{r fig09, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les quatre fenêtres de RStudio",  out.width='90%'}
 knitr::include_graphics('images/introduction/r_studio_04.jpeg', dpi = NA)
@@ -103,9 +111,92 @@ knitr::include_graphics('images/introduction/r_studio_04.jpeg', dpi = NA)
 
 Pour terminer sur cette section, nous vous invitons à enregistrer votre première syntaxe ![](images/logos/Rlogo.png) (*File / Save As*) dans un fichier **.R** que vous pouvez appeler par exemple "mon_premier_script.R". Fermez ensuite RStudio, redémarrez le et ouvrez (*File / Open File*) votre fichier "mon_premier_script.R". Vous pouvez constater que votre code est toujours présent, mais que votre environnement est vide tant que vous n'exécutez pas votre syntaxe. En effet, lorsque vous fermez RStudio, l'environnement est vidé pour libérer de la mémoire vive. Ceci peut poser problème lorsque certains codes sont très longs à exécuter, nous verrons donc plus tard comment enregistrer l'environnement en cours pour le recharger par la suite.
 
-Vous êtes prêts à travailler dans ![](images/logos/Rlogo.png) ! Rendez-vous dans la prochaine section pour rentrer dans le vif du sujet.
 
-## Hello World ! {#sect13}
+### Installer et charger un package
+
+Nous avons souligné dans la section sur la Philosophie de ![](images/logos/Rlogo.png) la place centrale jouée par les packages. Voyons donc ensemble comment installer un package. Nous allons prendre l'exemple du package **lubridate**, qui nous permettra plus tard de manipuler des données temporelles.
+
+#### Installer un package depuis CRAN
+
+Pour installer un package, vous devez être connecté à internet, en effet, ![](images/logos/Rlogo.png) va accéder au répertoire de packages *CRAN* pour télécharger le package et l'installer sur votre machine. Cette opération est réalisée avec la fonction `install.packages`
+
+```{r message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("lubridate")
+```
+
+Notez qu'une fois que le package est installé, vous n'aurez plus besoin de le refaire. Le package est disponible localement sur votre ordinateur, à moins de le désinstaller explicitement avec la fonction `remove.packages`.
+
+#### Installer un package depuis GitHub
+
+*CRAN* est le répertoire officiel des packages de ![](images/logos/Rlogo.png). Vous pouvez cependant télécharger des packages provenant d'autres sources. Très souvent, les packages sont disponibles sur le site web [GitHub](https://github.com/){target="_blank"} et on peut même y trouver les versions en développement avec des fonctionnalités encore non intégrées dans la version sur *CRAN*.
+
+Reprenons le cas de **lubridate**, sur GitHub, il est disponible à la page [suivante](https://github.com/tidyverse/lubridate){target="_blank"}. Pour l'installer nous devons d'abord installer un autre package appelé **devtools** (depuis *CRAN*).
+
+```{r message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("devtools")
+```
+
+Maintenant que nous disposons de devtools, nous pouvons utiliser la fonction d'installation `devtools::install_github` pour directement télécharger **lubridate** depuis GitHub.
+
+```{r message=FALSE, warning=FALSE, eval=FALSE}
+devtools::install_github("tidyverse/lubridate")
+```
+
+#### Charger un package
+
+Maintenant que **lubridate** est installé, nous pouvons le charger dans notre session actuelle de ![](images/logos/Rlogo.png) et accéder aux fonctions qu'il propose. Pour cela, suffit d'utiliser la fonction `library`. Notez que conventionnellement, l'appel des packages se fait au tout début du script que vous rédigez. Rien ne vous empêche de le faire au fur et à mesure de votre code mais vous perdez alors en lisibilité.  
+
+```{r message=FALSE, warning=FALSE}
+library(lubridate)
+```
+
+Si vous obtenez un message d'erreur du type : 
+
+<span class="error_message">Error in library(mon_package) : aucun package nommé ‘mon_package’ n'est trouvé</span>
+
+C'est que le package que vous tentez de charger n'est pas encore installé sur votre ordinateur. Dans ce cas, réessayer de l'installer avec la fonction `install.packages`. Si le problème persiste, vérifiez que vous n'avez pas fait de faute de frappe dans le nom du package. Vous pouvez également redémarrer RStudio et réessayer d'installer le package.
+
+### Obtenir de l'aide
+
+Lorsque vous installez des packages dans ![](images/logos/Rlogo.png), vous téléchargez aussi leur documentation. Tous les packages de *CRAN* disposent d'une documentation, mais ceci n'est pas forcément vrai pour *GitHub*. Dans RStudio, vous pouvez accéder à la documentation des packages dans l'onglet **Packages** (figure \@ref(fig:fig010)). Vous puvez utiliser la barre de recherche pour retrouver rapidement un package installé. Si vous cliquez sur le nom du package, vous accédez directement à sa documentation dans cette fenêtre.
+
+```{r fig010, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Description des packages",  out.width='45%'}
+knitr::include_graphics('images/introduction/rstudio_packages.jpeg', dpi = NA)
+```
+
+Vous pouvez également accéder à ces informations en utilisant la syntaxe suivante dans votre console : 
+
+```{r eval = FALSE}
+help(package = 'lubridate')
+```
+
+Souvent, vous aurez besoin d'accéder à la documentation d'une fonction spécifique de notre package. Affichons la documentation de la fonction `now` de **lubridate** : 
+
+```{r eval = FALSE}
+help(now, package = 'lubridate')
+```
+
+Vous pouvez aussi utiliser le raccourci suivant : 
+
+```{r eval = FALSE}
+?now
+```
+
+Si vous connaissez le nom d'une fonction, mais ne savez plus dans quel package elle se trouve, vous pouvez lancer une recherche en utilisant un double point d'interrogation : 
+
+```{r eval = FALSE}
+??now
+```
+
+Vous allez ainsi découvrir que la fonction `now` n'existe pas que dans **lubridate**, ce qui souligne l'importance de bien connaître les packages que l'on installe et que l'on charge dans notre session !
+
+Maintenant que nous avons fait le tour de l'environnement de travail, nous allons pouvoir entamer les choses sérieuses avec les bases du langage ![](images/logos/Rlogo.png)
+
+## Les bases du langage ![](images/logos/Rlogo.png)
+
+![](images/logos/Rlogo.png) est un langage de programmation. Il vous permet de communiquer avec votre ordinateur pour lui donner des tâches à accomplir. Dans cette section, nous allons couvrir les bases de ce langage.
+
+### Hello World ! {#sect13}
 
 Une introduction à un langage de programmation se doit de commencer par le rite de passage **Hello World**. Il s'agit d'une forme de tradition consistant à montrer aux nouveaux utilisateurs comment afficher le message "Hello World" à l'écran avec le langage en question.
 
@@ -139,22 +230,111 @@ print("Hello World")
 
 Bravo ! Vous venez officiellement de faire votre premier pas dans ![](images/logos/Rlogo.png) !
 
-## Naviguer entre Vecteurs, listes et dataframes {#sect14}
+### Objets et expressions
 
-Dans cette section, nous allons aborder la base du langage ![](images/logos/Rlogo.png). Nous resterons largement en surface pour nous concentrer sur les principaux objets que vous aurez besoin de manipuler pour charger, structurer et analyser des données. Une autre section détaillera plus en profondeur le fonctionnement du langage, mais ces éléments ne sont pas nécessaires pour débuter dans ![](images/logos/Rlogo.png). Commençons donc par la base : déclarer des variables.
+Dans ![](images/logos/Rlogo.png), nous passons notre temps à manipuler des **objets** à l'aide d'**expressions**. Prenons un exemple concret, si vous tappez la syntaxe `4 + 3`, vous manipulez deux objets (4 et 3) au travers d'une expression indiquant que vous souhaitez obtenir la somme des deux objets.
 
-### Déclarer des variables et les principaux types de variables
+```{r}
+4 + 3
+```
 
-Dans ![](images/logos/Rlogo.png), il existe trois principaux types de données de base : 
+Cette expression est correcte, ![](images/logos/Rlogo.png) comprends vos indications et effectue le calcul.
+
+Il est possible d'enregistrer le résultat d'une expression et de la conserver dans un nouvel objet. On appelle cette opétation déclarer une variable.
+
+```{r}
+ma_somme <- 4 + 3
+```
+
+Concrêtement, nous venons de demander à ![](images/logos/Rlogo.png) d'enregistrer le résultat de `4 + 3` dans un espace spécifique de notre mémoire vive. Si vous regardez dans votre fenètre Environment, vous verez en effet qu'un objet appelé ma_somme est actuellement en mémoire et a pour valeur 7.
+
+Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. ![](images/logos/Rlogo.png) est sensible à la case, en d'autre termes, les variables `Ma_somme`, `ma_sommE`, `ma_SOMME`, et `MA_SOMME` indiquent toutes un objet différent. Attention donc aux fautes de frappes. Si vous déclarez une variable en utilisant le nom d'une variable existante, la première est écrasée par la seconde : 
+
+```{r}
+age <- 35
+age
+
+age <- 45
+age
+```
+Attention donc aux noms de variables que vous utilisez et réutilisez.
+
+
+Réutilisons notre objet `ma_somme` dans une nouvelle expression : 
+
+```{r}
+ma_somme2 <- ma_somme + ma_somme
+```
+
+Avec cette nouvelle expression, nous indiquons à ![](images/logos/Rlogo.png) que nous souhaitons déclarer une nouvelle variable appelée ma_somme2, et que cette variable aura pour valeur `ma_somme + ma_somme`, soit `7 + 7`. Sans surprise, `ma_somme2` a pour valeur 14.
+
+Notez tout de suite que la mémoire vive (l'environnement) est vidée lorsque vous fermez ![](images/logos/Rlogo.png). En d'autres termes, ![](images/logos/Rlogo.png) perd complètement la mémoire lorsque vous le fermez. Vous pouvez bien sûr recréer vos objets en relancer les mêmes syntaxes, c'est pourquoi vous devez conserver vos feuilles de codes et ne pas seulement travailler dans la console. La console ne garde aucune trace de votre travail. Pensez donc bien à enregistrer votre code.
+
+Nous verrons plus tard comment sauvegarder des objets et les recharger dans une session ultérieure de ![](images/logos/Rlogo.png). Ce type d'opération est pertinente quand le temps de calcul nécessaire à la production de certains objets est très longue.
+
+### Fonctions et argument
+
+Dans ![](images/logos/Rlogo.png), nous manipulons le plus souvent nos objets avec des **fonctions**. Une fonction est elle même un objet, mais qui a la particularité de pouvoir effectuer des opérations sur d'autres objets. Par exemple, déclarons l'objet `taille` avec une valeur de 175.897 : 
+
+```{r}
+taille <- 175.897
+```
+
+Nous allons utiliser la fonction `round` dont l'objectif est d'arrondir un nombre à virgule pour obtenir un nombre entier.
+
+```{r}
+round(taille)
+```
+Sans surpise, nous obtenons 176. Pour effectuer leurs opérations, les fonctions ont généralement besoin d'**arguments**. Ici, `taille` est un argument passé à la fonction `round`. Si nous regardons la documentation de `round` avec `help(round)`, nous pouvons constater que cette fonction prends en réalité deux argments : x et digits. Le premier est le nombre que nous souhaitons arrondir et le second le nombre de décimal à conserver. On peut observer dans la documentation que la valeur par défaut de digits est 0, c'est pourquoi `round(taille)` a produit le résultat 176.
+
+```{r fig011, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Arguments de la fonction round",  out.width='45%'}
+knitr::include_graphics('images/introduction/help_round.jpeg', dpi = NA)
+```
+
+Réutilisons maintenant la fonction `round` mais en gardant une décimale : 
+
+```{r}
+round(taille, digits = 1)
+```
+Il est aussi possible que certaines fonctions ne requiert par d'arguments. Par exemple la fonction `now` va nous indiquer quelle heure il est actuellement et n'a besoin d'aucun argument pour le faire : 
+
+```{r}
+now()
+```
+
+Par contre, si nous essayons de lancer la fonction round sans argument, nous allons obtenir une erreur : 
+
+```{r eval = FALSE}
+round()
+```
+<span class = "error_message">Erreur : 0 arguments passed to 'round' which requires 1 or 2 arguments</span>
+
+Le message est très clair, `round` a besoin d'au moin 1 argument pour fonctionner. Si au lieu d'un nombre, nous avions donné du texte à la fonction `round`, nous aurions aussi obtenu une erreur : 
+
+```{r eval = FALSE}
+round("Hello World")
+```
+<span class = "error_message">Error in round("Hello World") : 
+  argument non numérique pour une fonction mathématique</span>
+
+À nouveau le message est très explicit : nous avons donnée un argument non-numérique à une fonction mathématique. Prenez le temps de toujours lire vos messages d'erreurs, ils vous permettront d'identifier bien des coquilles dans vos codes.
+
+Une fonction essentielle à connaître est la fonction `print`. Elle permet de demander à ![](images/logos/Rlogo.png) d'afficher la valeur d'une variable. Par exemple : 
+
+```{r}
+print(ma_somme)
+```
+
+
+### Principaux types de données
+
+Depuis le début de ce chapitre, nous avons déclaré plusieurs variables et essentiellement des données numériques. Dans ![](images/logos/Rlogo.png), il existe trois principaux types de données de base : 
 
 * Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats*), ex `15` et `15.3`: .
 * Les données textuelles, qui sont des chaînes de caratères (appelées *strings*) et déclarées entre guillemets `"abcdefg"`
 * Les données booléennes (*booleans*) qui représentent les concepts de vrai (`TRUE`) ou de faux (`FALSE`).
-* Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats*) comme `15` et `15.3`: .
-* Les données textuelles, qui sont des chaîne de caratères (appelées *strings*) et déclaré entre guillemets `"abcdefg"`
-* Les données booléennes (*booleans*) qui représentent les concepts de vrai : `TRUE` ou de faux `FALSE`.
 
-Pour pouvoir manipuler ces données, il faut préalablement les déclarer. Ceci signifie réserver un espace dans la mémoire vive de votre ordinateur, lui donner un nom et lui associer une valeur; on appelle cette opération déclarer une variable. Une fois cette opération effectuée, la donnée en question est accessible pour effectuer des traitements. Déclarons ensemble quelques variables : 
+Déclarons une variable pour chacun de ces types : 
 
 ```{r}
 age <- 35
@@ -163,25 +343,107 @@ adresse <- '4225 rue de la gauchetiere'
 proprietaire <- TRUE
 ```
 
-Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. ![](images/logos/Rlogo.png) est sensible à la case, en d'autre termes, les variables `age`, `Age`, `AGe`, et `agE` indiquent toutes un objet différent. Attention donc aux fautes de frappes.
+Notez également qu'il existe des types pour représenter l'absence de données : 
 
-Si vous déclarez une variable en utilisant le nom d'une variable existante, la première est écrasée par la seconde : 
+* pour représenter un objet vide, on utilisera l'objet `NULL`,
+* pour représenter une données manquante, on utilisera l'objet `NA`,
+* pour représenter un texte vide, on utilisera une chaîne de caractère de longueur 0 `""`.
 
 ```{r}
-age <- 35
-
-print(age)
-
-age <- 45
-
-print(age)
+age2 <- NULL
+taille2 <- NA
+adresse2 <- ''
 ```
 
-Attention donc aux noms de variables que vous utilisez et réutilisez.
+### Opérateurs
 
-### Du vecteur au DataFrame
+Nous avons vu que les fonctions nous permettent de manipuler des objets. Nous pouvons également effectuer un grand nombre d'opération avec des opérateurs.
 
-Nous venons de déclarer (en utilisant le symbole `<-`) quatre variables, nommées respectivement age, taille, adresse et proprietaire, ayant pour types respectifs integer, float, string et boolean. Ces variables pourraient correspondre aux réponses d'un individu à un questionnaire. Jusque là, rien de très impressionnant : les variables déclarées ne décrivent qu'un seul individu. Lors d'une analyse statistique, nous allons travailler avec des volumes de données bien plus conséquents. Pour stocker plusieurs valeurs, nous allons travailler avec ce que l'on appelle des *vecteurs*. Pour déclarer un vecteur, on utilise la fonction *c()* : 
+#### Opérateurs mathématiques
+
+Les opérateur mathématiques permettent d'effectuer du calcul avec des données de type numérique.
+
+Opérateur   |     Description   | Syntaxe      | résultat  
+----------- | ----------------- | ----------   | ---------
+`+`         | Addition          | `4 + 4`      | 8
+`-`         | Soustraction      | `4 - 3`      | 1
+`*`         | Multiplication    | `4 * 3`      | 12
+`/`         | Division          | `12 / 4`     | 3
+`^`         | Exponentiel       | `4 ^ 3`      | 64
+`**`        | Exponentiel       | `4 ** 3`     | 64
+`%%`        | Reste de division | `15.5 %% 2`  | 1.5
+`%/%`       | Division entière  | `15.5 %/% 2` | 7
+
+#### Opérateur relationnels
+
+Les opérateurs relationnels permettent de vérifier des conditions dans ![](images/logos/Rlogo.png). Ils renvoient un booléens, TRUE si la condition est vérifiée et FALSE si ce n'est pas le cas.
+
+Opérateur   |     Description   | Syntaxe    | résultat  
+----------- | ----------------- | ---------- | ---------
+`==`        | Égalité           | `4 == 4`   | TRUE
+`!=`        | Différence        | `4 != 4`   | FALSE
+`>`         | Est supérieur     | `5 > 4`    | TRUE
+`<`         | Est inférieur     | `5 < 4`    | FAlSE
+`>=`        | Est supérieur ou égal     | `5 >= 4`    | TRUE
+`<=`        | Est inférieur ou égal     | `5 <= 4`    | FALSE
+
+#### Opérateur logiques
+
+Les opérateurs logiques permettent de combiner plusieurs conditions.
+
+L'opérateur ET permet de vérifier que deux conditions (l'une ET l'autre) sont TRUE. Si l'une des deux est FALSE, il renvoie FALSE.
+
+L'opérateur OU permet de vérifier que l'une des deux conditions est TRUE (l'une OU l'autre). Si les deux sont FALSE, alors il renvoit FALSE.
+
+L'opérateur NOT permet d'inverser une condition. Ainsi NOT TRUE est FALSE et NOT FALSE est TRUE.
+
+Opérateur   |     Description   | Syntaxe    | résultat  
+----------- | ----------------- | ---------- | ---------
+`&`         | ET                | `TRUE & FALSE`   | FALSE
+`|`         | OU        | `TRUE | FALSE`   | TRUE
+`!`         | NOT     | `! TRUE`    | FALSE
+
+Prenons le temps pour un petit exemple : 
+
+```{r}
+
+a <- 4 
+b <- 10
+c <- -5
+
+# produit TRUE car a est bien plus petit que b et c est bien plus petit que a
+a < b & c < a
+
+# produit FALSE car si a est bien plus petit que b, 
+# b est en revanche plus grand que c
+a < b & b < c
+
+# produit TRUE car la seconde condition est inversée
+a < b &  ! b < c
+
+# produit TRUE car la au moins une des deux conditions est juste
+a < b |  b < c
+
+```
+Notez que l'opérateur ET a la priorité sur l'opérateur OU et que les parenthèses ont la priorité sur tous les opérateurs, ainsi : 
+
+```{r}
+# produit TRUE car on va commencer par tester a < b ET b < c ce qui donne FALSE
+# on obtient ensuite
+# FALSE |  a > c
+# enfin, a est bien supérieur à c, donc l'une des deux conditions est vraie
+a < b & b < c |  a > c
+
+```
+Notez qu'en arrière plan, les opérateurs sont en réalité des fonctions déguisées. Il est donc possible de définir de nouveau comportements pour les opérateurs. Il est par exemple possible d'additionner ou comparer des objets spéciaux comme des dates, des géométries des graphs, etc.
+
+### Structures de données
+
+Jusqu'ici, nous avons travaillé avec des objets ne comprenant qu'une seule valeur. Lors d'une analyse statistique, nous allons travailler avec des volumes de données bien plus conséquents. Pour stocker plusieurs valeurs, nous allons travailler avec des structures de données que sont les vecteurs, les matrices, les dataframes et les listes. Nous allons présenter ces différents types d'objets et leurs usages.
+
+#### Vecteurs
+
+Les vecteurs sont la brique élémentaire de ![](images/logos/Rlogo.png). Ils permettent de stocker une série de valeur du même type dans une seule variable. Pour déclarer un vecteur, on utilise la fonction *c()* : 
 
 ```{r}
 ages <- c(35,45,72,56,62)
@@ -190,7 +452,7 @@ adresses <- c('4225 rue de la gauchetiere','4223 rue de la gauchetiere','4221 ru
 proprietaires <- c(TRUE,TRUE,FALSE,TRUE,TRUE)
 ```
 
-Nous venons ainsi de déclarer 4 nouvelles variables étant chacune un vecteur de longueur 5 (comprenant chacun 5 valeurs). Ces vecteurs représentent les réponses de plusieurs répondants à un questionnaire par exemple.
+Nous venons ainsi de déclarer 4 nouvelles variables étant chacune un vecteur de longueur 5 (comprenant chacun 5 valeurs). Ces vecteurs représentent, par exemple, les réponses de plusieurs répondants à un questionnaire.
 
 ::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
 Il existe dans ![](images/logos/Rlogo.png) une subtilité à l'origine de nombreux malentendu : la distinctions entre un vecteur de type texte et un vecteur de type facteur. Dans l'exemple précédent, le vecteur *adresses* est un vecteur de type texte. Chaque nouvelle valeur ajoutée dans le vecteur peut être n'importe quelle nouvelle adresse. Déclarons un nouveau vecteur qui contiendrait cette fois-ci la couleur des yeux de personnes ayant répondu au questionnaire.
@@ -242,15 +504,77 @@ class(couleurs_yeux_facteur)
 ```
 :::
 
-Notez tout de suite qu'un vecteur ne peut contenir qu'un seul type de données. Vous ne pouvez pas créer de vecteurs combinant à la fois du texte et des valeurs numériques. Le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), quasiment toutes les fonctions utilisent des vecteurs. Par exemple, on pourrait calculer la moyenne du vecteur *ages* en utilisant la fonction *mean* présente de base dans ![](images/logos/Rlogo.png).
+Quasiment toutes les fonctions utilisent des vecteurs. Par exemple, on pourrait calculer la moyenne du vecteur *ages* en utilisant la fonction *mean* présente de base dans ![](images/logos/Rlogo.png).
 
 ```{r}
 mean(ages)
 ```
 
-Quand nous disons que le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), ce n'est pas juste une façon de parler. Techniquement les variables *age*, *taille*, adresse et *proprietaire* définies plus haut sont aussi des vecteurs, mais de longueur 1 !
+Quand nous disons que le vecteur est la brique élémentaire de ![](images/logos/Rlogo.png), ce n'est pas juste une façon de parler. Toutes les variables que nous avons déclaré dans les sections précédentes sont aussi des vecteurs, mais de longueur 1 !
 
-Il est assez rare de travailler ainsi avec des vecteurs séparés, on préfère généralement avoir ces données stockées dans une structure appelée un *DataFrame* (tableau de données en français). Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une information pour ces individus. Créons ensemble un DataFrame à partir de nos quatres vecteurs.
+#### Matrices
+
+Il est possible de combiner des vecteurs pour former des matrices. Une matrice est un tableau en deux dimensions (colonnes et lignes) généralement utilisé pour représenter certaines structures de données comme des réseaux ou des images (pixels), effectuer du calcul matriciel ou plus simplement présenter des matrices de corrélations. Vous aurez rarement à travailler directement avec des matrices, mais il est bon de savoir ce qu'elles sont.
+
+Créons deux matrices à partir de nos précédents vecteurs.
+
+```{r}
+matrice1 <- cbind(ages,tailles)
+# afficher la matrice 1
+print(matrice1)
+# afficher les dimensions de la matrice 1
+print(dim(matrice1))
+
+matrice2 <- rbind(ages, tailles)
+# afficher la matrice 2
+print(matrice2)
+# afficher les dimensions de la matrice 2
+print(dim(matrice2))
+```
+Comme vous pouvez le constater, la fonction `cbind` permet de concaténer des vecteurs comme s'ils étaient les colonnes d'une matrice, alors que `rbind` les combine comme s'ils étaient des lignes d'une matrice. La figure \@ref(fig:fig012) présente graphiquement le passage du vecteur à la matrice.
+
+```{r fig012, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Du vecteur à la matrice",  out.width='60%'}
+knitr::include_graphics('images/introduction/vecteur_to_matrix.png', dpi = NA)
+```
+
+Notez que vous pouvez transposer une matrice avec la fonction `t`. Si nous essayons maintenant de comparer la matrice 1 et la matrice 2 nous allons avoir une erreur car elles n'ont pas les mêmes dimensions.
+
+```{r eval = FALSE}
+matrice1 == matrice2
+```
+<span class="error_message"></span>
+
+En revanche, on pourrait transposer la matrice 1 et refaire cette comparaison : 
+
+```{r}
+t(matrice1) == matrice2
+```
+
+Le résultat souligne bien que l'on a les même valeurs dans les deux matrices. Il est aussi possible de construire des matrices directement avec la fonction `matrix`, ce que nous montrons dans la prochaine section.
+
+#### Arrays
+
+S'il est rare de travailler directement avec des matrices, il est encore plus rare de travailler avec des arrays. Un array est une matrice spéciale qui peut avoir plus que deux dimensions. Un cas simple serait un array en trois dimensions : lignes, colonnes, profondeur, que l'on pourrait se représenter comme un cube divisé en sous cubes. Au delà de trois dimensions, il devient difficile de se les représenter. Cette structure de données peut être utilisées pour représenter les différentes bandes spectrales d'une image sattelitaire. Les lignes et les colonnes délimiteraient les pixels de l'image, la profondeur quant à elle délimiterait les différents couleurs composant l'image (figure \@ref(fig:fig012)).
+
+```{r fig013, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Un array avec trois dimension",  out.width='60%'}
+knitr::include_graphics('images/introduction/array.png', dpi = NA)
+```
+
+Créons un array en combinant trois matrices avec la fonction `array`. Chacune de ces matrices sera composée respectivement de 1, de 2 et de 3 et aura une dimension de 5 x 5. L'array final aura donc des dimensions de 5 x 5 x 3.
+
+```{r}
+mat1 <- matrix(1, nrow = 5, ncol = 5)
+mat2 <- matrix(2, nrow = 5, ncol = 5)
+mat3 <- matrix(3, nrow = 5, ncol = 5)
+
+mon_array <- array(c(mat1, mat2, mat3), dim = c(5,5,3))
+
+print(mon_array)
+```
+
+#### DataFrames
+
+S'il est rare de travailler avec des matrices et des arrays, le *DataFrame* (tableau de données en français) est en revanche la structure de données avec laquelle vous travaillerez 95% de votre temps. Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une information pour ces individus. Ces colonnes ont de noms, ce qui permet facilement d'accéder à leurs valeurs. Créons ensemble un DataFrame à partir de nos quatres vecteurs et de la fonction `data.frame`.
 
 ```{r}
 df <- data.frame(
@@ -270,13 +594,13 @@ knitr::kable(
 
 Dans Rstudio, vous pouvez visualiser votre tableau de données avec la fonction `View(df)`. Comme vous pouvez le constater, chaque vecteur est devenu une colonne de votre tableau de données *df*.
 
-La figure \@ref(fig:fig010) résume ce passage d'une simple donnée à un DataFrame en passant par un vecteur.
+La figure \@ref(fig:fig014) résume ce passage d'une simple donnée à un DataFrame en passant par un vecteur.
 
-```{r fig010, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="De la donnée au DataFrame",  out.width='60%'}
+```{r fig014, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="De la donnée au DataFrame",  out.width='60%'}
 knitr::include_graphics('images/introduction/vecteur_to_dataframe.png', dpi = NA)
 ```
 
-Plusieurs fonctions de base de ![](images/logos/Rlogo.png) peuvent nous donner des informations importantes sur nos Dataframes : 
+Plusieurs fonctions de base de ![](images/logos/Rlogo.png) peuvent nous donner des informations importantes sur nos DataFrames : 
 
 * *names*, nous donne le noms des colonnes de notre DataFrame,
 * *nrow*, le nombre de lignes,
@@ -288,16 +612,57 @@ nrow(df)
 ncol(df)
 ```
 
-Vous pouvez accéder à chaque colonne de *df* en utilisant le symbole $ ou [["nom_de_la_colonne"]]. Recalculons ainsi la moyenne des âges :
+Vous pouvez accéder à chaque colonne de *df* en utilisant le symbole `$` ou `[["nom_de_la_colonne"]]`. Recalculons ainsi la moyenne des âges :
 
 ```{r}
 mean(df$age)
 mean(df[["age"]])
 ```
 
-### Charger un DataFrame depuis un fichier et installer un package
+#### Listes
 
-Rassurez-vous, il sera rarement nécessaire de créer vos DataFrame à la main comme nous venons de le faire dans l'exemple précédent. Le plus souvent, vous disposerez de fichiers contenant vos données et certaines fonctions vous permettrons de les importer dans ![](images/logos/Rlogo.png) directement sous forme d'un DataFrame. Les formats les plus répandus sont : 
+La dernière structure de données que vous voulons vous présenter sont les listes. Une liste ressemble à un vecteur, au sens où elle permet de stocker un ensemble d'objet les uns à la suite des autres. Cependant, une liste peut contenir n'importe quel type d'objet. Vous pouvez ainsi construire des listes de matrices, des listes d'arrays, des listes de listes, des listes mixant des vecteurs, des graphiques, des DataFrames etc.
+
+Créons ensemble une liste qui va contenir des vecteurs et des matrices à l'aide de la fonction `list.`
+
+```{r}
+ma_liste <- list(c(1,2,3,4),
+                 matrix(1, ncol = 3, nrow = 5),
+                 matrix(5, ncol = 3, nrow = 7),
+                 'A'
+                 )
+```
+
+Il est possible d'accéder aux éléments de la liste par leur position dans cette dernière en utilisant les doubles crochets `[[ ]]`: 
+
+```{r}
+print(ma_liste[[1]])
+print(ma_liste[[4]])
+```
+
+Il est aussi possible de donner des noms aux éléments de la liste et d'utiliser le symbole `$` pour y accéder. Créons une nouvelle liste de vecteurs et donnons leurs des noms avec la fonction `names`.
+
+```{r}
+liste2 <- list(c(35,45,72,56,62), 
+               c(175.5,180.3,168.2,172.8,167.6),
+               c(TRUE,TRUE,FALSE,TRUE,TRUE)
+)
+names(liste2) <- c("age",'taille','proprietaire')
+
+print(liste2$age)
+```
+
+Si vous avez bien suivi, vous devez avoir compris qu'un DataFrame n'est en fait rien d'autre qu'une liste de vecteurs avec des noms !
+
+Bravo ! Vous venez de faire le tour des bases du langage ![](images/logos/Rlogo.png). Nous allons pouvoir passer à la suite et apprendre à manipuler des données dans des DataFrames !
+
+## Manipuler des données
+
+Dans cette section, nous allons apprendre à charger et manipuler des DataFrame en vue d'effectuer des opérations classiques de gestion de données.
+
+### Charger un DataFrame depuis un fichier
+
+Il sera rarement nécessaire de créer vos DataFrame à la main comme nous L'avons fait dans la section précédente. Le plus souvent, vous disposerez de fichiers contenant vos données et certaines fonctions vous permettrons de les importer dans ![](images/logos/Rlogo.png) directement sous forme d'un DataFrame. Les formats les plus répandus sont : 
 
 * .csv, il s'agit d'un fichier texte dont chaque ligne représente une ligne du tableau de données dont les colonnes sont séparées par un délimiteur (généralement une virgule ou un point-virgule).
 * .dbf, ou fichier dBase, souvent associés à des fichiers d'information géographique ShapeFile,
@@ -310,27 +675,9 @@ Plus rarement, il se peut que vous ayez à charger des fichiers provenant de log
 * .sav, provenant du logiciel SPSS,
 * .dta, provenant du logiciel STATA.
 
-Pour lire la plupart de ces fichiers, nous allons utiliser le package **foreign**, qui a été développé à cette fin. Pour installer un package, vous devez être connecté à internet, en effet, ![](images/logos/Rlogo.png) va accéder au répertoire de packages *CRAN* pour télécharger le package et l'installer sur votre machine. Cette opération est réalisée avec la fonction `install.packages`
+Pour lire la plupart de ces fichiers, nous allons utiliser le package **foreign**, qui a été développé à cette fin. Commencez donc par l'installer. Si vous ne vous souvenez plus comment faire, faites un tour à la section X.
 
-```{r message=FALSE, warning=FALSE, eval=FALSE}
-install.packages("foreign")
-```
-
-Notez qu'une fois que le package est installé, vous n'aurez plus besoin de le refaire. Le package est disponible localement sur votre ordinateur, à moins de le désinstaller explicitement avec la fonction `remove.packages`.
-
-Pour charger le package dans votre session actuelle de ![](images/logos/Rlogo.png) et accéder aux fonctions qu'il propose, il suffit d'utiliser la fonction `library`. Notez que conventionnellement, l'appel des packages se fait au tout début du script que vous rédigez. Rien ne vous empêche de le faire au fur et à mesure de votre code mais vous perdez alors en lisibilité. 
-
-```{r message=FALSE, warning=FALSE}
-library(foreign)
-```
-
-Si vous obtenez un message d'erreur du type : 
-
-<span class="error_message">Error in library(mon_package) : aucun package nommé ‘mon_package’ n'est trouvé</span>
-
-C'est que le package que vous tentez de charger n'est pas encore installé sur votre ordinateur. Dans ce cas, réessayer de l'installer avec la fonction `install.packages`. Si le problème persiste, vérifiez que vous n'avez pas fait de faute de frappe dans le nom du package. Vous pouvez également redémarrer RStudio et réessayer d'installer le package.
-
-Nous allons chagrer quatre fois le même jeu de données qui a été enregistré au format csv, dbf, dta et xlsx. Nous allons également enregistrer le temps nécessaire pour lire chacun de ces fichiers avec la fonction `Sys.time`.
+Nous allons chagrer cinq fois le même jeu de données qui a été enregistré au format csv, dbf, dta, sas7bdat et xlsx. Nous allons également enregistrer le temps nécessaire pour lire chacun de ces fichiers avec la fonction `Sys.time`.
 
 #### Lire un fichier csv
 
@@ -355,9 +702,9 @@ rien de bien compliqué, notez tout de même que :
 * Le paramètre *header* indique si la première ligne (l'entête) du fichier comprend les noms des colonnes du jeu de données. Il arrive que certains fichiers csv soient fournis sans entête, avec le nom et la description des colonnes dans un fichier à part.
 * Le paramètre *stringsAsFactors* permet d'indiquer à ![](images/logos/Rlogo.png) que les colonnes comportant du texte doivent être chargées comme des vecteurs de type texte et nom de type facteur. Nous reviendrons sur cette distinction dans la section XXX.
 
-#### Lire un fichier dbf
+#### Lire un fichier dbase
 
-Pour lire un fichier dbf, nous allons devoir utiliser le package foreign que nous avons installé précédemment : 
+Pour lire un fichier dbase (.dbf), nous allons devoir utiliser le package foreign que nous avons installé précédemment : 
 
 ```{r message=FALSE, warning=FALSE}
 library(foreign)
@@ -409,8 +756,7 @@ cat('les colonnes de df4 sont : ',names(df4),"\n")
 
 #### Lire un fichier xlsx
 
-Lire un fichier excel dans ![](images/logos/Rlogo.png) n'est pas une chose facile. Généralement, nous recommandons d'exporter les fichiers en question au format csv dans un premier temps. Il est cependant possible de directement lire un fichier xlsx avec le package **xlsx**. Ce dernier requiert que le logiciel JAVA soit installé sur votre ordinateur (Windows, Mac ou Linux). Si vous utilisez la version 64 bit de ![](images/logos/Rlogo.png), vous devrez télécharger et installer la version 6
- bit de JAVA. Une fois que ce logiciel tiers est installé, il ne vous reste plus qu'à installer le package **xlsx** (`install.packages("xlsx")`) et à le charger.
+Lire un fichier excel dans ![](images/logos/Rlogo.png) n'est pas une chose facile. Généralement, nous recommandons d'exporter les fichiers en question au format csv dans un premier temps. Il est cependant possible de directement lire un fichier xlsx avec le package **xlsx**. Ce dernier requiert que le logiciel JAVA soit installé sur votre ordinateur (Windows, Mac ou Linux). Si vous utilisez la version 64 bit de ![](images/logos/Rlogo.png), vous devrez télécharger et installer la version 64 bit de JAVA. Une fois que ce logiciel tiers est installé, il ne vous reste plus qu'à installer le package **xlsx** (`install.packages("xlsx")`) et à le charger.
 
 ```{r message=FALSE, warning=FALSE}
 library(xlsx)
@@ -428,7 +774,7 @@ cat('le dataframe df5 a ',nrow(df5),' observations\n')
 cat('les colonnes de df5 sont : ',names(df5),"\n")
 ```
 
-Il est possible de nettement accelérer la vitesse de lecture d'un fichier xlsx en utilisant la fonction `read.xlsx2`. Il faut cependant indiquer à cette derniére le type de données que l'on doit trouver dans chaque colonne. Dans le cas présent, nous savons que les 5 premières colonnes contiennent des données au format texte (character), alors que les 43 autres sont des données numériques (numeric). Pour ces dernières, nous allons utiliser la fonction *rep* afin de ne pas avoir à écrire 43 fois le mot numeric.
+Il est possible de nettement accelérer la vitesse de lecture d'un fichier xlsx en utilisant la fonction `read.xlsx2`. Il faut cependant indiquer à cette dernièere le type de données que l'on doit trouver dans chaque colonne. Dans le cas présent, nous savons que les 5 premières colonnes contiennent des données au format texte (character), alors que les 43 autres sont des données numériques (numeric). Pour ces dernières, nous allons utiliser la fonction `rep` afin de ne pas avoir à écrire 43 fois le mot numeric.
 
 ```{r message=FALSE, warning=FALSE}
 library(xlsx)
@@ -465,7 +811,9 @@ knitr::kable(
 ```
 ### Manipuler un DataFrame
 
-Maintenant que nous savons comment définir et charger un DataFrame, nous allons apprendre à les manipuler.
+Maintenant que nous savons comment charger un DataFrame, nous allons apprendre à les manipuler.
+
+#### Un petit mot sur le tidyverse
 
 Avant d'aller plus loin, il est important d'introduire brièvement un débat actuel dans la communauté ![](images/logos/Rlogo.png). Depuis entre 2010 et 2020 s'est peu à peu imposé sur le devant de la scène le package **tidyverse**. Plus exactement, **tidyverse** est un ensemble de packages, pensés pour faciliter la structuration et la manipulation des données dans ![](images/logos/Rlogo.png). Développé et maintenu par Hadley Wickham, ce package introduit une philosophie et une grammaire spécifiques, qui diffèrent du langage ![](images/logos/Rlogo.png) traditionnel. Une partie de la communauté a pour ainsi dire complètement embracé le **tidyverse** et de nombreux packages en dehors du **tidyverse** ont adopté sa grammaire et sa philosophie. À l'inverse, une autre partie de la communauté est [opposée](https://blog.ephorie.de/why-i-dont-use-the-tidyverse) à cette évolution. On peut résumer les arguments des deux partis avec le tableau suivant : 
 
@@ -495,7 +843,7 @@ df <- read.csv("data/priseenmain/SR_MTL_2016.csv",
 ```
 
 ##### Sélectionner une colonne
-Pour rappel, il est possible d'accéder aux colonnes dans ce DataFrame en utilisant l'opérateur `$ma_colonne` ou les doubles crochets `[["ma_colonne"]]`
+Pour rappel, il est possible d'accéder aux colonnes dans ce DataFrame en utilisant le symbole dollar `$ma_colonne` ou les doubles crochets `[["ma_colonne"]]`
 
 ```{r message=FALSE, warning=FALSE}
 #calcul de la superficie totale de l'Île de Montréal
@@ -559,14 +907,7 @@ df4 <- rename(df4, "population_2016" = "Pop2016",
 
 #### Opérateurs mathématique
 
-Il est possible d'utiliser les colonnes de type numérique pour calculer de nouvelles colonnes. Les opérateurs disponibles sont : 
-
-* `+` pour les additions
-* `-` pour les soustractions
-* `*` pour les multiplications
-* `/` pour les divisions
-* `^` ou `**` pour les puissances
-* `%%` pour le modulus (reste d'une division)
+Il est possible d'utiliser les colonnes de type numérique pour calculer de nouvelles colonnes en utilisant les opérateurs mathématiques vus dans la section X.
 
 Prenons un exemple concret et calculons la densité de population par secteur de recensement dans notre précédent DataFrame et affichons un résumé de cette nouvelle variable.
 
@@ -587,10 +928,10 @@ df$total_maison <- (df$MaisonIndi + df$MaisJumule + df$MaisRangee + df$AutreMais
 df$total_apt <- (df$AppDuplex + df$App5Moins + df$App5Plus)
 df$ratio_maison_apt <- df$total_maison / df$total_apt
 
-summary(df$pop_density_2016)
+summary(df$ratio_maison_apt)
 ```
 
-Ce qu'il faut retenir ici, c'est que ![](images/logos/Rlogo.png) va appliquer le calcul à chaque ligne de votre jeu de données et stocker le résultat dans une nouvelles colonne. On appelle cela du calcul vectorisé : toute la colonne est calculée en une seule fois. ![](images/logos/Rlogo.png) est optimisé pour faire du calcul vectoriel.
+Ce qu'il faut retenir ici, c'est que ![](images/logos/Rlogo.png) va appliquer le calcul à chaque ligne de votre jeu de données et stocker le résultat dans une nouvelles colonne. On appelle cela du calcul vectoriel : toute la colonne est calculée en une seule fois. ![](images/logos/Rlogo.png) est optimisé pour faire du calcul vectoriel.
 
 #### fonctions mathématique
 
@@ -604,11 +945,13 @@ Ce qu'il faut retenir ici, c'est que ![](images/logos/Rlogo.png) va appliquer le
 * `round` : arrondit les valeurs d'un vecteur
 * `ceiling`, `floor` : arrondit à l'unité supérieure ou inférieure les valeurs d'un vecteur
 * `sin`,`asin`,`cos`,`acos`,`tan`,`atan` : les fonctions de trigonométrie classiques
+* `cumSum` : calcule la somme cumulative des valeurs d'un vecteur
 
-Ces fonctions sont des fonctions vectorielles. Elles s'appliquent à tous les éléments d'un vecteur. Si vous vecteur en entrée comprends 5 valeurs, le vecteur en sortie comprendra 5 valeurs également.
+Ces fonctions sont des fonctions vectorielles. Elles s'appliquent à tous les éléments d'un vecteur. Si votre vecteur en entrée comprends 5 valeurs, le vecteur en sortie comprendra 5 valeurs également.
+
+À l'inverse, les fonctions suivantes s'appliquent directement à l'ensemble d'un vecteur et ne vont renvoyer qu'une seule valeur.
 
 * `sum` : calcule la somme des valeurs d'un vecteur
-* `cumSum` : calcule la somme cumulative des valeurs d'un vecteur
 * `prod` : calcule le produit des valeurs d'un vecteur
 * `min`, `max` : renvoit les valeurs maxmimales et minimale d'un vecteur
 * `mean`, `median` : renvoit la moyenne et la médiane d'un vecteur
