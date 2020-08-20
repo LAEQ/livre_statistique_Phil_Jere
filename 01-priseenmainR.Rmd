@@ -198,7 +198,7 @@ Maintenant que nous avons fait le tour de l'environnement de travail, nous allon
 
 ## Les bases du langage ![](images/logos/Rlogo.png)
 
-![](images/logos/Rlogo.png) est un langage de programmation. Il vous permet de communiquer avec votre ordinateur pour lui donner des tâches à accomplir. Dans cette section, nous allons couvrir les bases de ce langage.
+![](images/logos/Rlogo.png) est un langage de programmation. Il vous permet de communiquer avec votre ordinateur pour lui donner des tâches à accomplir. Dans cette section, nous allons couvrir les bases de ce langage. Cette section d'introduction est présente dans tous les manuels sur ![](images/logos/Rlogo.png). Elle peut paraître arride à première vue car nous ne réalisons pas d'analyse à proprement parler. Gardez cependant en tête qu'au moins les deux tiers de votre temps en analyse de données consistera à nettoyer et préparer les données en vue de l'analyse. Bien maîtriser les bases du langage peut donc vous faire gagner un temps précieux. Nous vous recommandons donc de faire une première lecture de ce chapitre pour comprendre quelles manipulations vous pouvez effectuer avec ![](images/logos/Rlogo.png), et éventuellement revenir sur les sections nécessaires lorsque vous en aurez besoin.
 
 ### Hello World ! {#sect13}
 
@@ -368,29 +368,39 @@ Nous avons vu que les fonctions nous permettent de manipuler des objets. Nous po
 
 Les opérateur mathématiques permettent d'effectuer du calcul avec des données de type numérique.
 
-Opérateur   |     Description   | Syntaxe      | Résultat  
------------ | ----------------- | ----------   | ---------
-`+`         | Addition          | `4 + 4`      | 8
-`-`         | Soustraction      | `4 - 3`      | 1
-`*`         | Multiplication    | `4 * 3`      | 12
-`/`         | Division          | `12 / 4`     | 3
-`^`         | Exponentiel       | `4 ^ 3`      | 64
-`**`        | Exponentiel       | `4 ** 3`     | 64
-`%%`        | Reste de division | `15.5 %% 2`  | 1.5
-`%/%`       | Division entière  | `15.5 %/% 2` | 7
+```{r tableOperateurMath, echo=FALSE, message=FALSE, warning=FALSE}
+df <- data.frame(
+        Operateur = c("`+`","`-`","`*`","`/`", "`^`", "`**`", "`%%`", "`%/%`"),
+        Description = c("Addition", 'Soustraction', 'Multiplication', 'Division', 'Exponentiel', 'Exponentiel', 'Reste de division', 'Division entière'),
+        Syntaxe = c("`4 + 4`", "`4 - 3`", "`4 * 3`", "`12 / 4`", "`4 ^ 3`", '`4 ** 3`', "`15.5 %% 2`", "`15.5 %/% 2`"), 
+        Resultat = c(8,1,12,3,64,64,1.5,7))
+
+knitr::kable(
+  df, booktabs = TRUE,
+  escape = FALSE,
+  col.names = c("Opérateur","Description","Syntaxe","Résultat"),
+  caption = 'Opérateurs mathématique'
+)
+```
 
 #### Opérateur relationnels
 
 Les opérateurs relationnels permettent de vérifier des conditions dans ![](images/logos/Rlogo.png). Ils renvoient un booléen, `TRUE` si la condition est vérifiée et `FALSE` si ce n'est pas le cas.
 
-Opérateur   |     Description   | Syntaxe    | Résultat  
------------ | ----------------- | ---------- | ---------
-`==`        | Égalité           | `4 == 4`   | TRUE
-`!=`        | Différence        | `4 != 4`   | FALSE
-`>`         | Est supérieur     | `5 > 4`    | TRUE
-`<`         | Est inférieur     | `5 < 4`    | FAlSE
-`>=`        | Est supérieur ou égal     | `5 >= 4`    | TRUE
-`<=`        | Est inférieur ou égal     | `5 <= 4`    | FALSE
+```{r tableOperateurRela, echo=FALSE, message=FALSE, warning=FALSE}
+df <- data.frame(
+        Operateur = c("`==`","!=","`>`","`<`", "`>=`", "`<=`"),
+        Description = c("Égalité", 'Différence', 'Est supérieur ', 'Est inférieur', 'Est supérieur ou égal', 'Est inférieur ou égal'),
+        Syntaxe = c("`4 == 4`", "`4 != 4`", "`5 > 4`", "`5 < 4`", "`5 >= 4`", '`5 <= 4`'), 
+        Resultat = c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE))
+
+knitr::kable(
+  df, booktabs = TRUE,
+  escape = FALSE,
+  col.names = c("Opérateur","Description","Syntaxe","Résultat"),
+  caption = 'Opérateurs relationnels'
+)
+```
 
 #### Opérateur logiques
 
@@ -402,11 +412,21 @@ Les opérateurs logiques permettent de combiner plusieurs conditions :
 
 * L'opérateur **NOT** permet d'inverser une condition. Ainsi NOT TRUE est FALSE et NOT FALSE est TRUE.
 
-Opérateur   |     Description   | Syntaxe    | résultat  
------------ | ----------------- | ---------- | ---------
-`&`         | ET                | `TRUE & FALSE`   | FALSE
-`|`         | OU        | `TRUE | FALSE`   | TRUE
-`!`         | NOT     | `! TRUE`    | FALSE
+
+```{r tableOperateurLogi, echo=FALSE, message=FALSE, warning=FALSE}
+df <- data.frame(
+        Operateur = c("`&`","|","`!`"),
+        Description = c("ET", "OU", "NOT"),
+        Syntaxe = c("`TRUE & FALSE`", "`TRUE | FALSE`", "`! TRUE`"), 
+        Resultat = c(FALSE, TRUE, FALSE))
+
+knitr::kable(
+  df, booktabs = TRUE,
+  escape = FALSE,
+  col.names = c("Opérateur","Description","Syntaxe","Résultat"),
+  caption = 'Opérateurs relationnels'
+)
+```
 
 Prenons le temps pour un rapide exemple : 
 
@@ -703,7 +723,7 @@ rien de bien compliqué, notez tout de même que :
 * Lorsque vous chargez un fichier csv, vous devez connaître le **séparateur**, il s'agit du caractère utilisé pour délimiter les colonnes de votre csv. Dans notre cas il s'agit d'une simple virgule : ",", mais ça pourrait tout aussi bien être un point virgule ";" une tabulation "    " etc.
 * Vous devez également connaître le symbole utilisé pour le décimales. Neuf fois sur dix, ce sera le point ".", mais il se peut que certains logiciel en configuration française vous exportes des fichers csv avec des virgules "," comme symbole de décimale.
 * Le paramètre *header* indique si la première ligne (l'entête) du fichier comprend les noms des colonnes du jeu de données. Il arrive que certains fichiers csv soient fournis sans entête, avec le nom et la description des colonnes dans un fichier à part.
-* Le paramètre *stringsAsFactors* permet d'indiquer à ![](images/logos/Rlogo.png) que les colonnes comportant du texte doivent être chargées comme des vecteurs de type texte et nom de type facteur. Nous reviendrons sur cette distinction dans la section XXX.
+* Le paramètre *stringsAsFactors* permet d'indiquer à ![](images/logos/Rlogo.png) que les colonnes comportant du texte doivent être chargées comme des vecteurs de type texte et nom de type facteur.
 
 #### Lire un fichier dbase
 
@@ -1236,7 +1256,7 @@ nrow(iris_virginica1) == nrow(iris_virginica2)
 ```
 Vous pouvez utilisez dans les deux cas tous les opérateurs vus dans la section X. L'enjeu est d'arriver à un vecteur booleen final permettant de d'identifier les observations à conserver.
 
-#### Sous sélectionner des colonnes
+##### Sous sélectionner des colonnes
 
 Nous avons déjà vu comment sélectionner des colonnes en utilisant leur nom ou leur index dans la section X. Ajoutons un cas spécial ici où nous souhaiterions sélectionner des colonnes selon une condition. Par exemple, nous pourrions vouloir ne garder que les colonnes dans lesquelles le mot *Length* apparait. Pour sela, nous auront besoin de la fonction `grepl`, permettant de déterminer si des caractères sont présents dans un chaîne de caractère.
 
@@ -1253,19 +1273,135 @@ print(names(iris_2))
 Il est possible d'obtenir ce résultat en une seule ligne de code, mais elle est un peu moins lisible.
 
 ```{r message=FALSE, warning=FALSE}
-iris2 <- iris[names(iris)[grepl("Length",nom_cols, fixed = TRUE)]]
+iris2 <- iris[names(iris)[grepl("Length",names(iris), fixed = TRUE)]]
 ```
 
-	
-	0.4 importer et manipuler des données
-		créer un dataframe
-		charger un dataframe
-		extraire une colonne ⇒ vecteur
-		opérateur mathématique
-		subsetting et opérateur logique
-		fusion, aggregation, jointure
-		créer des nouvelles colonnes (exemple de densité, % etc.)
-		subsetting
-		
-		r language essential (voir chap1 de introductory statistics with R)
-	0.5 la syntaxe des graphiques (philosophie de ggplot2)
+##### Sélectionner des colonnes et des lignes
+
+Nous avons vu qu'avec les crochets, nous pouvons extraires les colonnes et les lignes d'un *DataFrame*. Il est possible de combiner les deux opérations en même temps. Pour cela, il faut indiquer en premier les indices ou la condition permettant de sélectionner une ligne, puis les indices ou la condition pour sélectionner les colonnes : `[index_lignes , index_colonnes]`. Commençons par sélectionner les trois premières colonnes et les cinq première ligne du jeu de données iris : 
+
+```{r message=FALSE, warning=FALSE}
+iris_5x3 <- iris[c(1,2,3,4,5),c(1,2,3)]
+print(iris_5x3)
+```
+
+Combinons nos deux exemples précédents pour sélectionner uniquement les lignes avec des fleurs de l'espère virginica, et les colonnes avec le mot Length.
+
+```{r message=FALSE, warning=FALSE}
+iris_virginica3 <- iris[iris$Species == "virginica",
+                       names(iris)[grepl("Length",names(iris), fixed = TRUE)]]
+head(iris_virginica3, n=5)
+```
+
+#### Combiner des *DataFrame*
+
+Terminons cette section avec la combinaison de *DataFrames*. Il existe deux façons de combiner des *DataFrames* : par ajout ou par jointure.
+
+##### Combiner des *DataFrame* par ajout
+
+Ajouter deux *DataFrames* peut se faire en fonction de leurs colonnes, ou en fonction de leur lignes. Dans ces deux cas, on utilisera respectivement les fonction `cbind` et `rbind`. La figure \@ref(fig:fig016) résume graphiquement le fonctionnement des deux fonctions.
+
+```{r fig016, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Concaténation de DataFrames",  out.width='30%'}
+knitr::include_graphics('images/introduction/rbind_cbind.png', dpi = NA)
+```
+
+Pour que `cbind` fonctionne, il faut que les deux *DataFrames* qui lui sont passés aient le même nombre de lignes. Pour rbind, les deux *DataFrames* doivent avoir le même nombre de colonnes.
+
+Prenons à nouveau comme exemple le jeu de données iris. Nous allons commencer par le séparer en trois sous jeu de données comprenant chacun une espère d'iris. Nous allons ensuite en recombiner deux avec la fonctions `rbind`.
+
+```{r message=FALSE, warning=FALSE}
+iris1 <- subset(iris, iris$Species == "virginica")
+iris2 <- subset(iris, iris$Species == "versicolor")
+iris3 <- subset(iris, iris$Species == "setosa")
+
+iris_comb <- rbind(iris2,iris3)
+```
+
+Nous pourrions aussi extraire dans deux *DataFrames* les colonnes comprenant le mot Length et le mot Width, puis les recombiner.
+
+```{r message=FALSE, warning=FALSE}
+iris1 <- iris[names(iris)[grepl("Length",names(iris), fixed = TRUE)]]
+iris2 <- iris[names(iris)[grepl("Width",names(iris), fixed = TRUE)]]
+
+iris_comb <- cbind(iris1,iris2)
+names(iris_comb)
+```
+##### Joindre des *DataFrame*
+
+Une jointure est une opération un peu plus complexe qu'un simple ajout. L'idée est d'associer des informations de plusieurs *DataFrames* en utilisant une colonne conjointe (appelée une clef) aux deux jeux de données. On distingue plusieurs type de jointures : 
+
+* Les jointures internes permettant de combiner les éléments communs entre un DataFrame A et B
+* La jointure complète permettant de combiner les éléments présents dans A ou B
+* La jointure à gauche, permettant de ne conserver que les éléments présents dans A même s'ils ne trouvent pas leur correspondance dans B.
+
+Ces trois jointures sont présentées à la figure \@ref(fig:fig016). Dans les trois cas, la colonne commune se nomme *id*.
+
+```{r fig017, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Jointure de DataFrames",  out.width='30%'}
+knitr::include_graphics('images/introduction/merging.png', dpi = NA)
+```
+
+Vous noterez que les deux dernière jointures peuvent produire des valeurs manquantes. Pour effectuer ces opérations, il est possible d'utiliser la fonction `merge`. Prenons un exemple simple à partir d'un petit jeu de données.
+
+```{r message=FALSE, warning=FALSE}
+authors <- data.frame(
+    name = c("Tukey", "Venables", "Tierney", "Ripley", "McNeil", "Apparicio"),
+    nationality = c("US", "Australia", "US", "UK", "Australia", "Canada"),
+    retired = c("yes", rep("no", 5)))
+books <- data.frame(
+    aut = c("Tukey", "Venables", "Tierney", "Ripley", "Ripley", "McNeil","Wickham"),
+    title = c("Exploratory Data Analysis",
+              "Modern Applied Statistics ...",
+              "LISP-STAT",
+              "Spatial Statistics", "Stochastic Simulation",
+               "Interactive Data Analysis", "R for Data Science"))
+```
+
+Nous avons donc deux *DataFrames*, le premier décrivant des livres et le second des auteurs. Effectuons une première jointure interne afin de savoir pour chaque livre la nationnalité de son auteurs et si ce dernier est à la retraite.
+
+```{r message=FALSE, warning=FALSE}
+df1 <- merge(books, authors, #les deux DataFrames 
+             by.x = "aut", by.y = 'name', #les noms des colonnes de jointures
+             all.x = FALSE, all.y = FALSE)
+
+print(df1)
+```
+Cette jointure est interne car les deux paramètres *all.x* et *all.y* ont pour valeur `FALSE`. Ainsi, nous indiquons à la fonction que noue ne souhaitons ni garder tous les éléments du premier DataFrame, ni tous les éléments du second, mais uniquement les éléments présents dans les deux. Vous noterez ainsi que le livre "R for Data Science" n'est pas présent dans le jeu de données final car son auteur "Wickham" ne fait pas partie du *DataFrame* authors. De même, l'auteur "Apparicio" n'apparaît pas dans la jointure car aucun livre dans le *DataFrame* books n'a été écrit par cet auteur.
+
+Pour conserver tous les livres, nous pouvons effectuer une joiture à gauche en renseignant `all.x = TRUE`. Nous allons ainsi forcer la fonction à garder tous les livres et mettre des valeurs vides aux informations manquantes des auteurs.
+
+```{r message=FALSE, warning=FALSE}
+df2 <- merge(books, authors, #les deux DataFrames 
+             by.x = "aut", by.y = 'name', #les noms des colonnes de jointures
+             all.x = TRUE, all.y = FALSE)
+
+print(df2)
+```
+
+Et pour garder tous les livres et tous les auteurs, nous pouvons faire une jointure complète en indiquant `all.x = TRUE` et `all.y = TRUE`.
+
+```{r message=FALSE, warning=FALSE}
+df3 <- merge(books, authors, #les deux DataFrames 
+             by.x = "aut", by.y = 'name', #les noms des colonnes de jointures
+             all.x = TRUE, all.y = TRUE)
+
+print(df3)
+```
+## Conclusion et ressources pertinentes
+Voilà qui conclue ce chapitre sur les bases du langage ![](images/logos/Rlogo.png). Vous avez maintenant les bases nécessaires pour commencer à travailler. N'hésitez pas à revenir sur les différentes sous-sections au besoin !
+
+Pour aller plus loin dans l'apprentissage du langage, vous pouvez également vous plonger dans la section R AVANCÉ. Cependant, nous vous recommandons de faire vos premiers pas avec cette base avant de vous lancer dans cette partie davantage orientée programmation. Voici également quelques ressouces pertinentes qui pourraient vous être utiles : 
+
+
+```{r tableRessources, echo=FALSE, message=FALSE, warning=FALSE}
+df <- data.frame(
+        Ressource = c("[Rbloggers](https://www.r-bloggers.com){target='_blank'}","[CRAN packages by date](https://cran.r-project.org/web/packages/available_packages_by_date.html){target='_blank'}", "[Introduction à R et au TidyVerse](https://juba.github.io/tidyverse/index.html){target='_blank'}", "[Numyard](https://www.youtube.com/user/TheLearnR/featured){target='_blank'}", "[Cheasheets](https://rstudio.com/resources/cheatsheets){target='_blank'}"), 
+        Description = c("Un recueil de nombreux blogs parlant de R, parfait pour être tenu au courant des nouveautés et faire des découvertes", "Les derniers packages publiés sur CRAN, permet de garder un oeil sur les nouvelles fonctionnalités de ses packages préférés", "Une excellente ressource en français pour en apprendre plus sur le Tidyverse", "Une chaîne youtube pour revoir les bases de R en vidéo", "Des feuilles de triches résumant les fonctionnalités de nombreux packages"))
+
+knitr::kable(
+  df, booktabs = TRUE,
+  col.names = c("Ressource","Description"),
+  caption = 'Ressources pertinente pour en apprendre plus sur R',
+  escape = FALSE
+)
+```
+
