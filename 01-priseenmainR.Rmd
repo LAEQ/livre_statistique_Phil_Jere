@@ -575,8 +575,6 @@ mon_array <- array(c(mat1, mat2, mat3), dim = c(5,5,3))
 print(mon_array)
 ```
 
-BONHOMME SOURIRE OU VELO !!!
-
 
 #### *DataFrames*
 
@@ -964,7 +962,7 @@ Ces fonctions sont des fonctions vectorielles. Elles s'appliquent à tous les é
 
 #### fonctions pour manipuler du texte
 
-En plus des données numérique, vous aurez à travailler avec des données textuelles. Le **tidyverse** avec le *package* **stringr** offre des fonctions très intéressantes pour manipuler du texte. Pour un aperçu de toutes les fonctions offertes par **stringr**, vou spouvez référer à sa [Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf). Commençons avec un DataFrame assez simple comprenant des adresses et des noms de personnes.
+En plus des données numérique, vous aurez à travailler avec des données textuelles. Le **tidyverse** avec le *package* **stringr** offre des fonctions très intéressantes pour manipuler ce type de donnée. Pour un aperçu de toutes les fonctions offertes par **stringr**, vous pouvez référer à sa [Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf). Commençons avec un DataFrame assez simple comprenant des adresses et des noms de personnes.
 
 ```{r message=FALSE, warning=FALSE}
 library(stringr)
@@ -981,32 +979,34 @@ Pour harmoniser ce dataframe, nous allons dans un 1er temps harmoniser les majus
 
 ```{r message=FALSE, warning=FALSE}
 df$noms_corr <- str_to_title(df$noms)
-df$noms_corr
+print(df$noms_corr)
 ```
 
 On pourrait également tout mettre en minuscule ou tout en majuscule.
 ```{r message=FALSE, warning=FALSE}
 df$noms_min <- tolower(df$noms)
 df$noms_maj <- toupper(df$noms)
-df$noms_min
-df$noms_maj
+print(df$noms_min)
+print(df$noms_maj)
 ```
 
 ##### Remplacer du texte
 
-Dans les adresses, nous avons des caractères accentués. Ce type de caractère peut poser des problèmes d'encodage et nous pourrions décider des les remplacer par des caractères simples avec la fonction `str_replace_all`.
+Dans les adresses, nous avons des caractères accentués. Ce type de caractère pose régulièrement des problèmes d'encodage et nous pourrions décider de les remplacer par des caractères simples avec la fonction `str_replace_all`.
 
 ```{r message=FALSE, warning=FALSE}
 df$adresses_1 <- str_replace_all(df$adresses,'é','e')
+print(df$adresses_1)
 ```
 
-Nous pouvons utiliser la même fonction pour remplacer les St par Saint et les Blvd par Boulevard.
+Nous pouvons utiliser la même fonction pour remplacer les *St* par Saint et les *Blvd* par Boulevard.
 
 ```{r message=FALSE, warning=FALSE}
 df$adresses_2 <- str_replace_all(df$adresses_1,' St ',' Saint ')
 df$adresses_3 <- str_replace_all(df$adresses_2,' Blvd ',' Boulevard ')
-df$adresses_3
+print(df$adresses_3)
 ```
+
 ##### Découper du texte
 
 Il est parfois nécessaire de découper du texte pour en extraire des éléments. On doit alors choisir un caractère de découpage. Dans notre cas, on pourrait vouloir extraire les numéros civiques des addresse, en utilisant le premier espace comme caractère de découpage. Ce qui est faisables avec la fonction `str_split_fixed`.
@@ -1015,7 +1015,7 @@ Il est parfois nécessaire de découper du texte pour en extraire des éléments
 df$num_civique <- str_split_fixed(df$adresses_3, ' ',n=2)[,1]
 ```
 
-Pour être exact, sachez que dans notre example, la fonction `str_split_fixed` renvoie deux colonnes de texte : une avec le texte avec le 1er espace (donc le numéros civique) et une avec le reste du texte. En ajoutant `[,1]` à la fin, nous indiquons que nous souhaitons seulement garder la 1ère des deux colonnes. La deuxième est donc perdue, mais nous souhaitions de toute façon pas la garder.
+Pour être exact, sachez que dans notre example, la fonction `str_split_fixed` renvoie deux colonnes de texte : une avec le texte avec le 1er espace (donc le numéros civique) et une avec le reste du texte. Le nombre de colonne est contrôlé par l'argument `n`. Si `n = 1`, la fonction ne fait aucun découpage, avec `n = 2` la fonction va découper en deux partie le texte avec la première occurence du délimiteur, et ainsi de suite.  En ajoutant `[,1]` à la fin, nous indiquons que nous souhaitons seulement garder la 1ère des deux colonnes.
 
 ##### Coller du texte
 
@@ -1023,21 +1023,240 @@ Pour être exact, sachez que dans notre example, la fonction `str_split_fixed` r
 
 ```{r message=FALSE, warning=FALSE}
 df$texte_complet <- paste(df$noms_corr, df$adresses_3, sep = " : ")
-df$texte_complet
+print(df$texte_complet)
 ```
 
-Le paramètre *sep* permet de choisir les caractères à intercaler entre les éléments  copier. Notez qu'il est possible de coller plus que deux éléments ensembles : 
+Le paramètre `sep` permet de choisir les caractères à intercaler entre les éléments à coller. Notez qu'il est possible de coller plus que deux éléments ensembles : 
 
 ```{r message=FALSE, warning=FALSE}
 df$ville <- c('Montreal','Montreal','Montreal','Montreal')
 paste(df$noms_corr, df$adresses_3, df$ville, sep = "  ")
 ```
+
+#### Manipuler des colonnes de type date
+
+Nous avons vu que les principaux types de données dans ![](images/logos/Rlogo.png) sont le numérique, le textuel, le booléen et le facteur. Il existe de types supplémentaires, introduit par différent packages. Nous introduisons ici les types date et temps (date and time), qui permettent de représenter des moments et des durées. Pour les manipuler, nous avons une préférence pour le *package* **lubridate** du **tidyverse**. Nous allons travailler avec un jeu de données ouvertes de la ville de Montréal représentant les accidents de la route incluant au moins un vélo aprés le premier janvier 2017.
+
+```{r message=FALSE, warning=FALSE}
+accidents_df <- read.csv("data/priseenmain/accidents.csv",
+                         sep = ",")
+names(accidents_df)
+```
+
+Nous avons donc trois colonnes, la première représentant l'heure de l'accident, la seconde la date de l'accident et la dernière le nombre de victime.
+
+##### Du texte à la date
+
+Actuellement, les colonnes *HEURE_ACCDN* et *DT_ACCDN* sont au format texte. Nous pouvons afficher quelques lignes du jeu de données avec la fonction `head` pour voir comment elles ont été saisies.
+
+```{r message=FALSE, warning=FALSE}
+head(accidents_df, n = 5)
+```
+
+Nous avons un peu de nettoyage à faire : les heures sont indiquées comme des préiode de une heure. Nous allons utiliser la fonction str_split_fixed du *package* **stringr** vue précédemment pour ne garder que la première partie de l'heure (avant le tiret). Nous allons ensuite concaténer l'heure et la date avec la fonction `paste`, puis nous pourrons convertir l'ensemble en un objet date-time.
+
+```{r message=FALSE, warning=FALSE}
+library(lubridate)
+
+# étape 1 : découper la colonne Heure_ACCDN
+accidents_df$heure <- str_split_fixed(accidents_df$HEURE_ACCDN, "-", n=2)[,1]
+
+# étape 2 : concaténer l'heure et la date
+accidents_df$date_heure <- paste(accidents_df$DT_ACCDN, 
+                                 accidents_df$heure,
+                                 sep = ' ')
+
+# étape 3 : convertir au format datetime
+accidents_df$datetime <- as_datetime(accidents_df$date_heure,
+                                     format = "%Y/%m/%d %H:%M:%S")
+```
+
+Pour effectuer la conversion, nous avons utilisé la fonction `as_datetime` du package **lubridate**. Elle prend comme paramètre un vecteur de texte et une indication du format de ce vecteur de texte. En effet, il y a de nombreuses façon de spécifier une date et une heure et l'argument *format* permet de spécifier quelle nomenclature nous utilisons. Dans notre cas une date est structurée ainsi : 
+`année/mois/jour heure:minute:seconde`, ce qui se traduit par le format `%Y/%m/%d %H:%M:%S`.
+
+* %Y signifie une année indiquée avec 4 caractères : 2017
+* %m signifie un mois, indiqué avec deux caractères : 01, 02, 03, ... 12
+* %d signifie un jour, indiqué avec deux caractères : 01, 02, 03, ... 31
+* %H signifie une heure, au format 24 heures avec deux caractères : 00, 02, ... 23
+* %M signifie des minutes indiquées avec deux caractères : 00, 02, ... 59
+* %S signifie des secondes, indiquées avec deux caractères : 00, 02, ... 59
+
+Notez que les caractères séparant les années, jours, heures, etc. sont aussi à indiquer dans le format. Dans notre cas, nous utilisions des `/` pour séparer les éléments de la date, des `:` pour l'heure, et un espace pour séparer la date et l'heure.
+
+Il existe d'autre nomenclatures pour spécifier un format *datetime* si vous avez par exemple des mois renseignés par leur nom, l'indication AM-PM, etc. Vous pouvez vous référez à la documentation de la fonction `strptime` (`help(strptime)`) pour trouver toutes les nomenclatures. Bien évidemment, il est **nécessaire** que toutes les dates de votre colonne soient renseignées dans le même format. Sinon, la fonction renverra des valeurs `NA` aux endroits où elle a échoué à lire le format.
+
+Après toutes ces opérations, rejettons un oeil à notre *DataFrame*.
+
+```{r message=FALSE, warning=FALSE}
+head(accidents_df, n = 5)
+```
+##### Extraire des informations d'une date
+
+Avec notre nouvelles colonne `datetime`, nous sommes en mesure d'extraire des informations intéressantes comme : 
+
+Le nom du jour de la semaine avec la fonction `weekdays`
+```{r message=FALSE, warning=FALSE}
+accidents_df$jour <- weekdays(accidents_df$datetime)
+```
+
+La période de la journée avec les fonctions `am` et `pm` 
+```{r message=FALSE, warning=FALSE}
+accidents_df$AM <- am(accidents_df$datetime)
+accidents_df$PM <- pm(accidents_df$datetime)
+
+head(accidents_df[c("jour", "AM", "PM")], n=5)
+```
+
+Il est aussi possible d'accéder aux sous éléments d'un datetime année, mois, jour, heure, minute, seconde avec les fonctions `year()`, `month()`,`day()`, `hour()`,  `minute()` et `second()`.
+
+##### Calculer une durée entre deux datetime
+
+Une autre utilisation intéressante du format datetime est de calculer des différences de temps. Par exemple, nous pourrions utiliser le nombre de minutes écoulées depuis 07:00 AM comme une variable dans une analyse visant à déterminer le moment critique des accidents durant l'heure de point du matin.
+
+Pour cela, nous devons créer un datetime de référence en concaténant la date de chaque observation, et le temps 07:00:00 qui sera notre point de départ.
+
+```{r message=FALSE, warning=FALSE}
+accidents_df$date_heure_07 <- paste(accidents_df$DT_ACCDN, 
+                                 '07:00:00',
+                                 sep = ' ')
+accidents_df$ref_datetime <- as_datetime(accidents_df$date_heure_07,
+                                     format = "%Y/%m/%d %H:%M:%S")
+```
+Il ne nous reste plus qu'à calculer la différence de temps entre la vrai colonne *datetime* et notre temps de référence *ref_datetime*.
+
+```{r message=FALSE, warning=FALSE}
+accidents_df$diff_time <- difftime(accidents_df$datetime,
+                                   accidents_df$ref_datetime,
+                                   units = 'min')
+```
+
+Notez qu'ici la colonne *diff_time* est d'un type spécial : une différence temporelle (difftime). Il faut encore la convertir au format numérique pour pour voir l'utiliser avec la fonction `as.numeric`.
+
+Pour le plaisir, réalisons rapidement un histogramme avec la fonction `hist` pour regarder cette variable d'écart de temps !
+
+```{r fig015, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Répartition temporelle des accidents à vélo",  out.width='65%'}
+
+accidents_df$diff_time_num <- as.numeric(accidents_df$diff_time)
+
+hist(accidents_df$diff_time_num, breaks = 50)
+
+```
+
+On observe clairement deux pics, un premier entre 0 et 100 (donc entre 07:00 08:30 environ) et un second plus important entre 550 et 650 (entre 16:00 et 17:30 environ) ce qui correspond sans surprise aux heures de points. Il est intéressant de noter que plus d'accidents se produisent à l'heure de pointe du soir.
+
+#### Recoder des variables
+
+Recoder des variables signifie changer la valeur d'une variable selon une condition afin d'obtenir une nouvelle variable. Si nous reprenons notre example précédent avec les accidents à vélo, nous pourrions créer une nouvelle colonne nous indiquant si l'accident a eu lieu en heure de pointe ou hors heure de pointe. On obteniendrait ainsi une nouvelle variable avec seulement deux catégories, plutôt que la variable numérique originale. Nous pourrions aussi définir quatre cas avec l'heure de pointe du matin, l'heure de pointe du soir, le reste de la journée et la nuit.
+
+##### Le cas binaire avec ifelse
+
+Si l'on ne souhaite créer que deux catégorie, le plus simple est de passer par la fonction `ifelse`. Cette fonction va évaluer une condition (SECTIOn X) pour chaque ligne d'un DataFrame et produir un nouveau vecteur. Créons donc une variable binaire indiquant si un accident a eu lieu en heure de pointe ou hors heure de pointe. Nous allons devoir évaluer les conditions suivantes : 
+
+Est-ce que l'accident a eu lieu entre 07:00 (0) **ET** 09:00 (120), **OU** est ce que l'accident a eu lieu entre 16:30 (570) **ET** 18:30 (690).
+
+```{r message=FALSE, warning=FALSE}
+Cond1 <- accidents_df$diff_time_num >= 0 & accidents_df$diff_time_num <= 120
+Cond2 <- accidents_df$diff_time_num >= 570 & accidents_df$diff_time_num <= 690
+
+accidents_df$moment_bin <- ifelse(Cond1 | Cond2,
+                                  "en heure de pointe",
+                                  "hors heure de point")
+```
+
+Comme vous pouvez le constater, la fonction `ifelse` nécessite trois arguments : 
+
+* Une condition, pouvant être `TRUE` ou `FALSE`,
+* La valeur à renvoyer si la condition est `TRUE`
+* La valeur à renvoyer si la condition est `FALSE`
+
+Avec la fonction `table`, nous pouvons rapidement compter le nombre de résultat dans chaque catégorie : 
+
+```{r message=FALSE, warning=FALSE}
+table(accidents_df$moment_bin)
+```
+Les heures de pointes représentent quatre heures de la journée, ce qui nous laisse neuf heures hors heure de pointe entre 07:00 et 20:00.
+
+```{r message=FALSE, warning=FALSE}
+# ration d'accident en heure de pointe
+(841 / 2414) / (4 / 13)
+
+#ration d'accident hors heure de point
+(1473 / 2414) / (9 / 13)
+```
+En rapportant les accidents au durée des deux période, on observe une sur-représentation des accidents impliquant un vélo pendant les heures de points d'environs 13% comparativement au périodes hors des heures de pointes.
+
+##### Le cas multiple avec la fonction case_when
+
+Lorsque l'on souhaite créer plus que deux catégories, il est possible soit d'enchaîner plusieurs fonctions `ifelse` (ce qui produit un code plus long et moins lisible), soit d'utiliser la fonction `case_when` provenant du *package* **dplyr** du **tidyverse**. Reprenons notre example précédent et créons quatre catégories : 
+
+* En heure de pointe du matin
+* En heure de pointe du soir
+* Le reste de la journée (entre 07:00 et 20:00)
+* De nuit (entre 21:00 et 07:00)
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+
+accidents_df$moment_multi <- case_when(
+  accidents_df$diff_time_num >= 0 & accidents_df$diff_time_num <= 120 ~ "pointe AM",
+  accidents_df$diff_time_num >= 570 & accidents_df$diff_time_num <= 690 ~ "pointe PM",
+  accidents_df$diff_time_num > 690 & accidents_df$diff_time_num < 780 ~ "journee",
+  accidents_df$diff_time_num > 120 & accidents_df$diff_time_num < 570 ~ "journee",
+  accidents_df$diff_time_num < 0 | accidents_df$diff_time_num >= 780 ~ "nuit"
+)
+
+table(accidents_df$moment_multi)
+```
+La syntaxe de cette fonction est un peu particulière. Elle accepte un nombre illimité d'argument. Chaque argument est composé d'une condition, et d'une valeur à renvoyer si la condition est vrai, ces deux éléments étant relié par le symbole `~`. Notez que toutes les évaluations sont effectuées dans l'odre des arguments. En d'autres termes, la fonction va d'abord tester la première condition et assigner ces valeurs, puis recommencer pour les prochaines conditions. Ainsi, si une une même observation (ligne du tableau de données) obtient `TRUE` à plusieurs conditions, elle obtiendra la valeur de la dernière condition qu'elle a validée.
+
 #### Sous sélection d'un DataFrame
 
+Dans cette section, nous allons explorer comme extraire des sous-parties d'un *DataFrame*. Il est possible de sous-sélectionner des lignes et des colonnes en se basant sur des conditions ou leurs index. Pour cela, nous allons utiliser un jeu de données fourni avec ![](images/logos/Rlogo.png) : le jeu de données **iris** décrivant des fleurs du même nom.
 
-toupper ; tolower ; gsub ; separate ; paste  
+```{r message=FALSE, warning=FALSE}
+data("iris")
+dim(iris)
+```
+##### Sous-sélectionner des lignes
 
+Sous sélectionner des lignes par index est relativement facile. Admettons que nous souhaitons sélectionner les lignes 1 à 5, 10 à 25, 37 et 58.
 
+```{r message=FALSE, warning=FALSE}
+sub_iris <- iris[c(1:5, 10:25, 37, 58),]
+nrow(sub_iris)
+```
+Sous sélectionner des lignes par une condition peut être effectué avec une syntaxe similaire, ou en utilisant la fonction `subset`. Sélectionnons toutes les fleurs de l'espèce Virginica
+
+```{r message=FALSE, warning=FALSE}
+iris_virginica1 <- iris[iris$Species == "virginica",]
+iris_virginica2 <- subset(iris, iris$Species == "virginica")
+
+# verifions que les deux dataframe ont le même nombre de lignes
+nrow(iris_virginica1) == nrow(iris_virginica2)
+```
+Vous pouvez utilisez dans les deux cas tous les opérateurs vus dans la section X. L'enjeu est d'arriver à un vecteur booleen final permettant de d'identifier les observations à conserver.
+
+#### Sous sélectionner des colonnes
+
+Nous avons déjà vu comment sélectionner des colonnes en utilisant leur nom ou leur index dans la section X. Ajoutons un cas spécial ici où nous souhaiterions sélectionner des colonnes selon une condition. Par exemple, nous pourrions vouloir ne garder que les colonnes dans lesquelles le mot *Length* apparait. Pour sela, nous auront besoin de la fonction `grepl`, permettant de déterminer si des caractères sont présents dans un chaîne de caractère.
+
+```{r message=FALSE, warning=FALSE}
+nom_cols <- names(iris)
+print(nom_cols)
+
+test_nom <- grepl("Length",nom_cols, fixed = TRUE)
+ok_nom <- nom_cols[test_nom]
+
+iris_2 <- iris[ok_nom]
+print(names(iris_2))
+```
+Il est possible d'obtenir ce résultat en une seule ligne de code, mais elle est un peu moins lisible.
+
+```{r message=FALSE, warning=FALSE}
+iris2 <- iris[names(iris)[grepl("Length",nom_cols, fixed = TRUE)]]
+```
+
+	
 	0.4 importer et manipuler des données
 		créer un dataframe
 		charger un dataframe
