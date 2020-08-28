@@ -383,6 +383,30 @@ Vous constaterez que quatre étapes sont nécessaires :
 
 L'argument `common.legend` permet d'indiquer à la fonction `ggarrange` de regrouper les légendes des deux graphiques. Dans notre cas, les deux graphiques ont les mêmes légendes, il est donc judicieux de les regrouper. L'argument `legend` contrôle la position de la légende, et peut prendre les valeurs : *top*, *bottom*, *left*, *right* ou *none* (absence de légende). La fonction `annotate_figure` permet d'ajouter des éléments de texte au-dessus, au-dessous et sur les cotés de la figure composite.
 
+### La couleur
+
+Dans un graphique, la couleur peut être utilisée à la fois pour représenter une variable quantitative (dégradé de couleur ou discrétisation), ou une variable qualitative (couleur par catégorie). Dans **ggplot2**, il est possible d'attribuer une couleur au contour des géométries avec l'argument `color` et au remplissage d'une géométrie avec l'argument `fill`. Il est possible de spécifier une couleur de trois façons dans ![](images/logos/Rlogo.png) : 
+
+* En utilisant le nom de la couleur dans une chaîne de caractère : `"chartreuse4"`. ![](images/logos/Rlogo.png) Dispose 657 noms de couleurs prédéfinis. Pour tous les afficher, utilisez la fonction `colors()`, la figure \@ref(fig:figcolors)) permet de les visualiser.
+
+```{r figcolors, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Couleurs de base",  out.width='85%'}
+knitr::include_graphics('images/magie_graphiques/all_colors.png', dpi = NA)
+```
+
+* En indiquant le code hexadécimal de la couleur. Il s'agit d'une suite de 6 lettres et de chiffres précédée par un dièse : `"#99ff33"`
+
+* En utilisant une notation RGB (rouge, vert, bleu). Cette notation doit contenir quatre nombres entre 0 et 1 (0% et 100%), le premier indiquant la quantité de rouge, le second de vert, le troisième de bleu, et le quatrième la transparence. Ces quatres nombres sont donnés comme argument à la fonction `rgb` : `rgb(0.6, 1, 0.2, 0)`.
+
+Le choix des couleurs est un problème plus complexe que la manière de les spécifier. Il existe d'ailleurs tout un pan de la sémiologie graphique dédié à la question du choix et de l'association des couleurs. Une première ressource intéressante est  [ColorBrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3){target="_blank"}. Il s'agit d'une sélection de palettes de couleurs particulièrements efficaces et dont certaines sont mêmes adaptées pour les personnes daltoniennes. Il est possible d'accéder directement aux palettes dans ![](images/logos/Rlogo.png) grâce au package **RColorBrewer** et la fonction `brewer.pal` : 
+
+```{r figcolorBrewer, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="palette de couleurs de ColorBrewer",  out.width='85%'}
+library(RColorBrewer)
+
+display.brewer.all()
+```
+
+Une autre ressource pertinente est le site web [coolors.co](https://coolors.co/palettes/trending){target="_blank"} qui propose de nombreuses palettes à portée de clic.
+
 ## Principaux graphiques
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
@@ -391,11 +415,11 @@ Puisque vous êtes désormais initié aux bases de la grammaire des graphiques i
 
 ### Histogramme
 
-L'histogramme permet de décrire graphiquement la forme de la distribution d'une variable. Pour le réaliser, on utilise la fonction `geom_histogram`. Le paramètre le plus important est le nombre de barre (`bins`) qui composent l'histogramme. Plus ce nombre est grand, plus l'histogramme est précis et à l'inverse, plus il est petit, plus l'histogramme est simplifié. Par contre, il convient de ne pas recourir à un nombre de barres trop élevée comparativement au nombre d'observations disponibles dans le jeu de données.
+L'histogramme permet de décrire graphiquement la forme de la distribution d'une variable. Pour le réaliser, on utilise la fonction `geom_histogram`. Le paramètre le plus important est le nombre de barres (`bins`) qui composent l'histogramme. Plus ce nombre est grand, plus l'histogramme est précis et à l'inverse, plus il est petit, plus l'histogramme est simplifié. En revanche, il faut éviter d'utiliser un nombre de barres trop élevée comparativement au nombre d'observations disponibles dans le jeu de données, sinon votre histogramme sera pleins de trous.
 
 #### histogrammes simples
 
-Générons quatre variables ayant respectivement une distribution gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables avec la fonction `ggarrange`.
+Générons quatre variables ayant respectivement une distribution Gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables et combinons les avec la fonction `ggarrange`.
 
 ```{r fig318, fig.align='center', fig.cap="Histogrammes", message=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
 
@@ -428,7 +452,7 @@ ggarrange(plotlist = histogrammes, ncol = 2, nrow = 2)
 
 ```
 
-Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable « faire fondre nos données », ce qui signifie changer la forme du *dataframe* actuel qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne). La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* **reshape2**.
+Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable « faire fondre nos données », ce qui signifie changer la forme du *dataframe* actuel qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* **reshape2**.
 
 ```{r fig319, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Faire fondre un jeu de données",  out.width='30%'}
 knitr::include_graphics('images/magie_graphiques/melting.png', dpi = NA)
@@ -472,7 +496,7 @@ Le graphique de droite (fréquence) nous indique donc que plus de 100 observatio
 
 #### Histogramme avec courbe de distribution
 
-Les histogrammes sont souvent utilisés pour vérifier graphiquement si une distribution empirique s'approche d'une courbe normale. Pour cela, on rajoute sur l'histogramme de la variable empirique, la forme qu'aurait une distribution normale parfaite en utilisant la moyenne et l'écart type de la distribution empirique. Pour créer cette figure dans **ggplot2**, il suffit d'utiliser la fonction `stat_function` pour créer un nouveau calque.
+Les histogrammes sont souvent utilisés pour vérifier graphiquement si une distribution empirique s'approche d'une courbe normale. Pour cela, on rajoute sur l'histogramme de la variable empirique, la forme qu'aurait une distribution normale parfaite en utilisant la moyenne et l'écart type de la distribution empirique. Pour créer cette figure dans **ggplot2**, il suffit d'utiliser la fonction `stat_function` pour créer un nouveau calque. Pour faire bonne mesure, il est aussi possible d'ajouter une ligne verticale (`geom_vline`) pour indiquer la moyenne de la distribution.
 
 ```{r fig322, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Histogrammes et courbe normale",  out.width='65%'}
 moyenne <- mean(distribs$gaussien)
@@ -482,7 +506,10 @@ ggplot(data = distribs) +
   geom_histogram(aes(x = gaussien, y = ..density..),
                  bins = 30, color = "#343a40", fill = "#a8dadc") +
   stat_function(fun = dnorm, args = list(mean = moyenne, sd = ecart_type), 
-                color = "#e63946", size = 1.2, linetype = "dashed")
+                color = "#e63946", size = 1.2, linetype = "dashed") +
+  geom_vline(xintercept = moyenne, color = 'red', size = 1)+
+  annotate("text", x = round(moyenne,2)+0.5, y = 0.31, hjust = 'left',
+           label = paste('moyenne : ',round(moyenne,2),sep=''))
 ```
 
 Dans notre cas, nous savons que notre variable est normalement distribuée (car produite avec la fonction `rnorm`), et l'on peut constater la grande proximité entre l'histogramme et la courbe normale.
@@ -553,7 +580,7 @@ cas_etrange <- subset(data_co2, data_co2$CO2t_hab >= 150)
 print(cas_etrange$Country.Name)
 ```
 
-Il s'agit d'une petite île néerlandaise des Caraïbes nommée Aruba disposant d'une faible population mais avec des activités très polluantes (raffinerie et extraction d'or). Nous faisons ici le choix de retirer ces observations puisqu'elles sont assez peu représentatives de la tendance mondiale. <span class="revision_rem">Cette démarche si simple relève ainsi de l'analyse exploratoire des données !</span>
+Il s'agit d'une petite île néerlandaise des Caraïbes nommée Aruba disposant d'une faible population mais avec des activités très polluantes (raffinerie et extraction d'or). Nous faisons ici le choix de retirer ces observations puisqu'elles sont assez peu représentatives de la tendance mondiale. <span class="revision_prop">Cette démarche si simple relève ainsi de l'analyse exploratoire des données ! Sans ce graphique, nous n'aurions probablement jamais identifié ces cas problématiques.</span>
 
 
 ```{r}
@@ -715,14 +742,14 @@ ggplot(data = data_europe)+
   guides( fill = FALSE)
 ```
 
-Le message du graphique est le même. Notez que nous avons utilisé ici la fonction `guides` pour retirer de la légende les couleurs associées au remplissage des marges d'erreurs. Ces couleurs sont les mêmes que celles des lignes et il n'est pas utile de dédoubler la légende. Notez que de nombreuses méthodes statistiques produisent des résultats accompagnés d'une mesure de l'incertitude associée à ces résultats. Représenter cette incertitude est crucial pour que le lecteur puisse délimiter la portée des conclusions.
+Le message du graphique est le même. Notez que nous avons utilisé ici la fonction `guides` pour retirer de la légende les couleurs associées au remplissage des marges d'erreurs. Ces couleurs sont les mêmes que celles des lignes et il n'est pas utile de dédoubler la légende. De nombreuses méthodes statistiques produisent des résultats accompagnés d'une mesure de l'incertitude associée à ces résultats. Représenter cette incertitude est crucial pour que le lecteur puisse délimiter la portée des conclusions de vos analyses.
 
 ### Boites à moustache
 
 Les boites à moustache (*box plot* en anglais) sont des graphiques permettant de comparer les moyennes et les intervalles interquartiles d'une variable continue selon plusieurs groupes d'une population. Si l'on reprend notre exemple précédent, nous pourrions comparer en fonction de la région du monde la moyenne de production annuelle de CO<sub>2</sub> par habitant. Pour cela, il suffit d'utiliser la fonction `geom_boxplot`.
 
 ```{r fig338, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Boite à moustache",  out.width='65%'}
-
+#retirer les observations n'étant pas associée à une région
 data_co2_comp <- subset(data_co2, is.na(data_co2$region7) == F)
 
 ggplot(data = data_co2_comp)+
@@ -758,22 +785,23 @@ Notez que pour éviter que les valeurs extrêmes identifiées par la fonction `g
 Les boites à moustaches donnent des informations pertinentes sur le centre et la dispersion d'une variable en fonction de sous groupes de la population. Cependant, une grande partie de l'information reste masquée par la représentation sous forme de boite. Une alternative est de  remplacer la simple boite par la distribution de la variable étudiée. On obtient ainsi des graphique en violon (`geom_violin`). Considérant les très grand écarts entre les régions que nous avons observés avec les boites à moustache, il est préférable de tracer les graphiques en violon en excluant les régions Afrique Sub-Saharienne et Asie du Sud.
 
 ```{r fig341, fig.align='center', fig.cap="Graphique en violon", warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
+# retirons les observations de régions que nous ne souhaitons par garder
+data_co2_comp <- subset(data_co2, (! data_co2$region7 %in% c("Sub-Saharan Africa", "South Asia")) 
+                        & is.na(data_co2$region7)==FALSE)
 
-data_co2_comp2 <- subset(data_co2, (! data_co2$region7 %in% c("Sub-Saharan Africa", "South Asia")) 
-                                                            & is.na(data_co2$region7)==FALSE)
-
-ggplot(data = data_co2_comp2)+
+ggplot(data = data_co2_comp)+
   geom_violin(aes(y = region7,x = CO2t_hab))+
   xlim(c(0,50))+
   labs(title = "Comparaison des niveaux d'émission de CO2 par habitant par région géographique",
        x = "Tonnes de CO2 annuelle / habitant",
-       y = '')
+       y = '')+
+  geom_vline(xintercept = 12, linetype = 'dashed', color = 'blue')
 ```
 
-Ces distributions permettent notamment de souligner que deux groupes distincts se retrouvent en Amérique du Nord. L'un dont les émissions annuelles de CO<sub>2</sub> par habitant sont inférieure à 12 tonnes et un autre groupe pour lequel elles sont supérieures. En explorant les données, on constate que les Bermudes sont inclus dans le groupe Amérique du Nord, mais ont des niveaux d'émission inférieurs à ceux du Canada et des États Unis, ce qui explique cette distribution bimodale. Cette information était masquée avec les boites à moustaches. Finalement, il est aussi possible de superposer graphique en violin et boite à moustache pour bénéficier des avantages des deux.
+Ces distributions permettent notamment de souligner que deux groupes distincts se retrouvent en Amérique du Nord. L'un dont les émissions annuelles de CO<sub>2</sub> par habitant sont inférieure à 12 tonnes (ligne bleue) et un autre groupe pour lequel elles sont supérieures. En explorant les données, on constate que les Bermudes sont inclus dans le groupe Amérique du Nord, mais ont des niveaux d'émission inférieurs à ceux du Canada et des États Unis, ce qui explique cette distribution bimodale. Cette information était masquée avec les boites à moustaches. Finalement, il est aussi possible de superposer graphique en violin et boite à moustache pour bénéficier des avantages des deux.
 
 ```{r fig342, fig.align='center', fig.cap="Graphique en violon et boite à moustache", warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
-ggplot(data = data_co2_comp2)+
+ggplot(data = data_co2_comp)+
   geom_violin(aes(y = region7,x = CO2t_hab))+
   geom_boxplot(aes(y = region7,x = CO2t_hab), width = 0.15)+
   xlim(c(0,50))+
@@ -790,7 +818,7 @@ Les graphiques en barres permettent de représenter des quantités (hauteur des 
 knitr::include_graphics('images/magie_graphiques/carte_secteurs.jpg', dpi = NA)
 ```
 
-Nous allons représenter pour chaque secteur le nombre déplacements moyen entrant et sortant un jour de semaine en heures de pointe. Les données sont représentées sous forme d'une matrice carrée (avec autant de lignes que de colonnes). L'intersection de la ligne A et de la colonne C indique le nombre de personnes partant du secteur A pour se rendre dans le secteur C. À l'inverse, l'intersection de la ligne C et de la colonne A indique le nombre de personnes partant du secteur C pour se rendre dans le secteur A. En sommant les valeurs de chaque ligne, on obtient le nombre total de départ par secteur tandis que le nombre d'arrivée est la somme de chaque colonne. Ces opérations peuvent simplement être effectuées avec les fonctions `rowSums` et `colSums`
+Nous représentons pour chaque secteur le nombre déplacements moyen entrant et sortant un jour de semaine en heures de pointe. Les données sont présentées sous forme d'une matrice carrée (avec autant de lignes que de colonnes). L'intersection de la ligne A et de la colonne C indique le nombre de personnes partant du secteur A pour se rendre dans le secteur C. À l'inverse, l'intersection de la ligne C et de la colonne A indique le nombre de personnes partant du secteur C pour se rendre dans le secteur A. En sommant les valeurs de chaque ligne, on obtient le nombre total de départ par secteur tandis que le nombre d'arrivée est la somme de chaque colonne. Ces opérations peuvent simplement être effectuées avec les fonctions `rowSums` et `colSums`
 
 ```{r fig344, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en barres simple",  out.width='75%'}
 
@@ -875,15 +903,15 @@ plot1 <- ggplot(data = melted_df)+
        x = '',
        fill = 'Déplacement')
 
-annotate_figure(plot1,right = text_grob(string_names, face = "italic", size = 6,
+annotate_figure(plot1,right = text_grob(string_names, face = "italic", size = 7,
                                   just = "left", x = 0.05)) # position du texte)
 ```
 
 ### Graphique circulaire
 
-Une alternative directe au graphique en barre est le graphique ou diagramme circulaire, appelé aussi graphique en pointe de tarte <span class="revision_prop">(pour ceux à la dent sucré)</span> ou en camembert <span class="revision_prop">(les amateurs de fromage)</span>. Il est suffisamment connu et utilisé pour qu'aucune présentation ne s'impose. Pour être exact, un graphique en pointe de tarte n'est rien d'autre qu'un graphique en barre dont le système de coordonnées a été modifié. Cela impose cependant de calculer à l'avance la position des étiquettes que l'on souhaite ajouter sur le graphique. Reprenons les données de production mondiale de CO<sub>2</sub> et calculons les productions totales par région géographique en 2015.
+Une alternative directe au graphique en barre est le graphique ou diagramme circulaire, appelé aussi graphique en pointe de tarte <span class="revision_prop">(pour les gourmands)</span> ou en camembert <span class="revision_prop">(les amateurs de fromage)</span>. Il est suffisamment connu et utilisé pour qu'aucune présentation ne s'impose. Pour être exact, un graphique en pointe de tarte n'est rien d'autre qu'un graphique en barre dont le système de coordonnées a été modifié. Cela impose cependant de calculer à l'avance la position des étiquettes que l'on souhaite ajouter sur le graphique. Reprenons les données de production mondiale de CO<sub>2</sub> et calculons les productions totales par région géographique en 2015.
 
-```{r fig346, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en pointe de tarte",  out.width='65%'}
+```{r fig346, fig.align='center', fig.cap="Graphique en pointe de tarte", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
 library(dplyr)
 
 # extraire les données de 2018 pour lesquelles on connait la région
@@ -897,7 +925,7 @@ co2_2015 <- data_co2_2015 %>%
 # attribuer un code à chaque région pour faciliter la lecture
 co2_2015$code <- c("A","B","C","D","E","F","G")
 
-# modifier l'ordre des données, calculer les proportions et la position # des labels
+# modifier l'ordre des données, calculer les proportions et la position des labels
 df <- co2_2015 %>% 
   arrange(desc(code)) %>%
   mutate(prop = total_co2 / sum(co2_2015$total_co2) *100) %>%
@@ -907,7 +935,7 @@ df <- co2_2015 %>%
 nom_region <- rev(paste(df$code, " : ", df$region7, "(", round(df$prop,1),"%)"))
 string_region <- paste(nom_region, collapse = '\n')
 
-# construire les graphique
+# construire le graphique
 plot1 <- ggplot(df, aes(x="", y=prop, fill=code)) +
   geom_bar(stat="identity", width=1, color="white") +
   coord_polar("y", start=0) +
@@ -923,10 +951,10 @@ annotate_figure(plot1,right = text_grob(string_region, face = "italic", size = 9
 
 ```
 
-Si à la place de la géométrie `geom_bar`, vous utilisez `geom_rect`, vous pouvez convertir votre graphique en pointe de tarte en graphique en anneau (ou en beigne, de nouveau pour les dents sucrés) : 
+Si à la place de la géométrie `geom_bar`, vous utilisez `geom_rect`, vous pouvez convertir votre graphique en pointe de tarte en graphique en anneau (ou en beigne, pour les gourmands) : 
 
-```{r fig347, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en donut",  out.width='65%'}
-# calculer la limite inférieure et supérieure du donut
+```{r fig347, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%'}
+# calculer la limite inférieure et supérieure du beigne
 df$ymax <- cumsum(df$prop)
 df$ymin <-  c(0, head(df$ymax, n=-1))
 
@@ -955,7 +983,7 @@ Dans cette dernière section, nous allons aborder des graphiques plus rarement u
 
 ### Graphique en radar
 
-Les graphiques en radar (ou en toile d'araignée) sont utilisés pour comparer une série de variables continues pour plusieurs observations ou groupe d'observations. Chaque variable est associée à un axe et chaque observation est représenté avec un polygone. Prenons comme exemple les données de logement par secteur de recensement dans la région métropolitaine de Montréal en 2016. On pourrait être intéressé à comparer la moyenne des pourcentages des différents types de logement pour les régions des Laurentide, de la Montérégie, de Laval, de Longueuil et de Montréal. Malheureusement, **ggplot2** ne permet pas de dessiner des graphiques en radar satisfaisants, nous devrons donc utiliser la *package* **fmsb**.
+Les graphiques en radar (ou en toile d'araignée) sont utilisés pour comparer une série de variables continues pour plusieurs observations ou groupe d'observations. Chaque variable est associée à un axe et chaque observation est représentée avec un polygone. Prenons comme exemple les données de logement par secteur de recensement dans la région métropolitaine de Montréal en 2016. On pourrait être intéressé à comparer la moyenne des pourcentages des différents types de logement pour les régions des Laurentide, de la Montérégie, de Laval, de Longueuil et de Montréal. Malheureusement, **ggplot2** ne permet pas de dessiner des graphiques en radar satisfaisants, nous devrons donc utiliser la *package* **fmsb**.
 
 ```{r fig348, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%'}
 library(fmsb)
@@ -963,7 +991,6 @@ library(fmsb)
 data <- read.csv('data/bivariee/sr_rmr_mtl_2016.csv', header = T, encoding = 'UTF-8')
 
 # aggrégeons les données au niveau des régions en calculant la moyenne des  pourcentage
-
 variables <- c("MaisonIndi","App5Plus","MaisRangee","AppDuplex","Proprio","Locataire")
 
 data_region <- data[c("Region",variables)] %>% 
@@ -1021,15 +1048,15 @@ legend(x=1.3, y=1, legend = rownames(data_chart[-c(1,2),]), bty = "n",
        pch=20 , col=couleurs , text.col = "black", cex=0.9, pt.cex=1.5)
 ```
 
-À la lecture du graphique, on constate rapidement que l'île de Montréal a une situation très différentes des trois autres régions en terme des types de logement. Laval se ditingue également avec une part importante de logements dans des immeubles d'appartements. Ce type de graphique a pour objectif d'orienter le regard sur de potentielles différences dans un contexte multidimensionnelle, mais il comporte quelques inconvénients : 
+À la lecture du graphique, on constate rapidement que l'île de Montréal a une situation très différentes des trois autres régions. Laval se ditingue également avec une part importante de logements dans des immeubles d'appartements. Ce type de graphique a pour objectif d'orienter le regard sur de potentielles différences dans un contexte multidimensionnelle, mais il comporte quelques inconvénients : 
 
 * Les échelles de chaque axe sont différentes. Il est donc essentiel de se rapporter aux valeurs exactes pour estimer si les écarts sont importants en termes absolus.
 * La superposition de plusieurs polygones peut rendre la lecture difficile. Une alternative envisageable est de réaliser un graphique par polygone, mais cela prend beaucoup de place dans un document.
-* L'utilisation de polygones donne parfois de fausses impressions d'écarts. Dans les précédents graphiques, l'oeil est attiré en bas à gauche par le polygone de Montréal très différent des autres. Cependant, les écarts sur l'axe *maison en rangée* sont relativement petit comparativement à l'axe *locataire* situé à l'opposé.
+* L'utilisation de polygones donne parfois de fausses impressions d'écarts. Dans le précédent graphique, l'œil est attiré en bas à gauche par le polygone de Montréal très différent des autres. Cependant, les écarts sur l'axe *maison en rangée* sont relativement petit comparativement à l'axe *locataire* situé à l'opposé.
 
 ### Diagramme d'accord
 
-Les diagrammes d'accord (*chord diagram* en anglais) sont utilisés pour représenter des échanges ou des connexions entre des entités. Il peut s'agir par exemple de marchandises importées / exportées entre pays, des messages envoyés entre utilisateurs de réseau sociaux, de flux de population, etc. Reprenons nos données de l'enquête origine destination de la région de Québec en 2017 pour illustrer le tout. Nous aurons également besoin du package **circlize**. Accrochez vos tuques, le code qui suit est un peu <span class="revision_rem">velu</span> <span class="revision_prop">complex</span>.
+Les diagrammes d'accord (*chord diagram* en anglais) sont utilisés pour représenter des échanges ou des connexions entre des entités. Il peut s'agir par exemple de marchandises importées / exportées entre pays, des messages envoyés entre utilisateurs de réseau sociaux, de flux de population, etc. Reprenons nos données de l'enquête origine destination de la région de Québec en 2017 pour illustrer le tout. Nous aurons également besoin du package **circlize**. Le code qui suit est un peu complexe, mais toute la section produisant le graphique peut être réutilisée tel quel pour produire d'autre diagramme d'accord, seule la section préparant les données est à adapter.
 
 ```{r fig349, fig.align='center', fig.cap="Diagramme d'accord", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
 library(circlize)
@@ -1069,6 +1096,8 @@ rn <- rownames(mat)
 cn <- colnames(mat)
 
 # création d'une légende associant les lettres au noms des régions
+# la légende est découpée en plusieurs morceau pour gagner de la place 
+# sur le graphique final
 sect_names <- paste(codes, ' : ', secteurs, sep='')[1:8]
 sect_string1 <- paste(sect_names[1:3], collapse = ', ')
 sect_string2 <- paste(sect_names[4:5], collapse = ', ')
@@ -1090,82 +1119,143 @@ xlim <- cbind(rep(0, length(factors)), c(row_sum, col_sum))
 # col <- sample(colors(),nrow(mat),replace = F)
 
 # choix de couleurs 
-col <- c("#a491d3", "#818aa3", "#C5DCA0", "#F5F2B8", "#F9DAD0", "#F45B69", "#22181C", "#5A0001")
+col <- c("#a491d3", "#818aa3", "#C5DCA0", "#F5F2B8",
+         "#F9DAD0", "#F45B69", "#22181C", "#5A0001")
 
-# construction du graphique 
+# construction du graphique
+# si vos données sont structurée de la même façon, cette partie du code 
+# ne change pas d'un graphique à l'autre
 par(mar = c(4, 1, 1, 1))
 circos.par(cell.padding = c(0, 0, 0, 0))
 circos.initialize(factors = factors, xlim = xlim)
 circos.trackPlotRegion(factors = factors, ylim = c(0, 1), bg.border = NA,
-bg.col = c(col, rep("grey", length(col))), track.height = 0.05,
-panel.fun = function(x, y) {
-sector.name = get.cell.meta.data("sector.index")
-xlim = get.cell.meta.data("xlim")
-circos.text(mean(xlim), 1.5, sector.name, adj = c(0.5, 0))
-})
+          bg.col = c(col, rep("grey", length(col))), track.height = 0.05,
+          panel.fun = function(x, y){
+            sector.name = get.cell.meta.data("sector.index")
+            xlim = get.cell.meta.data("xlim")
+            circos.text(mean(xlim), 1.5, sector.name, adj = c(0.5, 0))
+            }
+)
 
 
 for(i in seq_len(nrow(mat))) {
-for(j in seq_len(ncol(mat))) {
-circos.link(rn[i], c(sum(mat[i, seq_len(j-1)]), sum(mat[i, seq_len(j)])),
-cn[j], c(sum(mat[seq_len(i-1), j]), sum(mat[seq_len(i), j])),
-col = col[i], border = "white")
-}
+  for(j in seq_len(ncol(mat))) {
+    circos.link(rn[i], c(sum(mat[i, seq_len(j-1)]), sum(mat[i, seq_len(j)])),
+    cn[j], c(sum(mat[seq_len(i-1), j]), sum(mat[seq_len(i), j])),
+    col = col[i], border = "white")
+  }
 }
 circos.clear()
 mtext(sect_string, side = 1, cex = 0.8,line = 2)
 ```
-Le graphique permet de remaquer que la plupart des flux s'effectuent au sein d'un même secteur. On peut cependant constater que les secteurs des arrondissements des Rivières et la cité Limoilou attirent une plus grande quantité et diversité de flux.
+Le graphique permet de remaquer que la plupart des flux s'effectuent au sein d'un même secteur. La majorité des personnes partant du secteur C (o.C) finissent également leur déplacement dans le secteur C (d.C) (section la plus large du trait partant de o.C). On peut cependant constater que les secteurs des arrondissements des Rivières et la cité Limoilou attirent une plus grande quantité et diversité de flux.
 
-### Word cloud
+### Nuage de mots
 
-Un nuage de mots est un graphique utilisé en analyse textuelle pour représenter les mots les plus importants d'un texte. Mesurer l'importance des mots dans un document est une discipline à part entière, nous proposons un simple exemple ici avec la méthode *rake* (*Rapid Automatic Keyword Extraction*) proposée par [@rose2010automatic] et implémentée dans le *package* **tm**. Nous aurons également besoin des *packages* **udpipe** (fournissant des dictionnaires linguistiques), **readtext** (pour lire un fichier *txt*), **RColorBrewer** (pour sélectionner une palette de couleur) et **wordcloud** (pour générer le graphique). <span class="revision_rem">Nous avons choisi comme texte un résumé d'un article en anglais portant sur les méthodes d'accessibilités aux services de santé</span>. <span class="revision_prop">AJOUTER 1 PHRASE OU 2 SUR LES 2 PMAD</span> Notez qu'à chaque génération du nuage de mots, vous obteindrez une disposition différente. N'hésitez pas à en essayer plusieurs jusqu'à trouver celle qui vous semble optimale.
+Un nuage de mots est un graphique utilisé en analyse de texte pour représenter les mots les plus importants d'un document. Mesurer l'importance des termes dans un document est une discipline à part entière (*Natural Language Processing*), nous proposons un simple exemple ici avec la méthode *TextRank* (basée sur la théorie des graphs) proposée par @mihalcea2004textrank et implémentée dans le *package* **textrank**. Nous aurons également besoin des *packages* **udpipe** (fournissant des dictionnaires linguistiques), **RColorBrewer** (pour sélectionner une palette de couleur) et **wordcloud2** (pour générer le graphique). En guise d'exemple, nous avons choisi d'extraire le texte des Schémas d'Aménagement et de Développement (SAD) des agglomération de Québec et Montréal en vigueur en 2020. Il s'agit de deux documents de planification définissant les lignes directrices de l'organisation physique du territoire des Municipalité Régionale de Comté (MRC) ou des agglomérations. Pour ces deux documents, nous nous concentrons sur le chapitre portant sur les grandes orientations d'aménagement et de développement, soit les pages 30 à 135 pour Québec et 30 à 97 pour Montréal. Pour extraire les textes des fichiers pdf, nous utilisons le *package* **pdftools**.
+
+Nous devons donc réaliser les étapes suivantes pour produire le nuage de mots : 
+
+1. Extraire les sections qui nous intéressent des fichiers pdf
+2. Extraire le texte de ces sections
+3. Retirer les caractères représentant les sauts de ligne et les sauts de paragraphes (`\n` et `\r`)
+4. Concaténer tout le texte en une seule longue chaîne de caractère
+5. Utiliser un dictionnaire pour déterminer la nature des mots du texte (nom, adjectifs, verbes, etc.)
+6. Utiliser l'algorithme *TextRank* pour identifier les mots clefs
+7. Nettoyer les erreurs potentielles parmi les mots clefs
+8. Construire le nuage de mots.
+
+Notez que toutes ces étapes de nettoyages ne seraient pas nécessaire si nous utilisions un simple fichier texte comme point de départ. Cependant, il est plus courant de rencontrer des fichiers pdf, cet exercice est donc davantage révélateur de la difficulté réelle de la réalisation d'un nuage de mots.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, eval = FALSE}
-library(tm)
 library(wordcloud2)
 library(udpipe)
-library(readtext)
 library(RColorBrewer)
+library(pdftools)
 
-# lecture du texte depuis le fichier texte
-texte <- readtext("data/graphique/resume_article.txt")$text
+# Étape 1 : extraire les sections pertinentes des fichiers pdf
+extrait_qc <- pdf_subset("data/graphique/SAD_quebec.pdf", pages = c(30:135),
+                         output = "data/graphique/SAD_quebec_ext.pdf")
+extrait_mtl <- pdf_subset("data/graphique/SAD_montreal.pdf", pages = c(30:97),
+                          output = "data/graphique/SAD_montral_ext.pdf")
 
-# téléchargement du dictionnaire anglais
-# model <- udpipe_download_model("english")
-# chargement du dinctionnaire
+# Étape 2 : extraire le texte des fichiers pdf sous forme de vecteur de texte
+file_qc <- pdf_text(extrait_qc)
+file_mtl <- pdf_text(extrait_mtl)
+
+# Étape 3 : retirer les saut de lignes et les paragraphes
+file_qc <- gsub("\r","",x = file_qc)
+file_qc <- gsub("\n","",x = file_qc)
+
+file_mtl <- gsub("\r","",x = file_mtl)
+file_mtl <- gsub("\n","",x = file_mtl)
+
+# Étape 4 : créer une seule longue chaîne de caractère
+# à partir des vecteurs de texte
+text_qc <- paste(file_qc, collapse = " ")
+text_mtl <- paste(file_mtl, collapse = " ")
+
+# charger le modèle linguistique français
+model <- udpipe_load_model('data/graphique/french-sequoia-ud-2.4-190531.udpipe')
+
+# pour télécharger le modèle si ce n'est pas encore fait : 
+# model <- udpipe_download_model("french-sequoia")
 # model <- udpipe_load_model(model)
 
-# charger le dictionnaire depuis un fichier
-model <- udpipe_load_model('data/graphique/english-ewt-ud-2.4-190531.udpipe')
+# Etape 5 : Analyse de la nature des mots du texte avec le dictionnaire fr
+# On obtient des dataframes décrivant les mots des textes
+annote_qc <- udpipe_annotate(model, text_qc)
+df_qc <- data.frame(annote_qc)
 
-# étape de pre-traitement du texte
-annote <- udpipe_annotate(model, texte)
-df <- data.frame(annote)
+annote_mtl <- udpipe_annotate(model, text_mtl)
+df_mtl <- data.frame(annote_mtl)
 
-# calcul de l'indicateur rake sur le texte
-# ne gardons que les noms et les adjectifs
-stats <- keywords_rake(x = df, term = "lemma", group = "doc_id"
-                       , relevant = df$upos %in% c("NOUN", "ADJ"), ngram_max=2)
+# Etape 6 : Utilisation de la méthode TextRank
+stats_qc <- textrank_keywords(df_qc$lemma,
+                  relevant = df_qc$upos %in% c("NOUN", "ADJ"), ngram_max=2)
 
-# remplacer les valeurs à 0 par des valeurs petites
-stats$value <- round(ifelse(stats$rake==0, 0.1, stats$rake) * 10)
+stats_mtl <- textrank_keywords(df_mtl$lemma,
+                  relevant = df_mtl$upos %in% c("NOUN","ADJ"), ngram_max=2)
 
-finaldf <- head(stats, n = 30)
+# Etape 7 : Nettoyer les coquilles dans les mots clefs 
+# NB : nous faisons ici le choix de garder des mots clefs uniques (ngram == 1)
+# il serait aussi possible de garder des associations de plusieurs mots
+dfstats_qc <- subset(stats_qc$keywords, stats_qc$keywords$ngram == 1 &
+                       nchar(stats_qc$keywords$keyword)>2)
+dfstats_qc$keyword <- gsub("d’","",dfstats_qc$keyword,fixed = T)
+dfstats_qc$keyword <- gsub("l’","",dfstats_qc$keyword,fixed = T)
 
-par(mar = c(3, 3, 3, 3))
-wordcloud2(data = finaldf[c("keyword", "value")],
-           color = brewer.pal(6, "Dark2"), size = 0.17, shuffle = F)
+dfstats_mtl <- subset(stats_mtl$keywords, stats_mtl$keywords$ngram == 1 &
+                        nchar(stats_mtl$keywords$keyword)>2)
+dfstats_mtl$keyword <- gsub("d’","",dfstats_mtl$keyword,fixed = T)
+dfstats_mtl$keyword <- gsub("l’","",dfstats_mtl$keyword,fixed = T)
+
+# Etape 8 : Réaliser les nuages de mots
+couleurs <- sample(brewer.pal(12, "Paired")) # mise en désordre des couleurs
+
+wordcloud2(data = dfstats_mtl[c("keyword", "freq")],
+           color = couleurs, size = 0.5, shuffle = F)
+
+wordcloud2(data = dfstats_qc[c("keyword", "freq")],
+           color = couleurs, size = 0.6, shuffle = F)
 ```
-```{r fig350, echo=FALSE, fig.align='center', fig.cap="Nuage de mots", auto_pdf=TRUE, out.width='75%'}
-knitr::include_graphics('images/magie_graphiques/Nuage_de_mot.png', dpi = NA)
+
+
+```{r fig350, echo=FALSE, fig.align='center', fig.cap="Nuage de mots pour le SAD de Montréal", auto_pdf=TRUE, out.width='85%'}
+knitr::include_graphics('images/magie_graphiques/nuage_mtl.png', dpi = NA)
 ```
+
+```{r fig351, echo=FALSE, fig.align='center', fig.cap="Nuage de mots pour le SAD de Québec", auto_pdf=TRUE, out.width='85%'}
+knitr::include_graphics('images/magie_graphiques/nuage_qc.png', dpi = NA)
+```
+
+Notez qu'à chaque génération du nuage de mots, vous obteindrez une disposition différente. N'hésitez pas à en essayer plusieurs jusqu'à trouver celle qui vous semble optimale.
 
 ### Treemaps
 
 Un *treemap* est un graphique permettant de représenter une quantité partagée entre plusieurs observations structurées dans une hiérarchie de groupe. Le jeu de données portant sur les émissions de CO2 se prête tout à fait à une représentation par *treemaps*. La variable de quantité est bien sûr les émission de CO<sub>2</sub> par pays; ces pays sont regroupés dans un premier ensemble de régions (découpage en 23 régions), qui elles mêmes sont regroupées dans des régions plus larges (découpage en sept régions). Pour construire un *treemap*, nous allons utiliser le *package* **treemap**.
 
-```{r fig351, fig.align='center', fig.cap="Treemap", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
+```{r fig352, fig.align='center', fig.cap="Treemap", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='90%'}
 library(treemap)
 library(RColorBrewer)
 
@@ -1176,8 +1266,9 @@ data_co2_2015 <- subset(data_co2,data_co2$year == "2015" & ! is.na(data_co2$regi
 
 treemap(data_co2_2015, index=c("region7","region23"),
     vSize="CO2_kt", type="index",
+    title = "CO2 rejettées par pays en 2015",
     fontsize.labels=c(12,8), # taille des étiquettes              
-    fontcolor.labels=c("white","orange"), # couleur des étiquettes
+    fontcolor.labels=c("white","black"), # couleur des étiquettes
     fontface.labels=c(2,1), # style des polices
     bg.labels=c("transparent"), # arrière plan des étiquettes
     align.labels=list(
@@ -1186,14 +1277,14 @@ treemap(data_co2_2015, index=c("region7","region23"),
         ),  # localisation des étiquette dans les boites
     overlap.labels=0.5, # tolérance de superposition
     inflate.labels=F, # agrandir la taille de étiquettes ou non
-    palette = brewer.pal(7,'Dark2')
+    palette = brewer.pal(7,'Paired')
 )
 
 ```
 
 ## Les cartes
 
-<span class="revision_rem">Les cartes sont une forme spéciale de graphique</span>. <span class="revision_prop">Toute comme un graphique, un carte est aussi une illustration visuelle.</span>Si ![](images/logos/Rlogo.png) n'est pas un logiciel de cartographie, il est possible de réaliser des cartes assez facilement directement avec **ggplot2**. Nous avons cependant une préférence pour le *package* **tmap** qui propose de nombreuses fonctionnalités. Pour tracer des cartes, **tmap** a besoin d'utiliser un format de données comprenant la géométrie (polyones, lignes ou points), la localisation et le système de projection des entités spatiale étudiées. Le format de fichier le plus courant pour ce type de données est le *shapefile* (*.shp*), mais vous pourrez parfois croiser des fichiers *geojson* (.js), ou encore *geopackages* (.gpkg). Pour lire ces fichiers, il est possible d'utiliser la fonction *readOGR* du *package* **rgdal**, ou la fonction *st_read* du package **sf**. Notez ici que ces deux fonctions ne produisent pas des *DataFrame*, mais respectivement un *SpatialDataFrame* et un objet *sf* (*simple feature collection*). Sans rentrer dans les détails, sachez que deux *packages* permettent de manipuler des objets spatiaux dans ![](images/logos/Rlogo.png) : le traditionnel **sp** (avec les *SpatialDataFrame*) et le plus récent **sf** (avec les objets du même nom). Il est assez facile de convertir un objet de **sp** vers **sf** et cette opération es souvent nécessaire car de nombreux autres *packages* utilisent l'un ou l'autre des formats. Dans le cas de **tmap**, des objets de **sp** et de **sf** peuvent être utilisés sans distinction. En revanche, pour cartographier directement avec **ggplot2**, il est plus facile d'utiliser un objet de type *sf*.  
+Toute comme un graphique, un carte est aussi une illustration visuelle, avec la généralisation des données géographiques, il peut être utilie de savoir représenter ce type de données. Si ![](images/logos/Rlogo.png) n'est pas un logiciel de cartographie, il est possible de réaliser des cartes assez facilement directement avec **ggplot2**. Nous avons cependant une préférence pour le *package* **tmap** qui propose de nombreuses fonctionnalités. Pour tracer des cartes, **tmap** et **ggplot2** ont besoin d'utiliser un format de données comprenant la géométrie (polyones, lignes ou points), la localisation et le système de projection des entités spatiale étudiées. Le format de fichier le plus courant pour ce type de données est le *shapefile* (*.shp*), mais vous pourrez parfois croiser des fichiers *geojson* (.js), ou encore *geopackages* (.gpkg). Pour lire ces fichiers, il est possible d'utiliser la fonction *readOGR* du *package* **rgdal**, ou la fonction *st_read* du package **sf**. Notez ici que ces deux fonctions ne produisent pas des *DataFrame*, mais respectivement un *SpatialDataFrame* et un objet *sf* (*simple feature collection*). Sans rentrer dans les détails, sachez que deux *packages* permettent de manipuler des objets spatiaux dans ![](images/logos/Rlogo.png) : le traditionnel **sp** (avec les *SpatialDataFrame*) et le plus récent **sf** (avec les objets du même nom). Il est assez facile de convertir un objet de **sp** vers **sf** (et inversement) et cette opération est souvent nécessaire car de nombreux *packages* dédiée à l'analyse spatiale utilisent l'un ou l'autre des formats. Dans le cas de **tmap**, des objets de **sp** et de **sf** peuvent être utilisés sans distinction. En revanche, pour cartographier directement avec **ggplot2**, il est plus facile d'utiliser un objet de type *sf*.  
 
 Une carte thématique permet de représenter la répartition spatiale de variables qualitatives ou quantitatives. On les distingue des cartes topographiques dont l'objectif est de représenter la localisation d'objets spécifiques (routes, habitations, rivière, lac, etc.). Les premières sont relativement faciles à construire dans ![](images/logos/Rlogo.png) car elles se limitent à quelques symboles relativement peu complexes. Pour les secondes, on préferera généralement un logiciel comme [QGis](https://qgis.org/en/site/){target="_blank"}.
 
@@ -1201,7 +1292,7 @@ Créons une carte thématique à partir des données de densité de végétation
 
 Avec **ggplot2**, nous aurons aussi besoin des *packages* **classInt** pour calculer les intervalles des classes et de **ggsn** pour afficher une échelle.
 
-```{r fig352, fig.align='center', fig.cap="Carte thématique avec ggplot2", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
+```{r fig353, fig.align='center', fig.cap="Carte thématique avec ggplot2", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
 library(sf)
 library(classInt)
 library(ggsn)
@@ -1239,7 +1330,7 @@ ggplot(data = spatialdf) +
 
 Il est possible d'arriver à un résultat similaire avec **tmap** avec moins de code ! 
 
-```{r fig353, fig.align='center', fig.cap="Carte thématique avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
+```{r fig354, fig.align='center', fig.cap="Carte thématique avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
 library(tmap)
 
 colors <- brewer.pal(7,"Greens")
@@ -1255,7 +1346,7 @@ tm_shape(spatialdf) +
 
 Les graphiques créés par **tmap** ne peuvent malheureusement pas être combinés avec la fonction `ggarrange`, mais **tmap** dispose de sa propre fonction `tmap_arrange` si vous souhaitez combiner plusieurs cartes.
 
-```{r fig354, fig.align='center', fig.cap="Combiner des cartes avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
+```{r fig355, fig.align='center', fig.cap="Combiner des cartes avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
 library(tmap)
 
 colors <- brewer.pal(7,"Greens")
@@ -1283,7 +1374,7 @@ tmap_arrange(carte1, carte2, ncol = 2)
 
 Tous les graphiques que nous avons construits dans ce chapitre peuvent être exportés assez facilement. Dans RStudio, vous pouvez directement cliquer sur le bouton *export* (figure \@ref(fig:fig355))) pour enregistrer votre figure au format image (raster) ou au format PDF (vecteur). Notez qu'avec la seconde option, vous pourrez retoucher votre graphique avec un logiciel externe comme *Inkscape* ou *Illustrator*, ce qui est souvent nécessaire.
 
-```{r fig355, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exporter un graphique dans RStudio",  out.width='40%'}
+```{r fig356, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exporter un graphique dans RStudio",  out.width='40%'}
 knitr::include_graphics('images/magie_graphiques/export.JPG', dpi = NA)
 ```
 
