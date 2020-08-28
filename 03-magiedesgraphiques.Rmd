@@ -385,15 +385,15 @@ L'argument `common.legend` permet d'indiquer à la fonction `ggarrange` de regro
 
 ### La couleur
 
-Dans un graphique, la couleur peut être utilisée à la fois pour représenter une variable quantitative (dégradé de couleur ou discrétisation), ou une variable qualitative (couleur par catégorie). Dans **ggplot2**, il est possible d'attribuer une couleur au contour des géométries avec l'argument `color` et au remplissage d'une géométrie avec l'argument `fill`. Il est possible de spécifier une couleur de trois façons dans ![](images/logos/Rlogo.png) : 
+Dans un graphique, la couleur peut être utilisée à la fois pour représenter une variable quantitative (dégradé de couleur ou discrétisation), ou une variable qualitative (couleur par catégorie). Dans **ggplot2**, il est possible d'attribuer une couleur au contour des géométries avec l'argument `color` et au remplissage avec l'argument `fill`. Il est possible de spécifier une couleur de trois façons dans ![](images/logos/Rlogo.png) : 
 
 * En utilisant le nom de la couleur dans une chaîne de caractère : `"chartreuse4"`. ![](images/logos/Rlogo.png) Dispose 657 noms de couleurs prédéfinis. Pour tous les afficher, utilisez la fonction `colors()`, la figure \@ref(fig:figcolors)) permet de les visualiser.
 
-```{r figcolors, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Couleurs de base",  out.width='85%'}
+```{r figcolors, echo=FALSE, fig.align='center', fig.cap="Couleurs de base", auto_pdf=TRUE, out.width='85%'}
 knitr::include_graphics('images/magie_graphiques/all_colors.png', dpi = NA)
 ```
 
-* En indiquant le code hexadécimal de la couleur. Il s'agit d'une suite de 6 lettres et de chiffres précédée par un dièse : `"#99ff33"`
+* En indiquant le code hexadécimal de la couleur. Il s'agit d'une suite de six lettres et de chiffres précédée par un dièse : `"#99ff33"`
 
 * En utilisant une notation RGB (rouge, vert, bleu). Cette notation doit contenir quatre nombres entre 0 et 1 (0% et 100%), le premier indiquant la quantité de rouge, le second de vert, le troisième de bleu, et le quatrième la transparence. Ces quatres nombres sont donnés comme argument à la fonction `rgb` : `rgb(0.6, 1, 0.2, 0)`.
 
@@ -909,7 +909,7 @@ annotate_figure(plot1,right = text_grob(string_names, face = "italic", size = 7,
 
 ### Graphique circulaire
 
-Une alternative directe au graphique en barre est le graphique ou diagramme circulaire, appelé aussi graphique en pointe de tarte <span class="revision_prop">(pour les gourmands)</span> ou en camembert <span class="revision_prop">(les amateurs de fromage)</span>. Il est suffisamment connu et utilisé pour qu'aucune présentation ne s'impose. Pour être exact, un graphique en pointe de tarte n'est rien d'autre qu'un graphique en barre dont le système de coordonnées a été modifié. Cela impose cependant de calculer à l'avance la position des étiquettes que l'on souhaite ajouter sur le graphique. Reprenons les données de production mondiale de CO<sub>2</sub> et calculons les productions totales par région géographique en 2015.
+Une alternative directe au graphique en barre est le graphique ou diagramme circulaire, appelé aussi graphique en pointe de tarte <span class="revision_prop">(pour ceux à la dent sucrée)</span> ou en camembert <span class="revision_prop">(les amateurs de fromage)</span>. Il est suffisamment connu et utilisé pour qu'aucune présentation ne s'impose. Pour être exact, un graphique en pointe de tarte n'est rien d'autre qu'un graphique en barre dont le système de coordonnées a été modifié. Cela impose cependant de calculer à l'avance la position des étiquettes que l'on souhaite ajouter sur le graphique. Reprenons les données de production mondiale de CO<sub>2</sub> et calculons les productions totales par région géographique en 2015.
 
 ```{r fig346, fig.align='center', fig.cap="Graphique en pointe de tarte", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
 library(dplyr)
@@ -951,7 +951,7 @@ annotate_figure(plot1,right = text_grob(string_region, face = "italic", size = 9
 
 ```
 
-Si à la place de la géométrie `geom_bar`, vous utilisez `geom_rect`, vous pouvez convertir votre graphique en pointe de tarte en graphique en anneau (ou en beigne, pour les gourmands) : 
+Si à la place de la géométrie `geom_bar`, vous utilisez `geom_rect`, vous pouvez convertir votre graphique en pointe de tarte en graphique en anneau (ou en beigne, pour ceux à la dent sucrée) : 
 
 ```{r fig347, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%'}
 # calculer la limite inférieure et supérieure du beigne
@@ -1056,10 +1056,14 @@ legend(x=1.3, y=1, legend = rownames(data_chart[-c(1,2),]), bty = "n",
 
 ### Diagramme d'accord
 
-Les diagrammes d'accord (*chord diagram* en anglais) sont utilisés pour représenter des échanges ou des connexions entre des entités. Il peut s'agir par exemple de marchandises importées / exportées entre pays, des messages envoyés entre utilisateurs de réseau sociaux, de flux de population, etc. Reprenons nos données de l'enquête origine destination de la région de Québec en 2017 pour illustrer le tout. Nous aurons également besoin du package **circlize**. Le code qui suit est un peu complexe, mais toute la section produisant le graphique peut être réutilisée tel quel pour produire d'autre diagramme d'accord, seule la section préparant les données est à adapter.
+Les diagrammes d'accord (*chord diagram* en anglais) sont utilisés pour représenter des échanges ou des connexions entre des entités. Il peut s'agir par exemple de marchandises importées / exportées entre pays, des messages envoyés entre utilisateurs de réseau sociaux, de flux de population, etc. Reprenons nos données de l'enquête origine destination de la région de Québec en 2017 pour illustrer le tout. Nous utiliserons le *package* **chorddiag**, très facile d'utilisation et produisant des graphiques interactifs, facilitant grandement la lecture de ce type de graphique. Cependant ce *package* ne fait pas partie du répertoire *CRAN*, nous devrons l'installer directement depuis *github* avec la fonction `devtools::install_github`.
 
-```{r fig349, fig.align='center', fig.cap="Diagramme d'accord", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='85%'}
-library(circlize)
+```{r eval = FALSE}
+devtools::install_github('mattflor/chorddiag')
+```
+
+```{r fig349, fig.align='center', fig.cap="Diagramme d'accord", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='100%'}
+library(chorddiag)
 
 # chargement des donneées
 matriceOD <- read.csv('data/graphique/Quebec_2017_OD_MJ.csv',
@@ -1068,52 +1072,26 @@ matriceOD <- read.csv('data/graphique/Quebec_2017_OD_MJ.csv',
 # transformation du dataframe en matrice
 matriceOD <- as.matrix(matriceOD)
 codes <- c('A','B','C','D','E','F','G','H','I','J','K','X')
-secteurs <- c('Arr. de Beauport (Québec)',
-            'Arr. de Charlesbourg (Québec)',
-            'Arr. des Rivières (Québec)',
-            'Arr. de la Cité-Limoilou (Québec)',
-            'Arr. de la Haute-St-Charles (Québec)',
-            'Arr. de Sainte-Foy-Sillery- Cap-Rouge (Québec)',
-            'Arr.de Desjardins (Lévis)',
-            'Arr. des Chutes–de-la-Chaudière-Est (Lévis)',
-            'Arr. Les Chutes de la Chaudière-Ouest (Lévis)',
+secteurs <- c('Arr. de Beauport',
+            'Arr. de Charlesbourg',
+            'Arr. des Rivières',
+            'Arr. de la Cité-Limoilou',
+            'Arr. de la Haute-St-Charles',
+            'Arr. de Sainte-Foy-Sillery-Cap-Rouge',
+            'Arr.de Desjardins',
+            'Arr. des Chutes–de-la-Chaudière-Est',
+            'Arr. Les Chutes de la-Chaudière-Ouest',
             'Ceinture Nord',
             'Ceinture Sud',
             'Hors Territoire')
 
 # ajout de noms aux colonnes et aux lignes de la matrice
-# o est ajouté pour les origines
-# d est ajouté pour les destinations
-rownames(matriceOD) <- paste("o.",codes)
-colnames(matriceOD) <- paste("d.",codes)
+rownames(matriceOD) <- secteurs
+colnames(matriceOD) <- secteurs
 
 #on supprime les trois secteurs Ceinture Nord, Sud et Hors territoire 
 #qui comprennent de toute façon peut de déplacements
 mat <- matriceOD[1:8,1:8]
-
-# extraction des noms de colonnes et de lignes de la matrice
-rn <- rownames(mat)
-cn <- colnames(mat)
-
-# création d'une légende associant les lettres au noms des régions
-# la légende est découpée en plusieurs morceau pour gagner de la place 
-# sur le graphique final
-sect_names <- paste(codes, ' : ', secteurs, sep='')[1:8]
-sect_string1 <- paste(sect_names[1:3], collapse = ', ')
-sect_string2 <- paste(sect_names[4:5], collapse = ', ')
-sect_string3 <- paste(sect_names[6:7], collapse = ', ')
-sect_string4 <- sect_names[[8]]
-sect_string <- paste(c(sect_string1,sect_string2,sect_string3,sect_string4), collapse = '\n')
-
-# création d'un facteur avec tous les noms
-factors <- c(rn, cn)
-factors <- factor(factors, levels = factors)
-
-# calcul des somme des colonnes et des lignes pour définir les 
-# limites du graphique
-col_sum <- colSums(mat)
-row_sum <- rowSums(mat)
-xlim <- cbind(rep(0, length(factors)), c(row_sum, col_sum))
 
 # choix aleatoire de couleurs pour les lignes
 # col <- sample(colors(),nrow(mat),replace = F)
@@ -1122,50 +1100,29 @@ xlim <- cbind(rep(0, length(factors)), c(row_sum, col_sum))
 col <- c("#a491d3", "#818aa3", "#C5DCA0", "#F5F2B8",
          "#F9DAD0", "#F45B69", "#22181C", "#5A0001")
 
-# construction du graphique
-# si vos données sont structurée de la même façon, cette partie du code 
-# ne change pas d'un graphique à l'autre
-par(mar = c(4, 1, 1, 1))
-circos.par(cell.padding = c(0, 0, 0, 0))
-circos.initialize(factors = factors, xlim = xlim)
-circos.trackPlotRegion(factors = factors, ylim = c(0, 1), bg.border = NA,
-          bg.col = c(col, rep("grey", length(col))), track.height = 0.05,
-          panel.fun = function(x, y){
-            sector.name = get.cell.meta.data("sector.index")
-            xlim = get.cell.meta.data("xlim")
-            circos.text(mean(xlim), 1.5, sector.name, adj = c(0.5, 0))
-            }
-)
-
-
-for(i in seq_len(nrow(mat))) {
-  for(j in seq_len(ncol(mat))) {
-    circos.link(rn[i], c(sum(mat[i, seq_len(j-1)]), sum(mat[i, seq_len(j)])),
-    cn[j], c(sum(mat[seq_len(i-1), j]), sum(mat[seq_len(i), j])),
-    col = col[i], border = "white")
-  }
-}
-circos.clear()
-mtext(sect_string, side = 1, cex = 0.8,line = 2)
+# réalisation du graphique
+chorddiag(mat, groupColors = col, showTicks = F,
+          type = 'bipartite', chordedgeColor = 'white',
+          groupnameFontsize = 12, groupnamePadding = 5)
 ```
-Le graphique permet de remaquer que la plupart des flux s'effectuent au sein d'un même secteur. La majorité des personnes partant du secteur C (o.C) finissent également leur déplacement dans le secteur C (d.C) (section la plus large du trait partant de o.C). On peut cependant constater que les secteurs des arrondissements des Rivières et la cité Limoilou attirent une plus grande quantité et diversité de flux.
+Le graphique permet de remaquer que la plupart des flux s’effectuent au sein d’un même secteur. La majorité déplacements se font au sein du secteur Sainte-Foy (segment rouge central). On peut cependant constater que les secteurs des Rivières, la cité Limoilou et Haute-Saint-Charle attirent une plus grande quantité et diversité de flux. Si vous lisez ce livre dans un navigateur web (et pas au format *pdf*), le graphique est interactif ! En plaçant votre souris sur un lien, vous verrez s'afficher le nombre de déplacements qu'il représente.
 
 ### Nuage de mots
 
-Un nuage de mots est un graphique utilisé en analyse de texte pour représenter les mots les plus importants d'un document. Mesurer l'importance des termes dans un document est une discipline à part entière (*Natural Language Processing*), nous proposons un simple exemple ici avec la méthode *TextRank* (basée sur la théorie des graphs) proposée par @mihalcea2004textrank et implémentée dans le *package* **textrank**. Nous aurons également besoin des *packages* **udpipe** (fournissant des dictionnaires linguistiques), **RColorBrewer** (pour sélectionner une palette de couleur) et **wordcloud2** (pour générer le graphique). En guise d'exemple, nous avons choisi d'extraire le texte des Schémas d'Aménagement et de Développement (SAD) des agglomération de Québec et Montréal en vigueur en 2020. Il s'agit de deux documents de planification définissant les lignes directrices de l'organisation physique du territoire des Municipalité Régionale de Comté (MRC) ou des agglomérations. Pour ces deux documents, nous nous concentrons sur le chapitre portant sur les grandes orientations d'aménagement et de développement, soit les pages 30 à 135 pour Québec et 30 à 97 pour Montréal. Pour extraire les textes des fichiers pdf, nous utilisons le *package* **pdftools**.
+Un nuage de mots est un graphique utilisé en analyse de texte pour représenter les mots les plus importants d'un document. Mesurer l'importance des termes dans un document est une discipline à part entière (*Natural Language Processing*), nous proposons un simple exemple ici avec la méthode *TextRank* (basée sur la théorie des graphs) proposée par @mihalcea2004textrank et implémentée dans le *package* **textrank**. Nous aurons également besoin des *packages* **udpipe** (fournissant des dictionnaires linguistiques), **RColorBrewer** (pour sélectionner une palette de couleur) et **wordcloud2** (pour générer le graphique). En guise d'exemple, nous avons choisi d'extraire les textes de deux Schémas d'Aménagement et de Développement (SAD), ceux des agglomérations de Québec et Montréal en vigueur en 2020. Il s'agit de deux documents de planification définissant les lignes directrices de l'organisation physique du territoire des municipalités régionales de comté (MRC) ou des agglomérations. Pour ces deux documents, nous nous concentrons sur le chapitre portant sur les grandes orientations d'aménagement et de développement, soit les pages 30 à 135 pour Québec et 30 à 97 pour Montréal. Pour extraire les textes des fichiers pdf, nous utilisons le *package* **pdftools**.
 
 Nous devons donc réaliser les étapes suivantes pour produire le nuage de mots : 
 
-1. Extraire les sections qui nous intéressent des fichiers pdf
+1. Extraire les sections qui nous intéressent des fichiers *pdf*
 2. Extraire le texte de ces sections
-3. Retirer les caractères représentant les sauts de ligne et les sauts de paragraphes (`\n` et `\r`)
+3. Retirer les caractères représentant les sauts de lignes et les sauts de paragraphes (`\n` et `\r`)
 4. Concaténer tout le texte en une seule longue chaîne de caractère
 5. Utiliser un dictionnaire pour déterminer la nature des mots du texte (nom, adjectifs, verbes, etc.)
 6. Utiliser l'algorithme *TextRank* pour identifier les mots clefs
 7. Nettoyer les erreurs potentielles parmi les mots clefs
 8. Construire le nuage de mots.
 
-Notez que toutes ces étapes de nettoyages ne seraient pas nécessaire si nous utilisions un simple fichier texte comme point de départ. Cependant, il est plus courant de rencontrer des fichiers pdf, cet exercice est donc davantage révélateur de la difficulté réelle de la réalisation d'un nuage de mots.
+Notez que toutes ces étapes de nettoyage ne seraient pas nécessaire si nous utilisions un simple fichier texte comme point de départ. Cependant, il est plus courant de rencontrer des fichiers *pdf*, cet exercice est donc davantage révélateur de la difficulté réelle de la réalisation d'un nuage de mots.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, eval = FALSE}
 library(wordcloud2)
@@ -1190,7 +1147,7 @@ file_qc <- gsub("\n","",x = file_qc)
 file_mtl <- gsub("\r","",x = file_mtl)
 file_mtl <- gsub("\n","",x = file_mtl)
 
-# Étape 4 : créer une seule longue chaîne de caractère
+# Étape 4 : créer une seule longue chaîne de caractères
 # à partir des vecteurs de texte
 text_qc <- paste(file_qc, collapse = " ")
 text_mtl <- paste(file_mtl, collapse = " ")
@@ -1266,7 +1223,7 @@ data_co2_2015 <- subset(data_co2,data_co2$year == "2015" & ! is.na(data_co2$regi
 
 treemap(data_co2_2015, index=c("region7","region23"),
     vSize="CO2_kt", type="index",
-    title = "CO2 rejettées par pays en 2015",
+    title = "CO2 rejetés par pays en 2015",
     fontsize.labels=c(12,8), # taille des étiquettes              
     fontcolor.labels=c("white","black"), # couleur des étiquettes
     fontface.labels=c(2,1), # style des polices
@@ -1392,7 +1349,7 @@ ggsave(filename = 'graphique.pdf',
        width = 10, height = 10, units = "cm")
 ```
 
-Pour les graphiques n'étant pas réalisés avec **ggplot2**, l'alternative à la fonction `ggsave` est l'ensemble de fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`, qui permettent d'exporter n'importe quel graphique dans ces différents formats. <span class="revision_prop">Le processus est cependant un peu complexe et comprend trois étapes C'EST PAS BIEN SORCIER....</span>.<span class="revision_prop">Le processus est cependant comprend trois étapes.</span> 
+Pour les graphiques n'étant pas réalisés avec **ggplot2**, l'alternative à la fonction `ggsave` est l'ensemble de fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`, qui permettent d'exporter n'importe quel graphique dans ces différents formats. Le processus comprend trois étapes : 
 
 1. Ouvrir une connexion vers le fichier dans lequel le graphique sera exporté avec une des fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`.
 2. Réaliser son graphique comme si on souhaitait l'afficher dans RSudio. Il n'apparaitra cependant pas car il sera écrit dans le fichier en question à la place.
@@ -1413,4 +1370,12 @@ dev.off()
 
 ```
 
+## Conclusion sur les graphiques
+
+Vous avez pu constater que les capacités de représentation graphique de ![](images/logos/Rlogo.png) sont vastes et pourtant nous n'avons fait qu'observer la partie émergée de l'iceberg dans ce chapitre. Il est également possible de réaliser de la visualisation en 3D dans ![](images/logos/Rlogo.png) (**plot3D**, **rgl**), d'animer des graphiques pour en faire des *GIF*  ou des vidéos (**gganimate**), de rendre des graphiques interactifs, ou même de construire des plateformes de visualisation de données disponibles en ligne (**shiny**). Vous continuerez à découvrir de nouvelles formes de représentation au fur et à mesure de votre pratique, en apprenant de nouvelles méthodes nécessitant des visualisations spécifiques.
+
+Voici également deux références trés utiles qui nous ont notamment aidé à construire ce chapitre : 
+
+* [The R Graph Gallery](https://www.r-graph-gallery.com/), probablement **LE** site web proposant le plus de matériel sur comment réaliser des grahique dans ![](images/logos/Rlogo.png).
+* [Data to viz](https://www.data-to-viz.com/), si vous ne savez pas quel graphique pourrait le mieux correspondre à vos données, Data to viz est là pour vous aider. Vous y trouverez un arbre de décision pour vous indiquer quel graphique utiliser dans quelle situation, ainsi que de nombreux conseils sur la visualisation de données.
 
