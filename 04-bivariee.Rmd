@@ -34,7 +34,6 @@ Dans cette section, nous utiliserons principalement les packages suivants :
   - **car**, pour les ANOVA classiques
   - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
   - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
-
 :::
 
 ## Relation linéaire entre deux variables quantitatives {#sect41}
@@ -1965,52 +1964,6 @@ Trois conditions d'application doivent être vérifiées avant d'effectuer une a
 * Si les observations ne sont pas indépendantes, à la fois le taux d'erreurs de type 1 et la puissance du test sont fortement affectés.
 * Si les échantillons sont petits, les effets présentés ci-dessus sont démultipliés.
 * Si plusieurs conditions ne sont pas respectées, les conséquences présentées ci-dessus s'additionnent, voir se combinent.
-
-```{r figanovapb, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exemples de distributions anormales",  out.width='95%', message=FALSE, warning=FALSE}
-library(SimDesign)
-library(ggplot2)
-library(ggpubr)
-df <- data.frame(
-  "normal" = rnorm(1500,0,1),
-  "skew_normal" = rValeMaurelli(1500, mean=0, sigma=1, skew=1.4, kurt=3),
-  "leptokurtic" = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=5),
-  "platykurtic" = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=0.01)
-)
-p1 <- ggplot(df) + 
-  geom_histogram(aes(x = skew_normal,y =..density..),
-                   colour = "black", 
-                   bins = 60,
-                   fill = "white") +
-  stat_function(fun = dnorm, args = list(mean = 0, sd = 1),
-                color="blue", size = 1)+
-  xlim(-7,7)+
-  ylim(0,0.55)+
-  ylab("")+
-  xlab("a. Distribution asymétrique versus distribution normale")
-p2 <- ggplot(df) + 
-  geom_histogram(aes(x = leptokurtic,y =..density..),
-                   colour = "black", 
-                   bins = 60,
-                   fill = "white") +
-  stat_function(fun = dnorm, args = list(mean = 0, sd = 1),
-                color="blue", size = 1)+
-  xlim(-7,7)+
-  ylim(0,0.55)+
-  ylab("")+
-  xlab("b. Distribution leptocurtique versus distribution normale")
-p3 <- ggplot(df) + 
-  geom_histogram(aes(x = platykurtic,y =..density..),
-                   colour = "black", 
-                   bins = 60,
-                   fill = "white") +
-  stat_function(fun = dnorm, args = list(mean = 0, sd = 1),
-                color="blue", size = 1)+
-  xlim(-7,7)+
-  ylim(0,0.55)+
-  ylab("")+
-  xlab("c. Distribution platicurtique versus distribution normale")
-ggarrange(p1,p2,p3,nrow = 3, ncol = 1)
-```
 
 **Que faire quand les conditions d'application relatives à la normalité ou à l'homoscédaticité ne sont vraiment pas respectées ?** Signalons d'emblée que le non respect de ces conditions ne change rien à la décomposition de la variance (VT=V~intra~+V~inter~). Cela signifie que vous pouvez toujours calculer Eta^2^. Par contre, le test de Fisher ne peut pas être utilisé car il sera biaisé comme décrit précédemment. Quatre solutions sont envisageables :
 

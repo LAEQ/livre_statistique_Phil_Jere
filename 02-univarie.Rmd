@@ -2,12 +2,6 @@
 
 Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèses et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
-A<sub>2</sub>
-
-<span class="revision_prop">Suppression</span>
-<span class="revision_rem">Ajout de texte</span>
-
-
 ::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
 Dans cette section, nous utiliserons principalement les packages suivants (À MODIFIER PLUS TARD) : 
 
@@ -410,65 +404,77 @@ knitr::kable(df,
 #### Vérifier la normalité d'une variable quantitative
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
-De nombreux méthodes statistiques qui seront abordées dans les chapitres suivants – entre autres la corrélation de Pearson, les test *t* et l'analyse de variance, les régressions simple et multiple – requiert que la variable continue suivent une **distribution normale** (nommée aussi **distribution gaussienne**).
+De nombreux méthodes statistiques qui seront abordées dans les chapitres suivants – entre autres la corrélation de Pearson, les test *t* et l'analyse de variance, les régressions simple et multiple – requiert que la variable quantitative suive une **distribution normale** (nommée aussi **distribution gaussienne**).
 
-Dans cette sous-section, nous décrirons trois démarches pour vérifier si la distribution d'une variables est normale : les coefficients d'asymétrie et d'applatissement (*skewness* et *kurtosis* en anglais), les graphiques (histogramme avec courbe normale, diagramme quantile-quantile), les tests de normalité (tests de Shapiro-Wilk, Kolmogorov-Smirnov et Jarque-Bera).
+Dans cette sous-section, nous décrirons trois démarches pour vérifier si la distribution d'une variables est normale : les coefficients d'asymétrie et d'applatissement (*skewness* et *kurtosis* en anglais), les graphiques (histogramme avec courbe normale, diagramme quantile-quantile), les tests de normalité (tests de Shapiro-Wilk, Kolmogorov-Smirnov, Lilliefors, Anderson-Darling et Jarque-Bera).
+
+**Il est vivement recommander de réaliser les trois démarches !**
 :::
-
-##### Vérifier la normalité avec les coefficients d'asymétrie et d'applatissement
 
 Une distribution est normale quand elle est symétrique et mésokurtique (figure \@ref(fig:figFormeDistr)).
 
-```{r figFormeDistr, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Formes d'une distribution et les coefficients d'asymétrie et d'aplatissement",  out.width='50%'}
+```{r figFormeDistr, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Formes d'une distribution et les coefficients d'asymétrie et d'aplatissement",  out.width='90%'}
 knitr::include_graphics('images/univariee/FormeDistribution.jpg', dpi = NA)
 ```
 
-**Une distribution est dite symétrique** quand la moyenne arithmétique est au centre de la distribution, c'est-dire que les observations sont bien réparties de part et d'autre la moyenne qui sera alors égale à la médiane et au mode (on utilisera uniquement le mode pour une variable discrète et non pour une variable continue). Pour évaluer l'asysmétrie, le coefficient d'assymétrie (*skewness* en anglais, eq. \@ref(eq:skewness)), habituellement utilisé, s'interprète comme suit (figure \@ref(fig:asymetrie)) :
+##### Vérifier la normalité avec les coefficients d'asymétrie et d'applatissement
 
-* quand la valeur du *skewness* est négative, la **distribution est asymétrique négative**. La distribution est alors tirée à gauche par des valeurs extrêmes faibles, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est tirée vers la gauche – La moyenne est alors inférieure à la médiane.
+**Une distribution est dite symétrique** quand la moyenne arithmétique est au centre de la distribution, c'est-dire que les observations sont bien réparties de part et d'autre la moyenne qui sera alors égale à la médiane et au mode (on utilisera uniquement le mode pour une variable discrète et non pour une variable continue). Pour évaluer l'asysmétrie, on utilise habituellement le coefficient d'assymétrie (*skewness* en anglais). 
+
+Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing] : $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans ![](images/logos/Rlogo.png) avec la fonction `skewness` du *package* **moments**), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* **DescTools** ou **e1071**, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quel que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie)) :
+
+* quand la valeur du *skewness* est négative, la **distribution est asymétrique négative**. La distribution est alors tirée à gauche par des valeurs extrêmes faibles, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est tirée vers la gauche.La moyenne est alors inférieure à la médiane.
 * quand la valeur du *skewness* est égale à 0, **la distribution est symétrique** (la médiane sera égale à la moyenne). Pour une variable discrète, les valeurs du mode, de la moyenne et de la médiane seront égales.
-* quand la valeur du *skewness* est positive, la **distribution est symétrique positive**. La distribution est alors tirée à droite par des valeurs extrêmes fortes, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est tirée vers la droit –. La moyenne est alors supérieure à la médiane. En sciences sociales, le revenu total des individus ou des ménages ont souvent des distributions asysmétriques positives : la moyenne est affectée par quelques observations avec des valeurs de revenu très élevées et est ainsi supérieure à la médiane. En études urbaines, la densité de population pour des unités géographiques d'une métropole donnée (secteur de recensement par exemple) a aussi souvent une distribution asymétrique positive : quelques secteurs de recensement au centre de la métropole caractérisés par des valeurs de densité très élevées tirent la distribution vers la droite.
-
+* quand la valeur du *skewness* est positive, la **distribution est symétrique positive**. La distribution est alors tirée à droite par des valeurs extrêmes fortes, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est tirée vers la droite. La moyenne est alors supérieure à la médiane. En sciences sociales, le revenu total des individus ou des ménages ont souvent des distributions asysmétriques positives : la moyenne est affectée par quelques observations avec des valeurs de revenu très élevées et est ainsi supérieure à la médiane. En études urbaines, la densité de population pour des unités géographiques d'une métropole donnée (secteur de recensement par exemple) a aussi souvent une distribution asymétrique positive : quelques secteurs de recensement au centre de la métropole caractérisés par des valeurs de densité très élevées tirent la distribution vers la droite.
 
 \begin{equation} 
-skew=\frac{n}{(n-1)(n-2)(n-3)}\sum_{i=1}^n\left(\frac{x_i-\bar{x}}{s}\right)^3
-(\#eq:skewness)
+g_1=\frac{ \frac{1}{n} \sum_{i=1}^n(x_i-\bar{x})^3} { \left[\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2\right] ^\frac{3}{2}}
+(\#eq:SkewType1)
 \end{equation}
 
 \begin{equation} 
-kurt=\bigg\{\frac{n(n+1)}{(n-1)(n-2)(n-3)}\sum_{i=1}^n\left(\frac{x_i-\bar{x}}{s}\right)^4\bigg\}-\frac{3(n-1)^2}{(n-2)(n-3)}
-(\#eq:kurtosis)
+G_1= \frac{\sqrt{n(n-1)}}{n-2} g_1
+(\#eq:SkewType2)
 \end{equation}
+
+\begin{equation} 
+b_1= \left( \frac{n-1}{n} \right) ^\frac{3}{2} g_1
+(\#eq:SkewType3)
+\end{equation}
+
 
 ```{r asymetrie, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Asymétrie d'une distribution", out.width='100%'}
-library(moments)
+library(DescTools)
 library(ggplot2)
 library(ggpubr)
+library(SimDesign)
 
 # Générer des distributions asymétriques
 df <- data.frame(
-  Skewed_L = rbeta(1000,5,2)*1000,
-  Skewed_R = rbeta(1000,2,5)*1000,
-  Skewed_N = rbeta(1000,5,5)*1000
+  Normale  = rnorm(1500,0,1),
+  Skewed_L = rValeMaurelli(1500, mean=0, sigma=1, skew=1.4, kurt=3),
+  Skewed_R = rValeMaurelli(1500, mean=0, sigma=1, skew=-1.4, kurt=3),
+  L = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=7),
+  P = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=-1)
 )
 
-statsL <- c(mean(df$Skewed_L),median(df$Skewed_L),skewness(df$Skewed_L),kurtosis(df$Skewed_L))
-statsR <- c(mean(df$Skewed_R),median(df$Skewed_R),skewness(df$Skewed_R),kurtosis(df$Skewed_R))
-statsN <- c(mean(df$Skewed_N),median(df$Skewed_N),skewness(df$Skewed_N),kurtosis(df$Skewed_N))
+statsL <- c(mean(df$Skewed_L),median(df$Skewed_L),Skew(df$Skewed_L),Kurt(df$Skewed_L))
+statsR <- c(mean(df$Skewed_R),median(df$Skewed_R),Skew(df$Skewed_R),Kurt(df$Skewed_R))
+statsN <- c(mean(df$Normale),median(df$Normale),Skew(df$Normale),Kurt(df$Normale))
 
-CaptionL <- paste("Moyenne = ",  round(statsL[1],0), 
-                  "\nMédiane = ",  round(statsL[2],0),  
-                  "\nSkewness = ",  round(statsL[3],3), 
+CaptionL <- paste("Moyenne = ",  round(statsL[1],2), 
+                  "\nMédiane = ",  round(statsL[2],2),  
+                  "\nSkewness = ",  round(statsL[3],2), 
                   sep="")
 
-CaptionR <- paste("Moyenne = ",  round(statsR[1],0), 
-                  "\nMédiane = ",  round(statsR[2],0),  
-                  "\nSkewness = ",  round(statsR[3],3), 
+CaptionR <- paste("Moyenne = ",  round(statsR[1],2), 
+                  "\nMédiane = ",  round(statsR[2],2),  
+                  "\nSkewness = ",  round(statsR[3],2), 
                   sep="")
 
-CaptionN <- paste("Moyenne = ",  round(statsN[1],0), 
-                  "\nMédiane = ",  round(statsN[2],0),  
-                  "\nSkewness = ",  round(statsN[3],3), 
+CaptionN <- paste("Moyenne = ",  round(statsN[1],2), 
+                  "\nMédiane = ",  round(statsN[2],2),  
+                  "\nSkewness = ",  round(statsN[3],2), 
                   sep="")
 
 Gl <- ggplot(data = df, mapping = aes(x=Skewed_L))+
@@ -502,9 +508,9 @@ Gr <- ggplot(data = df, mapping = aes(x=Skewed_R))+
       plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
       )
 
-Gn <- ggplot(data = df, mapping = aes(x=Skewed_N))+
+Gn <- ggplot(data = df, mapping = aes(x=Normale))+
       geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
-      stat_function(fun = dnorm, args = list(mean = mean(df$Skewed_N), sd = sd(df$Skewed_N)), color="black",size=1)+
+      stat_function(fun = dnorm, args = list(mean = mean(df$Normale), sd = sd(df$Normale)), color="black",size=1)+
       labs(title ="c. Asymétrie nulle", 
            subtitle = "Moy. et méd. très semblables",
            x="", y="",
@@ -517,18 +523,335 @@ Gn <- ggplot(data = df, mapping = aes(x=Skewed_N))+
       plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
       )
 
-ggarrange(Gl, Gn, Gr, ncol = 3, nrow=1)
+ggarrange(Gl, Gn, Gr, ncol = 2, nrow=2)
 ```
 
 
-Kurtosis 
-leptocurtique : small sd
-Platykrutique : larger sd
+**Pour évaluer l'applatissement d'une distribution**, on utilisera le coefficient d’aplatissement (*kurtosis* en anglais). Là encore, il existe trois formules pour le calculer (eq. \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3)) qui renverront des valeurs très sembables pour de grands échantillons [@joanes1998comparing]. Cette mesure s'interprète comme suit (figure \@ref(fig:asymetrie)) :
 
+* quand la valeur du *kurtosis* est négative, la **distribution est platikurtique**. La distribution est dite plate, c'est-dire que la valeur de l'écart-type est importante (comparativement à une distribution normale), signalant une grande dispersion des valeurs de par et d'autre la moyenne.
+* quand la valeur du *kurtosis* est égale à 0, **la distribution est mésokurtique**, ce qui est typique d'une distribution normale.
+* quand la valeur du *kurtosis* est positive, la **distribution est leptokurtique**, signalant que l'écart-type (la dispersion des valeurs) est plutôt faible. Autrement dit, la dispersion des valeurs autour de la moyenne est faible.
+
+\begin{equation} 
+g_2=\frac{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^4} {\left( \frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2\right)^2}-3
+(\#eq:KurtType1)
+\end{equation}
+
+\begin{equation} 
+G_2 = \frac{n-1}{(n-2)(n-3)} \{(n+1) g_2 + 6\}
+(\#eq:KurtType2)
+\end{equation}
+
+\begin{equation} 
+b_2 = (g_2 + 3) (1 - 1/n)^2 - 3
+(\#eq:KurtType3)
+\end{equation}
+
+```{r kurtosis, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Applatissement d'une distribution", out.width='100%'}
+library(DescTools)
+library(ggplot2)
+library(ggpubr)
+library(SimDesign)
+
+# Générer des distributions asymétriques
+statsM <- c(mean(df$Normale),median(df$Normale),Skew(df$M),Kurt(df$Normale))
+statsL <- c(mean(df$L),median(df$L),Skew(df$L),Kurt(df$L))
+statsP <- c(mean(df$P),median(df$P),Skew(df$P),Kurt(df$P))
+
+CaptionN <- paste("\nKurtosis = ",  as.character(round(Kurt(df$Normale),2)), sep="")
+CaptionL <- paste("\nKurtosis = ",  as.character(round(Kurt(df$L),2)), sep="")
+CaptionP <- paste("\nKurtosis = ",  as.character(round(Kurt(df$P),2)), sep="")
+
+Gl <- ggplot(data = df, mapping = aes(x=L))+
+  geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
+  stat_function(fun = dnorm, args = list(mean = mean(df$L), sd = sd(df$L)), color="black",size=1)+
+  labs(title ="a. Distribution leptokurtique",
+       x="",
+       y="Densité",
+       subtitle = CaptionL)+
+  geom_vline(xintercept = statsL[1],color="cadetblue4", size=.8)+
+  theme(
+    plot.title = element_text(hjust = 0.5,  size = 9, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
+    plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
+  )
+
+Gm <- ggplot(data = df, mapping = aes(x=Normale))+
+  geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
+  stat_function(fun = dnorm, args = list(mean = mean(df$Normale), sd = sd(df$Normale)), color="black",size=1)+
+  labs(title ="b. Distribution mésokurtique",
+       x="", y="",
+       subtitle = CaptionN)+
+  geom_vline(xintercept = statsM[1],color="cadetblue4", size=.8)+
+  theme(
+    plot.title = element_text(hjust = 0.5,  size = 9, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
+    plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
+  )
+
+Gp <- ggplot(data = df, mapping = aes(x=P))+
+  geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
+  stat_function(fun = dnorm, args = list(mean = mean(df$P), sd = sd(df$P)), color="black",size=1)+
+  labs(title ="c. Distribution platikurtique",
+       x="", y="",
+       subtitle = CaptionP)+
+  geom_vline(xintercept = statsN[1],color="cadetblue4", size=.8)+
+  theme(
+    plot.title = element_text(hjust = 0.5,  size = 9, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
+    plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
+  )
+
+ggarrange(Gp, Gm, Gl, ncol = 2, nrow=2)
+```
+
+::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+Regardez attentivement les équations \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3); vous remarquez que pour $g_2$ et $b_2$, il y a une soustraction de $-3$ et une addition $+6$ pour $G_2$. On parle alors de *kurtosis* normalisé (*excess kurtosis* en anglais). Pour une distribution normale, il prendra la valeur de 0, comparativement à la valeur de 3 pour *kurtosis* non normalisé. Par conséquent, avant de calculer du *kurtosis*, il convient de s'assurer que la fonction que vous utilisez implémente une méthode de calcul normalisée (donnant une valeur de 0 pour une distribution normale). Par exemple, la fonction `Kurt` du *package* **DescTools** calcule les trois formules normalisées tandis que la `kurtosis` du *package* **moments** renvoie un *kurtosis* non normalisée.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+library(DescTools)
+library(moments)
+
+#Générer une variable normalement distribuée avec 1000 observations
+Normale <- rnorm(1500,0,1)
+round(DescTools::Kurt(Normale),3)
+round(moments::kurtosis(Normale),3)
+```
+
+:::
+
+##### Vérifier la normalité avec des graphiques
+
+Les graphiques sont un excellent moyen de vérifier visuellement si une distribution est normale ou pas. Bien entendu, les histogrammes, que nous avons déjà largement utilisés, sont un incontournable; à titre de rappel, ils permettent de vérifier les valeurs de la variable sont également réparties autour de la moyenne  (figure \@ref(fig:CourbeNormale)). Un autre type de graphique intéressant est le **diagramme  quantile-quantile** (*Q-Q plot* en anglais) qui permet de comparer la distribution d'une variable avec une distribution gaussienne (normale). Trois éléments composent ce graphique tel qu'illustré à la figure \@ref(fig:qqplot) :
+
+* les points de la variable
+* la distribution gaussienne (normale) représentée par une ligne
+* l'intervalle de confiance à 5% de la distribution normale (en orange sur la figure).
+
+Quand la variable est normale distribuée, les points seront situés le long de la ligne. Plus les points localisés en dehors de l'intervalle de confiance (bande orange) seront nombreux, plus la variable sera alors anormalement distribuée.
+
+
+```{r CourbeNormale, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Distributions et courbe normale", out.width='90%'}
+library(ggplot2)
+library(reshape2)
+library(qqplotr)
+
+melted_dist <- melt(df,
+                    distributions = c("Normale", "Skewed_L",
+                                      "Skewed_R","student", "L", "P"))
+
+names(melted_dist) <- c("distribution", "valeur")
+melted_dist$distribution <- factor(melted_dist$distribution,
+                          levels = c("Normale","Skewed_L","Skewed_R","L","P"),
+                          labels = c("Normale",
+                                     "Asymétrie négative",
+                                     "Asymétrie positive",
+                                     "Leptokurtique",
+                                     "Platikurtique"))
+
+ggplot(data = melted_dist, mapping = aes(x=valeur))+
+  labs(caption = paste0("Skewness", "Kurtosis", sep=""))+
+  geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
+  stat_function(fun = dnorm, args = list(mean = mean(melted_dist$valeur), sd = sd(melted_dist$valeur)), color="black",size=1)+
+  geom_vline(xintercept = mean(melted_dist$valeur),color="cadetblue4", size=.8)+
+  labs(y="Densité", x="")+
+  facet_wrap(vars(distribution), ncol=2, scales = "free")
+```
+
+```{r qqplot, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Diagramme quantile-quantile", out.width='90%'}
+ggplot(data = melted_dist, aes(sample=valeur))+
+    stat_qq_band(fill="bisque3")+
+    stat_qq_line(color="black", size=.3) +
+    stat_qq(color="black", size=1)+
+    labs(y="Échantillon", x="théorique")+
+  facet_wrap(vars(distribution), ncol=2, scales = "free")
+```
+
+##### Vérifier la normalité avec des tests de normalité 
+
+Cinq principaux tests d'hypothèses permettent de vérifier la normalité d'une variable : les tests de **Kolmogorov-Smirnov** (KS), **Lilliefors** (LF), **Shapiro-Wilk** (SW), **Anderson-Darling**, et de **Jarque-Bera** (JB); sachez toutefois qu'il y en a d'autres non discutés ici (tests de D’Agostino–Pearson, Cramer–von Mises, e Ryan-Joiner, Shapiro–Francia, etc.). Pour les formules et une description détaillée de ces tests, on pourra consulter Razali et al. [-@razali2011power] ou Yap et Sim [-@yap2011comparisons]. **Quel test choisir ?** Plusieurs auteurs ont comparé ces différents tests à partir de plusieurs échantillons, et ce, en faisant varier la forme de la distribution et le nombre d'observations [@razali2011power;@yap2011comparisons]. Selon Razali et al. [-@razali2011power], le meilleur test semble être celui de Shapiro-Wilk, puis ceux de Anderson-Darling, Lilliefors et Kolmogorov-Smirnov. Yap et Sim [-@yap2011comparisons] concluent aussi que le Shapiro-Wilk semble être le plus performant.
+
+Quoi qu'il en soit, ces cinq tests postulent que la variable suit une distribution gaussienne (hypothèse nulle, h<sub>0</sub>). Cela signifie que si la valeur de P associée à la valeur de chacun des tests est supérieure au seuil alpha choisi (habituellement $\alpha=0,05$), la distribution est normale. À l'inverse, si $P<0,05$, on choisit l'hypothèse alternative (h<sub>1</sub>), c'est-à-dire que la distribution est anormale.
+
+```{r testnormalites, echo=FALSE, message=FALSE, warning=FALSE}
+options(knitr.kable.NA = '')
+df <- data.frame(
+  Test = c("Kolmogorov-Smirnov",
+           "Lilliefors",
+           "Shapiro-Wilk",
+           "Anderson-Darling",
+           "Jarque-Bera"),
+  Interpretation =
+          c("Plus sa valeur est proche de zéro, plus la distribution est normale.  L'avantage de ce test est qu'il peut être utilisé pour vérifier si une variable si la distribution de n'importe qu'elle loi (autre que la loi normale).",
+           "Ce test une adaptation du test de Kolmogorov-Smirnov. Plus sa valeur est proche de zéro, plus la distribution est normale.",
+           "Si la valeur de la statistique de Shapiro-Wilk est proche de 1, alors la distribution est normale; et anormale quand elle est inférieure à 1.",
+           "Ce test est une modification du test de Cramer-von Mises (CVM). Il peut être aussi utilisé pour tester d'autres distributions (uniforme, log-normale, exponentielle, Weibull, distribution de pareto généralisée, logistique, ).",
+           "Basé sur un test du type multiplicateur de Lagrange, il utilise dans son calcul les valeurs du *Skewness* et du *Kurtosis*. Plus sa valeur s'approche de 0, plus la distribution est normale. Ce test est surtout utilisé pour vérifier si les résidus d'un modèle de régression linéaire sont normalement distribués, nous y reviendrons dans le chapitre sur la régression multiple. Il s'écrit $JB=\\frac{1}{6} \\left({g_1}^2+\\frac{{g_1}^2}{4} \\right)$ avec $g_1$ et $g_2$ sont respectivement les valeurs du *skewness* et du *kurtosis* de la variable (voir plus haut les équations \\@ref(eq:SkewType1) et \\@ref(eq:KurtType1)."),
+  Fonction= c("`ks.test` du *package* **stats**",
+           "`lillie.test` du *package* **nortest**",
+           "`shapiro.test` du *package* **stats**",
+           "`ad.test` du *package* **stats**",
+           "`JarqueBeraTest` du *package* **DescTools**")
+  )
+
+knitr::kable(df,
+  format.args = list(decimal.mark = ",", big.mark = " "),   
+  col.names = c("Test","Propriétés et interprétation", "Fonction R"),
+  caption = "Les différents tests d'hypothèses pour la normalité",
+  booktabs = TRUE, valign = 't', row.names = FALSE)
+```
+
+Dans le tableau ci-dessous sont reportées les valeurs des différents tests pour les cinq types de distribution générées à la figure \@ref(fig:CourbeNormale). Sans suprise, pour l'ensemble des tests $P>0,05$ pour la distribution normale.
+
+```{r calcultestnormalites, echo=FALSE, message=FALSE, warning=FALSE}
+library(DescTools)
+library(nortest)
+
+df <- data.frame(
+  Normale  = rnorm(500,0,1),
+  Skewed_L = rValeMaurelli(50, mean=0, sigma=1, skew=1.4, kurt=3),
+  Skewed_R = rValeMaurelli(50, mean=0, sigma=1, skew=-1.4, kurt=3),
+  L = rValeMaurelli(500, mean=0, sigma=1, skew=0, kurt=7),
+  P = rValeMaurelli(500, mean=0, sigma=1, skew=0, kurt=-1)
+)
+
+vars <- names(df)
+S <- c()
+K <- c()
+
+KS <- c()
+KS.p <- c()
+
+LF <- c()
+LF.p <- c()
+
+SW <- c()
+SW.p <- c()
+
+AD <- c()
+AD.p <- c()
+
+JB <- c()
+JB.p <- c()
+
+
+i <- 1
+for (e in vars){
+  ksmirnov <- ks.test(df[[e]], "pnorm", mean=mean(df[[e]]), sd=sd(df[[e]]))
+  lillie <- lillie.test(df[[e]])
+  shapiro <- shapiro.test(df[[e]])
+  AndDarling <- ad.test(df[[e]])
+  JarqueB <- JarqueBeraTest(df[[e]], robust = TRUE)
+  
+  S[i] <- Skew(df[[e]])
+  K[i] <- Kurt(df[[e]])
+  
+  KS[i] <- ksmirnov$statistic
+  KS.p[i] <- ksmirnov$p.value 
+  
+  LF[i] <- lillie$statistic
+  LF.p[i] <- lillie$p.value  
+  
+  SW[i] <- shapiro$statistic
+  SW.p[i] <- shapiro$p.value
+
+  AD[i] <- AndDarling$statistic
+  AD.p[i] <- AndDarling$p.value
+  
+  JB[i] <- JarqueB$statistic
+  JB.p[i] <- JarqueB$p.value
+
+  i <- i+1
+}
+
+Tests <- data.frame(
+  "S" = round(S,3),
+  "K" = round(K,3),
+  "KS" = round(KS,3),
+  "LF" = round(LF,3),
+  "SW" = round(SW,3),
+  "AD" = round(AD,3),
+  "JB" = round(JB,3),
+
+ "KS.p" = round(KS.p,3),
+ "LF.p" = round(LF.p,3),
+ "SW.p" = round(SW.p,3),
+ "AD.p" = round(AD.p,3),
+ "JB.p" = round(JB.p,3)
+)
+
+Tests <- t(Tests)
+row.names(Tests) <- c("Skewness","Kurtosis",
+                      "Kolmogorov-Smirnov (KS)",
+                      "Lilliefors (LF)",
+                      "Shapiro-Wilk (SW)",
+                      "Anderson-Darling (AD)",
+                      "Jarque-Bera (JB)",
+                      "KS (valeur p)",
+                      "LF (valeur p)",
+                      "SW (valeur p)",
+                      "AD (valeur p)",
+                      "JB (valeur p)")
+
+knitr::kable(Tests,
+             format.args = list(decimal.mark = ",", big.mark = " "),
+             col.names = c("Normale","Asymétrie négative",
+                           "Asymétrie positive","Leptokurtique", "Platikurtique"),
+             caption = "Calculs des tests de normalité pour différentes distributions",
+             booktabs = TRUE, valign = 't', row.names = TRUE)
+```
+
+::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+**Attention** ! La plupart des auteurs s'entendent sur le fait que ces tests sont très restrictifs : plus la taille de votre échantillon ($n$) est importante, plus les tests risquent de vous signaler que vos distributions sont anormales (à la lecture des valeurs de P).
+
+Certains conseillent même de ne pas les utiliser quand $n>200$ et de vous fier uniquement aux graphiques (histogramme et diagramme Q-Q) !
+:::
+
+::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+Bref, vérifier la normalité d'une variable n'est pas une tâche si simple. De nouveau, nous vous conseillons vivement de :
+
+* construire les graphiques pour analyser visuellement la forme de la distribution (histogramme avec courbe normale et diagramme Q-Q)
+* calculer le *skewness* et le *kurtosis*, 
+* calculer plusieurs tests (minimalement Shapiro-Wilk et Kolmogorov-Smirnov)
+* accorder une importance particulière aux graphiques lorsque vous traitez des grands échantillons ($n>200$).
+:::
+
+
+#### Vérifier d'autres formes de distribution
+
+**A FAIRE PAR JÉRÉMY** AVEC les tests de Kolmogorov-Smirnov, Lilliefors et Anderson-Darling !!
 
 ### La transformation des variables {#sect255}
 
 #### Les transformations visant à atteindre la normalité  {#sect2551}
+
+Comme qu'énoncé au début de cette section, plusieurs méthodes statistiques nécessitent que la variable quantitative soit normalement distribuée. C'est notamment le cas de l'analyse de variance et des tests T (abordés dans les chapitres suivants) qui fourniront des résultats plus robustes lorsque la variable normalement distribuée.
+
+::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+
+**Transformation des variables pour atteindre la normalité : ce n'est pas toujours la panacée !**
+
+La transformation des données fait et fera encore longtemps débat à la fois parmi les statisticiens que les débutants et utilisateurs avancés des méthodes quantitatives. Field et al. [-@field2012discovering, pp. 193] résument le tout avec humour : « To transform or not transform, that is the question ».
+
+**Avantages de la transformation**
+
+* L'obtention de *résultats plus robustes*.
+* Dans une régression multiple linéaire, la transformation de la variable dépendante ou encore d'une ou plusieurs variables indépendantes permet souvent de *remédier au non-respect des hypothèses de base liées à la régression* (linéarité et homoscédasticité des erreurs, absence des valeurs aberrantes, etc.).
+
+**Inconvénients de la transformation**
+
+* *Une variable transformée est plus difficile à interpréter* puisque cela change l'unité de mesure de la variable. Prenons un exemple concret : vous souhaitez comparer les moyennes de revenu de deux groupes *A* et *B*. Vous obtenez une différence de 15000$, soit une valeur facile à interpréter. Par contre, si la variable a été préalablement transformée en logarithme, il est possible que vous obteniez une différence de 9, ce qui beaucoup moins parlant. Aussi, en transformant la variable en *log*, vous ne comparez plus les moyennes arithmétiques des deux groupes, mais plutôt leurs moyennes géométriques [@field2012discovering, pp. 193].
+
+* *Pourquoi perdre la forme initiale de la distribution du phénomène à expliquer ?* Par exemple, on pourrait transformer une variable avec une distribution de type *student* afin qu'elle ait une distribution plus normale et l'introduire ensuite comme variable dépendante dans un modèle de régression linéaire. Or, il existe des modèles linéaires généralisés (GLM) qui permettent justement de modéliser une variable indépendante de type *student*.
+
+**Démarche à suivre avant et après la transformation**
+
+* *La transformation est-elle nécessaire ?* Ne transformer jamais une variable sans avoir analyser rigoureusement sa forme (histogramme avec courbe normale, *skewness* et *kurtosis* et test de normalité).
+* *D'autres options à la transformation d'une variable dépendante (VD) sont-elles envisageables ?* Identifier la forme de la distribution de la VD et utilisez au besoin un modèle GLM adapté à cette distribution. Autrement dit, ne transformer automatiquement pour simplement pouvoir utiliser une régression linéaire multiple.
+* *La transformation a-t-elle un apport significatif ?* Premièrement, vérifier si la transformation utilisée (logarithme, racine carrée, inverse, etc.) améliore la normalité de la variable. Ce n'est toujours le cas, pourquoi c'est pire ! Prenez soin de comparer les histogrammes, les valeurs de *skewness*, *kurtosis* et des différents tests de normalité avant et après la transformation. Deuxièmement, comparer les résultats de vos analyses statistiques sans et avec transformation, et ce, dans une démarche coût-avantage. Vos résultats sont-ils bien plus robustes? Par exemple, un R^2^ qui passe de 0,597 à 0,602 avant et après la transformation des variables, avec des associations significatives similaires mais plus difficiles à interpréter (du fait des transformations) n'est pas forcément un gain significatif. La modélisation en sciences sociales ne vise à prédire la trajectoire d'un satellite ou l'atterrissage d'un engin sur Mars ! La précision à quatrième décimale n'est pas une condition ! Autrement dit, un modèle un peu moins robuste, mais plus facile à interpréter afin de valider est parfois préférable.
+:::
+
 
 
 #### Autres types de transformation  {#sect2552}
@@ -544,7 +867,9 @@ z= \frac{x_i-\mu}{\sigma}
 
 * **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Speaman et certains tests non-paramétriques (RAPPEL SECTION).
 
-* **La transformation sur une échelle de 0 à 1** (ou de 0 à 100) qui consiste à soustraite à chaque observation la valeur minimale et à diviser le tout par l'étendue (eq. \@ref(eq:t01))). 
+
+
+* **La transformation sur une échelle de 0 à 1** (ou de 0 à 100) qui consiste à soustraite à chaque observation la valeur minimale et à diviser le tout par l'étendue (eq. \@ref(eq:t01)). 
 
 \begin{equation} 
 X_{\in\lbrack0-1\rbrack}= \frac{x_i-max}{max-min} \text{ ou } X_{\in\lbrack0-100\rbrack}= \frac{x_i-min}{max-min}\times100
