@@ -1,6 +1,11 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # Statistiques descriptives univariées
 
-Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèses et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
+Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
 ::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
 Dans cette section, nous utiliserons principalement les packages suivants (À MODIFIER PLUS TARD) : 
@@ -103,30 +108,63 @@ On calculera toutefois les fréquences des différentes modalités pour une vari
 **Une variable semi-quantitative**, appelée aussi variable quantitative ordonnée, est une variable discrète ou continue dont les valeurs ont été regroupées en classes hiérarchisées. Par exemple, l'âge est une variable continue pouvant être transformée avec les groupes d'âge ordonnés suivants : *moins 25 ans*, *25 à 44 ans*, *45 à 64 ans* et *65 ans et plus*.
 
 
-## Les types de bases de données {#sect22}
+## Les types de données {#sect22}
 
-* **Donnée primaires *versus* données secondaires**
+Différentes types de données sont utilisées en sciences sociales. L'objectif ici n'est pas de les décrire en détail, mais plutôt de donner quelques courtes définitions. En fonction de votre question de recherche et des bases de données disponibles ou non, il s'agira de sélectionner le ou les types de données les plus appropriés à votre sujet.
 
-* **Population versus échantillon**
+### Données secondaires *versus* données primaires {#sect221}
 
-POPULATION ET ÉCHANTILLON : voir Tabanick et Field
+Les données secondaires sont des données qui existent déjà au début de votre projet de recherche : pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
+  
+::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+Au Canada, les chercheurs (étudiants et professeurs) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du ([CRDCN](https://crdcn.org/fr/donn%C3%A9es){target="_blank"}) afin d'explorer les différentes enquêtes disponibles.
 
-* **Données individuelles versus données agrégées**
+Au Québec, l'accès à ces enquêtes est possible dans les différentes antennes du Centre interuniversitaire québécois de statistiques sociales de Statistique Canada ([CIQSS](https://www.ciqss.org/){target="_blank"}).
+:::
+
+Par opposition, les données primaires n'existent pas quand vous démarrez votre projet : vous devez les collecter spécifiquement pour votre étude! Par exemple, une chercheure souhaitant analyser l'exposition des cyclistes au bruit et à la pollution dans une ville donnée devra réaliser une collecte de données avec idéalement plusieurs participants (équipés de différents capteurs), et ce, sur plusieurs jours. 
+Une collecte de données primaires est peut être aussi réalisée avec une enquête par sondage. Brièvement, réaliser une collecte de données primaires nécessite différentes phases complexes comme la définition de la méthode de collecte, de la population à l'étude, l’estimation de la taille de l'échantillon, la validation des outils de collecte avec une phase de test, la réalisation de la collecte, la structuration, la gestion et l'exploitation de données collectées. Finalement, dans le milieu académique, une collecte de données primaires auprès d'individus doit être approuvée par le comité d'éthique de la recherche de l'université auquel est affilié le responsable du projet de recherche (qu'il soit professeur, chercheur ou étudiant).
+
+###  Données longitudinales *versus* données transversales  {#sect222}
+ 
+### Données aspatiales versus données spatiales {#sect223}
 
 DÉCOUPAGE GÉOGRAPHIQUE ET UNIVERS GÉOGRAPHIQUE
 Notion d'erreur écologique
 
-* **Données longitudinales versus données transversale**
+### Données individuelles *versus* données agrégées  {#sect224}
 
-* **Fusion de données**
+
+::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+LES TYPES CI-DESSUS NE SONT PAS EXCLUSIFS
+
+par exemple, données OSM : données spatiales longitidunales car numérisées depuis le début (historique des numérisations)
+:::
+
+
+::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+FUSION DE DONNÉES
+appariement de données administratives
+
+:::
 
 ## Retour sur la statistique descriptive et la statistique inférentielle (ENCADRÉ)  {#sect23}
+
+* **Population versus échantillon**
+
+
+### TEST ET INFÉRENCE
+### La notion de bootstrap : 
+## LA NOTION DE VALEUR DE P ou la mettre
+mesures sur populations complètes ou Échantillons
+
+
 
 ## La notion de distribution (JÉRÉMY) {#sect24}
 
 
 
-## Statistiques descriptives sur des variables quantitatives (PHILIPPE) {#sect25}
+## Statistiques descriptives sur des variables quantitatives {#sect25}
 
 ### Les paramètres de tendance centrale {#sect251}
 
@@ -149,10 +187,6 @@ knitr::kable(df2,
   booktabs = TRUE, valign = 't', row.names = FALSE)
 ```
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
-Intérêt des mesures de tendance centrale et types de distribution.
-:::
-
 ### Les paramètres de position {#sect252}
 
 Les paramètres de position permettent de diviser une distributions en _n_ parties égales.
@@ -169,7 +203,7 @@ En cartographie, les quartiles et les quintiles sont souvent utilisés pour disc
 
 
 
-```{r figunivarie2, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exemples de cartographie avec une discrétisation selon les quantiles",  out.width='100%'}
+```{r figunivarie2, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exemples de cartographie avec une discrétisation selon les quantiles",  out.width='85%'}
 knitr::include_graphics('images/univariee/figure2.jpg', dpi = NA)
 ```
 
@@ -198,7 +232,7 @@ Cinq principales mesures de dispersion permettent d'évaluer la variabilité des
 
 * **L'intervalle ou écart interquartile** est la différence entre les troisième et premier quartiles ($Q3 − Q1$). Il représente ainsi une mesure de la dispersion des valeurs de 50% des observations centrales de la distribution. Plus la valeur de l'écart interquartile est élevée, plus la dispersion des 50% des observations centrales est forte. Contrairement à l'étendue, cette mesure élimine l'influence des valeurs extrêmes puisqu'elle ne tient compte que des 25% des observations les plus faibles [Min à Q1] et des 25% observations les plus fortes [Q3 à Max]. Graphiquement, l'intervalle interquartile est représenté à l'aide d'une boîte à moustache (*boxplot* en anglais) : plus l'intervalle interquartile sera grand, plus la boîte sera allongée (figure \@ref(fig:figunivarie3))
 
-```{r figunivarie3, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en violon, boîte à moustache et intervalle interquartile",  out.width='40%'}
+```{r figunivarie3, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en violon, boîte à moustache et intervalle interquartile",  out.width='30%'}
 knitr::include_graphics('images/univariee/figure3.jpg', dpi = NA)
 ```
 
@@ -404,7 +438,7 @@ knitr::kable(df,
 #### Vérifier la normalité d'une variable quantitative
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
-De nombreux méthodes statistiques qui seront abordées dans les chapitres suivants – entre autres la corrélation de Pearson, les test *t* et l'analyse de variance, les régressions simple et multiple – requiert que la variable quantitative suive une **distribution normale** (nommée aussi **distribution gaussienne**).
+De nombreux méthodes statistiques qui seront abordées dans les chapitres suivants – entre autres, la corrélation de Pearson, les test *t* et l'analyse de variance, les régressions simple et multiple – requiert que la variable quantitative suive une **distribution normale** (nommée aussi **distribution gaussienne**).
 
 Dans cette sous-section, nous décrirons trois démarches pour vérifier si la distribution d'une variables est normale : les coefficients d'asymétrie et d'applatissement (*skewness* et *kurtosis* en anglais), les graphiques (histogramme avec courbe normale, diagramme quantile-quantile), les tests de normalité (tests de Shapiro-Wilk, Kolmogorov-Smirnov, Lilliefors, Anderson-Darling et Jarque-Bera).
 
@@ -413,7 +447,7 @@ Dans cette sous-section, nous décrirons trois démarches pour vérifier si la d
 
 Une distribution est normale quand elle est symétrique et mésokurtique (figure \@ref(fig:figFormeDistr)).
 
-```{r figFormeDistr, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Formes d'une distribution et les coefficients d'asymétrie et d'aplatissement",  out.width='90%'}
+```{r figFormeDistr, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Formes d'une distribution et les coefficients d'asymétrie et d'aplatissement",  out.width='70%'}
 knitr::include_graphics('images/univariee/FormeDistribution.jpg', dpi = NA)
 ```
 
@@ -423,9 +457,9 @@ knitr::include_graphics('images/univariee/FormeDistribution.jpg', dpi = NA)
 
 Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing] : $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans ![](images/logos/Rlogo.png) avec la fonction `skewness` du *package* **moments**), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* **DescTools** ou **e1071**, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quel que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie)) :
 
-* quand la valeur du *skewness* est négative, la **distribution est asymétrique négative**. La distribution est alors tirée à gauche par des valeurs extrêmes faibles, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est tirée vers la gauche.La moyenne est alors inférieure à la médiane.
+* quand la valeur du *skewness* est négative, la **distribution est asymétrique négative**. La distribution est alors tirée à gauche par des valeurs extrêmes faibles, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est étirée vers la gauche. La moyenne est alors inférieure à la médiane.
 * quand la valeur du *skewness* est égale à 0, **la distribution est symétrique** (la médiane sera égale à la moyenne). Pour une variable discrète, les valeurs du mode, de la moyenne et de la médiane seront égales.
-* quand la valeur du *skewness* est positive, la **distribution est symétrique positive**. La distribution est alors tirée à droite par des valeurs extrêmes fortes, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est tirée vers la droite. La moyenne est alors supérieure à la médiane. En sciences sociales, le revenu total des individus ou des ménages ont souvent des distributions asysmétriques positives : la moyenne est affectée par quelques observations avec des valeurs de revenu très élevées et est ainsi supérieure à la médiane. En études urbaines, la densité de population pour des unités géographiques d'une métropole donnée (secteur de recensement par exemple) a aussi souvent une distribution asymétrique positive : quelques secteurs de recensement au centre de la métropole caractérisés par des valeurs de densité très élevées tirent la distribution vers la droite.
+* quand la valeur du *skewness* est positive, la **distribution est symétrique positive**. La distribution est alors tirée à droite par des valeurs extrêmes fortes, mais peu nombreuses. On emploie souvent l'expression la queue de distribution est étirée vers la droite. La moyenne est alors supérieure à la médiane. En sciences sociales, les variables de revenu (totaux ou d'emploi, des individus ou des ménages) ont souvent des distributions asysmétriques positives : la moyenne est affectée par quelques observations avec des valeurs de revenu très élevées et est ainsi supérieure à la médiane. En études urbaines, la densité de population pour des unités géographiques d'une métropole donnée (secteur de recensement par exemple) a aussi souvent une distribution asymétrique positive : quelques secteurs de recensement au centre de la métropole caractérisés par des valeurs de densité très élevées tirent la distribution vers la droite.
 
 \begin{equation} 
 g_1=\frac{ \frac{1}{n} \sum_{i=1}^n(x_i-\bar{x})^3} { \left[\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2\right] ^\frac{3}{2}}
@@ -452,8 +486,8 @@ library(SimDesign)
 # Générer des distributions asymétriques
 df <- data.frame(
   Normale  = rnorm(1500,0,1),
-  Skewed_L = rValeMaurelli(1500, mean=0, sigma=1, skew=1.4, kurt=3),
-  Skewed_R = rValeMaurelli(1500, mean=0, sigma=1, skew=-1.4, kurt=3),
+  Skewed_L = rValeMaurelli(1500, mean=0, sigma=1, skew=-1.4, kurt=3),
+  Skewed_R = rValeMaurelli(1500, mean=0, sigma=1, skew=1.4, kurt=3),
   L = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=7),
   P = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=-1)
 )
@@ -607,7 +641,7 @@ ggarrange(Gp, Gm, Gl, ncol = 2, nrow=2)
 ```
 
 ::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
-Regardez attentivement les équations \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3); vous remarquez que pour $g_2$ et $b_2$, il y a une soustraction de $-3$ et une addition $+6$ pour $G_2$. On parle alors de *kurtosis* normalisé (*excess kurtosis* en anglais). Pour une distribution normale, il prendra la valeur de 0, comparativement à la valeur de 3 pour *kurtosis* non normalisé. Par conséquent, avant de calculer du *kurtosis*, il convient de s'assurer que la fonction que vous utilisez implémente une méthode de calcul normalisée (donnant une valeur de 0 pour une distribution normale). Par exemple, la fonction `Kurt` du *package* **DescTools** calcule les trois formules normalisées tandis que la `kurtosis` du *package* **moments** renvoie un *kurtosis* non normalisée.
+Regardez attentivement les équations \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3); vous remarquez que pour $g_2$ et $b_2$, il y a une soustraction de $-3$ et une addition $+6$ pour $G_2$. On parle alors de *kurtosis* normalisé (*excess kurtosis* en anglais). Pour une distribution normale, il prendra la valeur de 0, comparativement à la valeur de 3 pour *kurtosis* non normalisé. Par conséquent, avant de calculer du *kurtosis*, il convient de s'assurer que la fonction que vous utilisez implémente une méthode de calcul normalisée (donnant une valeur de 0 pour une distribution normale). Par exemple, la fonction `Kurt` du *package* **DescTools** calcule les trois formules normalisées tandis que la fonction `kurtosis` du *package* **moments** renvoie un *kurtosis* non normalisée.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library(DescTools)
@@ -670,7 +704,7 @@ ggplot(data = melted_dist, aes(sample=valeur))+
 
 ##### Vérifier la normalité avec des tests de normalité 
 
-Cinq principaux tests d'hypothèses permettent de vérifier la normalité d'une variable : les tests de **Kolmogorov-Smirnov** (KS), **Lilliefors** (LF), **Shapiro-Wilk** (SW), **Anderson-Darling**, et de **Jarque-Bera** (JB); sachez toutefois qu'il y en a d'autres non discutés ici (tests de D’Agostino–Pearson, Cramer–von Mises, e Ryan-Joiner, Shapiro–Francia, etc.). Pour les formules et une description détaillée de ces tests, on pourra consulter Razali et al. [-@razali2011power] ou Yap et Sim [-@yap2011comparisons]. **Quel test choisir ?** Plusieurs auteurs ont comparé ces différents tests à partir de plusieurs échantillons, et ce, en faisant varier la forme de la distribution et le nombre d'observations [@razali2011power;@yap2011comparisons]. Selon Razali et al. [-@razali2011power], le meilleur test semble être celui de Shapiro-Wilk, puis ceux de Anderson-Darling, Lilliefors et Kolmogorov-Smirnov. Yap et Sim [-@yap2011comparisons] concluent aussi que le Shapiro-Wilk semble être le plus performant.
+Cinq principaux tests d'hypothèse permettent de vérifier la normalité d'une variable : les tests de **Kolmogorov-Smirnov** (KS), **Lilliefors** (LF), **Shapiro-Wilk** (SW), **Anderson-Darling**, et de **Jarque-Bera** (JB); sachez toutefois qu'il y en a d'autres non discutés ici (tests de D’Agostino–Pearson, Cramer–von Mises, e Ryan-Joiner, Shapiro–Francia, etc.). Pour les formules et une description détaillée de ces tests, on pourra consulter Razali et al. [-@razali2011power] ou Yap et Sim [-@yap2011comparisons]. **Quel test choisir ?** Plusieurs auteurs ont comparé ces différents tests à partir de plusieurs échantillons, et ce, en faisant varier la forme de la distribution et le nombre d'observations [@razali2011power;@yap2011comparisons]. Selon Razali et al. [-@razali2011power], le meilleur test semble être celui de Shapiro-Wilk, puis ceux de Anderson-Darling, Lilliefors et Kolmogorov-Smirnov. Yap et Sim [-@yap2011comparisons] concluent aussi que le Shapiro-Wilk semble être le plus performant.
 
 Quoi qu'il en soit, ces cinq tests postulent que la variable suit une distribution gaussienne (hypothèse nulle, h<sub>0</sub>). Cela signifie que si la valeur de P associée à la valeur de chacun des tests est supérieure au seuil alpha choisi (habituellement $\alpha=0,05$), la distribution est normale. À l'inverse, si $P<0,05$, on choisit l'hypothèse alternative (h<sub>1</sub>), c'est-à-dire que la distribution est anormale.
 
@@ -683,10 +717,10 @@ df <- data.frame(
            "Anderson-Darling",
            "Jarque-Bera"),
   Interpretation =
-          c("Plus sa valeur est proche de zéro, plus la distribution est normale.  L'avantage de ce test est qu'il peut être utilisé pour vérifier si une variable si la distribution de n'importe qu'elle loi (autre que la loi normale).",
+          c("Plus sa valeur est proche de zéro, plus la distribution est normale.  L'avantage de ce test est qu'il peut être utilisé pour vérifier si une variable si la distribution de n'importe quelle loi (autre que la loi normale).",
            "Ce test une adaptation du test de Kolmogorov-Smirnov. Plus sa valeur est proche de zéro, plus la distribution est normale.",
            "Si la valeur de la statistique de Shapiro-Wilk est proche de 1, alors la distribution est normale; et anormale quand elle est inférieure à 1.",
-           "Ce test est une modification du test de Cramer-von Mises (CVM). Il peut être aussi utilisé pour tester d'autres distributions (uniforme, log-normale, exponentielle, Weibull, distribution de pareto généralisée, logistique, ).",
+           "Ce test est une modification du test de Cramer-von Mises (CVM). Il peut être aussi utilisé pour tester d'autres distributions (uniforme, log-normale, exponentielle, Weibull, distribution de pareto généralisée, logistique, etc.).",
            "Basé sur un test du type multiplicateur de Lagrange, il utilise dans son calcul les valeurs du *Skewness* et du *Kurtosis*. Plus sa valeur s'approche de 0, plus la distribution est normale. Ce test est surtout utilisé pour vérifier si les résidus d'un modèle de régression linéaire sont normalement distribués, nous y reviendrons dans le chapitre sur la régression multiple. Il s'écrit $JB=\\frac{1}{6} \\left({g_1}^2+\\frac{{g_1}^2}{4} \\right)$ avec $g_1$ et $g_2$ sont respectivement les valeurs du *skewness* et du *kurtosis* de la variable (voir plus haut les équations \\@ref(eq:SkewType1) et \\@ref(eq:KurtType1)."),
   Fonction= c("`ks.test` du *package* **stats**",
            "`lillie.test` du *package* **nortest**",
@@ -698,11 +732,11 @@ df <- data.frame(
 knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),   
   col.names = c("Test","Propriétés et interprétation", "Fonction R"),
-  caption = "Les différents tests d'hypothèses pour la normalité",
+  caption = "Les différents tests d'hypothèse pour la normalité",
   booktabs = TRUE, valign = 't', row.names = FALSE)
 ```
 
-Dans le tableau ci-dessous sont reportées les valeurs des différents tests pour les cinq types de distribution générées à la figure \@ref(fig:CourbeNormale). Sans suprise, pour l'ensemble des tests $P>0,05$ pour la distribution normale.
+Dans le tableau ci-dessous sont reportées les valeurs des différents tests pour les cinq types de distribution générées à la figure \@ref(fig:CourbeNormale). Sans surprise, pour l'ensemble des tests $P>0,05$ pour la distribution normale.
 
 ```{r calcultestnormalites, echo=FALSE, message=FALSE, warning=FALSE}
 library(DescTools)
@@ -710,8 +744,8 @@ library(nortest)
 
 df <- data.frame(
   Normale  = rnorm(500,0,1),
-  Skewed_L = rValeMaurelli(50, mean=0, sigma=1, skew=1.4, kurt=3),
-  Skewed_R = rValeMaurelli(50, mean=0, sigma=1, skew=-1.4, kurt=3),
+  Skewed_L = rValeMaurelli(500, mean=0, sigma=1, skew=1.4, kurt=3),
+  Skewed_R = rValeMaurelli(500, mean=0, sigma=1, skew=-1.4, kurt=3),
   L = rValeMaurelli(500, mean=0, sigma=1, skew=0, kurt=7),
   P = rValeMaurelli(500, mean=0, sigma=1, skew=0, kurt=-1)
 )
@@ -826,7 +860,25 @@ Bref, vérifier la normalité d'une variable n'est pas une tâche si simple. De 
 
 #### Les transformations visant à atteindre la normalité  {#sect2551}
 
-Comme qu'énoncé au début de cette section, plusieurs méthodes statistiques nécessitent que la variable quantitative soit normalement distribuée. C'est notamment le cas de l'analyse de variance et des tests T (abordés dans les chapitres suivants) qui fourniront des résultats plus robustes lorsque la variable normalement distribuée.
+Comme énoncé au début de cette section, plusieurs méthodes statistiques nécessitent que la variable quantitative soit normalement distribuée. C'est notamment le cas de l'analyse de variance et des tests T (abordés dans les chapitres suivants) qui fourniront des résultats plus robustes lorsque la variable normalement distribuée. Plusieurs transformations sont possibles, les plus courantes étant la racine carrée, le logarithme et l'inverse de la variable. Selon plusieurs auteurs (notamment, Tabacknick et *et al.* [-@tabachnick2007, p. 89], en fonction du type (positive ou négative) et du degré d'asymétrie les transformations suivantes sont possibles afin d'améliorer la normalité de la variable :
+
+* Asymétrie positive modérée : la racine carrée de la variable *X* avec la fonction `sqrt(df$x)`. 
+* Asymétrie positive importante : le logarithme de la variable avec `log10(df$x)`
+* Asymétrie positive sévère : l'inverse de la variable avec `1/(df$x)`
+
+::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+Attention, pour une valeur égale ou inférieure à 0, on ne peut pas calculer une racine carrée ou un logarithme. Par conséquent, il convient de décaler simplement la distribution vers la droite afin de s'assurer qu'il n'y ait plus de valeurs négative ou égale à 0 :
+
+* `sqrt(df$x - min(df$x+1))`  avec pour une asymétrie positive avec des valeurs négatives ou égales à 0
+* `log(df$x - min(df$x+1))` pour une asymétrie positive avec des valeurs négatives ou égales à 0
+
+Par exemple, si la valeur minimale de la variable est égale de -10, la valeur minimale de variable décalée sera ainsi de 1.
+::: 
+
+* Asymétrie négative modérée : `sqrt(max(df$x+1) - df$x)`. 
+* Asymétrie négative importante :`log(max(df$x+1) - df$x)`
+* Asymétrie négative sévère : `1/(max(df$x+1) - df$x)`
+
 
 ::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
 
@@ -848,8 +900,10 @@ La transformation des données fait et fera encore longtemps débat à la fois p
 **Démarche à suivre avant et après la transformation**
 
 * *La transformation est-elle nécessaire ?* Ne transformer jamais une variable sans avoir analyser rigoureusement sa forme (histogramme avec courbe normale, *skewness* et *kurtosis* et test de normalité).
-* *D'autres options à la transformation d'une variable dépendante (VD) sont-elles envisageables ?* Identifier la forme de la distribution de la VD et utilisez au besoin un modèle GLM adapté à cette distribution. Autrement dit, ne transformer automatiquement pour simplement pouvoir utiliser une régression linéaire multiple.
-* *La transformation a-t-elle un apport significatif ?* Premièrement, vérifier si la transformation utilisée (logarithme, racine carrée, inverse, etc.) améliore la normalité de la variable. Ce n'est toujours le cas, pourquoi c'est pire ! Prenez soin de comparer les histogrammes, les valeurs de *skewness*, *kurtosis* et des différents tests de normalité avant et après la transformation. Deuxièmement, comparer les résultats de vos analyses statistiques sans et avec transformation, et ce, dans une démarche coût-avantage. Vos résultats sont-ils bien plus robustes? Par exemple, un R^2^ qui passe de 0,597 à 0,602 avant et après la transformation des variables, avec des associations significatives similaires mais plus difficiles à interpréter (du fait des transformations) n'est pas forcément un gain significatif. La modélisation en sciences sociales ne vise à prédire la trajectoire d'un satellite ou l'atterrissage d'un engin sur Mars ! La précision à quatrième décimale n'est pas une condition ! Autrement dit, un modèle un peu moins robuste, mais plus facile à interpréter afin de valider est parfois préférable.
+
+* *D'autres options à la transformation d'une variable dépendante (VD) sont-elles envisageables ?* Identifier la forme de la distribution de la VD et utilisez au besoin un modèle GLM adapté à cette distribution. Autrement dit, ne transformer automatiquement pour simplement pouvoir l'introduire dans une régression linéaire multiple.
+
+* *La transformation a-t-elle un apport significatif ?* Premièrement, vérifier si la transformation utilisée (logarithme, racine carrée, inverse, etc.) améliore la normalité de la variable. Ce n'est toujours le cas, pourquoi c'est pire ! Prenez soin de comparer les histogrammes, les valeurs de *skewness*, *kurtosis* et des différents tests de normalité avant et après la transformation. Deuxièmement, comparer les résultats de vos analyses statistiques sans et avec transformation, et ce, dans une démarche coût-avantage. Vos résultats sont-ils bien plus robustes? Par exemple, un R^2^ qui passe de 0,597 à 0,602 avant et après la transformation des variables avec des associations significatives similaires, mais plus difficiles à interpréter (du fait des transformations), n'est pas forcément un gain significatif. La modélisation en sciences sociales ne vise à prédire la trajectoire d'un satellite ou l'atterrissage d'un engin sur Mars ! La précision à quatrième décimale n'est pas une condition ! Par conséquent, un modèle un peu moins robuste, mais plus facile à interpréter afin de valider est parfois préférable.
 :::
 
 
@@ -866,8 +920,6 @@ z= \frac{x_i-\mu}{\sigma}
 \end{equation}
 
 * **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Speaman et certains tests non-paramétriques (RAPPEL SECTION).
-
-
 
 * **La transformation sur une échelle de 0 à 1** (ou de 0 à 100) qui consiste à soustraite à chaque observation la valeur minimale et à diviser le tout par l'étendue (eq. \@ref(eq:t01)). 
 
@@ -913,27 +965,246 @@ Ces trois transformations sont parfois utilisées pour générer un indice compo
 
 ### Mise en œuvre dans ![](images/Rlogo.png) {#sect256}
 
-## Statistiques descriptives sur des variables qualitatives (PHILIPPE) {#sect26}
+## Statistiques descriptives sur des variables qualitatives et semi-qualitatives {#sect26}
+
+### Les fréquences {#sect261}
+
+En guise de rappel, les variables nominales, ordinales et semi-quantitatives comprennent plusieurs modalités pour lesquelles plusieurs types de fréquences sont généralement calculées. Pour illustrer le tout, nous avons extrait du recensement de 2016 de Statistique Canada les effectifs des modalités de la variable sur le principal mode de transport utilisé pour les déplacements domicile-travail, et ce, pour la subdivision de recensement (MRC) de l'île de Montréal (tableau \@ref(tab:Frequences)). Les différents types de fréquences sont les suivantes :
+
+* les fréquences absolues simples (**FAS**) ou fréquences observées représentent le nombre d'observations pour chacune des modalités. Par exemple, sur 857540 navetteurs domicile-travail (ligne total), 427530 utilisent un véhicule motorisé comme conducteur (automobile, camion ou fourgonnette) comme mode de transport principal, contre uniquement 30645 le vélo.
+
+* les fréquences relatives simples (**FRS**) sont les proportions de chaque modalité sur le total ($30645/857540=0,036$); leur somme est égale 1. Elles peuvent bien entendu être exprimées en pourcentage ($30645/857540 \times 100=3,57$); leur somme est alors égale à 100%. Par exemple, 3,7% des navetteurs utilisent le vélo comme mode de transport principal.
+
+* les fréquences absolues cumulées (**FAC**) représentent la fréquence observée (FAS) de la modalité auxquelles sont additionnées celles qui la précèdent. La valeur de la FAC pour la dernière est donc égale au total.
+
+* À partir des fréquences absolues cumulées (FAC), il est alors possible de calculer les fréquences relatives cumulées (**FRC**) en proportion ($453930 / 857540 = 0,529$) et en pourcentage ($453930 / 857540 \times 100= 52,93$). Par exemple, plus de la moitié des navetteurs utilisent l'automobile comme mode de transport principal (passager ou conducteur).
+
+```{r Frequences, echo=FALSE, message=FALSE, warning=FALSE}
+M <- c("Véhicule motorisé (conducteur)",
+       "Véhicule motorisé (passager)",
+       "Transport en comun",
+       "À pied",
+       "Bicyclette",
+       "Autre moyen")
+Freq <- c(427530, 26400,295860,69410,30645,7695)
+
+df <- data.frame(
+  Mode = M,
+  FAS = Freq
+)
+
+# Somme des fréquences aboslues simples
+sumFAS <-  sum(df$FA)
+
+# Fréquences relatives simples
+df$FRS <- round(df$FAS / sum(df$FAS),3)
+sumFRS <-  sum(df$FAS / sum(df$FAS))
+
+# Fréquences relatives simples en pourcentages
+df$FRSpct <- round(df$FAS / sum(df$FAS)*100,2)
+sumFRSpct <-  sum(df$FAS / sum(df$FAS)*100)
+
+# Fréquences absolues cumulées
+df$FAC <- cumsum(df$FAS)
+
+# Fréquences relatives cumulées
+df$FRC <- round(cumsum(df$FAS)/sum(df$FAS),3)
+
+# Fréquences relatives cumulées en pourcentages
+df$FRCpct <- round(cumsum(df$FAS)/sum(df$FAS)*100,2)
+
+n <- nrow(df)
+df[n+1,1] <- "Total"
+df[n+1,2] <-  sumFAS
+df[n+1,3] <-  sumFRS
+df[n+1,4] <-  sumFRSpct
+
+opts <- options(knitr.kable.NA = "")
+knitr::kable(df, 
+  format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Mode de transport","FAS","FRS","FRS (%)","FAC", "FRC", "FRC (%)"),
+  caption = "Les différents types de fréquences sur une variable qualitative ou semi-qualitative",
+  booktabs = TRUE, valign = 't', row.names = FALSE)
+```
 
 
-Tableau de fréquences
-médiane uniquement pour des variables ordinales
-https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch11/median-mediane/5214872-fra.htm#:~:text=La%20m%C3%A9diane%20(c'est%2D,les%20cinqui%C3%A8me%20et%20sixi%C3%A8me%20valeurs.
+::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+**Les fréquences cumulées : peu pertinentes pour les variables nomimales**
 
-Mesure de tendance centrale pour une variable ordinale
+Le calcul et l'analyse des fréquences cumulées (absolues et relatives) est très souvent inutiles pour les variables nominales.
 
-https://fr.wikipedia.org/wiki/Indicateur_de_tendance_centrale#:~:text=Un%20article%20de%20Wikip%C3%A9dia%2C%20l,une%20variable%20quantitative%20ou%20ordinale.&text=Un%20indicateur%20de%20tendance%20centrale%20est%20toujours,les%20valeurs%20maximale%20et%20minimale.
+Par exemple, au tableau \@ref(tab:Frequences), la fréquence cumulée relative (en %) est de 87,43% pour la troisième ligne. Cela signifie que 87,43% des navetteurs se déplacent en véhicule motorisé (conducteur ou passager) ou en transport en commun. Par contre, si la troisième modalité avait été *à pied*, le pourcentage aurait été de 61,02 ($52,93+8,09$). Si vous souhaitez calculer les fréquences cumulées sur une variable nominale, assurez-vous que l'ordre des modalités vous convient et de le modifier au besoin. Sinon, abstenez-vous de les calculer!
 
-## Statistiques descriptives sur des variables semi-quantitatives (PHILIPPE) {#sect27}
 
-### TEST ET INFÉRENCE
-La notion de bootstrap : 
-concept de bootstrap et 
+**Les fréquences cumulées : très utiles pour l'analyse pour des variables ordinales ou semi-quantitatives**
 
-### LA NOTION DE VALEUR DE P ou la mettre
-mesures sur populations complètes ou Échantillons
+Pour des modalités hiérarchisées (variable ordinale ou semi-quantitative), l'analyse des fréquences cumulées (absolues et relatives) est par contre très intéressante. Par exemple, au tableau \@ref(tab:Frequences2), elles permet de constater rapidement que sur l'île de Montréal, un peu moins du très de la population à moins de 25 ans (35,95%) et 83,33% moins de 65 ans.
+:::
 
-### Pour aller plus loin : les statistiques descriptives pondérées
+```{r Frequences2, echo=FALSE, message=FALSE, warning=FALSE}
+M <- c("0 à 14 ans",
+       "15 à 24 ans",
+       "25 à 44 ans",
+       "45 à 64 ans",
+       "65 à 84 ans",
+       "85 ans et plus")
+Freq <- c(304470,237555,582150,494205,271560,52100)
 
-## Statistiques descriptives sur des variables qualitatives
-tableau de fréquences
+df <- data.frame(
+  Mode = M,
+  FAS = Freq
+)
+# Somme des fréquences aboslues simples
+sumFAS <-  sum(df$FA)
+
+# Fréquences relatives simples
+df$FRS <- round(df$FAS / sum(df$FAS),3)
+sumFRS <-  sum(df$FAS / sum(df$FAS))
+
+# Fréquences relatives simples en pourcentages
+df$FRSpct <- round(df$FAS / sum(df$FAS)*100,2)
+sumFRSpct <-  sum(df$FAS / sum(df$FAS)*100)
+
+# Fréquences absolues cumulées
+df$FAC <- cumsum(df$FAS)
+
+# Fréquences relatives cumulées
+df$FRC <- round(cumsum(df$FAS)/sum(df$FAS),3)
+
+# Fréquences relatives cumulées en pourcentages
+df$FRCpct <- round(cumsum(df$FAS)/sum(df$FAS)*100,2)
+
+n <- nrow(df)
+df[n+1,1] <- "Total"
+df[n+1,2] <-  sumFAS
+df[n+1,3] <-  sumFRS
+df[n+1,4] <-  sumFRSpct
+
+opts <- options(knitr.kable.NA = "")
+knitr::kable(df, 
+  format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Groupes d'âge","FAS","FRS","FRS (%)","FAC", "FRC", "FRC (%)"),
+  caption = "Les différents types de fréquences sur une variable semi-qualitative",
+  booktabs = TRUE, valign = 't', row.names = FALSE)
+```
+
+Différents graphiques peuvent être construits pour illustrer la répartition des observations : les graphiques en barres (verticales et horizontales) avec les fréquences absolues,  les diagrammes circulaires ou en anneau pour les fréquences relatives (figure \@ref(fig:GraphiquesFreq1)). Ces graphiques seront présentés plus en détail dans le chapitre suivant.
+
+```{r GraphiquesFreq1, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Différents graphiques pour représenter les fréquences absolues et relatives", out.width='75%'}
+
+library(dplyr)
+
+Code <- c("A","B","C","D","E","F")
+M <- c("0 à 14 ans",
+       "15 à 24 ans",
+       "25 à 44 ans",
+       "45 à 64 ans",
+       "65 à 84 ans",
+       "85 ans et plus")
+Freq <- c(304470,237555,582150,494205,271560,52100)
+
+df <- data.frame(
+  Groupe = M,
+  FAS = Freq
+)
+
+df <- data.frame(
+  Code = Code,
+  Groupe = M,
+  FAS = Freq
+)
+df$FRSpct <- round(df$FAS / sum(df$FAS),3)*100
+
+
+mycols <- c("#0c2c84", "#67000d",  "#99000d", "#ef3b2c","#006d2c", "#41ab5d")
+
+# BARRRES
+options(scipen = 999)
+
+G1 <- ggplot(data = df)+
+  geom_bar(aes(x = Code, weight = FAS, fill=Groupe))+
+  scale_fill_manual(values = mycols) +
+  labs(x = "Groupe d'âge",
+       y = 'Navetteurs')
+
+
+# BARRRES
+
+G2 <- ggplot(data = df)+
+  geom_bar(aes(y = Code, weight = FAS, fill=Groupe))+
+  scale_fill_manual(values = mycols) +
+  labs(x = "Groupe d'âge",
+       y = 'Navetteurs')
+
+# DIAGRAMME CIRCULAIRE
+
+# Ajouter la position de l'étiquette
+df <- df %>%
+  arrange(desc(Groupe)) %>%
+  mutate(ypos = cumsum(FRSpct) - 0.5*FRSpct)
+
+G3 <- ggplot(df, aes(x="", y=FRSpct, fill=Groupe)) +
+  geom_bar(width = 1, stat = "identity", color = "white") +
+  coord_polar("y", start=0) +
+  theme_void() +
+  geom_text(aes(y = ypos, label = FRSpct), color = "white", size=3) +
+  scale_fill_manual(values = mycols)
+
+
+# ANNEAU
+df$ymax <- cumsum(df$FRSpct)
+df$ymin <-  c(0, head(df$ymax, n=-1))
+
+G4 <- ggplot(df, aes(ymax=ymax, ymin=ymin,
+                        xmax=4, xmin=3,
+                        y=FRSpct, fill=Groupe)) +
+  geom_rect(stat="identity", color="white") +
+  coord_polar("y", start=0) +
+  theme_void() +
+  geom_text(aes(x = 3.5,y = ypos, label = FRSpct), color = "white", size=3) +
+  scale_fill_manual(values = mycols) +
+  xlim(c(2,4))
+
+
+list_plot <- list(G1, G2, G3, G4)
+ggarrange(plotlist = list_plot, ncol = 2, nrow=2,
+                      common.legend = TRUE, legend = "bottom")
+
+options(scipen = 0)
+```
+
+### Mise en œuvre dans ![](images/Rlogo.png) {#sect262}
+
+La syntaxe ci-dessous permet de calculer les différentes fréquences présentées au tableau \@ref(tab:Frequences2). Notez que pour les fréquences cumulées, nous utilisons la fonction `cumsum`.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Vecteur pour le noms des modalités
+Modalite <- c("0 à 14 ans",
+             "15 à 24 ans",
+             "25 à 44 ans",
+             "45 à 64 ans",
+             "65 à 84 ans",
+             "85 ans et plus")
+
+# Vecteur pour les fréquences absolues simples (FAS)
+Navetteurs <- c(304470,237555,582150,494205,271560,52100)
+
+# Somme des FAS
+sumFAS <-  sum(Navetteurs)
+
+# Construction du dataframe avec les deux vecteurs
+df <- data.frame(
+  GroupeAge = Modalite, 
+  FAS = Navetteurs,
+  FRS = Navetteurs / sumFAS, 
+  FRSpct = Freq / sumFAS * 100,
+  FAC = cumsum(Freq),
+  FRC = cumsum(Freq) / sumFAS,
+  FRCpct = cumsum(Freq) / sumFAS * 100
+  )
+df
+```
+
+## Pour aller plus loin : les statistiques descriptives pondérées
+
