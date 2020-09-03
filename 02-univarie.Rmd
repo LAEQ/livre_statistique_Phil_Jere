@@ -1,11 +1,6 @@
----
-output:
-  html_document: default
-  pdf_document: default
----
 # Statistiques descriptives univariées
 
-Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
+Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Ausi, nous abordons un concept central de la statistique : les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
 ::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
 Dans cette section, nous utiliserons principalement les packages suivants (À MODIFIER PLUS TARD) : 
@@ -13,25 +8,6 @@ Dans cette section, nous utiliserons principalement les packages suivants (À MO
 * Pour créer des graphiques :
   - **ggplot2**, le seul, l'unique
   - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles
-* Pour manipuler des données : 
-  - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
-* Pour les corrélations ((section \@ref(sect311))) : 
-  - **correlation**, de l'ensemble de package **easy_stats**, offrant une large gamme de méthodes de corrélations
-  - **boot** pour réaliser des corrélations avec *bootstrap* 
-  - **Hmisc** pour calculer des corrélations de Pearson et Spearman
-  - **ppcor**, notamment pour des corrélations partielles
-  - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
-  - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
-  - **corrplot**, pour créer des graphiques de matrices de corrélation
-* Pour le tableau de contignence ((section \@ref(sect312))) :
-  - **gmodels**, pour construire des tableaux de contingence et * Calculer les test *t* et ses différentes variantes ((section \@ref(sect313))) :
-* Pour les test *t* : 
-  - **sjstats** pour réaliser des test *t* pondérés
-  - **effectsize**, pour calculer les tailles d'effet de tests de *t*
-* Pour la section sur les ANOVA ((section \@ref(sect314))) : 
-  - **car**, pour les ANOVA classiques
-  - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
-  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
 
 :::
 
@@ -67,9 +43,9 @@ Finalement, la définition d'une variable peut évoluer à travers plusieurs rec
 Une lecture rigoureuse d'un article scientifique suppose, entre autres, de bien comprendre les concepts et variables mobilisés. Il convient alors de lire attentivement la section méthodologique (pas uniquement la section des résultats ou pire le résumé), sans quoi vous risquez d'aboutir à une revue de littérature approximative. 
 Ayez aussi un **regard critique** sur les variables visant à opérationnaliser les  concepts clés de l'étude. Certains concepts sont très difficiles à traduire en variables; leurs opérationalisations (mesures) peuvent ainsi faire l'objet de vifs débats parmi les chercheurs. Très succinctement, c'est notamment le cas du concept de capital social. D'une part, les définitions et ancrages sont biens différents selon Bourdieu (sociologue, ancrage au niveau des individus) et Putman (politologue, ancrage au niveau des collectivités); d'autre part, aucun consensus ne semble clairement se dégager quant à la définition de variables permettant de le mesurer efficacement (de manière quantitative).   
 
-**Variable de substitution (*proxy* variable en anglais)**
+**Variable de substitution (*proxy variable* en anglais)**
 
-À mes débuts en recherche (premier auteur du livre), une brillante collègue géographe, renommée dans son champ de recherche, m'a affirmée : « on fait la moins pire des recherches ! ». Secoué par cette affirmation, elle m'expliqua ensuite que les données disponibles sont parfois imparfaites pour répondre avec précision à une question de recherche; on peut toujours les exploiter, tout en signalant honnêtemment leurs faiblesses et limites, et ce, tant pour les données que les variables utilisées. Ce fut le début d'une longue collaboration débouchant sur une multitude de *moins pires recherches*.
+On fait la moins pire des recherches ! En effet, les données disponibles sont parfois imparfaites pour répondre avec précision à une question de recherche; on peut toujours les exploiter, tout en signalant honnêtemment leurs faiblesses et limites, et ce, tant pour les données que les variables utilisées.
 
 * Des bases de données peuvent être en effet imparfaites. Par exemple, en criminologie, des chercheur.e.s exploitant des données policières signalent habituellement la limite du **chiffre noir** : les données policières comprennent uniquement les crimes et délits découverts par la police et occultent ainsi les crimes non-découverts; ils ne peuvent ainsi refléter la criminalité réelle sur un territoire donné.
 
@@ -114,7 +90,7 @@ Différentes types de données sont utilisées en sciences sociales. L'objectif 
 
 ### Données secondaires *versus* données primaires {#sect221}
 
-Les données secondaires sont des données qui existent déjà au début de votre projet de recherche : pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
+Les **données secondaires** sont des données qui existent déjà au début de votre projet de recherche : pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
   
 ::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
 Au Canada, les chercheurs (étudiants et professeurs) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du ([CRDCN](https://crdcn.org/fr/donn%C3%A9es){target="_blank"}) afin d'explorer les différentes enquêtes disponibles.
@@ -122,31 +98,48 @@ Au Canada, les chercheurs (étudiants et professeurs) ont accès aux microdonné
 Au Québec, l'accès à ces enquêtes est possible dans les différentes antennes du Centre interuniversitaire québécois de statistiques sociales de Statistique Canada ([CIQSS](https://www.ciqss.org/){target="_blank"}).
 :::
 
-Par opposition, les données primaires n'existent pas quand vous démarrez votre projet : vous devez les collecter spécifiquement pour votre étude! Par exemple, une chercheure souhaitant analyser l'exposition des cyclistes au bruit et à la pollution dans une ville donnée devra réaliser une collecte de données avec idéalement plusieurs participants (équipés de différents capteurs), et ce, sur plusieurs jours. 
+Par opposition, les **données primaires** n'existent pas quand vous démarrez votre projet : vous devez les collecter spécifiquement pour votre étude! Par exemple, une chercheure souhaitant analyser l'exposition des cyclistes au bruit et à la pollution dans une ville donnée devra réaliser une collecte de données avec idéalement plusieurs participants (équipés de différents capteurs), et ce, sur plusieurs jours. 
 Une collecte de données primaires est peut être aussi réalisée avec une enquête par sondage. Brièvement, réaliser une collecte de données primaires nécessite différentes phases complexes comme la définition de la méthode de collecte, de la population à l'étude, l’estimation de la taille de l'échantillon, la validation des outils de collecte avec une phase de test, la réalisation de la collecte, la structuration, la gestion et l'exploitation de données collectées. Finalement, dans le milieu académique, une collecte de données primaires auprès d'individus doit être approuvée par le comité d'éthique de la recherche de l'université auquel est affilié le responsable du projet de recherche (qu'il soit professeur, chercheur ou étudiant).
 
-###  Données longitudinales *versus* données transversales  {#sect222}
- 
-### Données aspatiales versus données spatiales {#sect223}
+###  Données transversales *versus* données longitudinales {#sect222}
+Les **données de transversales** sont des mesures pour une période relativement courte. L’exemple classique est un jeu de données constitué des variables extraites d’un recensement de population pour une année donnée (comme celui 2016 de Statistique Canada). 
 
-DÉCOUPAGE GÉOGRAPHIQUE ET UNIVERS GÉOGRAPHIQUE
-Notion d'erreur écologique
+Les **données longitudinales**, appelées aussi données par panel, sont des mesures répétées pour plusieurs observations au cours du temps (*N* observations pour *T* dates). Par exemple, des observations pourraient être des pays, les dates pourraient être différentes années (de 1990 à 2019) pour lesquelles différentes variables seraient disponibles (population totale, taux d’urbanisation, produit intérieur brut par habitant, émissions de gaz à effet de serre par habitant, etc).
 
-### Données individuelles *versus* données agrégées  {#sect224}
+### Données spatiales versus données aspatiales {#sect223}
+
+Les observations des **données spatiales** sont des unités spatiales géoréférencées (points, lignes, polygones ou encore pixels d’une image). Elles peuvent d’être par exemple :
+
+* des points *(x,y)* ou *(lat-long)* représentant des entreprises avec plusieurs variables (adresse, date de création, nombre d'employés, secteurs d'activité, etc.);
+*  les lignes représentant des tronçons de rues pour lesquels plusieurs variables sont disponibles (types d’axe, longueur en mètre, nombre de voies, débit journalier moyen annuel, etc.);
+ * des polygones délimitant des régions ou des arrondissements pour lesquels une multitude de variables sociodémographiques et socioéconomiques sont disponibles.
+
+À l’inverse, aucune information spatiale n’est disponible pour des **données aspatiales**. 
 
 
-::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
-LES TYPES CI-DESSUS NE SONT PAS EXCLUSIFS
+### Données individuelles *versus* données agrégées {#sect224}
 
-par exemple, données OSM : données spatiales longitidunales car numérisées depuis le début (historique des numérisations)
-:::
+Comme son nom l'indique, pour des **données individuelles**, chaque observation est un individu. Les microdonnées de recensement ou d'enquêtes sont des données individuelles pour lesquelles toute une série de variables est disponible. Par exemple, pour les microdonnées des recensements canadiens, « chaque enregistrement au niveau de la personne comprend des identifiants (comme les identifiants du ménage et de la famille), des variables géographiques et des variables directes et dérivées tirées du questionnaire » ([Statistique Canada](https://www150.statcan.gc.ca/n1/pub/12-002-x/2012001/article/11642-fra.htm){target="_blank"}). Comme signalé plus haut, ces microdonnées de recensement ou d'enquêtes sont uniquement accessibles dans les Centres de données de recherche (CDR).
 
+Les données individuelles peuvent être **agrégées** à un découpage géographique. Prenons le cas de microdonnées d'un recensement. Pour chaque observation (individu), une multitude de variables est disponible : âge, sexe, situation de famille, revenu, etc., mais aussi des variables géographiques à partir desquelles il est possible d'agréger les données. Autrement dit, à partir des microdonnées, il est possible de générer des résumés statistiques pour un découpage géographique donné ([Statistique Canada](https://www.statcan.gc.ca/fra/idd/trousse/section5#a4){target="_blank"}).
+
+Il convient alors de bien comprendre la hiérarchie des régions géographiques délimitées par l’organisme ou l’agence ayant la responsabilité de produire, gérer et diffuser les données d’un recensement et d’enquêtes. Puis, de sélectionner le découpage géographique qui répond le mieux à votre question de recherche.
 
 ::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
-FUSION DE DONNÉES
-appariement de données administratives
+Pour le recensement de 2016, de Statistique Canada, vous pourrez consulter :
 
+* la [hiérarchie des régions géographiques normalisées pour la diffusion](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/figures/f1_1-fra.cfm){target="_blank"}
+* le [glossaire illustré](https://www150.statcan.gc.ca/n1/pub/92-195-x/92-195-x2016001-fra.htm){target="_blank"} des régions géographiques
+
+* les différents [profils du recensement de 2016](https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/page_dl-tc.cfm?Lang=F){target="_blank"} à télécharger pour les différentes régions géographiques.
 :::
+
+::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+Bien entendu, les différents types de données abordés ci-dessus ne sont pas exclusifs. Par exemple, des données pour des régions administratives extraits de plusieurs recensements sont en fait des données secondaires, spatiales, agrégées et longitudinales. 
+
+Une collecte de données sur la pollution atmosphérique et sonore réalisée à vélo (avec différentes capteurs et un GPS) sont des données spatiales primaires. 
+:::
+
 
 ## Retour sur la statistique descriptive et la statistique inférentielle (ENCADRÉ)  {#sect23}
 
@@ -155,35 +148,35 @@ appariement de données administratives
 
 ### TEST ET INFÉRENCE
 ### La notion de bootstrap : 
-## LA NOTION DE VALEUR DE P ou la mettre
+### LA NOTION DE VALEUR DE P ou la mettre
 mesures sur populations complètes ou Échantillons
 
 
 
 ## La notion de distribution {#sect24}
 
+::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 Dans cette section, nous abordons un concept central de la statistique : les distributions. Prenez le temps de lire cette section à tête reposée et assurez-vous de bien comprendre chaque idée avant de passer à la suivante. N’hésitez pas à y revenir plusieurs fois si nécessaire, car la compréhension de ces concepts est essentielle pour utiliser adéquatement les méthodes que nous abordons dans ce livre.
+:::
 
 ### Définitions générales
 
 En statistique, on s’intéresse aux résultats d’expériences. Lancer un dé, mesurer la pollution atmosphérique, compter le nombre de collisions à une intersection, demander à une personne d’évaluer son sentiment de sécurité sur une échelle de 1 à 10 sont autant d’expériences pouvant produire des résultats.
 
-**Une distribution est une fonction permettant d’associer pour chaque résultat possible d’une expérience la probabilité d’obtenir ce résultat**. En d’autres termes, il s’agit d’une fonction indiquant par exemple que pour l’expérience : « mesurer la concentration d’ozone à Montréal à 13h en été » la probabilité de mesurer une valeur inférieure à 15 μg/m<sup>3</sup> est de seulement 2%.
+**Une distribution est une fonction permettant d’associer pour chaque résultat possible d’une expérience la probabilité d’obtenir ce résultat**. En d’autres termes, il s’agit d’une fonction indiquant par exemple que pour l’expérience : « mesurer la concentration d’ozone à Montréal à 13h en été », la probabilité de mesurer une valeur inférieure à 15 μg/m<sup>3</sup> est de seulement 2%.
 
 Les distributions sont toujours définies dans un intervalle en dehors duquel elles sont indéfinies; les valeurs dans cet intervalle sont appelées **l’espace d’échantillonnage**. Il s’agit donc des valeurs possibles que peut produire l’expérience. La somme des probabilités de l’ensemble des valeurs de l’espace d’échantillonnage est 1 (100%). Intuitivement, cela signifie que si l’on réalise l’expérience, on est obligé d’obtenir un résultat, et que cette probabilité totale est répartie entre tous les résultats possibles de l’expérience. En langage mathématique, on dit que l’intégrale des fonctions de distribution est 1 dans leur intervalle de définition.
 
-Prenons un exemple concret avec l’expérience suivante : tirer à pile ou face avec une pièce de monnaie non truquée. Si l’on souhaite décrire la probabilité d’obtenir pile ou face, on peut utiliser une distribution qui aura comme espace d’échantillonnage [pile ; face], et ces deux valeurs auront chacun comme probabilité 0,5. Il est facile d’étendre cet exemple au cas d’un dé à six faces. La distribution de probabilité décrivant l’expérience « lancer le dé » a pour espace d’échantillonnage [1,2,3,4,5,6], chacune de ces valeurs étant associée à la probabilité 1/6.
+Prenons un exemple concret avec l’expérience suivante : tirer à pile ou face avec une pièce de monnaie non truquée. Si l’on souhaite décrire la probabilité d’obtenir pile ou face, on peut utiliser une distribution qui aura comme espace d’échantillonnage [pile ; face] et ces deux valeurs auront chacun comme probabilité 0,5. Il est facile d’étendre cet exemple au cas d’un dé à six faces. La distribution de probabilité décrivant l’expérience « lancer le dé » a pour espace d’échantillonnage [1,2,3,4,5,6], chacune de ces valeurs étant associée à la probabilité 1/6.
 
-Les deux distributions précédentes appartiennent à la famille des distributions **discrètes**. Elles servent à décrire des expériences dont le nombre de valeurs possibles est fini. Par opposition, la seconde famille de distributions regroupe les distributions **continues**, décrivant des expériences dont le nombre de résultats possibles est infini. Par exemple, mesurer la taille d’une personne adulte sélectionnée au hasard peut produire un nombre infini de valeurs comprises entre 50 cm et 280 cm. Les distributions sont utiles pour décrire les résultats attendus d’une expérience. Reprenons notre exemple du dé. Nous savons que chaque face a une chance sur six d’être tirée au hasard. Nous pouvons représenter cette distribution avec un graphique : 
+Les deux distributions précédentes appartiennent à la famille des distributions **discrètes**. Elles servent à décrire des expériences dont le nombre de valeurs possibles est fini. Par opposition, la seconde famille de distributions regroupe les distributions **continues**, décrivant des expériences dont le nombre de résultats possibles est infini. Par exemple, mesurer la taille d’une personne adulte sélectionnée au hasard peut produire un nombre infini de valeurs comprises entre 50 cm et 280 cm. Les distributions sont utiles pour décrire les résultats attendus d’une expérience. Reprenons notre exemple du dé. Nous savons que chaque face a une chance sur six d’être tirée au hasard. Nous pouvons représenter cette distribution avec un graphique (figure \@ref(fig:fig251)). 
 
 ```{r fig251, echo=FALSE, fig.align='center', fig.cap="Distribution théorique d'un lancé de dé", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
 library(ggplot2)
-
 df <- data.frame(
   face = 1:6,
   prob_theorique = 1/6
 )
-
 ggplot(mapping = aes(x = face, weight = prob_theorique), data = df) + 
   geom_bar()+
   geom_bar()+
@@ -191,9 +184,8 @@ ggplot(mapping = aes(x = face, weight = prob_theorique), data = df) +
        y = "probabilité")+
   scale_x_continuous(breaks = c(1,2,3,4,5,6))+
   ylim(c(0,0.5))
-
 ```
-Nous avons donc sous les yeux un modèle statistique décrivant le comportement attendu d’un dé, nous l’appelons la distribution **théorique**. Cependant, si nous effectuons l’expérience 10 fois (nous collectons donc un échantillon), nous obtiendrons une distribution différente de cette distribution théorique : 
+Nous avons donc sous les yeux un modèle statistique décrivant le comportement attendu d’un dé, nous l’appelons la distribution **théorique**. Cependant, si nous effectuons l’expérience 10 fois (nous collectons donc un échantillon), nous obtiendrons une distribution différente de cette distribution théorique (figure \@ref(fig:fig252)).
 
 ```{r fig252, echo=FALSE, fig.align='center', fig.cap="Distribution empirique d'un lancé de dé (n=10)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
 n <- 10
@@ -201,9 +193,7 @@ results <- sample(c(1,2,3,4,5,6),size = n,replace = T)
 counts <- table(results) / n
 df2 <- data.frame(face = as.numeric(names(counts)),
                 prob_exp10 = as.vector(counts))
-
 df <- merge(df, df2, by = "face", all.x=T)
-
 ggplot(mapping = aes(x = face, weight = prob_exp10), data = df) + 
   geom_bar()+
   geom_bar()+
@@ -212,7 +202,7 @@ ggplot(mapping = aes(x = face, weight = prob_exp10), data = df) +
   scale_x_continuous(breaks = c(1,2,3,4,5,6))+
   ylim(c(0,0.5))
 ```
-Nous appelons cette distribution la distribution **empirique**. Chaque échantillon aura sa propre distribution empirique. Cependant, comme le prédit la loi des grands nombres (ou théorème de Bernoulli) : si une expérience est répétée un grand nombre de fois, la probabilité empirique d’un résultat se rapproche de la probabilité théorique à mesure que le nombre de répétitions augmente. Pour nous en convaincre, collectons trois échantillons de lancer de dé de 30, 100 et 1000 observations respectivement.
+Nous appelons cette distribution la distribution **empirique**. Chaque échantillon aura sa propre distribution empirique. Cependant, comme le prédit la loi des grands nombres (ou théorème de Bernoulli) : si une expérience est répétée un grand nombre de fois, la probabilité empirique d’un résultat se rapproche de la probabilité théorique à mesure que le nombre de répétitions augmente. Pour nous en convaincre, collectons trois échantillons de lancer de dé de 30, 100 et 1000 observations respectivement (figure \@ref(fig:fig253)).
 
 ```{r fig253, echo=FALSE, fig.align='center', fig.cap="Distribution empirique d'un lancé de dé (n=10)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(reshape2)
@@ -223,29 +213,22 @@ results <- sample(c(1,2,3,4,5,6),size = n,replace = T)
 counts <- table(results) / n
 df3 <- data.frame(face = as.numeric(names(counts)),
                   prob_exp30 = as.vector(counts))
-
 df <- merge(df, df3, by = "face", all.x=T)
-
 #### empirical, 100 replications
 n <- 100
 results <- sample(c(1,2,3,4,5,6),size = n,replace = T)
 counts <- table(results) / n
 df4 <- data.frame(face = as.numeric(names(counts)),
                   prob_exp100 = as.vector(counts))
-
 df <- merge(df, df4, by = "face", all.x=T)
-
 #### empirical, 10000 replications
 n <- 10000
 results <- sample(c(1,2,3,4,5,6),size = n,replace = T)
 counts <- table(results) / n
 df5 <- data.frame(face = as.numeric(names(counts)),
                   prob_exp10000 = as.vector(counts))
-
 df <- merge(df, df5, by = "face", all.x=T)
-
 df$prob_theorique <- NULL
-
 # ploting the resul
 df_melt <- melt(df,id.vars = c('face'))
 df_melt$variable <- case_when(
@@ -255,21 +238,18 @@ df_melt$variable <- case_when(
   df_melt$variable == 'prob_exp100' ~ "distribution empirique (n=100)",
   df_melt$variable == 'prob_exp10000' ~ "distribution empirique (n=10000)"
 )
-
 df_melt$f_exp <- factor(df_melt$variable,
                            levels = c("distribution théorique",
                                       "distribution empirique (n=10)",
                                       "distribution empirique (n=30)",
                                       "distribution empirique (n=100)",
                                       "distribution empirique (n=10000)"))
-
 ggplot(mapping = aes(x = face, weight = value), data = df_melt)+
   geom_bar()+
   labs(x = "face du dé",
        y = "probabilité")+
   scale_x_continuous(breaks = c(1,2,3,4,5,6))+
   facet_wrap(vars(f_exp), ncol=2)
-
 ```
 On constate bien qu’au fur et à mesure que la taille de l’échantillon augmente, on tend vers la distribution théorique. Ces dernières sont donc utilisées pour modéliser des phénomènes réels et sont à la base de presque tous les tests statistiques de l’inférence fréquentiste et bayésienne (section X).
 
@@ -301,7 +281,7 @@ La distribution continue la plus simple à décrire est certainement la distribu
 (\#eq:Uniforme)
 \end{equation}
 
-La fonction uniforme a donc deux paramètres, *a* et *b*, représentant respectivement les valeurs maximale et minimale au-delà de laquelle les valeurs ont une probabilité 0 d’être obtenues. Pour avoir une meilleure intuition de ce que décrit une fonction de densité, il est intéressant de la représenter avec un graphique. Notez que sur ce graphique, l'axe des ordonnées n'indique pas précisément la probabilité associée à chaque valeur car celle-ci serait infinidécimale. Il sert uniquement à représenter la densité de la fonction de distribution.
+La fonction uniforme a donc deux paramètres, *a* et *b*, représentant respectivement les valeurs maximale et minimale au-delà de laquelle les valeurs ont une probabilité 0 d’être obtenues. Pour avoir une meilleure intuition de ce que décrit une fonction de densité, il est intéressant de la représenter avec un graphique (figure \@ref(fig:fig254)). Notez que sur ce graphique, l'axe des ordonnées n'indique pas précisément la probabilité associée à chaque valeur car celle-ci serait infinidécimale. Il sert uniquement à représenter la densité de la fonction de distribution.
 
 ```{r fig254, echo=FALSE, fig.align='center', fig.cap="Distributions uniformes continues", auto_pdf=TRUE, out.width='60%'}
 ggplot()+
@@ -322,13 +302,13 @@ ggplot()+
                       guide = "legend")
 ```
 
-On observe clairement que toutes les valeurs de x entre a et b ont la même probabilité pour chacune de trois distributions uniformes présentées dans le graphique. Plus l’étendue est grande ($a-b$), plus l’espace d’échantillonnage est grand et plus la probabilité totale est répartie dans cet espace. Cette distribution serait donc idéale pour décrire un phénomène pour lequel chaque valeur a autant de chance de se produire qu’une autre.  Prenons pour exemple un cas fictif avec un jeu de hasard qui vous proposerait la situation suivante : en tirant sur la manette d’une machine à sous, un nombre est tiré aléatoirement entre -60 et +50. Si le nombre est négatif, vous perdez de l’argent et inversement si le nombre est positif. Nous pouvons représenter cette situation avec une distribution uniforme continue et l’utiliser pour calculer quelques informations essentielles : 
+On observe clairement que toutes les valeurs de *x* entre *a* et *b* ont la même probabilité pour chacune de trois distributions uniformes présentées dans le graphique. Plus l’étendue est grande ($a-b$), plus l’espace d’échantillonnage est grand et plus la probabilité totale est répartie dans cet espace. Cette distribution serait donc idéale pour décrire un phénomène pour lequel chaque valeur a autant de chance de se produire qu’une autre.  Prenons pour exemple un cas fictif avec un jeu de hasard qui vous proposerait la situation suivante : en tirant sur la manette d’une machine à sous, un nombre est tiré aléatoirement entre -60 et +50. Si le nombre est négatif, vous perdez de l’argent et inversement si le nombre est positif. Nous pouvons représenter cette situation avec une distribution uniforme continue et l’utiliser pour calculer quelques informations essentielles : 
 
 1. Selon cette distribution, quelle est la probabilité de gagner de l’argent lors d’un tirage (x > 0)? 
-2. Quelle est la probabilité de perdre de l’argent ? (x < 0)
+2. Quelle est la probabilité de perdre de l’argent ? (x < 0)?
 3. Si je perds moins de 30$ au premier tirage, quelle est la probabilité que j’ai d’au moins récupérer ma mise au second tirage (x > 30)?
 
-Il est assez facile de calculer ces probabilités en utilisant la fonction punif dans R. Concrètement, cela permet de calculer l’intégral de la fonction de masse sur un intervalle donné.
+Il est assez facile de calculer ces probabilités en utilisant la fonction `punif` dans ![](images/Rlogo.png). Concrètement, cela permet de calculer l’intégrale de la fonction de masse sur un intervalle donné.
 
 ```{r}
 # Probabilité d'obtenir une valeur supérieure ou égale à 0
@@ -339,13 +319,13 @@ punif(0,min = -60, max = 50, lower.tail = F)
 punif(30, min = -60, max = 50,lower.tail = F)
 ```
 
-Les paramètres permettent donc d’ajuster la fonction de masse ou de densité d’une distribution afin de lui permettre de prendre des formes différentes. Certains paramètres vont changer la localisation de la distribution (la déplacer vers la droite ou la gauche de l’axe des X), d’autre son degré de dispersion (distribution pointue ou aplatie) ou encore sa forme (symétrie). Les différents paramètres d’une distribution correspondent donc à sa carte d’identité et donnent une idée précise sur sa nature.
+Les paramètres permettent donc d’ajuster la fonction de masse ou de densité d’une distribution afin de lui permettre de prendre des formes différentes. Certains paramètres vont changer la localisation de la distribution (la déplacer vers la droite ou la gauche de l’axe des X), d’autres son degré de dispersion (distribution pointue ou aplatie) ou encore sa forme (symétrie). Les différents paramètres d’une distribution correspondent donc à sa carte d’identité et donnent une idée précise sur sa nature.
 
 ### Principales distributions
 
 Il existe un très grand nombre de distributions théoriques et parmi elles, de nombreuses sont en fait des cas spéciaux d’autres distributions. Pour un petit aperçu du bestiaire, vous pouvez faire un saut à la page [Univariate Distribution Relationships](http://www.math.wm.edu/~leemis/chart/UDR/UDR.html){target='_blank'}, qui liste près de 80 distributions. 
 
-Nous nous concentrons ici sur une sélection de 18 distributions très répandues en sciences sociales. La figure \@ref(fig:fig255) présente graphiquement leurs fonctions de masse et de densité, présentées dans cette section. Notez que ces graphiques correspondent tous à une forme possible de chaque distribution. En modifiant leurs paramètres, il serait possible de produire une figure très différente. Les distributions discrètes sont représentées avec des graphiques en barres, et les distributions continues avec des graphiques de densité.
+Nous nous concentrons ici sur une sélection de 18 distributions très répandues en sciences sociales. La figure \@ref(fig:fig255) présente graphiquement leurs fonctions de masse et de densité présentées dans cette section. Notez que ces graphiques correspondent tous à une forme possible de chaque distribution. En modifiant leurs paramètres, il serait possible de produire une figure très différente. Les distributions discrètes sont représentées avec des graphiques en barres, et les distributions continues avec des graphiques de densité.
 
 ```{r fig255, echo=FALSE, fig.align='center', fig.cap="18 distribution essentielles, design inspiré de [Sean Owen](https://medium.com/@srowen/common-probability-distributions-347e6b945ce4){target='_blank'}", auto_pdf=TRUE, out.width='95%'}
 knitr::include_graphics('images/distributions/all_distributions.png', dpi = NA)
@@ -388,13 +368,11 @@ avec *x* le nombre de tirages réussis sur *n* essais avec une probabilité *p* 
 Pour reprendre l’exemple précédent concernant les accidents de la route, une distribution binomiale permettrait de représenter la distribution du nombre de cyclistes survivants sur dix accidents impliquant une voiture à une intersection.  
 
 ```{r fig256, echo=FALSE, fig.align='center', fig.cap="La distribution binomiale", auto_pdf=TRUE, out.width='95%'}
-
 data <- data.frame(y1 = dbinom(1:15, size=15, prob=.10),
                    y2 = dbinom(1:15, size=15, prob=.25),
                    y3 = dbinom(1:15, size=15, prob=.5),
                    y4 = dbinom(1:15, size=15, prob=.75),
                    x = 1:15)
-
 df <- melt(data, id.vars = "x")
 df$f_prob <- case_when(
   df$variable == "y1" ~ "p = 0.1",
@@ -402,22 +380,18 @@ df$f_prob <- case_when(
   df$variable == "y3" ~ "p = 0.5",
   df$variable == "y4" ~ "p = 0.75",
 )
-
-
 df$f_prob <- factor(as.character(df$f_prob),
                            levels = c("p = 0.1",
                                       "p = 0.25",
                                       "p = 0.5",
                                       "p = 0.75"))
  
-
 ggplot(df) +
   geom_bar(aes(x=x, weight = value), width = 0.2, fill = '#99ccff')+
   ylim(0,0.4)+
   labs(x = "Nombre de tirages réussis pour 15 tirages",
        y = "Probabilité")+
    facet_wrap(vars(f_prob), ncol=2)
-
 ```
 
 #### La distribution géométrique
@@ -430,13 +404,11 @@ La distribution géométrique permet de représenter le nombre de tirages néces
 avec *x* le nombre de tentatives avant d’obtenir une réussite, *f(x)* la probabilité que le premier succès n’arrive qu’après *x* tentatives et *p* la probabilité de réussite à chaque tentative. Cette distribution est notamment utilisée en marketing pour modéliser le nombre d’appels nécessaires avant de réussir une vente.
 
 ```{r fig257, echo=FALSE, fig.align='center', fig.cap="La distribution géométrique", auto_pdf=TRUE, out.width='95%'}
-
 data <- data.frame(y1 = dgeom(1:15, prob=.10),
                    y2 = dgeom(1:15, prob=.25),
                    y3 = dgeom(1:15, prob=.5),
                    y4 = dgeom(1:15, prob=.75),
                    x = 1:15)
-
 df <- melt(data, id.vars = "x")
 df$f_prob <- case_when(
   df$variable == "y1" ~ "p = 0.1",
@@ -444,15 +416,12 @@ df$f_prob <- case_when(
   df$variable == "y3" ~ "p = 0.5",
   df$variable == "y4" ~ "p = 0.75",
 )
-
-
 df$f_prob <- factor(as.character(df$f_prob),
                            levels = c("p = 0.1",
                                       "p = 0.25",
                                       "p = 0.5",
                                       "p = 0.75"))
  
-
 ggplot(df) +
   geom_bar(aes(x=x, weight = value), width = 0.2, fill = '#99ccff')+
   ylim(0,0.3)+
@@ -460,11 +429,10 @@ ggplot(df) +
   labs(x = "Nombre de tirages avant d'obtenir une réussite",
        y = "Probabilité")+
    facet_wrap(vars(f_prob), ncol=2)
-
 ```
 
 #### La distribution binomiale négative
-La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre n de réussites. [1 ; +$\infty$[ (limité aux nombres entiers positifs). Sa formule est la suivante : 
+La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre *n* de réussites [1 ; +$\infty$[ (limité aux nombres entiers positifs). Sa formule est la suivante : 
 
 \begin{equation}f(x ; n ; p)=\left(\begin{array}{c}
 x+n-1 \\
@@ -473,16 +441,14 @@ n
 (\#eq:binomialnegative)
 \end{equation}
 
-Avec *x* le nombre de tentatives avant d’obtenir *n* réussite et *p* la probabilité d’obtenir une réussite à chaque tentative. Cette distribution pourrait être utilisée pour modéliser le nombre de questionnaires *x* à envoyer pour une enquête si l’on espère au moins *n* réponses, sachant que la probabilité d’une réponse est *p*.
+avec *x* le nombre de tentatives avant d’obtenir *n* réussites et *p* la probabilité d’obtenir une réussite à chaque tentative. Cette distribution pourrait être utilisée pour modéliser le nombre de questionnaires *x* à envoyer pour une enquête si l’on espère au moins *n* réponses, sachant que la probabilité d’une réponse est *p*.
 
 ```{r fig258, echo=FALSE, fig.align='center', fig.cap="La distribution binomiale négative", auto_pdf=TRUE, out.width='95%'}
-
 data <- data.frame(y1 = dnbinom(1:15, size = 5, prob=.10),
                    y2 = dnbinom(1:15, size = 5, prob=.25),
                    y3 = dnbinom(1:15, size = 5, prob=.5),
                    y4 = dnbinom(1:15, size = 5, prob=.75),
                    x = 1:15)
-
 df <- melt(data, id.vars = "x")
 df$f_prob <- case_when(
   df$variable == "y1" ~ "p = 0.1",
@@ -490,15 +456,12 @@ df$f_prob <- case_when(
   df$variable == "y3" ~ "p = 0.5",
   df$variable == "y4" ~ "p = 0.75",
 )
-
-
 df$f_prob <- factor(as.character(df$f_prob),
                            levels = c("p = 0.1",
                                       "p = 0.25",
                                       "p = 0.5",
                                       "p = 0.75"))
  
-
 ggplot(df) +
   geom_bar(aes(x=x, weight = value), width = 0.2, fill = '#99ccff')+
   ylim(0,0.3)+
@@ -506,26 +469,23 @@ ggplot(df) +
   labs(x = "Nombre de tirages avant d'obtenir cinq réussites",
        y = "Probabilité")+
    facet_wrap(vars(f_prob), ncol=2)
-
 ```
 
 #### La distribution de poisson
-La distribution de poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc [0 ; +$\infty$[ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de poisson à une fonction de densité avec un seul paramètre \lambda (lambda) et est décrite par la formule suivante : 
+La distribution de poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc [0 ; +$\infty$[ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de poisson à une fonction de densité avec un seul paramètre $\lambda$ (lambda) et est décrite par la formule suivante : 
 
 \begin{equation}f(x ; \lambda)=\frac{\lambda^{x}}{x !} e^{-\lambda}
 (\#eq:poisson)
 \end{equation}
 
-avec *x* le nombre de cas, *f(x)* la probabilité d’obtenir *x* sachant \lambda. \lambda peut être vue comme le taux moyen d’occurrences (nombre d’évènements divisé par la durée totale de l’expérience). Il permet à la fois de caractériser le centre et la dispersion de la distribution. Notez également que plus le paramètre \lambda augmente, plus la distribution de poisson tend vers une distribution normale.
+avec *x* le nombre de cas, *f(x)* la probabilité d’obtenir *x* sachant $\lambda$. $\lambda$ peut être vue comme le taux moyen d’occurrences (nombre d’évènements divisé par la durée totale de l’expérience). Il permet à la fois de caractériser le centre et la dispersion de la distribution. Notez également que plus le paramètre \lambda augmente, plus la distribution de poisson tend vers une distribution normale.
 
 ```{r fig259, echo=FALSE, fig.align='center', fig.cap="La distribution de poisson", auto_pdf=TRUE, out.width='95%'}
-
 data <- data.frame(y1 = dpois(1:20, lambda = 1),
                    y2 = dpois(1:20, lambda = 3),
                    y3 = dpois(1:20, lambda = 5),
                    y4 = dpois(1:20, lambda = 10),
                    x = 1:20)
-
 df <- melt(data, id.vars = "x")
 df$f_prob <- case_when(
   df$variable == "y1" ~ "lambda = 1",
@@ -533,22 +493,18 @@ df$f_prob <- case_when(
   df$variable == "y3" ~ "lambda = 5",
   df$variable == "y4" ~ "lambda = 10",
 )
-
-
 df$f_prob <- factor(as.character(df$f_prob),
                            levels = c("lambda = 1",
                                       "lambda = 3",
                                       "lambda = 5",
                                       "lambda = 10"))
  
-
 ggplot(df) +
   geom_bar(aes(x=x, weight = value), width = 0.2, fill = '#99ccff')+
   scale_x_continuous(breaks = seq(1,20,by = 2))+
   labs(x = "Nombre de cas",
        y = "Probabilité")+
    facet_wrap(vars(f_prob), ncol=2)
-
 ```
 
 #### La distribution gaussienne
@@ -559,14 +515,14 @@ La fonction de densité de la distribution normale est la suivante :
 (\#eq:gaussien)
 \end{equation}
 
-Avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa probabilité, \mu (mu) la moyenne de la distribution normale (paramètre de localisation) et \sigma (sigma) son écart type (paramètre de dispersion). La courbe normale suit une forme de cloche. Notez que :
+avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa probabilité, $\mu$ (mu) la moyenne de la distribution normale (paramètre de localisation) et $\sigma$ (sigma) son écart-type (paramètre de dispersion). La courbe normale suit une forme de cloche. Notez que :
 
-* 68.2% de la masse de la distribution normale est comprise dans l’intervalle $[\mu- \sigma≤x≤ \mu+ \sigma]$ 
-* 95.4% dans l’intervalle $[\mu- 2\sigma≤x≤ \mu+ 2\sigma]$
-* et 99.7% dans l’intervalle $[\mu- 3\sigma≤x≤ \mu+ 3\sigma]$
+* 68,2% de la masse de la distribution normale est comprise dans l’intervalle $[\mu- \sigma≤x≤ \mu+ \sigma]$ 
+* 95,4% dans l’intervalle $[\mu- 2\sigma≤x≤ \mu+ 2\sigma]$
+* 99,7% dans l’intervalle $[\mu- 3\sigma≤x≤ \mu+ 3\sigma]$
 
 Autrement dit, dans le cas d’une distribution normale, il est très invraisemblable d’observer des données situées à plus de trois écarts types de la moyenne.
-Notez ici que lorsque $\mu = 0$ et $\sigma = 0$, on obtient la loi normale générale (ou centrée-réduite) (LIEN SECTION ).
+Notez ici que lorsque $\mu = 0$ et $\sigma = 0$, on obtient la loi normale générale (ou centrée-réduite) (section \@ref(sect2552)).
 
 ```{r fig260, echo=FALSE, fig.align='center', fig.cap="La distribution Gaussienne", auto_pdf=TRUE, out.width='70%'}
 library(VGAM)
@@ -603,35 +559,30 @@ generate_plot <- function(fun,params, real_names, xlim, colors){
   return(final_plot)
   
 }
-
 parametres <- list(mean = c(-5,0,5),
                    sd = c(1.5,1,3))
 real_names <- c("mu","sigma")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(-15,15)
-
 generate_plot(dnorm,parametres,real_names,xlim,colors)
-
 ```
 
-#### La distribution skew gaussienne
+#### La distribution gaussienne asymétrique
 La distribution normale asymétrique (skew-normal) est une extension de la distribution gaussienne permettant de modifier la forme de la distribution normale pour qu’elle ne soit plus symétrique. Son espace d’échantillonnage est donc ]-$\infty$ ; +$\infty$[. Sa fonction de densité est la suivante :
 
 \begin{equation}f(x;\xi;\omega;\alpha) = \frac{2}{\omega \sqrt{2 \pi}} e^{-\frac{(x-\xi)^{2}}{2 \omega^{2}}} \int_{-\infty}^{\alpha\left(\frac{x-\xi}{\omega}\right)} \frac{1}{\sqrt{2 \pi}} e^{-\frac{t^{2}}{2}} d t
 (\#eq:skewgaussien)
 \end{equation}
 
-\xi (xi) le paramètre de localisation, \omega (omega), le paramètre de dispersion (ou d’échelle) et \alpha (alpha) le paramètre de forme (contrôlant le degré de symétrie). Si  $\alpha = 0$, alors la distribution skew-normal est une simple distribution normale. Ce type de distribution est très utile lorsque que l’on souhaite modéliser une variable pour laquelle on sait que des valeurs plus extrêmes s’observeront d’un côté ou de l’autre de la distribution. Les revenus totaux annuels des personnes ou des ménages sont de très bons exemples puisqu’ils sont distribués généralement avec une asymétrie positive : bien qu’une moyenne existe, il y a généralement plus de personnes ou de ménages avec des revenus très faibles, que de personnes ou de ménages avec des revenus très élevés.
+avec $\xi$ (xi) le paramètre de localisation, $\omega$ (omega) le paramètre de dispersion (ou d’échelle) et $\alpha$ (alpha) le paramètre de forme (contrôlant le degré de symétrie). Si  $\alpha = 0$, alors la distribution skew-normal est une simple distribution normale. Ce type de distribution est très utile lorsque que l’on souhaite modéliser une variable pour laquelle on sait que des valeurs plus extrêmes s’observeront d’un côté ou de l’autre de la distribution. Les revenus totaux annuels des personnes ou des ménages sont de très bons exemples puisqu’ils sont distribués généralement avec une asymétrie positive : bien qu’une moyenne existe, il y a généralement plus de personnes ou de ménages avec des revenus très faibles, que de personnes ou de ménages avec des revenus très élevés.
 
 ```{r fig261, echo=FALSE, fig.align='center', fig.cap="La distribution skew-Gaussienne", auto_pdf=TRUE, out.width='70%'}
-
 parametres <- list(location = c(-10,-5,10),
                    scale = c(2,2,5),
                    shape = c(0,4,-4))
 real_names <- c("xi","omega","alpha")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(-20,20)
-
 generate_plot(dskewnorm,parametres,real_names,xlim,colors)
 ```
 
@@ -641,27 +592,25 @@ Au même titre que la distribution skew-normal, la distribution log-normal est u
 (\#eq:loggaussien)
 \end{equation}
 
-À la différence la distribution skew-normal, la distribution log-normal ne peut avoir qu’une asymétrie positive (étirée vers la droite). Elle est cependant intéressante puisqu’elle ne compte que deux paramètres (\mu et \sigma) ce qui la rend plus facile à ajuster. À nouveau, une distribution log-normal pourrait être utilisée pour décrire les revenus totaux annuels des individus ou des ménages, ou encore les revenus d’emploi. Elle est aussi utilisée en économie sur les marchés financiers pour représenter les courts des actions et des biens (ces derniers ne pouvant pas être inférieurs à 0).
+À la différence la distribution skew-normal, la distribution log-normal ne peut avoir qu’une asymétrie positive (étirée vers la droite). Elle est cependant intéressante puisqu’elle ne compte que deux paramètres (\mu et \sigma) ce qui la rend plus facile à ajuster. À nouveau, une distribution log-normal pourrait être utilisée pour décrire les revenus totaux annuels des individus ou des ménages ou les revenus d’emploi. Elle est aussi utilisée en économie sur les marchés financiers pour représenter les courts des actions et des biens (ces derniers ne pouvant pas être inférieurs à 0).
 
-```{r fig262, echo=FALSE, fig.align='center', fig.cap="La distribution log-Gaussienne", auto_pdf=TRUE, out.width='70%'}
-
+```{r fig262, echo=FALSE, fig.align='center', fig.cap="La distribution log-gaussienne", auto_pdf=TRUE, out.width='70%'}
 parametres <- list(meanlog = c(1,2,3),
                    sdlog = c(1,1.5,1))
 real_names <- c("mu","sigma")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(0,30)
-
 generate_plot(dlnorm,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution de Student
-La distribution de Student joue un rôle important en statistique, elle est par exemple utilisée lors du T-test pour calculer le degré de significativité du test. Comme la distribution gaussienne, la distribution de Student a une forme de cloche, est centrée sur sa moyenne et définie sur ]-$\infty$ ; +$\infty$[. Elle a cependant des « queues plus lourdes » (heavy tails). Entendez par-là que les valeurs extrêmes ont une plus grande probabilité d’occurrence dans une distribution de Student que dans une distribution gaussienne. Sa fonction de densité est la suivante : 
+La distribution de Student joue un rôle important en statistique, elle est par exemple utilisée lors du test *t* pour calculer le degré de significativité du test. Comme la distribution gaussienne, la distribution de Student a une forme de cloche, est centrée sur sa moyenne et définie sur ]-$\infty$ ; +$\infty$[. Elle a cependant des « queues plus lourdes » (*heavy tails* en anglais). Entendez par-là que les valeurs extrêmes ont une plus grande probabilité d’occurrence dans une distribution de Student que dans une distribution gaussienne. Sa fonction de densité est la suivante : 
 
 \begin{equation}p(x ; \nu ; \hat{\mu} ; \hat{\sigma})=\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right) \sqrt{\pi \nu} \hat{\sigma}}\left(1+\frac{1}{\nu}\left(\frac{x-\hat{\mu}}{\hat{\sigma}}\right)^{2}\right)^{-\frac{\nu+1}{2}}
 (\#eq:student)
 \end{equation}
 
-Avec \mu le paramètre de localisation, \sigma le paramètre de dispersion (qui n’est cependant pas un écart-type comme pour la distribution normale) et \nu le nombre de degré de liberté. Plus v est grand, plus la distribution de Student tend vers une distribution normale. $\Gamma$ représente la fonction mathématique gamma (à ne pas confondre avec la distribution de Gamma). Un exemple d’application en études urbaines serait l’exposition au bruit environnementale de cyclistes. Cette distribution s’approcherait certainement d’une distribution normale, mais les cyclistes croisent régulièrement des secteurs peu bruyants (parcs, rues résidentielles, etc.) et de secteurs très bruyants (zone industrielle, artères majeures, etc.), ce qui conduit vers une distribution de Student.
+avec $\mu$ le paramètre de localisation, $\sigma$ le paramètre de dispersion (qui n’est cependant pas un écart-type comme pour la distribution normale) et $\nu$ le nombre de degré de liberté. Plus $\nu$ est grand, plus la distribution de Student tend vers une distribution normale. $\Gamma$ représente la fonction mathématique gamma (à ne pas confondre avec la distribution de Gamma). Un exemple d’application en études urbaines serait l’exposition au bruit environnementale de cyclistes. Cette distribution s’approcherait certainement d’une distribution normale, mais les cyclistes croisent régulièrement des secteurs peu bruyants (parcs, rues résidentielles, etc.) et de secteurs très bruyants (artères majeures, zones industrielles, etc.), ce qui conduit vers une distribution de Student.
 
 ```{r fig263, echo=FALSE, fig.align='center', fig.cap="La distribution de Student", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(LaplacesDemon)
@@ -672,18 +621,17 @@ parametres <- list(mu = c(-10,0,10),
 real_names <- c("mu","sigma", "nu")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(-25,25)
-
 generate_plot(dst,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution de Cauchy
-La distribution de Cauchy est également une distribution symétrique définie sur l’intervalle ]-$\infty$ ; +$\infty$[. Elle a comme particularité d’avoir queues potentiellement plus lourdes que la distribution de Student. Elle est notamment utilisée pour modéliser des phénomènes extrêmes comme les précipitations maximales annuelles, les niveaux d’inondations maximaux annuels ou les values at risk pour les portefeuilles financiers. Il est également intéressant de noter que le quotient de deux variables indépendantes normalement distribuées suit une distribution de Cauchy. Sa fonction de densité est la suivante : 
+La distribution de Cauchy est également une distribution symétrique définie sur l’intervalle ]-$\infty$ ; +$\infty$[. Elle a comme particularité d’avoir des queues potentiellement plus lourdes que la distribution de Student. Elle est notamment utilisée pour modéliser des phénomènes extrêmes comme les précipitations maximales annuelles, les niveaux d’inondations maximaux annuels ou les *values at risk* pour les portefeuilles financiers. Il est également intéressant de noter que le quotient de deux variables indépendantes normalement distribuées suit une distribution de Cauchy. Sa fonction de densité est la suivante : 
 
 \begin{equation}\frac{1}{\pi \gamma}\left[\frac{\gamma^{2}}{\left(x-x_{0}\right)^{2}+\gamma^{2}}\right]
 (\#eq:cauchy)
 \end{equation}
 
-Elle dépend donc de deux paramètres : $x_0$, le paramètre de localisation indiquant le pic de la distribution et \gamma, un paramètre de dispersion.
+Elle dépend donc de deux paramètres : $x_0$, le paramètre de localisation indiquant le pic de la distribution et $\gamma$, un paramètre de dispersion.
 
 ```{r fig264, echo=FALSE, fig.align='center', fig.cap="La distribution de Cauchy", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(location = c(-10,0,10),
@@ -692,7 +640,6 @@ parametres <- list(location = c(-10,0,10),
 real_names <- c("x0","gamma")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(-25,25)
-
 generate_plot(dcauchy,parametres,real_names,xlim,colors)
 ```
 
@@ -711,36 +658,33 @@ parametres <- list(df = c(2,5,10))
 real_names <- c("k")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(0,25)
-
 generate_plot(dchisq,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution exponentielle
-La distribution exponentielle est une version continue de la distribution géométrique. Pour cette dernière on s’intéressait au nombre de tentatives nécessaire pour obtenir un résultat positif, soit une dimension discrète. Pour la distribution exponentielle, cette dimension discrète est remplacée par une dimension continue. L’exemple le plus intuitif est sûrement le cas du temps. Dans ce cas, la distribution exponentielle servirait à décrire le temps d’attente nécessaire pour qu’un évènement se produise. Il pourrait aussi s’agir d’une force que l’on applique jusqu’à ce qu’un matériau cède. Cette distribution est donc définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité :
+La distribution exponentielle est une version continue de la distribution géométrique. Pour cette dernière, on s’intéresserait au nombre de tentatives nécessaires pour obtenir un résultat positif, soit une dimension discrète. Pour la distribution exponentielle, cette dimension discrète est remplacée par une dimension continue. L’exemple le plus intuitif est sûrement le cas du temps. Dans ce cas, la distribution exponentielle servirait à décrire le temps d’attente nécessaire pour qu’un évènement se produise. Il pourrait aussi s’agir d’une force que l’on applique jusqu’à ce qu’un matériau cède. Cette distribution est donc définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité :
 
 \begin{equation}f(x;\lambda) = \lambda e^{-\lambda x}
 (\#eq:exponentiel)
 \end{equation}
 
-Elle n’a qu’un seul paramètre : \lambda. Il peut être facilement interprété avec l’exemple suivant. Admettons que nous attendons un bus qui arrive en moyenne toutes les 15 minutes. Pour modéliser le temps d’attente entre deux bus, il serait possible d’utiliser \lambda = 1/15.
 
 ```{r fig266, echo=FALSE, fig.align='center', fig.cap="La distribution exponentielle", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(rate = c(1/2,1/5,1/10))
 real_names <- c("lambda")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(0,25)
-
 generate_plot(dexp,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution de Gamma
-La distribution de Gamma est une généralisation d’un grand nombre de distributions. Elle regroupe ainsi la distribution exponentielle et du Chi<sup>2</sup> En d’autres termes, les distributions du chi2 et exponentielles sont des cas particuliers de la distribution de Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
+La distribution de Gamma est une généralisation d’un grand nombre de distributions. Elle regroupe ainsi la distribution exponentielle et du Chi<sup>2</sup>. En d’autres termes, les distributions du chi<sup>2</sup> et exponentielles sont des cas particuliers de la distribution de Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
 
 \begin{equation}f(x ; \alpha; \beta)=\frac{\beta^{\alpha} x^{\alpha-1} e^{-\beta x}}{\Gamma(\alpha)}
 (\#eq:gamma)
 \end{equation}
 
-Elle comprend donc deux paramètres : \alpha et \beta. Le premier est le paramètre de forme et le second un paramètre d’échelle (l’inverse d’un paramètre de dispersion, plus sa valeur est petite, plus la distribution sera dispersée). Notez que cette distribution ne dispose pas d’un paramètre de localisation. Du fait de sa flexibilité, cette distribution est largement utilisée, que ce soit dans la modélisation des temps d’attente avant un évènement, la taille des réclamations d’assurance, les quantités de précipitations, etc.
+Elle comprend donc deux paramètres : $\alpha$ et $\beta$. Le premier est le paramètre de forme et le second un paramètre d’échelle (l’inverse d’un paramètre de dispersion, plus sa valeur est petite, plus la distribution sera dispersée). Notez que cette distribution ne dispose pas d’un paramètre de localisation. Du fait de sa flexibilité, cette distribution est largement utilisée, que ce soit dans la modélisation des temps d’attente avant un évènement, la taille des réclamations d’assurance, les quantités de précipitations, etc.
 
 ```{r fig267, echo=FALSE, fig.align='center', fig.cap="La distribution Gamma", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape = c(1,2,6),
@@ -748,7 +692,6 @@ parametres <- list(shape = c(1,2,6),
 real_names <- c("alpha","beta")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(0,25)
-
 generate_plot(dgamma,parametres,real_names,xlim,colors)
 ```
 
@@ -759,7 +702,7 @@ La distribution de Beta est définie sur l’intervalle [0 ; 1], elle est donc �
 (\#eq:beta)
 \end{equation}
 
-Elle a donc deux paramètres \alpha et \beta contrôlant tous les deux la forme de la distribution. Cette caractéristique lui permet d’avoir une très grande flexibilité et même d’adopter des formes bimodales. $B$ correspondant à la fonction mathématique Beta, à ne pas confondre avec la distribution de Beta et le paramètre Beta (\beta) de cette même distribution).
+Elle a donc deux paramètres $\alpha$ et $\beta$ contrôlant tous les deux la forme de la distribution. Cette caractéristique lui permet d’avoir une très grande flexibilité et même d’adopter des formes bimodales. $B$ correspondant à la fonction mathématique Beta, à ne pas confondre avec la distribution de Beta et le paramètre Beta ($\beta$) de cette même distribution).
 
 ```{r fig268, echo=FALSE, fig.align='center', fig.cap="La distribution Beta", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape1 = c(0.5,5,2,2),
@@ -767,7 +710,6 @@ parametres <- list(shape1 = c(0.5,5,2,2),
 real_names <- c("alpha","beta")
 colors <- c("#ee6c4d","#98c1d9","#293241","#8C4F47")
 xlim <- c(0,1)
-
 generate_plot(dbeta,parametres,real_names,xlim,colors)
 ```
 
@@ -786,7 +728,6 @@ parametres <- list(shape = c(1,0.5,5),
 real_names <- c("k","lambda")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(0,15)
-
 generate_plot(dweibull,parametres,real_names,xlim,colors)
 ```
 
@@ -797,7 +738,7 @@ La distribution de Pareto est à la distribution exponentielle, ce que la distri
 (\#eq:pareto)
 \end{equation}
 
-Elle comprend donc deux paramètres, $x_m$ étant un paramètre de localisation (décalant la distribution vers la droite ou vers la gauche) et *k* un paramètre de forme. Plus *k* augmente, plus la probabilité prédite par la distribution décroît rapidement.
+Elle comprend donc deux paramètres, $x_m$ étant un paramètre de localisation (décalant la distribution vers la droite ou vers la gauche) et $k$ un paramètre de forme. Plus $k$ augmente, plus la probabilité prédite par la distribution décroît rapidement.
 
 ```{r fig270, echo=FALSE, fig.align='center', fig.cap="La distribution de Pareto", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(scale = c(4,3,1),
@@ -805,7 +746,6 @@ parametres <- list(scale = c(4,3,1),
 real_names <- c("mx","k")
 colors <- c("#ee6c4d","#98c1d9","#293241")
 xlim <- c(0,15)
-
 generate_plot(VGAM::dpareto,parametres,real_names,xlim,colors)
 ```
 
@@ -841,7 +781,6 @@ Il convient de ne pas confondre moyenne et médiane ! Dans le tableau \@ref(tab:
 ```{r tableRevMoyMed, echo=FALSE, message=FALSE, warning=FALSE}
 df <-  read.csv("data/univariee/revenu.csv")
 df2 <- df[, c("Muni","NMenages","RevMoyM","RevMedM")]
-
 knitr::kable(df2,
   format.args = list(decimal.mark = ",", big.mark = " "),   
   col.names = c("Municipalité","Nombre de ménages", "Revenu moyen","Revenu médian"),
@@ -878,7 +817,6 @@ df <- data.frame(
   C = c(6212,68.4,NA,57.5,59.1,60.3,62.7,66.0,69.2,71.9,73.3,76.5),
   M = c(4723,70.7,NA,59.2,61.1,62.3,64.5,67.7,71.0,73.7,75.2,78.9),
   P = c(3793,73.4,NA,62.3,65.0,66.5,69.1,71.6,74.0,76.0,77.2,81.0))
-
 knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),   
   col.names = c("Statistiques","Copenhague", "Montréal","Paris"),
@@ -956,7 +894,6 @@ df <- data.frame(
     xi_mean = a - mean(a),
     numer = (a - mean(a))^2
 )
-
 df[n+1,1] <- "**Statistiques**"
 n <- n+1
 df[n+1,1] <- "N"
@@ -966,21 +903,17 @@ df[n+1,2] <- length(a)
 df[n+2,2] <- sum(a)
 df[n+2,4] <- sum(df$numer, na.rm = TRUE)
 df[n+2,3] <- sum(df$xi_mean, na.rm = TRUE)
-
 df[n+3,2] <- mean(a)
 df[n+3,3] <- sum(df$xi_mean, na.rm = TRUE)/n
 df[n+3,4] <- round(mean((a - mean(a))^2),2)
 df[n+4,1] <- "Étendue"
 df[n+4,2] <- max(a)-min(a)
-
 df[n+5,1] <- "Premier quartile"
 df[n+6,1] <- "Troisième quartile"
 df[n+5,2] <- quantile(a, type = 1)[2]
 df[n+6,2] <- quantile(a, type = 1)[4]
-
 df[n+7,1] <- "Intervalle interquartile"
 df[n+7,2] <- quantile(a, type = 1)[4]-quantile(a, type = 1)[2]
-
 df[n+8,1] <- "Variance (population, $\\sigma^2$)"
 df[n+9,1] <- "Écart-type (population, $\\sigma$)"
 df[n+10,1] <- "Variance (échantillon, $s^2$)"
@@ -989,13 +922,10 @@ df[n+8,2] <- round(mean((a - mean(a))^2),2)
 df[n+9,2] <- round(sqrt(mean((a - mean(a))^2)),2)
 df[n+10,2] <- round(var(a),2)
 df[n+11,2] <- round(sd(a),2)
-
 df[n+12,1] <- "Coefficient de variation ($\\sigma / \\mu$)"
 df[n+13,1] <- "Coefficient de variation ($s / \\bar{x}$)"
-
 df[n+12,2] <- round(sqrt(mean((a - mean(a))^2))/mean(a),2)
 df[n+13,2] <- round(sd(a)/mean(a),2)
-
 opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   format.args = list(decimal.mark = ",", big.mark = " "),           
@@ -1024,7 +954,6 @@ sd.c <- round(sqrt(mean((c - mean(c))^2)),2)
 a <- sort(a)
 b <- sort(b)
 c <- sort(c)
-
 n <- length(a)
 df <- data.frame(
   id = as.character(c(1:n)),
@@ -1032,7 +961,6 @@ df <- data.frame(
   B = round(b,2),
   C = round(c,2)
 )
-
 df[n+1,1] <- "**Statistiques**"
 n <- n+1
 df[n+1,1] <- "Moyenne ($\\mu$)"
@@ -1041,28 +969,24 @@ df[n+3,1] <- "Intervalle interquartile"
 df[n+4,1] <- "Variance (population, $\\sigma^2$)"
 df[n+5,1] <- "Écart-type (population, $\\sigma$)"
 df[n+6,1] <- "Coefficient de variation ($\\sigma / \\mu$)"
-
 df[n+1,2] <- mean(a)
 df[n+2,2] <- max(a)-min(a)
 df[n+3,2] <- quantile(a, type = 1)[4]-quantile(a, type = 1)[2]
 df[n+4,2] <- round(var.a,2)
 df[n+5,2] <- round(sd.a,2)
 df[n+6,2] <- round(sd.a/mean(a),2)
-
 df[n+1,3] <- mean(b)
 df[n+2,3] <- max(b)-min(b)
 df[n+3,3] <- quantile(b, type = 1)[4]-quantile(b, type = 1)[2]
 df[n+4,3] <- round(var.b,2)
 df[n+5,3] <- round(sd.b,2)
 df[n+6,3] <- round(sd.b/mean(b),2)
-
 df[n+1,4] <- round(mean(c),2)
 df[n+2,4] <- max(c)-min(c)
 df[n+3,4] <- quantile(c, type = 1)[4]-quantile(c, type = 1)[2]
 df[n+4,4] <- round(var.c,2)
 df[n+5,4] <- round(sd.c,2)
 df[n+6,4] <- round(sd.c/mean(c),2)
-
 opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   format.args = list(decimal.mark = ",", big.mark = " "),           
@@ -1077,16 +1001,13 @@ knitr::kable(df,
 a <- c("Moyenne", "Étendue",
        "Intervalle interquartile",
        "Variance", "Écart-type", "Coefficient de variation")
-
 b <- c("X","X","X","X","X","")
 c <- c("X","X","","X","X","X")
-
 df <- data.frame(
   Stat = a,
   Unite = b,
   Outlier = c
 )
-
 opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   col.names = c("Statistique","Unité de mesure","Valeurs extrêmes"),
@@ -1144,7 +1065,6 @@ library(DescTools)
 library(ggplot2)
 library(ggpubr)
 library(SimDesign)
-
 # Générer des distributions asymétriques
 df <- data.frame(
   Normale  = rnorm(1500,0,1),
@@ -1153,26 +1073,21 @@ df <- data.frame(
   L = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=7),
   P = rValeMaurelli(1500, mean=0, sigma=1, skew=0, kurt=-1)
 )
-
 statsL <- c(mean(df$Skewed_L),median(df$Skewed_L),Skew(df$Skewed_L),Kurt(df$Skewed_L))
 statsR <- c(mean(df$Skewed_R),median(df$Skewed_R),Skew(df$Skewed_R),Kurt(df$Skewed_R))
 statsN <- c(mean(df$Normale),median(df$Normale),Skew(df$Normale),Kurt(df$Normale))
-
 CaptionL <- paste("Moyenne = ",  round(statsL[1],2), 
                   "\nMédiane = ",  round(statsL[2],2),  
                   "\nSkewness = ",  round(statsL[3],2), 
                   sep="")
-
 CaptionR <- paste("Moyenne = ",  round(statsR[1],2), 
                   "\nMédiane = ",  round(statsR[2],2),  
                   "\nSkewness = ",  round(statsR[3],2), 
                   sep="")
-
 CaptionN <- paste("Moyenne = ",  round(statsN[1],2), 
                   "\nMédiane = ",  round(statsN[2],2),  
                   "\nSkewness = ",  round(statsN[3],2), 
                   sep="")
-
 Gl <- ggplot(data = df, mapping = aes(x=Skewed_L))+
       geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
       stat_function(fun = dnorm, args = list(mean = mean(df$Skewed_L), sd = sd(df$Skewed_L)), color="black",size=1)+
@@ -1203,7 +1118,6 @@ Gr <- ggplot(data = df, mapping = aes(x=Skewed_R))+
       plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
       plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
       )
-
 Gn <- ggplot(data = df, mapping = aes(x=Normale))+
       geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
       stat_function(fun = dnorm, args = list(mean = mean(df$Normale), sd = sd(df$Normale)), color="black",size=1)+
@@ -1218,7 +1132,6 @@ Gn <- ggplot(data = df, mapping = aes(x=Normale))+
       plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
       plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
       )
-
 ggarrange(Gl, Gn, Gr, ncol = 2, nrow=2)
 ```
 
@@ -1249,16 +1162,13 @@ library(DescTools)
 library(ggplot2)
 library(ggpubr)
 library(SimDesign)
-
 # Générer des distributions asymétriques
 statsM <- c(mean(df$Normale),median(df$Normale),Skew(df$M),Kurt(df$Normale))
 statsL <- c(mean(df$L),median(df$L),Skew(df$L),Kurt(df$L))
 statsP <- c(mean(df$P),median(df$P),Skew(df$P),Kurt(df$P))
-
 CaptionN <- paste("\nKurtosis = ",  as.character(round(Kurt(df$Normale),2)), sep="")
 CaptionL <- paste("\nKurtosis = ",  as.character(round(Kurt(df$L),2)), sep="")
 CaptionP <- paste("\nKurtosis = ",  as.character(round(Kurt(df$P),2)), sep="")
-
 Gl <- ggplot(data = df, mapping = aes(x=L))+
   geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
   stat_function(fun = dnorm, args = list(mean = mean(df$L), sd = sd(df$L)), color="black",size=1)+
@@ -1272,7 +1182,6 @@ Gl <- ggplot(data = df, mapping = aes(x=L))+
     plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
     plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
   )
-
 Gm <- ggplot(data = df, mapping = aes(x=Normale))+
   geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
   stat_function(fun = dnorm, args = list(mean = mean(df$Normale), sd = sd(df$Normale)), color="black",size=1)+
@@ -1285,7 +1194,6 @@ Gm <- ggplot(data = df, mapping = aes(x=Normale))+
     plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
     plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
   )
-
 Gp <- ggplot(data = df, mapping = aes(x=P))+
   geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
   stat_function(fun = dnorm, args = list(mean = mean(df$P), sd = sd(df$P)), color="black",size=1)+
@@ -1298,7 +1206,6 @@ Gp <- ggplot(data = df, mapping = aes(x=P))+
     plot.subtitle = element_text(hjust = 0.5,  size = 8, face = "plain"),
     plot.caption = element_text(hjust = 0.5,   size = 8, face = "plain")
   )
-
 ggarrange(Gp, Gm, Gl, ncol = 2, nrow=2)
 ```
 
@@ -1308,7 +1215,6 @@ Regardez attentivement les équations \@ref(eq:KurtType1), \@ref(eq:KurtType2), 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library(DescTools)
 library(moments)
-
 #Générer une variable normalement distribuée avec 1000 observations
 Normale <- rnorm(1500,0,1)
 round(DescTools::Kurt(Normale),3)
@@ -1332,11 +1238,9 @@ Quand la variable est normale distribuée, les points seront situés le long de 
 library(ggplot2)
 library(reshape2)
 library(qqplotr)
-
 melted_dist <- melt(df,
                     distributions = c("Normale", "Skewed_L",
                                       "Skewed_R","student", "L", "P"))
-
 names(melted_dist) <- c("distribution", "valeur")
 melted_dist$distribution <- factor(melted_dist$distribution,
                           levels = c("Normale","Skewed_L","Skewed_R","L","P"),
@@ -1345,7 +1249,6 @@ melted_dist$distribution <- factor(melted_dist$distribution,
                                      "Asymétrie positive",
                                      "Leptokurtique",
                                      "Platikurtique"))
-
 ggplot(data = melted_dist, mapping = aes(x=valeur))+
   labs(caption = paste0("Skewness", "Kurtosis", sep=""))+
   geom_histogram(color="white",fill="bisque3",aes(y=..density..))+
@@ -1390,7 +1293,6 @@ df <- data.frame(
            "`ad.test` du *package* **stats**",
            "`JarqueBeraTest` du *package* **DescTools**")
   )
-
 knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),   
   col.names = c("Test","Propriétés et interprétation", "Fonction R"),
@@ -1403,7 +1305,6 @@ Dans le tableau ci-dessous sont reportées les valeurs des différents tests pou
 ```{r calcultestnormalites, echo=FALSE, message=FALSE, warning=FALSE}
 library(DescTools)
 library(nortest)
-
 df <- data.frame(
   Normale  = rnorm(500,0,1),
   Skewed_L = rValeMaurelli(500, mean=0, sigma=1, skew=1.4, kurt=3),
@@ -1411,27 +1312,19 @@ df <- data.frame(
   L = rValeMaurelli(500, mean=0, sigma=1, skew=0, kurt=7),
   P = rValeMaurelli(500, mean=0, sigma=1, skew=0, kurt=-1)
 )
-
 vars <- names(df)
 S <- c()
 K <- c()
-
 KS <- c()
 KS.p <- c()
-
 LF <- c()
 LF.p <- c()
-
 SW <- c()
 SW.p <- c()
-
 AD <- c()
 AD.p <- c()
-
 JB <- c()
 JB.p <- c()
-
-
 i <- 1
 for (e in vars){
   ksmirnov <- ks.test(df[[e]], "pnorm", mean=mean(df[[e]]), sd=sd(df[[e]]))
@@ -1451,16 +1344,13 @@ for (e in vars){
   
   SW[i] <- shapiro$statistic
   SW.p[i] <- shapiro$p.value
-
   AD[i] <- AndDarling$statistic
   AD.p[i] <- AndDarling$p.value
   
   JB[i] <- JarqueB$statistic
   JB.p[i] <- JarqueB$p.value
-
   i <- i+1
 }
-
 Tests <- data.frame(
   "S" = round(S,3),
   "K" = round(K,3),
@@ -1469,14 +1359,12 @@ Tests <- data.frame(
   "SW" = round(SW,3),
   "AD" = round(AD,3),
   "JB" = round(JB,3),
-
  "KS.p" = round(KS.p,3),
  "LF.p" = round(LF.p,3),
  "SW.p" = round(SW.p,3),
  "AD.p" = round(AD.p,3),
  "JB.p" = round(JB.p,3)
 )
-
 Tests <- t(Tests)
 row.names(Tests) <- c("Skewness","Kurtosis",
                       "Kolmogorov-Smirnov (KS)",
@@ -1489,7 +1377,6 @@ row.names(Tests) <- c("Skewness","Kurtosis",
                       "SW (valeur p)",
                       "AD (valeur p)",
                       "JB (valeur p)")
-
 knitr::kable(Tests,
              format.args = list(decimal.mark = ",", big.mark = " "),
              col.names = c("Normale","Asymétrie négative",
@@ -1523,12 +1410,12 @@ Comme nous l'avons vu, la distribution normale n'est que l'une des multiples dis
 3. Présélectionnez un ensemble de distributions candidates compte tenu des observations précédentes. Vous pouvez également vous reporter à la littérature existante sur votre sujet d'étude pour inclure d'autres distributions. Soyez flexible ! Une variable strictement positive pourrait tout de même avoir une forme normale. De même, une variable décrivant des comptages suffisamment grands pourrait être mieux décrite par une distribution normale qu'une distribution de poisson.
 4. Tentez d'ajuster chacune des distributions retenues à vos données et comparez les qualités d'ajustements pour retenir la plus adaptée.
 
-Pour ajuster une distribution à un jeu de données, il faut trouver les valeurs des paramètres de cette distribution qui lui permettront d'adopter une forme la plus proche possible des données. On appelle cette opération **ajuster un modèle**, puisque la distribution théorique est utilisée pour modéliser les données. L'ajustement des paramètres est un problème d'optimisation que plusieurs algorithmes sont capables de résoudre (gradient descent, Newton-Raphson method, Fisher scoring, etc.). Dans ![](images/logos/Rlogo.png), le *package* **fitdistrplus** permet d'ajuster pratiquement n'importe quelle distribution à des données en offrant plusieurs stratégies d'optimisations grâce à la fonction `fitdist`. Il suffit de disposer d'une fonction représentant la distribution de densité ou de masse de la distribution en question, généralement noté `dnomdeladistribution` (`dnorm`, `dgamma`, `dpoisson`, etc.) dans ![](images/logos/Rlogo.png). Notez que certains *packages* comme **VGAM** ou **gamlss.dist** ajoutent un grand nombre de fonctions de densité et de masse à celles déjà disponibles de base dans ![](images/logos/Rlogo.png).
+Pour ajuster une distribution à un jeu de données, il faut trouver les valeurs des paramètres de cette distribution qui lui permettront d'adopter une forme la plus proche possible des données. On appelle cette opération **ajuster un modèle**, puisque la distribution théorique est utilisée pour modéliser les données. L'ajustement des paramètres est un problème d'optimisation que plusieurs algorithmes sont capables de résoudre (*gradient descent*, *Newton-Raphson method*, *Fisher scoring*, etc.). Dans ![](images/logos/Rlogo.png), le *package* **fitdistrplus** permet d'ajuster pratiquement n'importe quelle distribution à des données en offrant plusieurs stratégies d'optimisations grâce à la fonction `fitdist`. Il suffit de disposer d'une fonction représentant la distribution de densité ou de masse de la distribution en question, généralement noté `dnomdeladistribution` (`dnorm`, `dgamma`, `dpoisson`, etc.) dans ![](images/logos/Rlogo.png). Notez que certains *packages* comme **VGAM** ou **gamlss.dist** ajoutent un grand nombre de fonctions de densité et de masse à celles déjà disponibles de base dans ![](images/logos/Rlogo.png).
 
 Pour comparer l'ajustement de plusieurs distributions théoriques à des données, trois approches doivent être combinées : 
 
 * Observer graphiquement l'ajustement de la courbe théorique à l'histogramme des données. Cela permet d'éliminer au premier coup d'œil les distributions qui ne correspondent pas.
-* Comparer les *loglikelihood*. Le *loglikelihood* est un score d'ajustement des distributions aux données. Pour faire simple, plus le *loglikelihood* est grand, plus la distribution théorique est proche des données. Référez-vous à l'encadré suivant pour une description plus en profondeur du loglikelihood.
+* Comparer les *loglikelihood*. Le *loglikelihood* est un score d'ajustement des distributions aux données. Pour faire simple, plus le *loglikelihood* est grand, plus la distribution théorique est proche des données. Référez-vous à l'encadré suivant pour une description plus en profondeur du *loglikelihood*.
 * Utiliser le test de Kolmogorov-Smirnov pour déterminer si une distribution particulière est mieux ajustée pour les données.
 
 ::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
@@ -1536,7 +1423,7 @@ Pour comparer l'ajustement de plusieurs distributions théoriques à des donnée
 
 Le *loglikelihood* est une mesure de l'ajustement d'un modèle à des données. Il est utilisé à peu près partout en statistique. Comprendre sa signification est donc un exercice important pour développer une meilleure intuition du fonctionnement général de nombreuses méthodes. Si le concept de fonction de densité et de masse vous semble encore flou, reportez-vous à la section sur les distributions dans un premier temps.
 
-Admettons que nous disposons d'une variable continue *v*, que nous avons tenté de modéliser avec une distribution *d* (il peut s'agire de n'importe quelle distribution). *d* a une fonction de densité avec laquelle il est possible de calculer pour chacune des valeurs de *v* sa probabilité d'être observée selon le modèle *d*.
+Admettons que nous disposons d'une variable continue *v* que nous avons tenté de modéliser avec une distribution *d* (il peut s'agir de n'importe quelle distribution). *d* a une fonction de densité avec laquelle il est possible de calculer pour chacune des valeurs de *v* sa probabilité d'être observée selon le modèle *d*.
 
 Prenons un exemple concret dans ![](images/logos/Rlogo.png). Admettons que nous avons une variable comprenant 10 valeurs (oui, c'est un petit échantillon, mais c'est un simple exemple).
 
@@ -1556,7 +1443,7 @@ print(df)
 ```
 On observe ainsi que les valeurs 7 et 8 sont très probables selon le modèle alors que la valeur 10 est très improbable.
 
-Le *likelihood* est simplement le produit de toutes ces probabilités. Il s'agit donc de **la probabilité conjointe** d'avoir observé toutes les valeurs de *v* **sous l'hypothèse** que *d* est la distribution produisant ces valeurs. Si *d* décrit efficacement *v*, alors le likelihood est plus grand que si *d* ne décrit pas efficacement *v*. Il s'agit d'une forme de raisonnement par l'absurde : après avoir observé *v*, on calcule la probabilité d'avoir observé *v* (*likelihood*) si notre modèle *d* était vrai. Si cette probabilité est très basse, alors c'est que notre modèle est mauvais puisqu'on a bien observé *v*.
+Le *likelihood* est simplement le produit de toutes ces probabilités. Il s'agit donc de **la probabilité conjointe** d'avoir observé toutes les valeurs de *v* **sous l'hypothèse** que *d* est la distribution produisant ces valeurs. Si *d* décrit efficacement *v*, alors le *likelihood* est plus grand que si *d* ne décrit pas efficacement *v*. Il s'agit d'une forme de raisonnement par l'absurde : après avoir observé *v*, on calcule la probabilité d'avoir observé *v* (*likelihood*) si notre modèle *d* était vrai. Si cette probabilité est très basse, alors c'est que notre modèle est mauvais puisqu'on a bien observé *v*.
 
 ```{r}
 likelihood_norm <- prod(probas)
@@ -1582,18 +1469,15 @@ Passons à la pratique avec deux exemples.
 
 ##### Temps de retard des bus de la ville de Toronto
 
-Analysons les temps de retard pris par les bus de la ville de Toronto lorsqu'un évènement perturbe la circulation. Ce jeu de données est trouvable sur le site de l'[Open Data](https://open.toronto.ca/catalogue/?search=bus%20delay&sort=score%20desc){target="_blank"} de la ville de Toronto. Compte tenu de la grande quantité d'observations, nous avons fait le choix de nous concentrer sur les évènements ayant eu lieu durant le mois de janvier 2019. Puisque la variable étudiée est une durée exprimée en minutes elle est strictement positive (supérieure à 0), car un bus avec zéro minute de retard est à l'heure. Nous considérons également qu'un bus ayant plus de 150 minutes de retards (2h30) n'est tout simplement pas passé (personne ne risque d'attendre 2h30 pour prendre son bus). Commençons par charger les données et observer leur distribution empirique.
+Analysons les temps de retard pris par les bus de la ville de Toronto lorsqu'un évènement perturbe la circulation. Ce jeu de données est disponible sur le site de l'[Open Data](https://open.toronto.ca/catalogue/?search=bus%20delay&sort=score%20desc){target="_blank"} de la ville de Toronto. Compte tenu de la grande quantité d'observations, nous avons fait le choix de nous concentrer sur les évènements ayant eu lieu durant le mois de janvier 2019. Puisque la variable étudiée est une durée exprimée en minutes, elle est strictement positive (supérieure à 0), car un bus avec zéro minute de retard est à l'heure. Nous considérons également qu'un bus ayant plus de 150 minutes de retard (2h30) n'est tout simplement pas passé (personne ne risque d'attendre 2h30 pour prendre son bus). Commençons par charger les données et observer leur distribution empirique.
 
 ```{r figbustrt, fig.align='center', fig.cap="Distribution empirique des temps de retard des bus à Toronto en janvier 2019", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
 library(ggplot2)
-
 # charger le jeu de données
 data_trt_bus <- read.csv('data/univariee/bus-delay-2019_janv.csv', sep =';')
-
 # retirer les observations aberrantes
 data_trt_bus <- subset(data_trt_bus, data_trt_bus$Min.Delay > 0 &
                          data_trt_bus$Min.Delay < 150)
-
 # représenter la distribution empirique du jeu de donnée
 ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
@@ -1607,51 +1491,44 @@ Compte tenu de la forme de la distribution empirique et de sa nature, quatre dis
 * La distribution Gamma, strictement positive et asymétrique, elle est aussi une généralisation de la distribution exponentielle utilisée pour modéliser des temps d'attente. Pour des raisons similaires, on peut aussi retenir la distribution de Weibull et la distribution log-normale. Nous écartons ici la distribution skew-normale puisque le jeu de donnée n'a clairement pas une forme normale au départ.
 * La distribution de Pareto, strictement positive et permettant de représenter ici le fait que la plupart des retards durent moins de 10 minutes, mais que quelques retards sont également beaucoup plus longs.
 
-Commençons par ajuster les quatre distributions avec la fonction `fitdist` du *package* **fitdistrplus** et représentons-les graphiquements pour éliminer les moins bons candidats. Nous utilisons également le *package* **actuar** pour la fonction de densité de Pareto (`dpareto`)
+Commençons par ajuster les quatre distributions avec la fonction `fitdist` du *package* **fitdistrplus** et représentons-les graphiquements pour éliminer les moins bons candidats. Nous utilisons également le *package* **actuar** pour la fonction de densité de Pareto (`dpareto`).
 
 ```{r figbustrt2, fig.align='center', fig.cap="Comparaison des distributions ajustées aux données de retard des bus", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
 library(fitdistrplus)
 library(actuar)
 library(ggpubr)
-
 # ajustement des modèles
 model_gamma <- fitdist(data_trt_bus$Min.Delay, distr = "gamma")
 model_weibull <- fitdist(data_trt_bus$Min.Delay, distr = "weibull")
 model_lognorm <- fitdist(data_trt_bus$Min.Delay, distr = "lnorm")
-
 model_pareto <- fitdist(data_trt_bus$Min.Delay, distr = "pareto", 
                         start = list(shape = 1, scale = 1),
-                        method = "mse") # différente méthode d'optimisation
-
-# réalisation de graphiques
+                        method = "mse") # différentes méthodes d'optimisations
+# réalisation des graphiques
 plot1 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
   stat_function(fun = dgamma, color = 'red', size = 0.8, args = as.list(model_gamma$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
        subtitle = "modèle Gamma")
-
 plot2 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
   stat_function(fun = dweibull, color = 'red', size = 0.8, args = as.list(model_weibull$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
        subtitle = "modèle Weibull")
-
 plot3 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
   stat_function(fun = dlnorm, color = 'red', size = 0.8, args = as.list(model_lognorm$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
        subtitle = "modèle log-normal")
-
 plot4 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
   stat_function(fun = dpareto, color = 'red', size = 0.8, args = as.list(model_pareto$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
-       subtitle = "modèle Pareto")
-
+       subtitle = "Modèle Pareto")
 ggarrange(plotlist = list(plot1, plot2, plot3, plot4),
           ncol = 2, nrow = 2)
 ```
@@ -1659,13 +1536,11 @@ ggarrange(plotlist = list(plot1, plot2, plot3, plot4),
 Visuellement, on constate que la distribution de Pareto est un mauvais choix. Pour les trois autres distributions, la comparaison des *loglikelihood* s'impose.
 
 ```{r tabledistribs, message=FALSE, warning=FALSE, out.width='50%'}
-
 df <- data.frame(model = c("Gamma","Weibull",
                            "log-normal"), 
                  loglikelihood = c(model_gamma$loglik, 
                  model_weibull$loglik,
                  model_lognorm$loglik))
-
 knitr::kable(
   df, booktabs = TRUE,
   col.names = c("Distributon","LogLikelihood"),
@@ -1673,7 +1548,7 @@ knitr::kable(
   escape = FALSE
 )
 ```
-Le plus grand *logLikelihood* est obtenu par la distribution de Gamma qui s'ajuste donc le mieux à nos données. Pour finir, nous pouvons tester formellement avec le test de Kolmogorov-Smirnov si nous nos données proviennent bien de cette distribution de Gamma
+Le plus grand *logLikelihood* est obtenu par la distribution de Gamma qui s'ajuste donc le mieux à nos données. Pour finir, nous pouvons tester formellement avec le test de Kolmogorov-Smirnov si nous nos données proviennent bien de cette distribution de Gamma.
 
 ```{r message=FALSE, warning=FALSE}
 params <- as.list(model_gamma$estimate)
@@ -1681,40 +1556,37 @@ ks.test(data_trt_bus$Min.Delay,
         y = pgamma, shape = params$shape, rate = params$rate)
 ```
 
-La valeur de *p* est inférieure à 0,05, on ne peut donc pas accepter l'hypothèse que notre jeu de données suit effectivement un loi de Gamma. Considérant le nombre d'observations et le fait que de nombreux temps d'attentes sont identiques (ce à quoi le test est très sensible), ce résultat n'est pas surprenant. La distribution de Gamma reste cependant la distribution qui représente le mieux nos données. Nous pouvons estimer grâce à cette distribution la probabilité qu'un bus ait un retard de plus de 10 minutes de la façon suivante : 
+La valeur de *p* est inférieure à 0,05, on ne peut donc pas accepter l'hypothèse que notre jeu de données suit effectivement un loi de Gamma. Considérant le nombre d'observations et le fait que de nombreux temps d'attente sont identiques (ce à quoi le test est très sensible), ce résultat n'est pas surprenant. La distribution de Gamma reste cependant la distribution qui représente le mieux nos données. Nous pouvons estimer grâce à cette distribution la probabilité qu'un bus ait un retard de plus de 10 minutes de la façon suivante : 
 
 ```{r message=FALSE, warning=FALSE}
 pgamma(10, shape = params$shape, rate = params$rate, lower.tail = F)
 ```
 
-Ce qui correspond à 54% de chance. Pour moins de 10 minutes : 
+ce qui correspond à 54% de chance. Pour moins de 10 minutes : 
 
 ```{r message=FALSE, warning=FALSE}
 pgamma(10, shape = params$shape, rate = params$rate, lower.tail = T)
 ```
 
-Soit 46%; un dernier exemple avec la probabilité qu'un retard dépasse 45 minutes : 
+aoit 46%; un dernier exemple avec la probabilité qu'un retard dépasse 45 minutes : 
 
 ```{r message=FALSE, warning=FALSE}
 pgamma(45, shape = params$shape, rate = params$rate, lower.tail = F)
 ```
-Soit seulement 1,3%. Si un matin à Toronto votre bus a plus de 45 minutes de retard, bravo vous êtes tombé sur une des très rares occasions où un tel retard se produit !
+Soit seulement 1,3%. Par conséquent, si un matin à Toronto votre bus a plus de 45 minutes de retard, bravo vous êtes tombé sur une des très rares occasions où un tel retard se produise!
 
 ##### Les accidents de vélo à Montréal
 
 Le second jeu de données représente le nombre d'accidents de la route impliquant un vélo sur les intersections dans les quartiers centraux de Montréal. Le jeu de données complet est disponible sur le site des [données ouvertes](http://donnees.ville.montreal.qc.ca/dataset/collisions-routieres){target="_blank"} de la ville de Montréal. Puisque ces données correspondent à des comptages, la première distribution à envisager est la distribution de poisson. Cependant, puisque nous aurons également un grand nombre d'intersections sans accident, il serait judicieux de tester la distribution de poisson avec excès de zéro.
 
-```{r figaccmtl, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Distribution empirique du nombre d'accident par intersection impliquant un cycliste à Montréal en 2017 dans les quartiers centraux",  out.width='65%'}
+```{r figaccmtl, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Distribution empirique du nombre d'accidents par intersection impliquant un cycliste à Montréal en 2017 dans les quartiers centraux",  out.width='65%'}
 library(ggplot2)
-
 # charger le jeu de données
 data_accidents <- read.csv('data/univariee/accidents_mtl.csv', sep =',')
-
 counts <- data.frame(table(data_accidents$nb_accident))
 names(counts) <- c("nb_accident",'frequence')
 counts$nb_accident <- as.numeric(as.character(counts$nb_accident))
 counts$prop <- counts$frequence / sum(counts$frequence)
-
 # représenter la distribution empirique du jeu de donnée
 ggplot(data = counts) + 
   geom_bar(aes(x=nb_accident, weight = frequence), width = 0.5)+
@@ -1723,12 +1595,10 @@ ggplot(data = counts) +
 ```
 Nous avons effectivement de nombreux zéros, essayons d'ajuster nos deux distributions à ce jeu de données. Dans le graphique suivant, les barres grises représentent la distribution empirique du jeu de donnée et les barres rouges les distributions théoriques ajustées. Nous utilisons ici le *package* **gamlss.dist** pour avoir la fonction de masse d'une distribution de poisson avec excès de zéros.
 
-```{r figacc_mtl_dist, fig.align='center', fig.cap="Ajustement des distributions de poisson et poisson avec inflation de zéros", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
+```{r figaccmtldist, fig.align='center', fig.cap="Ajustement des distributions de poisson et poisson avec inflation de zéros", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
 library(gamlss.dist)
-
 #ajuster le modèle de poisson
 model_poisson <- fitdist(data_accidents$nb_accident, distr = "pois")
-
 #ajuster le modèle de poisson avec excès de zéros
 model_poissonzi <- fitdist(data_accidents$nb_accident, "ZIP",
     start = list(mu = 4, sigma = 0.15), # valeurs pour faciliter la convergence
@@ -1736,11 +1606,9 @@ model_poissonzi <- fitdist(data_accidents$nb_accident, "ZIP",
     lower = c(0.00001, 0.00001),# valeurs minimums des deux paramètres
     upper = c(Inf, 1)# valeurs maximums des deux paramètres
     )
-
 dfpoisson <- data.frame(x=c(0:10),
                         y=dpois(0:10, model_poisson$estimate)
                         )
-
 plot1 <- ggplot() + 
   geom_bar(aes(x=nb_accident, weight = prop), width = 0.6, data = counts)+
   geom_bar(aes(x=x, weight = y), width = 0.15, data = dfpoisson, fill = "red")+
@@ -1748,12 +1616,10 @@ plot1 <- ggplot() +
   labs(subtitle = "modèle poisson",
        x = "nombre d'accident",
        y = "")
-
 dfpoissonzi <- data.frame(x=c(0:10),
                         y=dZIP(0:10, model_poissonzi$estimate[[1]],
                                model_poissonzi$estimate[[2]])
                         )
-
 plot2 <- ggplot() + 
   geom_bar(aes(x=nb_accident, weight = prop), width = 0.6, data = counts)+
   geom_bar(aes(x=x, weight = y), width = 0.15, data = dfpoissonzi, fill = "red")+
@@ -1761,7 +1627,6 @@ plot2 <- ggplot() +
   labs(subtitle = "modèle poisson avec excès de zéro",
        x = "nombre d'accident",
        y = "")
-
 ggarrange(plotlist = list(plot1,plot2), ncol = 2)
 ```
 
@@ -1769,11 +1634,10 @@ Visuellement, le modèle avec excès de zéro semble s'imposer. Nous pouvons vé
 ```{r}
 print(model_poisson$loglik)
 print(model_poissonzi$loglik)
-
 #afficher les paramètres ajustés
 model_poissonzi$estimate
 ```
-Nous avons donc la confirmation que le modèle de poisson avec excès de zéros est mieux ajusté. Nous apprenons donc que 70% (sigma = 0.70) des intersections sont en fait exclues du phénomène étudié (probablement parce que très peu de cyclistes les utilisent ou parce qu'elles sont très peu accidentogènes), et que pour les autres, le taux d'accident par année en 2017 était de 0.67 (mu = 0.669, mu signifiant $\lambda$ pour le *package* **gamlss**). À nouveau, nous pouvons effectuer un test formel avec le fonction `ks.test`.
+Nous avons donc la confirmation que le modèle de poisson avec excès de zéros est mieux ajusté. Nous apprenons donc que 70% (sigma = 0,70) des intersections sont en fait exclues du phénomène étudié (probablement parce que très peu de cyclistes les utilisent ou parce qu'elles sont très peu accidentogènes) et que pour les autres, le taux d'accidents par année en 2017 était de 0,67 (mu = 0,669, mu signifiant $\lambda$ pour le *package* **gamlss**). À nouveau, nous pouvons effectuer un test formel avec le fonction `ks.test`.
 
 ```{r message=FALSE, warning=FALSE}
 params <- as.list(model_poissonzi$estimate)
@@ -1822,7 +1686,7 @@ La transformation des données fait et fera encore longtemps débat à la fois p
 
 * *Une variable transformée est plus difficile à interpréter* puisque cela change l'unité de mesure de la variable. Prenons un exemple concret : vous souhaitez comparer les moyennes de revenu de deux groupes *A* et *B*. Vous obtenez une différence de 15000$, soit une valeur facile à interpréter. Par contre, si la variable a été préalablement transformée en logarithme, il est possible que vous obteniez une différence de 9, ce qui beaucoup moins parlant. Aussi, en transformant la variable en *log*, vous ne comparez plus les moyennes arithmétiques des deux groupes, mais plutôt leurs moyennes géométriques [@field2012discovering, pp. 193].
 
-* *Pourquoi perdre la forme initiale de la distribution du phénomène à expliquer ?* Il est possible pour de nombreuses méthodes de choisir la distribution que l'on souhaite utiliser, il n'est donc pas nécessaire de toujours se limiter à la distribution normale. Par exemple, dans les modèles de régression généralisés (GLM), on pourrait indiquer que notre variable indépendante suit une distribution de *Student* plutôt que de vouloir à tout pris la rendre normale. De même, certains tests non-paramétriques permettent d'analyser des variables ne suivant pas une distribution normale.
+* *Pourquoi perdre la forme initiale de la distribution du phénomène à expliquer ?* Il est possible pour de nombreuses méthodes de choisir la distribution que l'on souhaite utiliser, il n'est donc pas nécessaire de toujours se limiter à la distribution normale. Par exemple, dans les modèles de régression généralisés (GLM), on pourrait indiquer que notre variable indépendante suit une distribution de *Student* plutôt que de vouloir à tout prix la rendre normale. De même, certains tests non-paramétriques permettent d'analyser des variables ne suivant pas une distribution normale.
 
 **Démarche à suivre avant et après la transformation**
 
@@ -1833,20 +1697,18 @@ La transformation des données fait et fera encore longtemps débat à la fois p
 * *La transformation a-t-elle un apport significatif ?* Premièrement, vérifier si la transformation utilisée (logarithme, racine carrée, inverse, etc.) améliore la normalité de la variable. Ce n'est toujours le cas, pourquoi c'est pire ! Prenez soin de comparer les histogrammes, les valeurs de *skewness*, *kurtosis* et des différents tests de normalité avant et après la transformation. Deuxièmement, comparer les résultats de vos analyses statistiques sans et avec transformation, et ce, dans une démarche coût-avantage. Vos résultats sont-ils bien plus robustes? Par exemple, un R^2^ qui passe de 0,597 à 0,602 avant et après la transformation des variables avec des associations significatives similaires, mais plus difficiles à interpréter (du fait des transformations), n'est pas forcément un gain significatif. La modélisation en sciences sociales ne vise à prédire la trajectoire d'un satellite ou l'atterrissage d'un engin sur Mars ! La précision à quatrième décimale n'est pas une condition ! Par conséquent, un modèle un peu moins robuste, mais plus facile à interpréter afin de valider est parfois préférable.
 :::
 
-
-
 #### Autres types de transformation  {#sect2552}
 
 Les trois transformations les plus couramment utilisées sont :
 
-* **La côte $z$** (*z score* en anglais) qui consiste à soustraire à chaque valeur sa moyenne (soit un centrage), puis à la diviser par son écart-type (soit une réduction) (eq. \@ref(eq:scorez)). Par conséquent, on parle aussi de variable centrée-réduite qui a comme propriétés intéressantes une moyenne égale à 0 et un écart-type égale à 1 (ainsi que la variance puisque 1^2^=1). Nous verrons que cette transformation est largement utilisée dans les méthodes de classification (REF PLUS TARD) et factorielles (REF PLUS TARD).
+* **La côte $z$** (*z score* en anglais) qui consiste à soustraire à chaque valeur sa moyenne (soit un centrage), puis à la diviser par son écart-type (soit une réduction) (eq. \@ref(eq:scorez)). Par conséquent, on parle aussi de variable centrée-réduite qui a comme propriétés intéressantes une moyenne égale à 0 et un écart-type égale à 1 (ainsi que la variance puisque 1^2^=1). Nous verrons que cette transformation est largement utilisée dans les méthodes de classification (chapitre \@ref(chap09)) et factorielles (chapitre \@ref(chap10)).
 
 \begin{equation} 
 z= \frac{x_i-\mu}{\sigma}
 (\#eq:scorez)
 \end{equation}
 
-* **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Speaman et certains tests non-paramétriques (RAPPEL SECTION).
+* **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Speaman (section \@ref(sect4133)) et certains tests non-paramétriques (sections \@ref(sect432) et \@ref(sect442)).
 
 * **La transformation sur une échelle de 0 à 1** (ou de 0 à 100) qui consiste à soustraite à chaque observation la valeur minimale et à diviser le tout par l'étendue (eq. \@ref(eq:t01)). 
 
@@ -1868,14 +1730,12 @@ df <- data.frame(
   C = rank(a),
   D = round(d,2)
 )
-
 df[9,1] <- "Moyenne"
 df[10,1] <- "Écart-type"
 df[9,2] <- round(mean(a),2)
 df[10,2] <- round(sd(a),2)
 df[9,3] <- round(mean(b),2)
 df[10,3] <- round(sd(b),2)
-
 opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   format.args = list(decimal.mark = ",", big.mark = " "),           
@@ -1884,6 +1744,23 @@ knitr::kable(df,
   booktabs = TRUE, valign = 't', row.names = FALSE)
 ```
 
+Pour un *dataframe* nommé *df* comprenant une variable *x*, la syntaxe ci-dessous illustrer comment obtenir quatre transformations (côte $z$, rangs, 0 à 1 et 0 à 100).
+
+```{r AutresTransformation2, echo=TRUE, message=FALSE, warning=FALSE}
+df2 <- data.frame(x = c(22,27,25,30,37,32,35,40))
+
+# Transformation centrée-réduite : côte Z
+df2$zx <- (df2$x-mean(df2$x))/sd(df2$x)
+
+# Transformation en rangs avec la fonction rank
+df2$rz <- rank(df2$x)
+
+# Transformation en rangs de 0 à 1
+df2$x01 <- (df2$x-min(df2$x))/(max(df2$x)-min(df2$x))
+
+# Transformation en rangs de 0 à 100
+df2$x0100 <- (df2$x-min(df2$x))/(max(df2$x)-min(df2$x))*100
+```
 
 ::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
 Ces trois transformations sont parfois utilisées pour générer un indice composite à partir de plusieurs variables ou encore dans une analyse de sensibilité avec les indices de Sobol [-@Sobol1993].
@@ -1914,38 +1791,29 @@ M <- c("Véhicule motorisé (conducteur)",
        "Bicyclette",
        "Autre moyen")
 Freq <- c(427530, 26400,295860,69410,30645,7695)
-
 df <- data.frame(
   Mode = M,
   FAS = Freq
 )
-
 # Somme des fréquences aboslues simples
 sumFAS <-  sum(df$FA)
-
 # Fréquences relatives simples
 df$FRS <- round(df$FAS / sum(df$FAS),3)
 sumFRS <-  sum(df$FAS / sum(df$FAS))
-
 # Fréquences relatives simples en pourcentages
 df$FRSpct <- round(df$FAS / sum(df$FAS)*100,2)
 sumFRSpct <-  sum(df$FAS / sum(df$FAS)*100)
-
 # Fréquences absolues cumulées
 df$FAC <- cumsum(df$FAS)
-
 # Fréquences relatives cumulées
 df$FRC <- round(cumsum(df$FAS)/sum(df$FAS),3)
-
 # Fréquences relatives cumulées en pourcentages
 df$FRCpct <- round(cumsum(df$FAS)/sum(df$FAS)*100,2)
-
 n <- nrow(df)
 df[n+1,1] <- "Total"
 df[n+1,2] <-  sumFAS
 df[n+1,3] <-  sumFRS
 df[n+1,4] <-  sumFRSpct
-
 opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   format.args = list(decimal.mark = ",", big.mark = " "),           
@@ -1976,37 +1844,29 @@ M <- c("0 à 14 ans",
        "65 à 84 ans",
        "85 ans et plus")
 Freq <- c(304470,237555,582150,494205,271560,52100)
-
 df <- data.frame(
   Mode = M,
   FAS = Freq
 )
 # Somme des fréquences aboslues simples
 sumFAS <-  sum(df$FA)
-
 # Fréquences relatives simples
 df$FRS <- round(df$FAS / sum(df$FAS),3)
 sumFRS <-  sum(df$FAS / sum(df$FAS))
-
 # Fréquences relatives simples en pourcentages
 df$FRSpct <- round(df$FAS / sum(df$FAS)*100,2)
 sumFRSpct <-  sum(df$FAS / sum(df$FAS)*100)
-
 # Fréquences absolues cumulées
 df$FAC <- cumsum(df$FAS)
-
 # Fréquences relatives cumulées
 df$FRC <- round(cumsum(df$FAS)/sum(df$FAS),3)
-
 # Fréquences relatives cumulées en pourcentages
 df$FRCpct <- round(cumsum(df$FAS)/sum(df$FAS)*100,2)
-
 n <- nrow(df)
 df[n+1,1] <- "Total"
 df[n+1,2] <-  sumFAS
 df[n+1,3] <-  sumFRS
 df[n+1,4] <-  sumFRSpct
-
 opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   format.args = list(decimal.mark = ",", big.mark = " "),           
@@ -2018,9 +1878,7 @@ knitr::kable(df,
 Différents graphiques peuvent être construits pour illustrer la répartition des observations : les graphiques en barres (verticales et horizontales) avec les fréquences absolues,  les diagrammes circulaires ou en anneau pour les fréquences relatives (figure \@ref(fig:GraphiquesFreq1)). Ces graphiques seront présentés plus en détail dans le chapitre suivant.
 
 ```{r GraphiquesFreq1, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Différents graphiques pour représenter les fréquences absolues et relatives", out.width='75%'}
-
 library(dplyr)
-
 Code <- c("A","B","C","D","E","F")
 M <- c("0 à 14 ans",
        "15 à 24 ans",
@@ -2029,59 +1887,44 @@ M <- c("0 à 14 ans",
        "65 à 84 ans",
        "85 ans et plus")
 Freq <- c(304470,237555,582150,494205,271560,52100)
-
 df <- data.frame(
   Groupe = M,
   FAS = Freq
 )
-
 df <- data.frame(
   Code = Code,
   Groupe = M,
   FAS = Freq
 )
 df$FRSpct <- round(df$FAS / sum(df$FAS),3)*100
-
-
 mycols <- c("#0c2c84", "#67000d",  "#99000d", "#ef3b2c","#006d2c", "#41ab5d")
-
 # BARRRES
 options(scipen = 999)
-
 G1 <- ggplot(data = df)+
   geom_bar(aes(x = Code, weight = FAS, fill=Groupe))+
   scale_fill_manual(values = mycols) +
   labs(x = "Groupe d'âge",
        y = 'Navetteurs')
-
-
 # BARRRES
-
 G2 <- ggplot(data = df)+
   geom_bar(aes(y = Code, weight = FAS, fill=Groupe))+
   scale_fill_manual(values = mycols) +
   labs(x = "Groupe d'âge",
        y = 'Navetteurs')
-
 # DIAGRAMME CIRCULAIRE
-
 # Ajouter la position de l'étiquette
 df <- df %>%
   arrange(desc(Groupe)) %>%
   mutate(ypos = cumsum(FRSpct) - 0.5*FRSpct)
-
 G3 <- ggplot(df, aes(x="", y=FRSpct, fill=Groupe)) +
   geom_bar(width = 1, stat = "identity", color = "white") +
   coord_polar("y", start=0) +
   theme_void() +
   geom_text(aes(y = ypos, label = FRSpct), color = "white", size=3) +
   scale_fill_manual(values = mycols)
-
-
 # ANNEAU
 df$ymax <- cumsum(df$FRSpct)
 df$ymin <-  c(0, head(df$ymax, n=-1))
-
 G4 <- ggplot(df, aes(ymax=ymax, ymin=ymin,
                         xmax=4, xmin=3,
                         y=FRSpct, fill=Groupe)) +
@@ -2091,12 +1934,9 @@ G4 <- ggplot(df, aes(ymax=ymax, ymin=ymin,
   geom_text(aes(x = 3.5,y = ypos, label = FRSpct), color = "white", size=3) +
   scale_fill_manual(values = mycols) +
   xlim(c(2,4))
-
-
 list_plot <- list(G1, G2, G3, G4)
 ggarrange(plotlist = list_plot, ncol = 2, nrow=2,
                       common.legend = TRUE, legend = "bottom")
-
 options(scipen = 0)
 ```
 
@@ -2105,7 +1945,6 @@ options(scipen = 0)
 La syntaxe ci-dessous permet de calculer les différentes fréquences présentées au tableau \@ref(tab:Frequences2). Notez que pour les fréquences cumulées, nous utilisons la fonction `cumsum`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
 # Vecteur pour le noms des modalités
 Modalite <- c("0 à 14 ans",
              "15 à 24 ans",
@@ -2113,13 +1952,10 @@ Modalite <- c("0 à 14 ans",
              "45 à 64 ans",
              "65 à 84 ans",
              "85 ans et plus")
-
 # Vecteur pour les fréquences absolues simples (FAS)
 Navetteurs <- c(304470,237555,582150,494205,271560,52100)
-
 # Somme des FAS
 sumFAS <-  sum(Navetteurs)
-
 # Construction du dataframe avec les deux vecteurs
 df <- data.frame(
   GroupeAge = Modalite, 
@@ -2134,4 +1970,47 @@ df
 ```
 
 ## Pour aller plus loin : les statistiques descriptives pondérées
+
+Dans la section section \@ref(sect25), les différentes statistiques descriptives sur des variables quantitatives – paramètres de tendance centrale, de position, de dispersion et de forme – ont été largement abordées. Il est possible de calculer ces différentes statistiques en comptant d’une pondération. 
+
+La statistique descriptive la plus connue est certainement la moyenne arithmétique pondérée. Son calcul est alors très simple. Pour chaque observation, des valeurs sont disponibles : 
+
+* $x_i$, soit la valeur de la variable $X$ pour l'observation $i$
+* $w_i$, soit la valeur de la pondération pour $i$.
+
+Prenez soin de comparer les deux équations ci-dessous (à gauche, la moyenne arithmétique; à droite, la moyenne arithmétique pondérée). Vous constaterez rapidement qu’au numérateur, il suffit juste de multiplier chaque observation par sa pondération et de diviser ce produit par la somme des pondérations (et non par $n$, soit le nombre d’observations comme pour la moyenne arithmétique non pondérée). 
+
+\begin{equation} 
+\bar{x}=\frac{\sum_{i=1}^n x_i}{n} \text { versus } \bar{m}=\frac{\sum_{i=1}^n  w_ix_i}{\sum_{i=1}^nw_i}
+(\#eq:moypond)
+\end{equation} 
+
+
+```{r MoyPondCalcul, echo=FALSE, message=FALSE, warning=FALSE}
+x <- c(200,225,275,300)
+w <- c(20,80,50,200)
+
+df <- data.frame(
+  id = as.character(c(1:length(x))),
+  x = round(x,0),
+  w = round(w,0),
+  wx = x*w
+)
+df[5,1] <- "Somme"
+df[6,1] <- "Moyenne"
+df[7,1] <- "Moyenne pondérée"
+
+df[5,2] <- sum(x)
+df[5,3] <- sum(w)
+df[5,4] <- sum(x*w)
+df[6,2] <- round(mean(x),0)
+df[7,4] <- round(sum(x*w)/sum(w),0)
+
+opts <- options(knitr.kable.NA = "")
+knitr::kable(df, 
+  format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Observation","$x_i$","$w_i$","$x_i \\times w_i$"),
+  caption = "Calcul de la moyenne pondérée",
+  booktabs = TRUE, valign = 't', row.names = FALSE)
+```
 
