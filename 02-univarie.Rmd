@@ -3,6 +3,8 @@ output:
   pdf_document: default
   html_document: default
 ---
+# (PART) Analyse Univariée {-} 
+
 # Statistiques descriptives univariées
 
 Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
@@ -12,27 +14,18 @@ Dans cette section, nous utiliserons principalement les packages suivants (À MO
 
 * Pour créer des graphiques :
   - **ggplot2**, le seul, l'unique
-  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles
+  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes
+  - **qqplotr**, pour générer facilement des graphique quantiles-quantiles
 * Pour manipuler des données : 
   - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
-* Pour les corrélations ((section \@ref(sect311))) : 
-  - **correlation**, de l'ensemble de package **easy_stats**, offrant une large gamme de méthodes de corrélations
-  - **boot** pour réaliser des corrélations avec *bootstrap* 
-  - **Hmisc** pour calculer des corrélations de Pearson et Spearman
-  - **ppcor**, notamment pour des corrélations partielles
-  - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
-  - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
-  - **corrplot**, pour créer des graphiques de matrices de corrélation
-* Pour le tableau de contignence ((section \@ref(sect312))) :
-  - **gmodels**, pour construire des tableaux de contingence et * Calculer les test *t* et ses différentes variantes ((section \@ref(sect313))) :
-* Pour les test *t* : 
-  - **sjstats** pour réaliser des test *t* pondérés
-  - **effectsize**, pour calculer les tailles d'effet de tests de *t*
-* Pour la section sur les ANOVA ((section \@ref(sect314))) : 
-  - **car**, pour les ANOVA classiques
-  - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
-  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
-
+  - **reshape2**, avec la fonction *melt*
+* Pour travailler avec des distributions
+  - **nortest**, pour accéder aux tests de normalité
+  - **VGAM** et **gamlss.dist**, pour accéder à pleins de distributions
+  - **fitdistrplus**, pour ajuster des distributions à des données
+* Pour décrire des données
+  - **moments**, pour calculer des indicateurs de formes
+  - **DescTools**, pour calculer facilement des indicateurs sur des distributions
 :::
 
 
@@ -545,6 +538,48 @@ df$f_prob <- factor(as.character(df$f_prob),
 ggplot(df) +
   geom_bar(aes(x=x, weight = value), width = 0.2, fill = '#99ccff')+
   scale_x_continuous(breaks = seq(1,20,by = 2))+
+  labs(x = "Nombre de cas",
+       y = "Probabilité")+
+   facet_wrap(vars(f_prob), ncol=2)
+
+```
+
+#### La distribution de poisson avec excès de zéros
+Il arrive régulièrement qu’une variable de comptage mesurée produise un très grand nombre de zéros. Prenons pour exemple le nombre de seringues de drogue injectable par tronçon de rue ramassées sur une période d’un mois. À l’échelle de toute une ville, un très grand nombre de tronçons n’auront tout simplement aucune seringue et dans ce contexte, la distribution classique de poisson n’est pas adaptée. On lui préfère alors sa version avec une inflation de zéros qui inclut un paramètre contrôlant la forte présence de zéros. Sa fonction de densité est la suivante : 
+
+\begin{equation}f(x ; \lambda; p)=(1-p)\frac{\lambda^{x}}{x !} e^{-\lambda}
+(\#eq:poissonzi)
+\end{equation}
+
+Plus exactement, la distribution de poisson avec excès de zéro (zero-inflated en anglais) est une combinaison de deux processus générant des zéros. En effet, un zéro peut être produit par la distribution de poisson originale (aussi appelé vrai zéro) ou alors par le processus menant à la surreprésentation des 0 dans le jeu de données, capturé par la probabilité *p* (faux zéro). *p* est donc le paramètre contrôlant la probabilité d’obtenir un zéro, indépendamment du phénomène étudié.
+
+```{r fig259b, echo=FALSE, fig.align='center', fig.cap="La distribution de poisson avec excès de zéros", auto_pdf=TRUE, out.width='95%'}
+library(VGAM)
+data <- data.frame(y1 = dzipois(0:20, lambda = 1, pstr0 = 0.2),
+                   y2 = dzipois(0:20, lambda = 3, pstr0 = 0.4),
+                   y3 = dzipois(0:20, lambda = 5, pstr0 = 0.1),
+                   y4 = dzipois(0:20, lambda = 10, pstr0 = 0.5),
+                   x = 0:20)
+
+df <- melt(data, id.vars = "x")
+df$f_prob <- case_when(
+  df$variable == "y1" ~ "lambda = 1 & p = 0.2",
+  df$variable == "y2" ~ "lambda = 3 & p = 0.4",
+  df$variable == "y3" ~ "lambda = 5 & p = 0.1",
+  df$variable == "y4" ~ "lambda = 10 & p = 0.5",
+)
+
+
+df$f_prob <- factor(as.character(df$f_prob),
+                           levels = c("lambda = 1 & p = 0.2",
+                                      "lambda = 3 & p = 0.4",
+                                      "lambda = 5 & p = 0.1",
+                                      "lambda = 10 & p = 0.5"))
+ 
+
+ggplot(df) +
+  geom_bar(aes(x=x, weight = value), width = 0.2, fill = '#99ccff')+
+  scale_x_continuous(breaks = seq(0,20,by = 2))+
   labs(x = "Nombre de cas",
        y = "Probabilité")+
    facet_wrap(vars(f_prob), ncol=2)

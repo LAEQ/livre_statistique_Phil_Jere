@@ -1,3 +1,5 @@
+# (PART) Analyse bivariée {-} 
+
 # Analyses bivariées
 
 Dans ce chapitre, nous présentons les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables, et ce, en fonction de leur type : deux variables quantitatives, deux variables qualitatives ou encore une variable quantitative _versus_ une variable qualitative (comprenant deux modalités ou plus de deux modalités) (figure \@ref(fig:fig1)). 
@@ -405,7 +407,7 @@ library("correlation")
 df1 <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 methods <- c("pearson","spearman","biweight","percentage","shepherd")
 rs <- lapply(methods,function(m){
-  test <- cor_test(data = df1, x="Hab1000Km2",y="A65plus",method = m, ci=0.95)
+  test <- correlation::cor_test(data = df1, x="Hab1000Km2",y="A65plus",method = m, ci=0.95)
   return(c(test$r,test$CI_low, test$CI_high))
   })
 dfCorr <- data.frame(do.call(rbind,rs))
@@ -705,7 +707,7 @@ ggplot(df, aes(x = Values)) +
   ylab("densité")
 ```
 :::
-#### Principe de base {#sect4141}
+#### Principe de base de la régression linéaire simple {#sect4141}
 La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
 \begin{equation} 
 \widehat{y_i} = \beta_{0} + \beta_{1}x_{i}
