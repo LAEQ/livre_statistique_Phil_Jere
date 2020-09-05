@@ -1,6 +1,6 @@
 # (PART) Analyse bivariée {-} 
 
-# Analyses bivariées
+# Analyses bivariées {#chap04}
 
 Dans ce chapitre, nous présentons les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables, et ce, en fonction de leur type : deux variables quantitatives, deux variables qualitatives ou encore une variable quantitative _versus_ une variable qualitative (comprenant deux modalités ou plus de deux modalités) (figure \@ref(fig:fig1)). 
 
@@ -8,7 +8,7 @@ Dans ce chapitre, nous présentons les principales méthodes exploratoires et co
 knitr::include_graphics('images/bivariee/figure1.jpg', dpi = NA)
 ```
 
-Plus spécifiquement, nous présentrons puis mettrons en œuvre dans le logiciel ![](images/logos/Rlogo.png) les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect41)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect42)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect43)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect44)).
+Plus spécifiquement, nous présentrons puis mettrons en œuvre dans le logiciel ![](images/logos/Rlogo.png) les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect041)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect042)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect043)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect044)).
 
 ::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
 Dans cette section, nous utiliserons principalement les *packages* suivants : 
@@ -18,7 +18,7 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
   - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles
 * Pour manipuler des données : 
   - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
-* Pour les corrélations (section \@ref(sect411)) : 
+* Pour les corrélations (section \@ref(sect0411)) : 
   - **correlation**, de l'ensemble de package **easy_stats**, offrant une large gamme de méthodes de corrélations
   - **boot** pour réaliser des corrélations avec *bootstrap* 
   - **Hmisc** pour calculer des corrélations de Pearson et Spearman
@@ -26,19 +26,19 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
   - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
   - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
   - **corrplot**, pour créer des graphiques de matrices de corrélation
-* Pour le tableau de contignence (section \@ref(sect412)) :
-  - **gmodels**, pour construire des tableaux de contingence et * Calculer les test *t* et ses différentes variantes ((section \@ref(sect424)))
-  - **vcd**, pour construire un graphique pour un tableau de contigence ((section \@ref(sect413)))
+* Pour le tableau de contignence (section \@ref(sect0412)) :
+  - **gmodels**, pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes ((section \@ref(sect0424)))
+  - **vcd**, pour construire un graphique pour un tableau de contigence ((section \@ref(sect0424)))
 * Pour les test *t* : 
   - **sjstats** pour réaliser des test *t* pondérés
   - **effectsize**, pour calculer les tailles d'effet de tests de *t*
-* Pour la section sur les ANOVA (section \@ref(sect441)) : 
+* Pour la section sur les ANOVA (section \@ref(sect0441)) : 
   - **car**, pour les ANOVA classiques
   - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
   - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
 :::
 
-## Relation linéaire entre deux variables quantitatives {#sect41}
+## Relation linéaire entre deux variables quantitatives {#sect041}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 **Deux variables continues varient-elles dans le même sens ou bien en sens contraire ?** Répondre à cette question est une démarche exploratoire classique en sciences sociales puisque les données socioéconomiques sont souvent associées linéairement. En d'autres termes, lorsque l'une des deux variables tant à augmenter, la seconde augmente également ou diminue systématiquement.
@@ -47,11 +47,11 @@ En études urbaines, on pourrait vouloir vérifier si certaines variables socio�
 
 Par exemple, au niveau des secteurs de recensement d’une ville canadienne ou américaine, on pourrait vouloir vérifier si le revenu médian des ménages ou encore le coût moyen du loyer varient dans le même sens que la couverture végétale ; ou au contraire, en sens inverse des niveaux moyens de dioxyde d’azote ou de bruit routier.
 
-Pour évaluer la linéarité entre deux variables continues, deux statistiques descriptives sont utilisées : la **covariance**\index{covariance} (section \@ref(sect412)) et la **corrélation**\index{corrélation} (section \@ref(sect413)).
+Pour évaluer la linéarité entre deux variables continues, deux statistiques descriptives sont utilisées : la **covariance**\index{covariance} (section \@ref(sect0412)) et la **corrélation**\index{corrélation} (section \@ref(sect0413)).
 :::
 
 
-### Bref retour sur le postulat de la relation linéaire {#sect411}
+### Bref retour sur le postulat de la relation linéaire {#sect0411}
 
 Vérifier le postulat de la linéarité consiste à évaluer si deux variables quantitatives varient dans le même sens ou bien en sens contraire. Toutefois, la relation entre deux variables quantitatives n’est pas forcément linéaire. En guise d'illustration, la figure \@ref(fig:fig2) permet de distinguer quatre types de relations :
 
@@ -77,11 +77,11 @@ Prenons un exemple concret. Dans une étude portant sur l'équité environnement
 knitr::include_graphics('images/bivariee/figure3.jpg', dpi = NA)
 ```
 
-Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives et exploratoires – la covariance (section \@ref(sect412)) et la corrélation (section \@ref(sect413)) – utilisées pour évaluer la **relation linéaire** entre deux variables continues. Ces deux mesures permettent de mesurer le degré d'association entre deux variables, sans que l'une soit la variable dépendante (variable à expliquer) et l'autre, la variable dépendante (variable explicative). Puis, nous décrirons la régression linéaire simple (section \@ref(sect414))  qui permet justement de prédire une variable dépendante (_Y_) à partir d'une variable indépendante (_X_).
+Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives et exploratoires – la covariance (section \@ref(sect0412)) et la corrélation (section \@ref(sect0413)) – utilisées pour évaluer la **relation linéaire** entre deux variables continues. Ces deux mesures permettent de mesurer le degré d'association entre deux variables, sans que l'une soit la variable dépendante (variable à expliquer) et l'autre, la variable dépendante (variable explicative). Puis, nous décrirons la régression linéaire simple (section \@ref(sect0414))  qui permet justement de prédire une variable dépendante (_Y_) à partir d'une variable indépendante (_X_).
 
-### Covariance {#sect412}
+### Covariance {#sect0412}
 
-#### Formulation {#sect4121} 
+#### Formulation {#sect04121} 
 
 La covariance\index{covariance} (eq. \@ref(eq:cov)), écrite $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives :
 
@@ -93,7 +93,7 @@ cov(x,y) = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{n-1} = \frac{covar
 
 avec $n$ étant le nombre d’observations; $\bar{x}$ et $\bar{y}$ (prononcez x et y barre) étant les moyennes respectives des variables *X* et *Y*.
 
-#### Interprétation {#sect4122} 
+#### Interprétation {#sect04122} 
 
 Le numérateur de l'équation \@ref(eq:cov) représente la covariation\index{covariance}, soit la somme du produit des déviations des valeurs $x_{i}$ et $y_{i}$ par rapport à leurs moyennes respectives ($\bar{x}$ et $\bar{y}$). La covariance est donc la covariation divisée par le nombre d’observations, soit la moyenne de la covariation. Sa valeur peut être positive ou négative :  
 
@@ -134,9 +134,9 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ```
 
 
-### Corrélation {#sect413}
+### Corrélation {#sect0413}
 
-#### Formulation {#sect4131} 
+#### Formulation {#sect04131} 
 Le coefficient de corrélation de Pearson ($r$) est égal à la covariance (numérateur) divisée par le produit des écart-types des deux variables *X* et *Y* (dénominateur). Il représente une standardisation de la covariance. Autrement dit, le coefficient de corrélation repose sur un centrage (moyenne = 0) et une réduction (variance = 1) des deux variables, c’est-à-dire à soustraire à chaque valeur sa moyenne correspondante et à la diviser par son écart-type. Il correspond ainsi à la moyenne du produit des deux variables centrées réduites. Il s'écrit alors :
 
 \begin{equation} 
@@ -171,7 +171,7 @@ cat("Corrélation de Pearson = ",round(cor1,5),
 ```
 
 
-#### Interprétation {#sect4132} 
+#### Interprétation {#sect04132} 
 
 Le coefficient de corrélation $r$ varie de −1 à 1 avec :
 
@@ -293,7 +293,7 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ```
 
 
-#### Corrélations pour des variables anormalement distribuées (coefficients de Spearman, Tau de kendall) {#sect4133} 
+#### Corrélations pour des variables anormalement distribuées (coefficients de Spearman, Tau de kendall) {#sect04133} 
 
 Lorsque les variables sont fortement anormalement distribuées, le coefficient de corrélation de Pearson est peu adapté pour analyser leurs relations linéaires. Il est alors conseillé d'utiliser deux statistiques non-paramétriques : principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le coefficient de Kendall ($\tau$, prononcez Tau), qui varient aussi tous deux de −1 à 1. 
 Calculé sur les rangs des deux variables, **le coefficient de Spearman** est le rapport entre la covariance des deux variables de rangs sur les écart-types des variables de rangs. En d'autres termes, il représente simplement le coefficient de Pearson calculé sur les rangs des deux variables :
@@ -303,7 +303,7 @@ r_{xy} = \frac{cov(rg_{x},rg_{y})}{\sigma_{rg_{x}}\sigma_{rg_{y}}}
 (\#eq:spearman)
 \end{equation}
 
-La syntaxe ![](images/Rlogo.png) ci-dessous démontre clairement que le coefficient de Spearman est bien le coefficient de Pearson calculé sur les rangs (\@ref(sect2552)).
+La syntaxe ![](images/Rlogo.png) ci-dessous démontre clairement que le coefficient de Spearman est bien le coefficient de Pearson calculé sur les rangs (\@ref(sect04131)).
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -372,7 +372,7 @@ ggarrange(Plot1, Plot2, Plot3, ncol=3,nrow=1)
 
 À la lecture des deux histogrammes ci-dessus, il est clair que les deux variables *densité de population* et *pourcentage de personnes ayant 65 ou plus* sont très anormalement distribuées. Dans ce contexte, l'utilisation du coefficient de Pearson peut nous amener à mésestimer la relation existant entre les deux variables. Notez que les coefficients de Spearman et de Kendall sont tous les deux plus faibles.
 
-#### Corrélations robustes (*Biweight midcorrelation*, *Percentage bend correlation* et la corrélation *pi* de Shepherd) {#sect4134}
+#### Corrélations robustes (*Biweight midcorrelation*, *Percentage bend correlation* et la corrélation *pi* de Shepherd) {#sect04134}
 
 Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs aberrantes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois, les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser dans des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit : 
 
@@ -420,7 +420,7 @@ kableExtra::kable(dfCorr,digits = 2,
 
 Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche : les méthodes les plus connues sont les plus utilisées car elles sont plus facilement acceptées par les autres chercheurs. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumissions pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
 
-#### Significativité des coefficients de corrélation {#sect4135} 
+#### Significativité des coefficients de corrélation {#sect04135} 
 
 Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents ? Le calcul de ce degré de significativité nous permet de quantifier notre niveau de certitude quant à l'existance d'une corrélation entre nos deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté : $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant le coefficient de corrélation et le nombre d'observations. De manière classique, on utilisera la table des valeurs critiques de la distribution de $t$ : si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degré de liberté), alors le coefficient est significatif à 5%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon aurait été inférieure à 5%. Dans ce contexte, on peut raisonnablement rejeter l'hypothèse nulle (corrélation réelle de 0). 
 
@@ -499,7 +499,7 @@ cat(round(p$estimate,5), " [", round(p$conf.int[1],4), " ",round(p$conf.int[2],4
 
 Le _bootstrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Les intervalles de confiance obtenues à partir des différentes méthodes d'estimation (normale, basique, pourcentage et bca) ne sont pas à cheval sur 0, indiquant que le coefficient est significatif à 5%.
 
-#### Corrélation partielle {#sect4136} 
+#### Corrélation partielle {#sect04136} 
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 
@@ -542,7 +542,7 @@ cat("Corr. partielle avec ppcor  = ",
     "\nCorr. partielle (formule)  = ", round(CorP, 5))
 ```
 
-#### Mise en œuvre dans ![](images/Rlogo.png) {#sect4137}
+#### Mise en œuvre dans ![](images/Rlogo.png) {#sect04137}
 
 Comme vous l'aurez compris, il est possible d'arriver au même résultat dans ![](images/Rlogo.png) par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test` . Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
 
@@ -608,7 +608,7 @@ fig2 <- corrplot.mixed(p, lower="number", lower.col = "black",
 ```
 
 
-#### Comment rapporter des valeurs de corrélations? {#sect4138}
+#### Comment rapporter des valeurs de corrélations? {#sect04138}
 
 Bien qu'il n'y ait pas qu'une seule manière de reporter des corrélations, voici quelques lignes directrices pour vous guider : 
 
@@ -628,23 +628,23 @@ Voici des exemples :
 
 Pour un texte en anglais, référez-vous à : [https://www.socscistatistics.com/tutorials/correlation/default.aspx](https://www.socscistatistics.com/tutorials/correlation/default.aspx){target="_blank"}.
 
-### Régression linéaire simple  {#sect414}
+### Régression linéaire simple  {#sect0414}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 
 **Comment expliquer et prédire une variable continue en fonction d'une autre variable?** Répondre à cette question relève de la statistique inférentielle. Il s'agit en effet d'établir une équation simple du type $Y = a + bX$, pour expliquer et prédire les valeurs d'une variable dépendante (*Y*) à partir d'une variable indépendante (*X*). L'équation de la régression est construite grâce à un jeu de données (un échantillon). À partir de cette équation, il est possible de prédire la valeur attendue de *Y* pour n'importe quelle valeur de *X*. On appelle cette équation un modèle, car elle cherche à représenter la réalité de façon simplifiée.
 
-La régression linéaire simple se distingue ainsi de la **covariance** (section \@ref(sect412)) et de la **corrélation** (section \@ref(sect413)), relevant de la statistique bivariée descriptive et exploratoire. 
+La régression linéaire simple se distingue ainsi de la **covariance** (section \@ref(sect0412)) et de la **corrélation** (section \@ref(sect0413)), relevant de la statistique bivariée descriptive et exploratoire. 
 
 Par exemple, la régression linéaire simple pourrait être utilisée pour expliquer les notes d'un groupe d'étudiants à un examen (variable dépendante *Y*) en fonction du nombre d'heures qu'ils ont consacrés à la révision des notes de cours (variable indépendante *X*). Une fois l'équation de régression déterminée et si le modèle est efficace, nous pourrons prédire les notes des étudiants inscrits au cours la session suivante en fonction du temps qu'ils prévoient de passer à étudier, et ce, avant même qu'ils aient passé l'examen. 
 
 Formulons un exemple d'application de la régression linéaire simple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). On supposerait alors que plus cette proportion est importante, plus la température est faible et inversement, soit une relation linéaire négative. Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions à prédire efficacement la température moyenne des îlots avec uniquement la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc. Il faudrait alors inclure non pas une, mais plusieurs variables explicatives (indépendantes).
 
-Ainsi, on distinguera la **régression linéaire simple** (une variable indépendante, explicative) de la **régression linéaire multiple** (plusieurs variables indépendantes); cette dernière sera largement abordée au chapitre \@ref(chapitre4).
+Ainsi, on distinguera la **régression linéaire simple** (une variable indépendante, explicative) de la **régression linéaire multiple** (plusieurs variables indépendantes); cette dernière sera largement abordée au chapitre \@ref(chap05).
 
 :::
 
-Dans cette section, nous décrirons succinctement la régression linéaire simple. Concrètement, nous verrons comment déterminer la droite de régression, interpréter ses différents paramètres du modèle et comment évaluer la qualité d'ajustement du modèle. Nous n'aborderons pas les hypothèses liées au modèle de régression linéaire des moindres carrés ordinaires (MCO), ni les conditions d'application. Ces éléments seront expliqués au chapitre \@ref(chapitre4) consacré à la régression linéaire multiple.
+Dans cette section, nous décrirons succinctement la régression linéaire simple. Concrètement, nous verrons comment déterminer la droite de régression, interpréter ses différents paramètres du modèle et comment évaluer la qualité d'ajustement du modèle. Nous n'aborderons pas les hypothèses liées au modèle de régression linéaire des moindres carrés ordinaires (MCO), ni les conditions d'application. Ces éléments seront expliqués au chapitre \@ref(chap05) consacré à la régression linéaire multiple.
 
 ::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
 **Corrélation, régression simple et causalité : attention aux raccourcis !**
@@ -707,7 +707,7 @@ ggplot(df, aes(x = Values)) +
   ylab("densité")
 ```
 :::
-#### Principe de base de la régression linéaire simple {#sect4141}
+#### Principe de base de la régression linéaire simple {#sect04141}
 La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
 \begin{equation} 
 \widehat{y_i} = \beta_{0} + \beta_{1}x_{i}
@@ -758,7 +758,7 @@ ggplot(df, aes(x=KmCV, y=Velo)) +
 ```  
 
 
-#### Formulation de la droite de régression des moindres carrés ordinaires {#sect4142}
+#### Formulation de la droite de régression des moindres carrés ordinaires {#sect04142}
 Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre la valeur observée et la valeur prédite, dénommé résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle, et par extension moins bon est le modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
 
 \begin{equation} 
@@ -846,7 +846,7 @@ knitr::kable(
   caption = "Valeurs observées, prédites et résidus")
 ``` 
 
-#### Mesurer la qualité d'ajustement du modèle {#sect4143}
+#### Mesurer la qualité d'ajustement du modèle {#sect04143}
 Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (en anglais, *root-mean-square error*, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
 
 \begin{equation} 
@@ -932,7 +932,7 @@ R^2 = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
 (\#eq:reg6)
 \end{equation}
 
-Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence / est capable de prédire *Y*. Dans le cas présent, on a : $R^2 = 227.04 / 279.3 = 0.8129$, ce qui signale que 81,3% de la variance du pourcentage de cyclistes est expliquée par la distance au centre-ville. Tel que signalé dans la section \@ref(sect4132), la racine carrée du coefficient de détermination ($R^2$) est égale au coefficient de corrélation ($r$) entre les deux variables. 
+Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence / est capable de prédire *Y*. Dans le cas présent, on a : $R^2 = 227.04 / 279.3 = 0.8129$, ce qui signale que 81,3% de la variance du pourcentage de cyclistes est expliquée par la distance au centre-ville. Tel que signalé dans la section \@ref(sect04132), la racine carrée du coefficient de détermination ($R^2$) est égale au coefficient de corrélation ($r$) entre les deux variables. 
 
 **Calcul de la statistique _F_ de Fisher**
 
@@ -954,7 +954,7 @@ summary(modele)
 
 Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}{52.26} = 34.75$ avec une valeur de $p < 0.001$. Par conséquent, le modèle est significatif.
 
-#### Mise en œuvre dans ![](images/Rlogo.png) {#sect4144}
+#### Mise en œuvre dans ![](images/Rlogo.png) {#sect04144}
 Comment calculer une régression linéaire simple dans ![](images/Rlogo.png)? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -969,11 +969,11 @@ RMSE <- sqrt(MSE)
 cat("MSE=", round(MSE, 2), "; RMSE=", round(RMSE,2), sep="")
 ```
 
-#### Comment rapporter une régression linéaire simple {#sect4145}
+#### Comment rapporter une régression linéaire simple {#sect04145}
 
 Nous avons calculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance au centre-ville (en kilomètres). Le modèle obtient un *F* de Fisher significatif (*F*(1,8)= 34,75, *p* < 0,001) et un $R^2$ de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante : 30,603 - 1,448 x (distance au centre-ville en km).
 
-## Relation entre deux variables qualitatives {#sect42}
+## Relation entre deux variables qualitatives {#sect042}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 **Deux variables qualitatives sont-elles associées entre elles?** Plus spécifiquement, certaines modalités d'une variable qualitative sont-elles associées significativement à certaines modalités d'une variable qualitative.
@@ -982,11 +982,11 @@ Prenons l'exemple de deux variables qualitatives : l'une intitulée *groupe d'â
 
 Comparativement aux deux autres groupes, on pourrait supposer que les jeunes se déplacent proportionnellement plus en modes de transport actifs (vélo et marche) et en transports en commun. À l'inverse, il est possible que les 45 à 64 ans se déplacent majoritairement en véhicule motorisé.
 
-Pour vérifier l'existence d'associations significatives entre les modalités de deux variables qualitatives, il est possible de construire un **tableau de contingence**\index{tableau de contingence} (section \@ref(sect421)), puis de réaliser le **test du khi^2^**\index{khi2} (section \@ref(sect422)).
+Pour vérifier l'existence d'associations significatives entre les modalités de deux variables qualitatives, il est possible de construire un **tableau de contingence**\index{tableau de contingence} (section \@ref(sect0421)), puis de réaliser le **test du khi^2^**\index{khi2} (section \@ref(sect0422)).
 :::
 
 
-### Construction de tableau de contingence {#sect421}
+### Construction de tableau de contingence {#sect0421}
 
 Les données du tableau de contingence ci-dessous décrivent 279 projets d'habitation à loyer modique (HLM) dans l'ancienne ville de Montréal, croisant les modalités de la période de construction (en colonnes) et de la taille (en ligne) des projets HLM [@TheseApparicio]. Les différents éléments du tableau sont décrits ci-dessous.
 
@@ -1020,7 +1020,7 @@ CrossTable(TabKhi2$Taille, TabKhi2$Periode,
            expected=TRUE, chisq = TRUE, resid = TRUE, digits = 2, format="SPSS")
 ```
 
-### Test du khi^2^ {#sect422}
+### Test du khi^2^ {#sect0422}
 Avec le test du khi^2^, on postule qu'il y a indépendance entre les modalités des deux variables qualitatives, soit l'hypothèse nulle (h<sub>0</sub>). Puis, on cacule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contingence, nous avons 12 degrés de liberté : $(4-1)(5-1)=12$. À partir du nombre de degré de liberté et d'un seuil critique de significativité (prenons 5% ici), nous pouvons trouver la valeur critique de khi^2^ dans le tableau des valeurs critiques du khi^2^ : 21,03 section \@ref(annexe1)). Puisque la valeur du khi^2^ calculé dans le tableau de contingence est bien supérieure à celle obtenue dans le tableau des valeurs critiques (63,54), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. Autrement dit, si les deux variables n'étaient pas associées, nous aurions eu moins de 5% de chances de collecter des données avec ce niveau d'association, ce qui nous permet de rejeter l'hypothèse nulle (absence d'association). Notez que le test reste significatif avec des seuils de 1% (*p*=0,01) et 0,1% (*p*=0,001) puisque les valeurs critiques sont de 26,22 et 32,91.
 
 Bien entendu, une fois que l'on connait le nombre de degrés de liberté, on peut directement calculer les valeurs critiques pour différents seuils de signification et éviter ainsi de recourir à la table ci-dessus. Dans la même veine, on peut aussi calculer la valeur de *p* d'un tableau de contingence en spécifiant le nombre de degrés de liberté et la valeur du khi^2^ obtenue.
@@ -1047,7 +1047,7 @@ Coefficient Phi | $\phi=\sqrt{\frac{\chi^2}{n}}$ | Simplement le Khi^2^ divisé 
 V de Cramer | $V=\sqrt{\frac{\chi^2/n}{min(c-1,l-1)}}$ | Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que pour un tableau de 2 x 2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.
 :::
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect424}
+### Mise en œuvre dans ![](images/Rlogo.png) {#sect0423}
 
 Pour calculer le Khi^2^ entre deux variables qualitatives, on utilise la fonction de base : `chisq.test(x = ..., y = ...)` qui renvoie le nombre de degré de liberté, les valeurs du Khi^2^ et de *p*.
 
@@ -1185,7 +1185,7 @@ kableExtra::kable(AutresMesuresKhi2(df$Periode, df$Taille),
           caption="Mesures d'association entre deux variables qualitatives")
 ```
 
-### Interprétation d'un tableau de contingence {#sect425}
+### Interprétation d'un tableau de contingence {#sect0424}
 
 Nous vous proposons une démarche très simple pour vérifier l'association entre deux variables qualitatives avec les étapes suivantes :
 
@@ -1220,7 +1220,7 @@ Pour un texte en anglais, vous pourrez consulter [https://www.socscistatistics.c
 
 
 
-## Relation entre une variable quantitative et une variable qualitative à deux modalités {#sect43}
+## Relation entre une variable quantitative et une variable qualitative à deux modalités {#sect043}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 
@@ -1231,7 +1231,7 @@ Par exemple, pour deux échantillons respectivement d'hommes et de femmes travai
 :::
 
 
-### Test *t* et ses différentes variantes {#sect431}
+### Test *t* et ses différentes variantes {#sect0431}
 
 Le **t de student**, appelé aussi **test _t_** (*t-test* en anglais), est un test paramétrique permettant de comparer les moyennes de deux groupes (échantillons), qui peuvent être indépendantes ou non :
 
@@ -1239,7 +1239,7 @@ Le **t de student**, appelé aussi **test _t_** (*t-test* en anglais), est un te
 
 * **Échantillons dépendants (dits appariés)**, les individus des deux groupes sont les mêmes et  sont donc associés par paires. Autrement dit, on a deux séries de valeurs de taille identique $n_a = n_b$ et $n_{ai}$ est le même individu que $n_{bi}$. Ce type d'analyse est souvent utilisée en études cliniques : pour $n$ individus, on dispose d'une mesure quantitative de leur état de santé pour deux séries (l'une avant le traitement, l'autre une fois le traitement terminé). Cela permet de comparer les mêmes individus avant et après un traitement, une expérimentation; on parle alors d'étude, d'expérience et d'analyse pré-post. Concrètement, on cherche à savoir si la moyenne des différences des observations avant et après est significativement différente de 0. Si c'est le cas, on peut en conclure que l'expérimentation a eu un impact sur le phénomène mesuré (variable continue). Ce type d'analyse pré-post peut aussi être utilisé pour évaluer l'impact du réaménagement d'un espace public (rue commerciale, place publique, parc, etc.). Par exemple, on pourrait questionner le même échantillon de commerçants ou d'usagers avant et après le réaménagement d'une artère commerciale.
 
-**Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement distribuée. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect432)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
+**Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement distribuée. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect0432)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
 
 * Test de Student (test *t*) avec échantillons indépendants et variances similaires (méthode *pooled*).  Les variances de deux groupes sont semblables quand leur ratio varie de 0,5 à 2 ($0,5< (S^2_{X_A}/S^2_{X_B})<2$).
 * Test de Welch (appelé aussi Satterthwaite) avec échantillons indépendants quand les variances des deux groupes sont dissemblables.
@@ -1361,7 +1361,7 @@ tstudent_independants(Velo2A, Velo2B)
 ```
 
 
-#### Principe de base et formulation pour des échantillons dépendants (appariés) {#sect4311}
+#### Principe de base et formulation pour des échantillons dépendants (appariés) {#sect04311}
 
 Nous disposons de plusieurs individus pour lesquelles nous avons mesuré un phénomène (variable continue) à deux temps différents : généralement avant et après une expérimentation (analyse pré-post). Il s'agit de vérifier si la moyenne des différences des observations avant et après la période est différente de 0. Pour ce faire, on réalise les étapes suivantes :
 
@@ -1432,7 +1432,7 @@ tstudent_dependants(Avant2, Apres2, mu=0)
 ```
 
 
-#### Mesurer la taille de l'effet {#sect4312}
+#### Mesurer la taille de l'effet {#sect04312}
 
 Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas de comparaisons de moyennes (avec des échantillons pairées ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le second étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test student ou de Welch s'est révélé significatif (p<0,05).
 
@@ -1468,7 +1468,7 @@ knitr::kable(
 ```
 
 
-#### Mise en œuvre dans ![](images/Rlogo.png) {#sect4313}
+#### Mise en œuvre dans ![](images/Rlogo.png) {#sect04313}
 
 Nous avons écrit précédemment les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe des fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux tests avec une seule ligne de code.
 
@@ -1597,7 +1597,7 @@ ggpaired(data=df2, x= "periode", y="risque", fill = "periode")
 t.test(risque ~ periode, data=df2, paired = TRUE)
 ```
 
-#### Comparer des moyennes pondérées {#sect4314}
+#### Comparer des moyennes pondérées {#sect04314}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 En études urbaines et en géographie, le recours aux données agrégées (non individuelles) est fréquent, par exemple au niveau des secteurs de recensement (comprenant généralement entre 2500 à 8000 habitants). Dans ce contexte, un secteur de recensement plus peuplé devrait avoir un poids plus important dans l'analyse. Il est possible d'utiliser les versions pondérées des tests présentés précédemment. Prenons deux exemples pour illustrer le tout :
@@ -1631,7 +1631,7 @@ weighted_ttest(Locataire ~ Montreal + Logement, dfRMR,
                
 ```
 
-#### Comment rapporter un test de student ou de Welch? {#sect4315}
+#### Comment rapporter un test de student ou de Welch? {#sect04315}
 
 Pour les différentes versions du test, il est important de rapporter la valeur de *t*, la valeur de _p_ et les moyennes des groupes. Voici quelques exemples :
 
@@ -1651,7 +1651,7 @@ Pour un texte en anglais, vous pourrez consulter
 [https://www.socscistatistics.com/tutorials/ttest/default.aspx](https://www.socscistatistics.com/tutorials/ttest/default.aspx){target="_blank"}.
 
 
-### Test non paramétrique de Wilcoxon {#sect432}
+### Test non paramétrique de Wilcoxon {#sect0432}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 Si la variable continue est fortement anormalement distribuée, il est déconseillé d'utiliser les tests de Student et de Welch. On privilégiera le test des rangs signés de Wilcoxon (*Wilcoxon rank-sum test* en anglais). Attention, il est aussi appelé test U de Mann-Whitney. Ce test permet alors de vérifier si les deux groupes présentent des médianes différentes.
@@ -1714,14 +1714,14 @@ Lorsque l'on rapporte les résultats d'un test de Wilcoxon, il est important de 
 * Les résultats du test de Wilcoxon signalent que la médiane des rangs pré-tests (médiane = 69) est significativement plus forte que celle du post-test (médiane = 50,5) (W = 1273,5, p ˂ 0,001).
 
 
-## Relation entre une variable quantitative et une variable qualitative à plus de deux modalités {#sect44}
+## Relation entre une variable quantitative et une variable qualitative à plus de deux modalités {#sect044}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 
 **Existe-il une relation entre une variable continue et une variable qualitative comprenant plus de deux modalités?** Pour répondre à cette question, on pourra recourir à deux méthodes : l’analyse de variance – **ANOVA**, _**AN**alysis Of **VA**riance_ en anglais – et le test non paramétrique de Kruskal-Wallis. La première permet de vérifier si les moyennes de plusieurs groupes d'une population donnée sont ou non significativement différentes; la seconde si leurs médianes sont différentes.
 :::
 
-### Analyse de variance {#sect441}
+### Analyse de variance {#sect0441}
 
 L’analyse de variance (ANOVA) est largement utilisée en psychologie, médecine et pharmacologie. Prenons un exemple classique en pharmacologie pour tester l'efficacité d'un médicament. Quatre groupes de population sont constitués :
 
@@ -1739,7 +1739,7 @@ L'ANOVA est aussi très utilisée en études urbaines, principalement pour véri
 * pour une métropole donnée, les moyennes des loyers (variable continue) sont-elles différentes entre les logements de la ville centre versus ceux localisés dans la première couronne et ceux de la seconde couronnes?
 
 
-#### Le calcul des trois variances pour l'ANOVA {#sect4411}
+#### Le calcul des trois variances pour l'ANOVA {#sect04411}
 
 L'ANOVA repose sur le calcul de trois variances :
 
@@ -1931,7 +1931,7 @@ knitr::kable(
 ```
 
 
-#### Le test de Fisher {#sect4412}
+#### Le test de Fisher {#sect04412}
 
 Pour vérifier si les moyennes sont satistiquement différentes (autrement dit, si leur différence est significativement différente de 0), on a recours au test *F* de Fisher. Pour ce faire, on pose l'hypothèse nulle (H~0~), soit que les moyennes des groupes sont égales; autrement dit que la variable qualitative n'a pas d'effet sur la variable continue (indépendance entre les deux variables). L'hypothèse alternative (H~1~) est donc que les moyennes sont différentes. Pour nos deux jeux de données fictives ci-dessus comprenant trois groupes, H~0~ signifie que $\overline{y_{A}}=\overline{y_{B}}=\overline{y_{C}}$. La statistique *F* se calcule comme suit :
 
@@ -1949,7 +1949,7 @@ Appliquons rapidement la démarche du test *F* à nos deux jeux de données fict
 * pour le cas A, le F calculé est égal à $F = (377,904 /2) / (46,758 / 15) = 60,62$. Il est  supérieur à la valeur F critique; les moyennes sont donc statistiquement différentes au seuil 0,05. Autrement dit, nous aurions eu moins de 5% de chance d'obtenir un échantillon produisant ces résultats si en réalité la différence entre les moyenne était de 0.
 * pour le cas B, le F calculé est égal à $F = (6,087/2)/ (115,669 / 15) = 0,39$. Il est inférieur à la valeur F critique; les moyennes ne sont donc pas statistiquement différentes au seuil 0,05.
 
-#### Conditions d'application de l'ANOVA et solutions alternatives {#sect4414}
+#### Conditions d'application de l'ANOVA et solutions alternatives {#sect04414}
 Trois conditions d'application doivent être vérifiées avant d'effectuer une analyse de variance sur un jeu de données :
 
 * **Normalité des groupes.** Le test de Fisher repose sur le postulat que les échantillons (groupes) sont normalement distribués. Pour le vérifier, on a recours au test de normalité de Shapiro–Wilk (REF CHAPITRE 1 à METTRE PLUS TARD). Notez toutefois que ce test est très restrictif, surtout pour des grands échantillons.
@@ -1960,8 +1960,8 @@ Trois conditions d'application doivent être vérifiées avant d'effectuer une a
 
 **Quelles sont les conséquences si les conditions d'application ne sont pas respectées ?** La non vérification des conditions d'application cause deux problèmes distincts : elle affecte la puissance du test (sa capacité à détecter un effet, si celui-ci existe réellement) et le taux d'erreur de type 1 (la probabilité de trouver un résultat significatif alors qu'aucune relation n'existe réellement, soit un faut-positif) [@glass1972consequences; @lix1996consequences].
 
-* Si la distribution est asymétrique (figure \@ref(fig:figanovapb).a) plutôt que centrée (comme pour une distribution normale), la puissance et le taux d'erreur de type 1 sont tous les deux peu affectés car le test est non-orienté (la différence de moyennes peut être négative ou positive).
-* Si la distribution est leptocurtique (pointue, avec des extrémités de la distribution plus importantes, figure \@ref(fig:figanovapb).b), le taux d'erreur de type 1 est peu affecté, en revanche la puissance du test est réduite. L'inverse s'observe si la distribution est platicurtique (aplatie, c'est-à-dire avec des extrémités de la distribution plus réduites, figure \@ref(fig:figanovapb).c).
+* Si la distribution est asymétrique plutôt que centrée (comme pour une distribution normale), la puissance et le taux d'erreur de type 1 sont tous les deux peu affectés car le test est non-orienté (la différence de moyennes peut être négative ou positive).
+* Si la distribution est leptocurtique (pointue, avec des extrémités de la distribution plus importantes, le taux d'erreur de type 1 est peu affecté, en revanche la puissance du test est réduite. L'inverse s'observe si la distribution est platicurtique (aplatie, c'est-à-dire avec des extrémités de la distribution plus réduites.
 * Si les groupes ont des variances différentes, le taux d'erreur de type 1 augmente légèrement.
 * Si les observations ne sont pas indépendantes, à la fois le taux d'erreurs de type 1 et la puissance du test sont fortement affectés.
 * Si les échantillons sont petits, les effets présentés ci-dessus sont démultipliés.
@@ -1979,11 +1979,11 @@ Trois conditions d'application doivent être vérifiées avant d'effectuer une a
 
 Vous l'aurez compris, dans de nombreux cas en statistique, les choix méthodologiques dépendent de la subjectivité du chercheur. Il faut s'adapter au jeu de données et à la culture statistique en vigueur dans votre champs d'étude. N'hésitez pas à réaliser plusieurs tests différents pour évaluer la robustesse de vos conclusions et fiez-vous en premier lieu à ceux pour lesquels votre jeu de données est le plus adapté.
 
-### Test non paramétrique de Kruskal-Wallis {#sect442}
+### Test non paramétrique de Kruskal-Wallis {#sect0442}
 
 Le test non paramétrique de Kruskal-Wallis est une alternative à l'ANOVA classique lorsque le jeu de données présente de graves problèmes de normalité et d'hétéroscédaticité. Cette méthode représente une ANOVA appliquée à une variable continue transformée préalablement en rangs. Du fait de la transformation en rangs, on ne vérifie plus si les moyennes sont différentes, mais bel et bien si les médianes de la variable continue sont différentes. Pour ce faire, on utilisera la fonction `kruskal.test`.
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect443}
+### Mise en œuvre dans ![](images/Rlogo.png) {#sect0443}
 
 Dans une étude récente, Apparicio *et al.* [-@apparicio2018exposure] ont comparé les expositions au bruit et à la pollution atmosphérique aux heures de pointe à Montréal en fonction du mode de transport utilisé. Pour ce faire, trois équipes de trois personnes ont été constituées : un cycliste, un automobiliste et un utilisateur du transport en commun, équipés de capteurs de pollution, de sonomètres, de vêtements biométriques et d’une montre GPS. Chaque matin, à huit heures précises, les membres de chaque équipe ont réalisé un trajet d'un quartier périphérique de Montréal vers un pôle d'enseignement (université) ou d'emploi localisé au centre-ville. Le trajet inverse était réalisé le soir à 17h. Au total, une centaine de trajets ont ainsi été réalisés. Des analyses de variance ont ainsi permis de comparer entre les trois modes (automobile, vélo et transport en commun) : les temps de déplacement, les niveaux d'exposition au bruit, les niveaux d'exposition au dioxyde d'azote et la dose totale inhalée de dioxyde d'azote. Nous vous proposons ici d'analyser une partie de ces données.
 
@@ -2168,7 +2168,7 @@ df_Bruit %>%
 pairwise.wilcox.test(df_Bruit$laeq, df_Bruit$Mode, p.adjust.method = "BH")
 ```
 
-### Comment rapporter les résultats d'une ANOVA et du test de Kruskal-Wallis {#sect444}
+### Comment rapporter les résultats d'une ANOVA et du test de Kruskal-Wallis {#sect0444}
 
 Plusieurs éléments doivent être reportés pour détailler les résultats d'une ANOVA ou d'un test de Kruskal-Wallis : la valeur de *F*, de *W* (dans le cas d'une ANOVA de Welch) ou du χ2 (Kruskal-Wallis), les valeurs de *P*, les moyennes ou médianes respectives des groupes et éventuellement un tableau détaillant les écarts intergroupes obtenus avec les test de Tuckey ou Wilcoxon par paires.
 

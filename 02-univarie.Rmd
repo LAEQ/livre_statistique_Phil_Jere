@@ -1,6 +1,6 @@
-# (PART) Analyse Univariée {-} 
+# (PART) Analyses univariées {-} 
 
-# Statistiques descriptives univariées
+# Statistiques descriptives univariées {#chap02}
 
 Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Ausi, nous abordons un concept central de la statistique : les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
@@ -9,22 +9,26 @@ Dans cette section, nous utiliserons principalement les packages suivants (À MO
 
 * Pour créer des graphiques :
   - **ggplot2**, le seul, l'unique
-  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes
-  - **qqplotr**, pour générer facilement des diagrammes quantiles-quantiles
-* Pour manipuler des données : 
-  - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
-  - **reshape2**, avec la fonction *melt*
-* Pour travailler avec des distributions
-  - **nortest**, pour accéder aux tests de normalité
-  - **VGAM** et **gamlss.dist**, pour accéder à pleins de distributions
-  - **fitdistrplus**, pour ajuster des distributions à des données
-* Pour décrire des données
-  - **moments**, pour calculer des indicateurs de formes
-  - **DescTools**, pour calculer facilement des indicateurs sur des distributions
+  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes
+  
+* Pour créer des distribution :
+  - **fitdistrplus** pour générer différentes distributions
+  - **actuar** pour la fonction de densité de Pareto
+  - **gamlss.dist** pour des distributions de Poisson
 
-## Notion de variable {#sect21}
+ * Pour les statistiques descriptives :
+  - **stats** pour les statistiques descriptives
+  - **nortest** pour le test de Kolmogorov-Smirnov
+  - **DescTools** pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera
 
-### La variable : l'opérationnalisation d'un concept {#sect211}
+ * Autres *packages* :
+  - **Hmisc** et **Hmisc** pour les statistiques descriptives pondérées
+  - **foreign** pour importer des fichiers externes
+:::
+
+## Notion de variable {#sect021}
+
+### La variable : l'opérationnalisation d'un concept {#sect0211}
 
 Une variable permet d'opérationnaliser un concept, soit une « idée générale et abstraite que se fait l'esprit humain d'un objet de pensée concret ou abstrait, et qui lui permet de rattacher à ce même objet les diverses perceptions qu'il en a, et d'en organiser les connaissances » ([Larousse](https://www.larousse.fr/dictionnaires/francais/concept/17875?q=concept#17749){target="_blank"}). Pour valider un modèle théorique, il convient alors d'opérationnaliser ses différentes concepts et d'établir les relations qu'ils partagent. L'opérationnalisation d'un concept nécessite soit de mesurer (dans un intervalle de valeurs, c'est-à-dire de manière quantitative), soit de qualifier (avec plusieurs catégories, c'est-à-dire de manière qualitative) un phénomène. 
 
@@ -62,14 +66,14 @@ On fait la moins pire des recherches ! En effet, les données disponibles sont p
 * Des variables peuvent aussi être imparfaites. Dans un jeu de données, il est fréquent qu'une variable opérationnalisant un concept précis ne soit pas disponible ou qu'elle n'ait tout simplement pas été  mesurée. On cherchera alors une variable de substitution (*proxy*) pour la remplacer. Prenons un exemple concret portant sur l'exposition des cyclistes à la pollution atmosphérique ou au bruit environnemental. L'une des principaux facteurs d'exposition à ces pollutions est le trafic routier : plus ce dernier est élevé, plus le cycliste risque de rouler dans un environnement bruyant et pollué. Toutefois, il est rare de disposer de mesures du trafic en temps réel qui nécessitent des comptages de véhicules pendant le trajet des cyclistes (par exemple, à partir de vidéos captées par une caméra fixée sur le guidon). Pour pallier à l'absence de mesures directes, plusieurs auteurs utilisent des variables de substitution de la densité du trafic, comme la typologie des types d'axes (primaire, secondaire, tertiaire, rue locale, etc.), supposant ainsi qu'un axe primaire supporte un volume de véhicules supérieur à un axe secondaire.
 :::
 
-### Les types de variables {#sect212}
+### Les types de variables {#sect0212}
 On distingue habituellement les variables qualitatives (nominale ou ordinale) des variables quantitatives (discrète ou continue). Tel qu'illustré à la figure \@ref(fig:figunivarie1), l'opérationnalisation du concept en variable est réalisée par différents mécanismes visant à qualifier, classer, compter ou mesurer afin de caractériser les unités statistiques (observations) d'une population ou d'un échantillon.
 
 ```{r figunivarie1, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les types de variables",  out.width='70%'}
 knitr::include_graphics('images/univariee/figure1.jpg', dpi = NA)
 ```
 
-#### Les variables qualitatives {#sect2121}
+#### Les variables qualitatives {#sect02121}
 
 **Une variable nominale** permet de **qualifier** des observations (individus) à partir de plusieurs catégories, dénommées modalités. Par exemple, la variable _couleur des yeux_ pourrait comprendre les modalités _bleu_, _marron_, _vert_ tandis que le *types de familles* compendrait les modalités _couple marié_, _couple en union libre_ et _famille monoparentale_.
 
@@ -85,7 +89,7 @@ Les variables nominales et ordinales sont habituellement encodées avec des vale
 On calculera toutefois les fréquences des différentes modalités pour une variable nominale ou ordinale. Il est aussi possible de calculer la médiane sur une variable ordinale.
 :::
 
-#### Les variables quantitatives {#sect2122}
+#### Les variables quantitatives {#sect02122}
 
 **Une variable discrète** permet de **compter** un phénomène dans un ensemble fini de valeurs, comme le nombre d'accidents impliquant un cycliste à une intersection sur une période cinq ans ou encore le nombre de vélos en libre service disponibles à une station. Il existe ainsi une variable binaire sous-jacente : la présence ou non d'un accident à l'intersection ou d'un vélo ou non à la station pour laquelle on opère un comptage. Habituellement, une variable discrète ne peut prendre que des valeurs entières (sans décimales), comme le nombre de personnes fréquentant un parc.
 
@@ -94,11 +98,11 @@ On calculera toutefois les fréquences des différentes modalités pour une vari
 **Une variable semi-quantitative**, appelée aussi variable quantitative ordonnée, est une variable discrète ou continue dont les valeurs ont été regroupées en classes hiérarchisées. Par exemple, l'âge est une variable continue pouvant être transformée avec les groupes d'âge ordonnés suivants : *moins 25 ans*, *25 à 44 ans*, *45 à 64 ans* et *65 ans et plus*.
 
 
-## Les types de données {#sect22}
+## Les types de données {#sect022}
 
 Différentes types de données sont utilisées en sciences sociales. L'objectif ici n'est pas de les décrire en détail, mais plutôt de donner quelques courtes définitions. En fonction de votre question de recherche et des bases de données disponibles ou non, il s'agira de sélectionner le ou les types de données les plus appropriés à votre sujet.
 
-### Données secondaires *versus* données primaires {#sect221}
+### Données secondaires *versus* données primaires {#sect0221}
 
 Les **données secondaires** sont des données qui existent déjà au début de votre projet de recherche : pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
   
@@ -111,14 +115,14 @@ Au Québec, l'accès à ces enquêtes est possible dans les différentes antenne
 Par opposition, les **données primaires** n'existent pas quand vous démarrez votre projet : vous devez les collecter spécifiquement pour votre étude! Par exemple, une chercheure souhaitant analyser l'exposition des cyclistes au bruit et à la pollution dans une ville donnée devra réaliser une collecte de données avec idéalement plusieurs participants (équipés de différents capteurs), et ce, sur plusieurs jours. 
 Une collecte de données primaires est peut être aussi réalisée avec une enquête par sondage. Brièvement, réaliser une collecte de données primaires nécessite différentes phases complexes comme la définition de la méthode de collecte, de la population à l'étude, l’estimation de la taille de l'échantillon, la validation des outils de collecte avec une phase de test, la réalisation de la collecte, la structuration, la gestion et l'exploitation de données collectées. Finalement, dans le milieu académique, une collecte de données primaires auprès d'individus doit être approuvée par le comité d'éthique de la recherche de l'université auquel est affilié le responsable du projet de recherche (qu'il soit professeur, chercheur ou étudiant).
 
-###  Données transversales *versus* données longitudinales {#sect222}
+###  Données transversales *versus* données longitudinales {#sect0222}
 Les **données de transversales** sont des mesures pour une période relativement courte. L’exemple classique est un jeu de données constitué des variables extraites d’un recensement de population pour une année donnée (comme celui 2016 de Statistique Canada). 
 
 Les **données longitudinales**, appelées aussi données par panel, sont des mesures répétées pour plusieurs observations au cours du temps (*N* observations pour *T* dates). Par exemple, des observations pourraient être des pays, les dates pourraient être différentes années (de 1990 à 2019) pour lesquelles différentes variables seraient disponibles (population totale, taux d’urbanisation, produit intérieur brut par habitant, émissions de gaz à effet de serre par habitant, etc).
 
-### Données spatiales versus données aspatiales {#sect223}
+### Données spatiales versus données aspatiales {#sect0223}
 
-Les observations des **données spatiales** sont des unités spatiales géoréférencées (points, lignes, polygones ou encore pixels d’une image). Elles peuvent d’être par exemple :
+Les observations des **données spatiales** sont des unités spatiales géoréférencées (points, lignes, polygones ou encore pixels d’une image). Elles peuvent être par exemple :
 
 * des points *(x,y)* ou *(lat-long)* représentant des entreprises avec plusieurs variables (adresse, date de création, nombre d'employés, secteurs d'activité, etc.);
 *  les lignes représentant des tronçons de rues pour lesquels plusieurs variables sont disponibles (types d’axe, longueur en mètre, nombre de voies, débit journalier moyen annuel, etc.);
@@ -127,15 +131,15 @@ Les observations des **données spatiales** sont des unités spatiales géoréf�
 À l’inverse, aucune information spatiale n’est disponible pour des **données aspatiales**. 
 
 
-### Données individuelles *versus* données agrégées {#sect224}
+### Données individuelles *versus* données agrégées {#sect0224}
 
 Comme son nom l'indique, pour des **données individuelles**, chaque observation correspond à un individu. Les microdonnées de recensement ou d'enquêtes, par exemple, sont des données individuelles pour lesquelles toute une série de variables est disponible. Une étude analysant les caractéristique de chaque arbre d'un quartier nécessite aussi des données individuelles : l'information doit être disponible pour chaque arbre. Pour les microdonnées des recensements canadiens, « chaque enregistrement au niveau de la personne comprend des identifiants (comme les identifiants du ménage et de la famille), des variables géographiques et des variables directes et dérivées tirées du questionnaire » ([Statistique Canada](https://www150.statcan.gc.ca/n1/pub/12-002-x/2012001/article/11642-fra.htm){target="_blank"}). Comme signalé plus haut, ces microdonnées de recensement ou d'enquêtes sont uniquement accessibles dans les Centres de données de recherche (CDR).
 
-Les données individuelles peuvent être **agrégées** à un niveau supérieur. Prenons le cas de microdonnées d'un recensement. Les informations disponibles pour chaque individu sont regroupées par territoire géographique (îlots, aires de diffusion, secteurs de recensement, etc.) en fonction du lieu d'habitation des individus. La moyenne, la médiane, la somme ou la proportion de Chacune des variables mesurée au niveau individuel (âge, sexe, situation de famille, revenu, etc.) est calculée à cette nouvelle échelle ([Statistique Canada](https://www.statcan.gc.ca/fra/idd/trousse/section5#a4){target="_blank"}.
+Les données individuelles peuvent être **agrégées** à un niveau supérieur. Prenons le cas de microdonnées d'un recensement. Les informations disponibles pour chaque individu sont agrégées par territoire géographique (province, région économique, division de recensement, subdivision de recensement, région et agglomération de recensement, secteurs de recensement, aires de diffusion, etc.) en fonction du lieu d'habitation des individus. Des sommaires statistiques – basées sur la moyenne, la médiane, la somme ou la proportion de chacune des variables mesurées au niveau individuel (âge, sexe, situation de famille, revenu, etc.) – sont alors construit pour ces différents découpages géographiques ([Statistique Canada](https://www.statcan.gc.ca/fra/idd/trousse/section5#a4){target="_blank"}).
 
-L'aggrégation n'est pas nécessairement géographique. En éductation, il est fréquent de travailler avec des données concernant les élèves mais agrégées au niveau des écoles. La figure X donne un exemple simple d'agrégation de données individuelles.
+L'aggrégation n'est pas nécessairement géographique. En éductation, il est fréquent de travailler avec des données concernant les élèves, mais agrégées au niveau des écoles. La figure \@ref(fig:figunivarie1b) donne un exemple simple d'agrégation de données individuelles.
 
-```{r figunivarie1b, echo=FALSE, fig.align='center', fig.cap="Exemple d'agrégation de données individuelles", auto_pdf=TRUE, out.width='75%'}
+```{r figunivarie1b, echo=FALSE, fig.align='center', fig.cap="Exemple d'agrégation de données individuelles", auto_pdf=TRUE, out.width='65%'}
   knitr::include_graphics('images/univariee/aggregation.png', dpi = NA)
 ```
 
@@ -156,20 +160,31 @@ Bien entendu, les différents types de données abordés ci-dessus ne sont pas e
 Une collecte de données sur la pollution atmosphérique et sonore réalisée à vélo (avec différentes capteurs et un GPS) sont des données spatiales primaires. 
 :::
 
+## Statistique descriptive et statistique inférentielle {#sect023}
 
-## Retour sur la statistique descriptive et la statistique inférentielle (ENCADRÉ)  {#sect23}
+### Population, échantillon et inférence {#sect0231}
 
-* **Population versus échantillon**
+Les notions de **population** et d'**échantillon** sont essentielles en statistique puisqu'elles sont le socle de l'inférence statistique.
+Un échantillon est un **sous-ensemble représentatif** d'une population donnée. Prenons un exemple concret. Une chercheure veut comprendre la mobilité des étudiants d'une université. Bien entendu, elle ne pourra interroger l’ensemble des étudiants de son université.  Elle devra alors s’assurer d'obtenir un échantillon de taille suffisante et représentatif de la population étudiante. Une fois les données collectées (avec un sondage par exemple), elle pourra utiliser des techniques inférentielles pour analyser la mobilité des étudiants interrogés. Si son échantillon est représentatif, les résultats obtenus pourront être inférés – c'est-à-dire généralisés, extrapolés – à l’ensemble de la population.
+
+::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+**Les méthodes d’échantillonnage**
+
+Nous n’abordons pas ici les méthodes d’échantillonnage. Sachez toutefois qu’il existe plusieurs méthodes probabilistes pour constituer un échantillon, notamment de manière aléatoire, systématique, stratifiée, par grappes [voir par exemple cette publique de Statistique Canada](https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch13/prob/5214899-fra.htm){target="_blank"}.
+:::
+
+Autre exemple, une autre chercheure souhaite comprendre les facteurs influençant le sentiment de sécurité des cyclistes dans un quartier. De nouveau, elle ne pourra pas enquêter tous les cyclistes du quartier et devra constituer un échantillon représentatif. Par la suite, la mise en œuvre de techniques inférentielles lui permettra d'identifier les caractéristiques individuelles (âge, sexe, habiletés à vélo, etc.) et de l'environnement urbain (types de voies empruntés, niveaux de trafic, de pollution, de bruit, etc.) ayant des effets significatifs sur le sentiment de sécurité. Si l'échantillon est représentatif, les résultats pourront être généralisés à l'ensemble des cyclistes du quartier.
 
 
-### TEST ET INFÉRENCE
-### La notion de bootstrap : 
-### LA NOTION DE VALEUR DE P ou la mettre
-mesures sur populations complètes ou Échantillons
+### Deux grandes familles de méthodes statistiques {#sect0232}
+
+On distingue deux grandes familles de méthodes statistiques :
+
+* « **La statistique descriptive et exploratoire** : elle permet par des résumés et des graphiques plus ou moins élaborés de décrire des ensembles de données statistiques, d’établir des relations entre les variables sans faire jouer de rôle privilégié à une variable particulière. Les conclusions ne portent dans cette phase de travail que sur les données étudiées, sans être inférées à une population plus large. L’analyse exploratoire s’appuie essentiellement sur des notions élémentaires telles que des indicateurs de moyenne et de dispersion, sur des représentations graphiques. [...]
+* **La statistique inférentielle et confirmatoire** : elle permet de valider ou d’infirmer, à partir de tests statistiques ou de modèles probabilistes, des hypothèses formulées a priori (ou après une phase exploratoire), et d’extrapoler, c’est-à-dire d’étendre certaines propriétés d’un échantillon à une population plus large. Les conclusions obtenues à partir des données vont au-delà de ces données. La statistique confirmatoire fait surtout appel aux méthodes dites explicatives et prévisionnelles destinées, comme leurs noms l’indiquent, à expliquer puis à prévoir, suivant des règles de décision, une variable privilégiée à l’aide d’une ou plusieurs variables explicatives (régressions multiples et logistiques, analyse de variance, analyse discriminante, segmentation, etc.) » [@lebart1995statistique, p. 209].
 
 
-
-## La notion de distribution {#sect24}
+## La notion de distribution {#sect024}
 
 ::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
 Dans cette section, nous abordons un concept central de la statistique : les distributions. Prenez le temps de lire cette section à tête reposée et assurez-vous de bien comprendre chaque idée avant de passer à la suivante. N’hésitez pas à y revenir plusieurs fois si nécessaire, car la compréhension de ces concepts est essentielle pour utiliser adéquatement les méthodes que nous abordons dans ce livre.
@@ -580,7 +595,7 @@ avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa proba
 * 99,7% dans l’intervalle $[\mu- 3\sigma≤x≤ \mu+ 3\sigma]$
 
 Autrement dit, dans le cas d’une distribution normale, il est très invraisemblable d’observer des données situées à plus de trois écarts types de la moyenne.
-Notez ici que lorsque $\mu = 0$ et $\sigma = 0$, on obtient la loi normale générale (ou centrée-réduite) (section \@ref(sect2552)).
+Notez ici que lorsque $\mu = 0$ et $\sigma = 0$, on obtient la loi normale générale (ou centrée-réduite) (section \@ref(sect02552)).
 
 ```{r fig260, echo=FALSE, fig.align='center', fig.cap="La distribution Gaussienne", auto_pdf=TRUE, out.width='70%'}
 library(VGAM)
@@ -824,9 +839,9 @@ Voilà qui conclut cette exploration des principales distributions à connaître
 Wikipédia dispose d’informations très détaillées sur chaque distribution si vous avez besoin d’informations complémentaires. Pour un tour d’horizon plus exhaustif des distributions, vous pouvez aussi faire un tour sur les projets [probonto](https://sites.google.com/site/probonto/screenshots){target="_blank"} et [the ultimate probability distribution explorer](https://blog.wolfram.com/2013/02/01/the-ultimate-univariate-probability-distribution-explorer/){target="_blank"}. 
 
 
-## Statistiques descriptives sur des variables quantitatives {#sect25}
+## Statistiques descriptives sur des variables quantitatives {#sect025}
 
-### Les paramètres de tendance centrale {#sect251}
+### Les paramètres de tendance centrale {#sect0251}
 
 Trois mesures de tendance centrale permettent de résumer rapidement une variable quantitative :
 
@@ -846,7 +861,7 @@ knitr::kable(df2,
   booktabs = TRUE, valign = 't', row.names = FALSE)
 ```
 
-### Les paramètres de position {#sect252}
+### Les paramètres de position {#sect0252}
 
 Les paramètres de position permettent de diviser une distributions en _n_ parties égales.
 
@@ -883,8 +898,8 @@ knitr::kable(df,
 ```
 
 
-### Les paramètres de dispersion {#sect253}
-Cinq principales mesures de dispersion permettent d'évaluer la variabilité des valeurs d'une variable quantitative : l'étendue, l'écart interquartile, la variance, l'écart-type et le coefficient de variation. Notez d'emblée que cette dernière mesure ne s'applique pas à des variables d'intervalle (section \@ref(sect2122)).
+### Les paramètres de dispersion {#sect0253}
+Cinq principales mesures de dispersion permettent d'évaluer la variabilité des valeurs d'une variable quantitative : l'étendue, l'écart interquartile, la variance, l'écart-type et le coefficient de variation. Notez d'emblée que cette dernière mesure ne s'applique pas à des variables d'intervalle (section \@ref(sect02122)).
 
 * **L'étendue** est la différence entre les valeurs minimale et maximale d'une variable, soit l'intervalle des valeurs dans laquelle elle a été mesurée. Il convient d'analyser avec prudence cette mesure puisqu'elle inclut dans son calcul des valeurs potentiellement extrêmes voire aberrantes (faibles ou fortes).
 
@@ -1054,7 +1069,6 @@ knitr::kable(df,
 ```
 
 
-
 ```{r resume, echo=FALSE, message=FALSE, warning=FALSE}
 a <- c("Moyenne", "Étendue",
        "Intervalle interquartile",
@@ -1074,7 +1088,7 @@ knitr::kable(df,
 ```
 
 
-### Les paramètres de forme {#sect254}
+### Les paramètres de forme {#sect0254}
 
 #### Vérifier la normalité d'une variable quantitative
 
@@ -1565,25 +1579,29 @@ model_pareto <- fitdist(data_trt_bus$Min.Delay, distr = "pareto",
 # réalisation des graphiques
 plot1 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
-  stat_function(fun = dgamma, color = 'red', size = 0.8, args = as.list(model_gamma$estimate))+
+  stat_function(fun = dgamma, color = 'red', size = 0.8, 
+                args = as.list(model_gamma$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
        subtitle = "modèle Gamma")
 plot2 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
-  stat_function(fun = dweibull, color = 'red', size = 0.8, args = as.list(model_weibull$estimate))+
+  stat_function(fun = dweibull, color = 'red', size = 0.8, 
+                args = as.list(model_weibull$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
        subtitle = "modèle Weibull")
 plot3 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
-  stat_function(fun = dlnorm, color = 'red', size = 0.8, args = as.list(model_lognorm$estimate))+
+  stat_function(fun = dlnorm, color = 'red', size = 0.8, 
+                args = as.list(model_lognorm$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
        subtitle = "modèle log-normal")
 plot4 <- ggplot(data = data_trt_bus) + 
   geom_histogram(aes(x=Min.Delay, y = ..density..), bins = 40)+
-  stat_function(fun = dpareto, color = 'red', size = 0.8, args = as.list(model_pareto$estimate))+
+  stat_function(fun = dpareto, color = 'red', size = 0.8, 
+                args = as.list(model_pareto$estimate))+
   labs(x = 'temps de retard (min)',
        y = '',
        subtitle = "Modèle Pareto")
@@ -1705,9 +1723,9 @@ ks.test(data_accidents$nb_accident,
 
 Encore une fois, on doit rejeter l'hypothèse selon laquelle le test suit une distribution de poisson avec excès de zéros. Ces deux exemples montrent à quel point ce test est restrictif.
 
-### La transformation des variables {#sect255}
+### La transformation des variables {#sect0255}
 
-#### Les transformations visant à atteindre la normalité  {#sect2551}
+#### Les transformations visant à atteindre la normalité  {#sect02551}
 
 Comme énoncé au début de cette section, plusieurs méthodes statistiques nécessitent que la variable quantitative soit normalement distribuée. C'est notamment le cas de l'analyse de variance et des tests T (abordés dans les chapitres suivants) qui fourniront des résultats plus robustes lorsque la variable est normalement distribuée. Plusieurs transformations sont possibles, les plus courantes étant la racine carrée, le logarithme et l'inverse de la variable. Selon plusieurs auteurs (notamment, Tabacknick et *et al.* [-@tabachnick2007, p. 89], en fonction du type (positive ou négative) et du degré d'asymétrie les transformations suivantes sont possibles afin d'améliorer la normalité de la variable :
 
@@ -1755,7 +1773,7 @@ La transformation des données fait et fera encore longtemps débat à la fois p
 * *La transformation a-t-elle un apport significatif ?* Premièrement, vérifier si la transformation utilisée (logarithme, racine carrée, inverse, etc.) améliore la normalité de la variable. Ce n'est toujours le cas, pourquoi c'est pire ! Prenez soin de comparer les histogrammes, les valeurs de *skewness*, *kurtosis* et des différents tests de normalité avant et après la transformation. Deuxièmement, comparer les résultats de vos analyses statistiques sans et avec transformation, et ce, dans une démarche coût-avantage. Vos résultats sont-ils bien plus robustes? Par exemple, un R^2^ qui passe de 0,597 à 0,602 avant et après la transformation des variables avec des associations significatives similaires, mais plus difficiles à interpréter (du fait des transformations), n'est pas forcément un gain significatif. La modélisation en sciences sociales ne vise à prédire la trajectoire d'un satellite ou l'atterrissage d'un engin sur Mars ! La précision à quatrième décimale n'est pas une condition ! Par conséquent, un modèle un peu moins robuste, mais plus facile à interpréter afin de valider est parfois préférable.
 :::
 
-#### Autres types de transformation  {#sect2552}
+#### Autres types de transformation  {#sect02552}
 
 Les trois transformations les plus couramment utilisées sont :
 
@@ -1766,7 +1784,7 @@ z= \frac{x_i-\mu}{\sigma}
 (\#eq:scorez)
 \end{equation}
 
-* **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Speaman (section \@ref(sect4133)) et certains tests non-paramétriques (sections \@ref(sect432) et \@ref(sect442)).
+* **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Speaman (section \@ref(sect04133)) et certains tests non-paramétriques (sections \@ref(sect0432) et \@ref(sect0442)). 
 
 * **La transformation sur une échelle de 0 à 1** (ou de 0 à 100) qui consiste à soustraite à chaque observation la valeur minimale et à diviser le tout par l'étendue (eq. \@ref(eq:t01)). 
 
@@ -1825,11 +1843,226 @@ Ces trois transformations sont parfois utilisées pour générer un indice compo
 :::
 
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect256}
+### Mise en œuvre dans ![](images/Rlogo.png) {#sect0256}
+Il existe une multitude de *packages* dédiés au calcul des statistiques descriptives univariées. Par parcimonie, nous en utiliserons uniquement trois : `DescTools`, `nortest` et `stats`. Libre à vous de faire vos recherches sur Internet pour utiliser d'autres *packages* au besoin. Les principales fonctions que nous utilisons ici sont :
 
-## Statistiques descriptives sur des variables qualitatives et semi-qualitatives {#sect26}
+* `summary` : pour obtenir un résumé sommaire des statistiques descriptives (minimum, Q1, Q2 Q3, Maximum)
+* `mean` : moyenne
+* `min` : minimum
+* `max` : maximum
+* `range` : minimum et maximum
+* `quantile` : quartiles
+* `quantile((x, probs = seq(.0, 1, by = .2))` : quintiles
+* `quantile((x, probs = seq(.0, 1, by = .1))` : déciles
+* `var` : variance
+* `sd` : écart-type
+* `Skew` du *package* `DescTools` : coefficient d'asymétrie
+* `Kurt` du *package* `DescTools` : coefficient d'applatissement
+* `ks.test(x, "pnorm", mean=mean(x), sd=sd(x))` du *package* `nortest` : test de Kolmogorov-Smirnov
+* `shapiro.test` du *package* `DescTools` : test de Shapiro-Wilk
+* `lillie.test` du *package* `DescTools` : du package **nortest** : test de Lilliefors
+* `ad.test` du *package* `DescTools` : test d'Anderson-Darling
+* `JarqueBeraTest` du *package* `DescTools` : test de Jarque-Bera
 
-### Les fréquences {#sect261}
+
+#### Application à une seule variable {#sect02561}
+
+Admettons que vous voulez obtenir des statistiques pour une seule variable présente dans un *dataframe* (`dataMTL$PctFRev`) :
+
+```{r StatDesc1, echo=TRUE, message=FALSE, warning=FALSE}
+
+library(DescTools)
+library(stats)
+library(nortest)
+
+# Importation du fichier csv dans un dataframe
+dataMTL <- read.csv("data/univariee/DataSR2016.csv")
+# Tableau sommaire pour la variable PctFRev
+summary(dataMTL$PctFRev)
+
+# PARAMÈTRES DE POSITION
+mean(dataMTL$PctFRev)   # Moyenne
+median(dataMTL$PctFRev)   # Médiane
+
+
+# PARAMÈTRES DE POSITION
+# Quartiles
+quantile(dataMTL$PctFRev)
+# Quintiles
+quantile(dataMTL$PctFRev, probs = seq(.0, 1, by = .2))
+# Déciles
+quantile(dataMTL$PctFRev, probs = seq(.0, 1, by = .1))
+# Percentiles personnalisés avec apply
+quantile(dataMTL$PctFRev, probs = c(0.01,.05,0.10,.25,.50,.75,.90,.95,.99))
+
+# PARAMÈTRES DE DISPERSION
+range(dataMTL$PctFRev)  # Min et Max
+# Étendue
+max(dataMTL$PctFRev)-min(dataMTL$PctFRev)
+# Écart interquartile
+quantile(dataMTL$PctFRev)[4]-quantile(dataMTL$PctFRev)[2]
+
+var(dataMTL$PctFRev) # Variance
+sd(dataMTL$PctFRev)  # Écart-type
+sd(dataMTL$PctFRev) / mean(dataMTL$PctFRev) # CV
+
+# PARAMÈTRES DE FORME
+Skew(dataMTL$PctFRev)    # Skewness
+Kurt(dataMTL$PctFRev)    # Kurtosis
+
+# TESTS D'HYPOTHÈSE SUR LA NORMALITÉ
+# K-Smirnov
+ks.test(dataMTL$PctFRev, "pnorm", mean=mean(dataMTL$PctFRev), sd=sd(dataMTL$PctFRev))
+shapiro.test(dataMTL$PctFRev) 
+lillie.test(dataMTL$PctFRev) 
+ad.test(dataMTL$PctFRev) 
+JarqueBeraTest(dataMTL$PctFRev) 
+```
+
+Pour construire un histogramme avec la courbe normale, vous pourez consulter la section \@ref(sect03213) ou la syntaxe ci-dessous.
+
+```{r GcourbeNormale, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Histogramme avec courbe normale",  out.width='65%'}
+moyenne <- mean(dataMTL$PctFRev)
+ecart_type <- sd(dataMTL$PctFRev)
+
+ggplot(data = dataMTL) +
+  geom_histogram(aes(x = PctFRev, y = ..density..),
+                 bins = 30, color = "#343a40", fill = "#a8dadc") +
+    labs(y = "densité")+
+  stat_function(fun = dnorm, args = list(mean = moyenne, sd = ecart_type), 
+                color = "#e63946", size = 1.2, linetype = "dashed")
+```
+
+#### Application à plusieurs variables {#sect02562}
+
+Pour obtenir des sorties de statistiques descriptives pour plusieurs variables, nous vous conseillons :
+
+* de créer un vecteur avec les noms de variables (*VarsSelect* dans la syntaxe ci-dessous)
+* d'utiliser ensuite les fonctions `sapply` et `apply.`
+
+```{r StatDesc2, echo=TRUE, message=FALSE, warning=FALSE}
+# Noms des variables du dataframe
+names(dataMTL)
+
+# Vecteur pour trois variables
+VarsSelect <- c("HabKm2", "TxChomage", "PctFRev" )
+
+# Tableau sommaire pour les 3 variables
+summary(dataMTL[VarsSelect])
+
+# PARAMÈTRES DE POSITION
+sapply(dataMTL[VarsSelect], mean)   # Moyenne
+sapply(dataMTL[VarsSelect], median) # Médiane
+
+# PARAMÈTRES DE POSITION
+# Quartiles
+sapply(dataMTL[VarsSelect], quantile)
+# Quintiles
+apply(dataMTL[VarsSelect], 2, function(x) quantile(x, probs = seq(.0, 1, by = .2)))
+# Déciles
+apply(dataMTL[VarsSelect], 2, function(x) quantile(x, probs = seq(.0, 1, by = .1)))
+# Percentiles personnalisés avec apply
+apply(dataMTL[VarsSelect], 2, 
+      function(x) quantile(x, probs = c(0.01,.05,0.10,.25,.50,.75,.90,.95,.99)))
+
+# PARAMÈTRES DE DISPERSION
+sapply(dataMTL[VarsSelect], range)  # Min et Max
+# Étendue
+sapply(dataMTL[VarsSelect], max) - sapply(dataMTL[VarsSelect], min)
+# Écart interquartile
+sapply(dataMTL[VarsSelect], quantile)[4,] - sapply(dataMTL[VarsSelect], quantile)[2,]
+
+sapply(dataMTL[VarsSelect], var)    # Variance
+sapply(dataMTL[VarsSelect], sd)     # Écart-type
+# Coefficient de variation
+sapply(dataMTL[VarsSelect], sd) / sapply(dataMTL[VarsSelect], mean)
+
+# PARAMÈTRES DE FORME
+sapply(dataMTL[VarsSelect], Skew)    # Skewness
+sapply(dataMTL[VarsSelect], Kurt)    # Kurtosis
+
+# TESTS D'HYPOTHÈSE POUR LA NORMALITÉ
+# K-Smirnov
+apply(dataMTL[VarsSelect], 2, function(x) ks.test(x, "pnorm", mean=mean(x), sd=sd(x)))
+sapply(dataMTL[VarsSelect], shapiro.test)       # Shapiro-Wilk
+sapply(dataMTL[VarsSelect], lillie.test)       # Lilliefors
+sapply(dataMTL[VarsSelect], ad.test)           # Anderson-Darling
+sapply(dataMTL[VarsSelect], JarqueBeraTest)    # Jarque-Bera
+```
+
+#### Transformer une variable dans ![](images/Rlogo.png) {#sect02563}
+
+La syntaxe ci-dessous illustre trois exemples de transformation (logarithme, racine carrée et inverse de la variable). Rappelez-vous qu'il faut compare les valeurs de forme (*skewness* et *kurtosis*) et de forme (tests de Shapiro-Wilk) avant et après les transformations pour identifier celle qui est la plus efficace.
+
+```{r GTranf, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Histogramme des transformations",  out.width='75%'}
+
+library(ggpubr)
+
+# Importation du fichier csv dans un dataframe
+dataMTL <- read.csv("data/univariee/DataSR2016.csv")
+
+# Noms des variables du dataframe
+names(dataMTL)
+
+# Transformations
+dataMTL$HabKm2_log <-  log10(dataMTL$HabKm2)
+dataMTL$HabKm2_sqrt <-  sqrt(dataMTL$HabKm2)
+dataMTL$HabKm2_inv <-  1/dataMTL$HabKm2
+
+# Vecteur pour la variable et les trois transformations
+VarsSelect <- c("HabKm2", "HabKm2_log", "HabKm2_sqrt", "HabKm2_inv")
+
+# paramètres de forme
+sapply(dataMTL[VarsSelect], Skew)    # Skewness
+sapply(dataMTL[VarsSelect], Kurt)    # Kurtosis
+
+# TESTS D'HYPOTHÈSE SUR LA NORMALITÉ
+sapply(dataMTL[VarsSelect], shapiro.test) 
+
+# Histogrammes avec courbe normale
+Graph1 <- ggplot(data = dataMTL) +
+          geom_histogram(aes(x = HabKm2, y = ..density..),
+                 bins = 30, color = "#343a40", fill = "#a8dadc") +
+          labs(x="Habitants au km2", y = "densité")+
+          stat_function(fun = dnorm, 
+                        args = list(mean = mean(dataMTL$HabKm2), 
+                                    sd = sd(dataMTL$HabKm2)), 
+                        color = "#e63946", size = 1.2)
+
+Graph2 <- ggplot(data = dataMTL) +
+          geom_histogram(aes(x = HabKm2_log, y = ..density..),
+                         bins = 30, color = "#343a40", fill = "#a8dadc") +
+          labs(x="habitants au km2 (logarithme)", y = "densité")+
+          stat_function(fun = dnorm, 
+                        args = list(mean = mean(dataMTL$HabKm2_log), 
+                                    sd = sd(dataMTL$HabKm2_log)), 
+                        color = "#e63946", size = 1.2)
+
+Graph3 <- ggplot(data = dataMTL) +
+          geom_histogram(aes(x = HabKm2_sqrt, y = ..density..),
+                         bins = 30, color = "#343a40", fill = "#a8dadc") +
+          labs(x="habitants au km2 (racine carrée)", y = "densité")+
+          stat_function(fun = dnorm, 
+                        args = list(mean = mean(dataMTL$HabKm2_sqrt), 
+                                    sd = sd(dataMTL$HabKm2_sqrt)), 
+                        color = "#e63946", size = 1.2)
+
+Graph4 <- ggplot(data = dataMTL) +
+          geom_histogram(aes(x = HabKm2_inv, y = ..density..),
+                         bins = 30, color = "#343a40", fill = "#a8dadc") +
+          labs(x="habitants au km2 (inverse)", y = "densité")+
+          stat_function(fun = dnorm, 
+                        args = list(mean = mean(dataMTL$HabKm2_inv), sd = sd(dataMTL$HabKm2_inv)), 
+                        color = "#e63946", size = 1.2)
+
+ggarrange(plotlist = list(Graph1, Graph2, Graph3, Graph4), ncol = 2, nrow=2)
+```
+
+La variable *HabKm2* est asymétrique positive et leptokurtique. Tant les valeurs des statistiques de forme, du test de Shapiro-Wilk que les histogrammes semblent démontrer que la transformation la plus efficace est la racine carrée. Si la variable originale est asymétrique positive, sa transformation logarithme est par contre asymétrique négative. Cela démontre que la transformation logarithmique n'est pas toujours la panacée.
+
+## Statistiques descriptives sur des variables qualitatives et semi-qualitatives {#sect026}
+
+### Les fréquences {#sect0261}
 
 En guise de rappel, les variables nominales, ordinales et semi-quantitatives comprennent plusieurs modalités pour lesquelles plusieurs types de fréquences sont généralement calculées. Pour illustrer le tout, nous avons extrait du recensement de 2016 de Statistique Canada les effectifs des modalités de la variable sur le principal mode de transport utilisé pour les déplacements domicile-travail, et ce, pour la subdivision de recensement (MRC) de l'île de Montréal (tableau \@ref(tab:Frequences)). Les différents types de fréquences sont les suivantes :
 
@@ -1998,7 +2231,7 @@ ggarrange(plotlist = list_plot, ncol = 2, nrow=2,
 options(scipen = 0)
 ```
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect262}
+### Mise en œuvre dans ![](images/Rlogo.png) {#sect0262}
 
 La syntaxe ci-dessous permet de calculer les différentes fréquences présentées au tableau \@ref(tab:Frequences2). Notez que pour les fréquences cumulées, nous utilisons la fonction `cumsum`.
 
@@ -2027,11 +2260,9 @@ df <- data.frame(
 df
 ```
 
-## Pour aller plus loin : les statistiques descriptives pondérées
+## Pour aller un plus loin : les statistiques descriptives pondérées {#sect027}
 
-Dans la section section \@ref(sect25), les différentes statistiques descriptives sur des variables quantitatives – paramètres de tendance centrale, de position, de dispersion et de forme – ont été largement abordées. Il est possible de calculer ces différentes statistiques en comptant d’une pondération. 
-
-La statistique descriptive la plus connue est certainement la moyenne arithmétique pondérée. Son calcul est alors très simple. Pour chaque observation, des valeurs sont disponibles : 
+Dans la section \@ref(sect025), les différentes statistiques descriptives sur des variables quantitatives – paramètres de tendance centrale, de position, de dispersion et de forme – ont été largement abordées. Il est possible de calculer ces différentes statistiques en tenant compte d’une pondération. La statistique descriptive pondérée la plus connue est certainement la moyenne arithmétique pondérée. Son calcul est très simple; pour chaque observation, deux valeurs sont disponibles : 
 
 * $x_i$, soit la valeur de la variable $X$ pour l'observation $i$
 * $w_i$, soit la valeur de la pondération pour $i$.
@@ -2070,5 +2301,76 @@ knitr::kable(df,
   col.names = c("Observation","$x_i$","$w_i$","$x_i \\times w_i$"),
   caption = "Calcul de la moyenne pondérée",
   booktabs = TRUE, valign = 't', row.names = FALSE)
+```
+
+::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+**Calcul d’autres statistiques descriptives pondérées**
+
+Nous n’allons pas reporter ici les formules des versions pondérées de toutes les statistiques descriptives. Retenez toutefois le principe suivant permettant de les calculer à partir de l’exemple du tableau \@ref(tab:MoyPondCalcul). Pour la variable *X*, dupliquons respectivement 20, 80, 50, 200 fois les observations 1 à 4. Si nous calculons la moyenne arithmétique sur ces valeurs dupliquées, alors cette valeur sera identique à la celle de la moyenne arithmétique pondérée. Le même principe reposant sur la duplication des valeurs s'applique à l'ensemble des statistiques descriptives.
+:::
+
+Dans un article récent, Alvarenga et al. [-@de2018accessibilite] évaluent l'accessibilité aux aires de jeux dans les parcs de la Communauté métropolitaine de Montréal (CMM). Pour les 881 secteurs de recensement de la CMM, ils ont calculé la distance à l'aire de jeux la plus proche à travers le réseau de rues. Ce résultat, cartographié à la figure \@ref(fig:FigParcCMM), permet d'avancer le constat suivant : « la quasi-totalité des secteurs de recensement de l’agglomération de Montréal présente des distances de l’aire de jeux la plus proche inférieures à 500 m, alors que les secteurs situés à plus d’un kilomètre d’une aire de jeux sont très majoritairement localisés dans les couronnes
+nord et sud de la CMM » [@de2018accessibilite, p. 238].
+
+Pour chaque secteur de recensement, Alvarenga et al. [-@de2018accessibilite] disposent des données suivantes  :
+
+* $x_i$, soit la distance à l'aire de jeux la plus proche pour le secteur de recensement *i* et
+* $w_i$, la pondération, soit le nombre d'enfants de moins de dix ans.
+
+Il est alors possible de calculer les statistiques descriptives de la proximité à l'aire de jeux la plus proche en tenant compte du nombre d'enfants résidant dans chaque secteur de recensement (tableau \@ref(tab:MoyPondParc)). Cet exercice permet de conclure que : « [...] globalement, les enfants ont une bonne accessibilité aux aires de jeux sur le territoire de la CMM. [...] Les enfants sont en moyenne à un peu plus de 500 m de l’aire de jeux la plus proche (moyenne = 559 ; médiane = 512). Toutefois, les valeurs percentiles extrêmes signalent que respectivement 10% et 5% des enfants résident à près de 800 m et à plus de 1000 de l’aire de jeux la plus proche » [-@de2018accessibilite, p. 236].
+
+```{r FigParcCMM, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Accessibilité aux de jeux par secteur de recensement, Communauté métropolitaine de Montréal, 2016",  out.width='85%'}
+knitr::include_graphics('images/bivariee/BivarieeFigureParc.jpg', dpi = NA)
+```
+
+```{r MoyPondParc, echo=FALSE, message=FALSE, warning=FALSE}
+parc <- c(881,559,282,327,408,512,640,799,1006)
+stat <- c("N","Moyenne","P5","P10","Q1","Médiane","Q3","P90","P95")
+
+df <- data.frame(
+  "Parc" = parc
+)
+df <- t(df)
+colnames(df) <- stat
+
+opts <- options(knitr.kable.NA = "")
+knitr::kable(df, 
+  format.args = list(decimal.mark = ",", big.mark = " "),           
+  caption = "Statistiques de l'aire de jeux la plus proche par secteur de recensement pondérées par la population de moins de 10 ans",
+  booktabs = TRUE, valign = 't', row.names = FALSE)
+```
+
+De nomnbreux *packages* sont disponibles pour calculer des statistiques pondérées, dont notamment `Weighted.Desc.Stat` et `Hmisc` utilisés dans la syntaxe ci-dessous.
+
+```{r CalculStatPond2, echo=TRUE, message=FALSE, warning=FALSE}
+library(foreign)
+library(Hmisc)
+library(Weighted.Desc.Stat)
+
+df <- read.dbf("data/bivariee/SR_AireJeux_PopMoins10.dbf")
+
+head(df, n = 5)
+
+# xi (variable) et wi (pondération)
+x <- df$AireJeux
+w <- df$PopMoins10
+
+# Calcul des paramètres de position et de position
+# Moyenne
+Hmisc::wtd.mean(x, w)
+Weighted.Desc.Stat::w.mean(x, w)
+# Quartiles et percentile
+Hmisc::wtd.quantile(x, weights=w, probs=c(.05, .10, .25, .50, .75, .90, .95))
+
+# Paramètres de dispersion avec le package Weighted.Desc.Stat
+# Variance, écart-type et coefficient de variation
+w.var(x,w)
+w.sd(x,w)
+w.cv(x,w)
+
+# Paramètres de forme avec le package Weighted.Desc.Stat
+# Skewness et kurtosis 
+w.skewness(x, w)
+w.kurtosis(x, w)
 ```
 
