@@ -1194,7 +1194,7 @@ Nous vous proposons une démarche très simple pour vérifier l'association entr
 * S'il y a dépendance ($khi_{observé}^2 > khi_{critique}^2$), trouver les cellules *ij* où les contributions au Khi^2^ sont les plus fortes, c'est-à-dire où les liens entre les modalités *i* de la variable en ligne et les modalités *j* de la variable en colonne sont les plus marqués. Pour ces cellules, le phénomène *ij* est surreprésenté si la déviation est positive ou sous-représenté si la déviation est négative. Commentez ces associations et utilisez les pourcentages en lignes ou en colonnes pour appuyer vos propos.
 
 ::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
-Pour repérer rapidement les cellules où les contributions au Khi^2^ sont les plus fortes, vous pouvez construire un graphique avec la fonction **mosaic** du *package* **vcd**. À la figure \@ref(fig:figVDC), la taille des rectangles représentent les effectifs entre les deux modalités tandi que les associations sont représentées comme suit : 
+Pour repérer rapidement les cellules où les contributions au Khi^2^ sont les plus fortes, vous pouvez construire un graphique avec la fonction **mosaic** du *package* **vcd**. À la figure \@ref(fig:figVDC), la taille des rectangles représentent les effectifs entre les deux modalités tandis que les associations sont représentées comme suit : 
 en gris lorsqu'elles ne sont pas significatives, en rouge pour des déviations significatives et négatives et en bleu pour des déviations significatives et positives.
 
 ```{r figVDC, echo=TRUE, fig.align='center', fig.cap='Graphique pour un tableau de contingence', message=FALSE, warning=FALSE, out.width='65%'}
@@ -2014,7 +2014,7 @@ GraphDens <- ggplot(data = df_TrajetsDuree,
   mapping=aes(x=DureeMinute,colour=Mode,fill=Mode)) +
   geom_density(alpha=0.55,mapping=aes(y=..scaled..))+
     labs(title="a. graphique de densité",
-         x = "Durée du trajet en minutes",
+         x = "Densité",
          y = "Durée du trajets (en minutes)")
 # Graphique en violons
 GraphViolon <- ggplot(df_TrajetsDuree, aes(x=Mode, y=DureeMinute)) +
@@ -2164,7 +2164,7 @@ df_Bruit$laeqRank <- rank(df_Bruit$laeq)
 df_Bruit %>%
   group_by(Mode) %>%
   get_summary_stats(laeqRank, type = "mean")
-# Compairison des groupes avec la fonction pairwise.wilcox.test
+# Compiraison des groupes avec la fonction pairwise.wilcox.test
 pairwise.wilcox.test(df_Bruit$laeq, df_Bruit$Mode, p.adjust.method = "BH")
 ```
 
