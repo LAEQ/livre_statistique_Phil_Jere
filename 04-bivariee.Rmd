@@ -27,8 +27,8 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
   - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
   - **corrplot**, pour créer des graphiques de matrices de corrélation
 * Pour le tableau de contignence (section \@ref(sect0412)) :
-  - **gmodels**, pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes ((section \@ref(sect0424)))
-  - **vcd**, pour construire un graphique pour un tableau de contigence ((section \@ref(sect0424)))
+  - **gmodels**, pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes (section \@ref(sect0424))
+  - **vcd**, pour construire un graphique pour un tableau de contigence (section \@ref(sect0424))
 * Pour les test *t* : 
   - **sjstats** pour réaliser des test *t* pondérés
   - **effectsize**, pour calculer les tailles d'effet de tests de *t*
@@ -994,7 +994,7 @@ Les données du tableau de contingence ci-dessous décrivent 279 projets d'habit
 
 * **Les marges** du tableau sont les totaux pour chaque modalité en ligne ($n_{i.}$) et en colonne ($n_{j.}$). En guise d’exemple, sur les 279 projets HLM, 53 comprennent de 25 à 49 logements et 56 ont été construites entre 1968 et 1974. Bien entenu, la somme des marges en ligne ($n_{i.}$) est égale au nombre total d'observations ($n_{ij}$), tout comme la somme de marges en colonne ($n_{.j}$).
 
-* **Trois pourcentages** sont disponibles (total, en ligne, en colonne). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}×100$), par la marge en ligne ($f_{ij}/n_{i.}×100$) et en colonne ($f_{ij}/n_{.j}100$). En guise d'exemple, 5% des 279 projets HLM ont été construits entre 1985 et 1989 et comprennent moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
+* **Trois pourcentages** sont disponibles (total, en ligne, en colonne). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}\times100$), par la marge en ligne ($f_{ij}/n_{i.} \times 100$) et en colonne ($f_{ij}/n_{.j}\times100$). En guise d'exemple, 5% des 279 projets HLM ont été construits entre 1985 et 1989 et comprennent moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
 
 * **Les fréquences théoriques**, représentent les valeurs que l'on devrait observer théoriquement s'il y avait indépendance entre les modalités des deux variables : si la répartition des deux modalités des deux variables étaient dûes au hasard. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalité *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06. Nous observons ici que la valeur théorique (16,06) est bien supérieure à la valeur réelle (6). On observe donc moins de HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre du hasard.
 
@@ -1520,7 +1520,7 @@ ggplot(data = dfRMR, mapping=aes(x=Montreal,y=Locataire,colour=Montreal)) +
   geom_boxplot(width=0.2)+
   theme(legend.position="none")+
   xlab("Zone")+ ylab("Pourcentage de locataires")+
-  ggtitle("Locataires par secteur de recensement", subtitle="RMR de Montréal, 2006")
+  ggtitle("Locataires par secteur de recensement", subtitle="RMR de Montréal, 2016")
 # nombre d'observations, moyennes et écart-types pour les deux échantillons
 group_by(dfRMR, Montreal) %>%
   summarise(
@@ -1743,11 +1743,11 @@ L'ANOVA est aussi très utilisée en études urbaines, principalement pour véri
 
 L'ANOVA repose sur le calcul de trois variances :
 
-* **la variance totale** (*VT*) de la variable dépendante continue, soit la somme des carrés des écarts à la moyenne de l'ensemble de la population (équation \@ref(eq:anova1);
+* **la variance totale** (*VT*) de la variable dépendante continue, soit la somme des carrés des écarts à la moyenne de l'ensemble de la population (équation \@ref(eq:anova1));
 
-* la **variance intergroupe** (*Var~inter~*) ou variance expliquée (*VE*), soit la somme des carrés des écarts entre la moyenne de chaque groupe et la moyenne de l’ensemble du jeu de données multipliées par le nombre d’individus appartenant à chacun des groupes (équation \@ref(eq:anova2);
+* la **variance intergroupe** (*Var~inter~*) ou variance expliquée (*VE*), soit la somme des carrés des écarts entre la moyenne de chaque groupe et la moyenne de l’ensemble du jeu de données multipliées par le nombre d’individus appartenant à chacun des groupes (équation \@ref(eq:anova2));
 
-* la **variance intragroupe**  (*Var~intra~*) ou variance non expliquée (*VNE*), soit la somme des variances des groupes de la variable indépendante (équation \@ref(eq:anova3).
+* la **variance intragroupe**  (*Var~intra~*) ou variance non expliquée (*VNE*), soit la somme des variances des groupes de la variable indépendante (équation \@ref(eq:anova3)).
 
 \begin{equation} 
 VT=\sum_{i=1}^n (y_{i}-\overline{y})^2
@@ -1780,7 +1780,7 @@ VT = Var_{inter} + Var_{intra} \mbox{ ou } VT = VNE + VE
 
 
 ::: {.bloc_astuce .bloc_astuce_png data-latex="{.bloc_astuce}"}
-**La décomposition de la variance totale** – égale à la somme des variances intragroupe et intergroupe – est fondamentale en statistique. Nous verrons qu'elle est aussi utilisée pour évaluer la qualité d'une partition d'une population dans le chapitre sur les méthodes de classification (LIEN A METTRE PLUS TARD). En ANOVA, on retiendra que :
+**La décomposition de la variance totale** – égale à la somme des variances intragroupe et intergroupe – est fondamentale en statistique. Nous verrons qu'elle est aussi utilisée pour évaluer la qualité d'une partition d'une population dans le chapitre sur les méthodes de classification (chapitre \@ref(chap10)). En ANOVA, on retiendra que :
 
 * plus la variance intragroupe est faible, plus les différents groupes sont homogènes;
 * plus la variance intergroupe est forte, plus les moyennes des groupes sont différentes et donc plus les groupes sont dissembables. 
@@ -1952,7 +1952,7 @@ Appliquons rapidement la démarche du test *F* à nos deux jeux de données fict
 #### Conditions d'application de l'ANOVA et solutions alternatives {#sect04414}
 Trois conditions d'application doivent être vérifiées avant d'effectuer une analyse de variance sur un jeu de données :
 
-* **Normalité des groupes.** Le test de Fisher repose sur le postulat que les échantillons (groupes) sont normalement distribués. Pour le vérifier, on a recours au test de normalité de Shapiro–Wilk (REF CHAPITRE 1 à METTRE PLUS TARD). Notez toutefois que ce test est très restrictif, surtout pour des grands échantillons.
+* **Normalité des groupes.** Le test de Fisher repose sur le postulat que les échantillons (groupes) sont normalement distribués. Pour le vérifier, on a recours au test de normalité de Shapiro–Wilk (section \@ref(sect025413)). Notez toutefois que ce test est très restrictif, surtout pour des grands échantillons.
 
 * **Homoscédasticité**. La variance dans les échantillons doit être la même (homogénéité des variances). Pour vérifier cette condition, on utilisera les tests de Levene, de Bartlett ou de Breusch-Pagan.
 
@@ -2193,5 +2193,5 @@ Nous avons vu que l'ANOVA permet de comparer les moyennes d'une variable continu
 
 Pour le test *t*, nous avons vu qu'il peut s'appliquer soit à deux échantillons indépendants (non appariés), soit à deux échantillons dépendants (appariés). Notez qu'il existe aussi des extensions de l'ANOVA pour des échantillons pairés. On parle alors d'**analyse de variance sur des mesures répétées**. Par exemple, on pourrait évaluer la perception du sentiment de sécurité relativement à la pratique vélo d'hiver pour un échantillon de cyclistes ayant décidé de l'adopter récemment, et ce, à plusieurs moments : avant leur première saison, à la fin de leur premier hiver, à la fin de leur second hiver. Autre exemple, on pourrait sélectionner un échantillon d'individus (100 par exemple) pour lesquels on évaluerait leurs perceptions de l'environnement sonore dans différents lieux de la ville. Comme pour l'ANOVA classique (échantillons non appariés), il existe des extensions de l'ANOVA sur des mesures répétées permettant d'inclure plusieurs facteurs (groupes de population); on mesure alors une variable continue pour plusieurs groupes d'individus à différents moments ou conditions différentes. Il est aussi possible de réaliser une ANOVA pour des mesures répétées avec une ou plusieurs covariables continues. 
 
-Bref, si l'ANOVA était un roman, elle serait certainement « un monde sans fin » de Ken Follett!
+Bref, si l'ANOVA était un roman, elle serait certainement « un monde sans fin » de Ken Follett! Notez toutefois que la SUPERNOVA, la BOSSANOVA et le CASANOVA ne sont pas des variantes de l'ANOVA!
 :::
