@@ -1,10 +1,15 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # (PART) Analyses univariées {-} 
 
 # Statistiques descriptives univariées {#chap02}
 
 Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Ausi, nous abordons un concept central de la statistique : les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
-::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
+::: {.bloc_package data-latex=""}
 Dans cette section, nous utiliserons principalement les packages suivants (À MODIFIER PLUS TARD) : 
 
 * Pour créer des graphiques :
@@ -39,7 +44,7 @@ Prenons deux exemples concrets tirées du Recensement de 2016 de Statistique Can
 * Le concept **famille de recensement** est défini comme étant « un couple marié et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des conjoints; un couple en union libre et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des partenaires; ou un parent seul, peu importe son état matrimonial, habitant avec au moins un enfant dans le même logement et cet ou ces enfants. Tous les membres d'une famille de recensement particulière habitent le même logement. Un couple peut être de sexe opposé ou de même sexe. Les enfants peuvent être des enfants naturels, par le mariage, par l'union libre ou par adoption, peu importe leur âge ou leur état matrimonial, du moment qu'ils habitent dans le logement sans leur propre conjoint marié, partenaire en union libre ou enfant. Les petits-enfants habitant avec leurs grands-parents, alors qu'aucun des parents n'est présent, constituent également une famille de recensement » ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/fam004-fra.cfm){target="_blank"}). À partir de cette définition, les familles de recensement peuvent être qualifiées selon plusieurs modalités : couples mariés sans enfant, couples mariés avec enfants, couples en union libre sans enfant, couples en union libre avec enfant, famille monoparentale (avec un parent de sexe féminin), famille monoparentale (avec un parent de sexe masculin).
 * Le concept de **revenu d'emploi** est défini comme étant « tous les revenus reçus sous forme de traitements, salaires et commissions d'un travail rémunéré ou le revenu net d'un travail autonome dans une entreprise agricole ou non agricole non constituée en société et/ou dans l'exercice d'une profession au cours de la période de référence. Pour le Recensement de 2016, la période de référence est l'année civile 2015 pour toutes les variables de revenu » ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop027-fra.cfm){target="_blank"}). Il est donc mesurée en dollars pour chaque individu de 15 ans et plus. Pour l'ensemble de la population de 15 ans et plus, il peut ensuite être classé en déciles de revenu d'emploi, soit en dix groupes ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop204-fra.cfm"}){target="_blank"}).
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+::: {.bloc_attention data-latex=""}
 **Maîtriser la définition des variables que vous utilisez : un enjeu crucial ! **
 
 Nous avons vu qu'une variable est l'opérationnalisation d'un concept. Par conséquent, ne pas maîtriser la définition d'une variable revient à ne pas bien saisir le concept sous-jacent qu'elle tente de mesurer. Si vous exploitez des données secondaires – par exemple, issues d'un recensement de population ou d'une enquête longitudinale ou transversale –, il faut impérativement lire les définitions des variables que vous souhaiteriez utiliser. Ne pas le faire risque d'aboutir à :
@@ -69,7 +74,7 @@ On fait la moins pire des recherches ! En effet, les données disponibles sont p
 ### Les types de variables {#sect0212}
 On distingue habituellement les variables qualitatives (nominale ou ordinale) des variables quantitatives (discrète ou continue). Tel qu'illustré à la figure \@ref(fig:figunivarie1), l'opérationnalisation du concept en variable est réalisée par différents mécanismes visant à qualifier, classer, compter ou mesurer afin de caractériser les unités statistiques (observations) d'une population ou d'un échantillon.
 
-```{r figunivarie1, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les types de variables",  out.width='70%'}
+```{r figunivarie1, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Les types de variables",  out.width='70%'}
 knitr::include_graphics('images/univariee/figure1.jpg', dpi = NA)
 ```
 
@@ -81,8 +86,8 @@ knitr::include_graphics('images/univariee/figure1.jpg', dpi = NA)
 
 En fonction du nombre de modalités qu'elle comprend, une variable qualitative (nominale ou ordinale) est soit **dichtomique (binaire)** (deux modalités), soit **polytomique** (plus de deux modalités). Par exemple, dans le recensement canadien, le *sexe* est une variable binaire (avec les modalités *sexe masculin*, *sexe féminin*), tandis que le *genre* est une variable polytomique (avec les modalités *genre masculin*, *genre féminin* et *diverses identités de genre*).
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
-Les variables nominales et ordinales sont habituellement encodées avec des valeurs numériques entières (par exemple, 1 pour _couple marié_, 2 pour _couple en union libre_ et 3 pour _famille monoparentale_). Toutefois, aucune opération arithmétique (moyenne ou écart-type par exemple) n'est possible sur ces valeurs. Dans ![](images/Rlogo.png), on utilisera un facteur pour attribuer un intitulé à chacune des valeurs numériques de la variable qualitative :
+::: {.bloc_attention data-latex=""}
+Les variables nominales et ordinales sont habituellement encodées avec des valeurs numériques entières (par exemple, 1 pour _couple marié_, 2 pour _couple en union libre_ et 3 pour _famille monoparentale_). Toutefois, aucune opération arithmétique (moyenne ou écart-type par exemple) n'est possible sur ces valeurs. Dans R, on utilisera un facteur pour attribuer un intitulé à chacune des valeurs numériques de la variable qualitative :
 
 `df$Famille <- factor(df$Famille, c(1,2,3), labels = c("couple marié","couple en union libre", "famille monoparentale"))`
 
@@ -106,7 +111,7 @@ Différents types de données sont utilisés en sciences sociales. L'objectif ic
 
 Les **données secondaires** sont des données qui existent déjà au début de votre projet de recherche : pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
   
-::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+::: {.bloc_notes data-latex=""}
 Au Canada, les chercheurs (étudiants et professeurs) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du ([RCCDR](https://crdcn.org/fr/donn%C3%A9es){target="_blank"}) afin d'explorer les différentes enquêtes disponibles.
 
 Au Québec, l'accès à ces enquêtes est possible dans les différentes antennes du Centre interuniversitaire québécois de statistiques sociales de Statistique Canada ([CIQSS](https://www.ciqss.org/){target="_blank"}).
@@ -145,7 +150,7 @@ L'agrégation n'est pas nécessairement géographique. En éducation, il est fr�
 
 Pour le cas de l'agrégation géographique, il convient alors de bien comprendre la hiérarchie des régions géographiques délimitées par l’organisme ou l’agence ayant la responsabilité de produire, gérer et diffuser les données des recensements et des enquêtes, puis de sélectionner le découpage géographique qui répond le mieux à votre question de recherche.
 
-::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+::: {.bloc_astuce data-latex=""}
 Pour le recensement de 2016 de Statistique Canada vous pourrez consulter :
 
 * la [hiérarchie des régions géographiques normalisées pour la diffusion](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/figures/f1_1-fra.cfm){target="_blank"}
@@ -154,10 +159,10 @@ Pour le recensement de 2016 de Statistique Canada vous pourrez consulter :
 * les différents [profils du recensement de 2016](https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/page_dl-tc.cfm?Lang=F){target="_blank"} à télécharger pour les différentes régions géographiques.
 :::
 
-::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+::: {.bloc_notes data-latex=""}
 Bien entendu, les différents types de données abordés ci-dessus ne sont pas exclusifs. Par exemple, des données pour des régions administratives extraites de plusieurs recensements sont en fait des données secondaires, spatiales, agrégées et longitudinales. 
 
-Une collecte de données sur la pollution atmosphérique et sonore réalisée à vélo (avec différents capteurs et un GPS) sont des données spatiales primaires. 
+Une collecte de données sur la pollution atmosphérique et sonore réalisée à vélo (avec différents capteurs et un GPS) sont des données spatiales primaires.
 :::
 
 ## Statistique descriptive et statistique inférentielle {#sect023}
@@ -167,7 +172,7 @@ Une collecte de données sur la pollution atmosphérique et sonore réalisée à
 Les notions de **population** et d'**échantillon** sont essentielles en statistique puisqu'elles sont le socle de l'inférence statistique.
 Un échantillon est un **sous-ensemble représentatif** d'une population donnée. Prenons un exemple concret. Une chercheure veut comprendre la mobilité des étudiants d'une université. Bien entendu, elle ne pourra interroger l’ensemble des étudiants de son université.  Elle devra alors s’assurer d'obtenir un échantillon de taille suffisante et représentatif de la population étudiante. Une fois les données collectées (avec un sondage par exemple), elle pourra utiliser des techniques inférentielles pour analyser la mobilité des étudiants interrogés. Si son échantillon est représentatif, les résultats obtenus pourront être inférés – c'est-à-dire généralisés, extrapolés – à l’ensemble de la population.
 
-::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+::: {.bloc_aller_loin data-latex=""}
 **Les méthodes d’échantillonnage**
 
 Nous n’abordons pas ici les méthodes d’échantillonnage. Sachez toutefois qu’il existe plusieurs méthodes probabilistes pour constituer un échantillon, notamment de manière aléatoire, systématique, stratifiée, par grappes ([voir par exemple cette publique de Statistique Canada](https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch13/prob/5214899-fra.htm){target="_blank"}).
@@ -186,7 +191,7 @@ On distingue deux grandes familles de méthodes statistiques :
 
 ## La notion de distribution {#sect024}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 Dans cette section, nous abordons un concept central de la statistique : les distributions. Prenez le temps de lire cette section à tête reposée et assurez-vous de bien comprendre chaque idée avant de passer à la suivante. N’hésitez pas à y revenir plusieurs fois si nécessaire, car la compréhension de ces concepts est essentielle pour utiliser adéquatement les méthodes que nous abordons dans ce livre.
 :::
 
@@ -339,7 +344,7 @@ On observe clairement que toutes les valeurs de *x* entre *a* et *b* ont la mêm
 2. Quelle est la probabilité de perdre de l’argent ? (x < 0)?
 3. Si je perds moins de 30$ au premier tirage, quelle est la probabilité que ai-je d’au moins récupérer ma mise au second tirage (x > 30)?
 
-Il est assez facile de calculer ces probabilités en utilisant la fonction `punif` dans ![](images/Rlogo.png). Concrètement, cela permet de calculer l’intégrale de la fonction de masse sur un intervalle donné.
+Il est assez facile de calculer ces probabilités en utilisant la fonction `punif` dans R. Concrètement, cela permet de calculer l’intégrale de la fonction de masse sur un intervalle donné.
 
 ```{r}
 # Probabilité d'obtenir une valeur supérieure ou égale à 0
@@ -358,7 +363,9 @@ Il existe un très grand nombre de distributions théoriques et parmi elles, de 
 
 Nous nous concentrons ici sur une sélection de 18 distributions très répandues en sciences sociales. La figure \@ref(fig:fig255) présente graphiquement leurs fonctions de masse et de densité présentées dans cette section. Notez que ces graphiques correspondent tous à une forme possible de chaque distribution. En modifiant leurs paramètres, il serait possible de produire une figure très différente. Les distributions discrètes sont représentées avec des graphiques en barres, et les distributions continues avec des graphiques de densité.
 
-```{r fig255, echo=FALSE, fig.align='center', fig.cap="18 distributions essentielles, design inspiré de [Sean Owen](https://medium.com/@srowen/common-probability-distributions-347e6b945ce4){target='_blank'}", auto_pdf=TRUE, out.width='95%'}
+(ref:figdistribs) 18 distributions essentielles, design inspiré de @SeanOwendist
+
+```{r figdistribs, echo=FALSE, fig.align='center', fig.cap='(ref:figdistribs)', auto_pdf=TRUE, out.width='95%'}
 knitr::include_graphics('images/distributions/all_distributions.png', dpi = NA)
 ```
 
@@ -366,37 +373,26 @@ knitr::include_graphics('images/distributions/all_distributions.png', dpi = NA)
 Nous avons déjà abordé cette distribution dans les exemples précédents. Elle permet de décrire un phénomène dont tous les résultats possibles ont exactement la même probabilité de se produire. L’exemple classique est bien sûr un lancer de dé.
 
 #### La distribution de Bernoulli
-La distribution de Bernoulli permet de décrire une expérience pour laquelle deux résultats sont possibles. Son espace d’échantillonnage est donc [0 ; 1]. Sa fonction de masse est la suivante : 
+La distribution de Bernoulli permet de décrire une expérience pour laquelle deux résultats sont possibles. Son espace d’échantillonnage est donc $[0 ; 1]$. Sa fonction de masse est la suivante : 
 
 \begin{equation}f(x ; p)=\left\{\begin{array}{ll}
 q=1-p & \text { si } x=0 \\
 p & \text { si } x=1
 \end{array}\right.
-(\#eq:Bernoulli2)
+(\#eq:BernoulliB)
 \end{equation}
 
-avec *p*, la probabilité d’obtenir $x = 1$ (réussite) et donc $1 – p$, la probabilité d’avoir $x = 0$ (échec). La distribution de Bernoulli ne dépend que d’un paramètre : *p* contrôlant la probabilité de réussite de l’expérience. Notez que si p = 1/2, alors la distribution de Bernoulli est également une distribution uniforme.  Un exemple d’application de la distribution de Bernoulli en études urbaines serait la modélisation de la survie d’un cycliste (1 = survie, 0 = décès) lors d’une collision avec une voiture selon une vitesse donnée.
+avec *p*, la probabilité d’obtenir $x = 1$ (réussite) et donc $1 – p$, la probabilité d’avoir $x = 0$ (échec). La distribution de Bernoulli ne dépend que d’un paramètre : *p* contrôlant la probabilité de réussite de l’expérience. Notez que si $p = 1/2$, alors la distribution de Bernoulli est également une distribution uniforme.  Un exemple d’application de la distribution de Bernoulli en études urbaines serait la modélisation de la survie d’un cycliste (1 pour survie, 0 pour décès) lors d’une collision avec une voiture selon une vitesse donnée.
 
 #### La distribution binomiale
-La distribution binomiale est utilisée pour caractériser une somme de distributions de Bernoulli. Un exemple simple serait l’accumulation des lancers d’une pièce de monnaie. Si l’on compte le nombre de fois où l’on fait pile, cette expérience est décrite par une distribution binomiale. Son espace d’échantillonnage est donc [0 ; +$\infty$[ (limité aux nombres entiers). Sa fonction de masse est la suivante : 
+La distribution binomiale est utilisée pour caractériser une somme de distributions de Bernoulli. Un exemple simple serait l’accumulation des lancers d’une pièce de monnaie. Si l’on compte le nombre de fois où l’on fait pile, cette expérience est décrite par une distribution binomiale. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers). Sa fonction de masse est la suivante : 
 
 \begin{equation}
-  \begin{aligned}
-    f(x ; n)&=\left(\begin{array}{l}
-    n \\
-    x
-    \end{array}\right) p^{x}(1-p)^{n-x}\\
-    \left(\begin{array}{l}
-    n \\
-    x
-    \end{array}\right) &= \frac{n!}{x!(n-x)!}
-    
-  \end{aligned}
+    f(x ; n )=\binom{n}{x}p^x(1-p)^{n-x}
 (\#eq:Binomial)
 \end{equation}
 
-avec *x* le nombre de tirages réussis sur *n* essais avec une probabilité *p* de réussite à chaque tirage.
-Pour reprendre l’exemple précédent concernant les accidents de la route, une distribution binomiale permettrait de représenter la distribution du nombre de cyclistes survivants sur dix accidents impliquant une voiture à une intersection.  
+avec *x* le nombre de tirages réussis sur *n* essais avec une probabilité *p* de réussite à chaque tirage. Pour reprendre l’exemple précédent concernant les accidents de la route, une distribution binomiale permettrait de représenter la distribution du nombre de cyclistes survivants sur dix accidents impliquant une voiture à une intersection.  
 
 ```{r fig256, echo=FALSE, fig.align='center', fig.cap="La distribution binomiale", auto_pdf=TRUE, out.width='95%'}
 data <- data.frame(y1 = dbinom(1:15, size=15, prob=.10),
@@ -426,13 +422,13 @@ ggplot(df) +
 ```
 
 #### La distribution géométrique
-La distribution géométrique permet de représenter le nombre de tirages nécessaires avec une distribution de Bernoulli avant d’obtenir une réussite. Par exemple, avec un lancer de dé, l’idée serait de compter le nombre de lancers nécessaires avant de tomber sur un 6. Son espace d’échantillonnage est donc [1 ; +$\infty$[ (limité aux nombres entiers). Sa distribution de masse est la suivante : 
+La distribution géométrique permet de représenter le nombre de tirages nécessaires avec une distribution de Bernoulli avant d’obtenir une réussite. Par exemple, avec un lancer de dé, l’idée serait de compter le nombre de lancers nécessaires avant de tomber sur un 6. Son espace d’échantillonnage est donc $[1 ; +\infty[$ (limité aux nombres entiers). Sa distribution de masse est la suivante : 
 
 \begin{equation}f(x ; p)= (1-p)^xp
 (\#eq:geometrique)
 \end{equation}
 
-avec *x* le nombre de tentatives avant d’obtenir une réussite, *f(x)* la probabilité que le premier succès n’arrive qu’après *x* tentatives et *p* la probabilité de réussite à chaque tentative. Cette distribution est notamment utilisée en marketing pour modéliser le nombre d’appels nécessaires avant de réussir une vente.
+avec *x* le nombre de tentatives avant d’obtenir une réussite, $f(x)$ la probabilité que le premier succès n’arrive qu’après *x* tentatives et *p* la probabilité de réussite à chaque tentative. Cette distribution est notamment utilisée en marketing pour modéliser le nombre d’appels nécessaires avant de réussir une vente.
 
 ```{r fig257, echo=FALSE, fig.align='center', fig.cap="La distribution géométrique", auto_pdf=TRUE, out.width='95%'}
 data <- data.frame(y1 = dgeom(1:15, prob=.10),
@@ -463,7 +459,7 @@ ggplot(df) +
 ```
 
 #### La distribution binomiale négative
-La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre *n* de réussites [1 ; +$\infty$[ (limité aux nombres entiers positifs). Sa formule est la suivante : 
+La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre *n* de réussites $[1 ; +\infty[$ (limité aux nombres entiers positifs). Sa formule est la suivante : 
 
 \begin{equation}f(x ; n ; p)=\left(\begin{array}{c}
 x+n-1 \\
@@ -503,7 +499,7 @@ ggplot(df) +
 ```
 
 #### La distribution de poisson
-La distribution de poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc [0 ; +$\infty$[ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de poisson à une fonction de densité avec un seul paramètre $\lambda$ (lambda) et est décrite par la formule suivante : 
+La distribution de poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de poisson à une fonction de densité avec un seul paramètre $\lambda$ (lambda) et est décrite par la formule suivante : 
 
 \begin{equation}f(x ; \lambda)=\frac{\lambda^{x}}{x !} e^{-\lambda}
 (\#eq:poisson)
@@ -858,7 +854,8 @@ knitr::kable(df2,
   format.args = list(decimal.mark = ",", big.mark = " "),   
   col.names = c("Municipalité","Nombre de ménages", "Revenu moyen","Revenu médian"),
   caption = "Revenus moyens et médians des ménages en dollars, municipalités de l'île de Montréal, 2015",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 ### Les paramètres de position {#sect0252}
@@ -877,7 +874,7 @@ En cartographie, les quartiles et les quintiles sont souvent utilisés pour disc
 
 
 
-```{r figunivarie2, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exemples de cartographie avec une discrétisation selon les quantiles",  out.width='85%'}
+```{r figunivarie2, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Exemples de cartographie avec une discrétisation selon les quantiles",  out.width='85%'}
 knitr::include_graphics('images/univariee/figure2.jpg', dpi = NA)
 ```
 
@@ -894,7 +891,8 @@ knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),   
   col.names = c("Statistiques","Copenhague", "Montréal","Paris"),
   caption = "Stastistiques descriptives de l'exposition au bruit des cyclistes par minute dans trois villes (dB(A), Laeq 1min)",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 
@@ -905,7 +903,7 @@ Cinq principales mesures de dispersion permettent d'évaluer la variabilité des
 
 * **L'intervalle ou écart interquartile** est la différence entre les troisième et premier quartiles ($Q3 − Q1$). Il représente ainsi une mesure de la dispersion des valeurs de 50% des observations centrales de la distribution. Plus la valeur de l'écart interquartile est élevée, plus la dispersion des 50% des observations centrales est forte. Contrairement à l'étendue, cette mesure élimine l'influence des valeurs extrêmes puisqu'elle ne tient compte que des 25% des observations les plus faibles [Min à Q1] et des 25% des observations les plus fortes [Q3 à Max]. Graphiquement, l'intervalle interquartile est représenté à l'aide d'une boîte à moustaches (*boxplot* en anglais) : plus l'intervalle interquartile sera grand, plus la boîte sera allongée (figure \@ref(fig:figunivarie3))
 
-```{r figunivarie3, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Graphique en violon, boîte à moustaches et intervalle interquartile",  out.width='30%'}
+```{r figunivarie3, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Graphique en violon, boîte à moustaches et intervalle interquartile",  out.width='30%'}
 knitr::include_graphics('images/univariee/figure3.jpg', dpi = NA)
 ```
 
@@ -923,10 +921,10 @@ knitr::include_graphics('images/univariee/figure3.jpg', dpi = NA)
 (\#eq:ecartype)
 \end{equation}
 
-::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+::: {.bloc_notes data-latex=""}
 Les formules des variances et des écart-types pour une population et un échantillon sont très similaires : seul le dénominateur change avec $n$ *versus* $n-1$ observations. Par conséquent, plus le nombre d'observations de votre jeu de données sera important, plus l'écart entre ces deux mesures de dispersion pour une population et un échantillon sera minime.
 
-Comme dans la plupart des logiciels de statistique, les fonctions de base `var` et `sd` de ![](images/Rlogo.png) calculent la variance et l'écart-type pour un échantillon ($n-1$ au dénominateur). Si vous souhaitez les calculer pour une population, adaptez la syntaxe ci-dessous dans laquelle `df$var1` représente la variable intitulée `var1` présente dans un *dataframe* nommé `df`.
+Comme dans la plupart des logiciels de statistique, les fonctions de base `var` et `sd` de R calculent la variance et l'écart-type pour un échantillon ($n-1$ au dénominateur). Si vous souhaitez les calculer pour une population, adaptez la syntaxe ci-dessous dans laquelle `df$var1` représente la variable intitulée `var1` présente dans un *dataframe* nommé `df`.
 
 `var.p <- mean((df$var1 - mean(df$var1))^2)` 
 
@@ -967,7 +965,7 @@ df <- data.frame(
     xi_mean = a - mean(a),
     numer = (a - mean(a))^2
 )
-df[n+1,1] <- "**Statistique**"
+df[n+1,1] <- "Statistique"
 n <- n+1
 df[n+1,1] <- "N"
 df[n+2,1] <- "Somme"
@@ -1000,11 +998,26 @@ df[n+13,1] <- "Coefficient de variation ($s / \\bar{x}$)"
 df[n+12,2] <- round(sqrt(mean((a - mean(a))^2))/mean(a),2)
 df[n+13,2] <- round(sd(a)/mean(a),2)
 opts <- options(knitr.kable.NA = "")
-knitr::kable(df, 
-  format.args = list(decimal.mark = ",", big.mark = " "),           
-  col.names = c("Observation","$x_i$","$x_i-\\bar{x}$","$(x_i-\\bar{x})^2$"),
-  caption = "Calcul des mesures de dispersion sur des données fictives",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+
+if(knitr::is_latex_output()){
+  knitr::kable(df, 
+    format.args = list(decimal.mark = ",", big.mark = " "),   
+    escape = FALSE,
+    col.names = c("Observation","$x_i$","$x_i-\\bar{x}$","$(x_i-\\bar{x})^2$"),
+    caption = "Calcul des mesures de dispersion sur des données fictives",
+    booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+    kableExtra::kable_styling(font_size = 8) %>%
+    kableExtra::row_spec(9, bold = T)
+}else{
+  knitr::kable(df, 
+    format.args = list(decimal.mark = ",", big.mark = " "),           
+    col.names = c("Observation","$x_i$","$x_i-\\bar{x}$","$(x_i-\\bar{x})^2$"),
+    caption = "Calcul des mesures de dispersion sur des données fictives",
+    booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+    kableExtra::kable_styling(font_size = 8) %>%
+    kableExtra::row_spec(9, bold = T)
+}
+
 ``` 
 
 Le tableau \@ref(tab:datavar2) vise à démontrer à partir de trois variables comment certaines mesures de dispersion sont sensibles à l'unité de mesure et/ou aux valeurs extrêmes. 
@@ -1034,7 +1047,7 @@ df <- data.frame(
   B = round(b,2),
   C = round(c,2)
 )
-df[n+1,1] <- "**Statistique**"
+df[n+1,1] <- "Statistique"
 n <- n+1
 df[n+1,1] <- "Moyenne ($\\mu$)"
 df[n+2,1] <- "Étendue"
@@ -1061,11 +1074,27 @@ df[n+4,4] <- round(var.c,2)
 df[n+5,4] <- round(sd.c,2)
 df[n+6,4] <- round(sd.c/mean(c),2)
 opts <- options(knitr.kable.NA = "")
-knitr::kable(df, 
-  format.args = list(decimal.mark = ",", big.mark = " "),           
-  col.names = c("Observation","A","B","C"),
-  caption = "Illustration de la sensibilité des mesures de dispersion à l'unité de mesure et aux valeurs extrêmes",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+
+if(knitr::is_latex_output()){
+  knitr::kable(df, 
+    format.args = list(decimal.mark = ",", big.mark = " "),           
+    col.names = c("Observation","A","B","C"),
+    escape = TRUE,
+    caption = "Illustration de la sensibilité des mesures de dispersion à l'unité de mesure et aux valeurs extrêmes",
+    booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+    kableExtra::kable_styling(font_size = 8)%>%
+    kableExtra::row_spec(9, bold = T)
+  
+}else{
+  knitr::kable(df, 
+    format.args = list(decimal.mark = ",", big.mark = " "),           
+    col.names = c("Observation","A","B","C"),
+    caption = "Illustration de la sensibilité des mesures de dispersion à l'unité de mesure et aux valeurs extrêmes",
+    booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+    kableExtra::kable_styling(font_size = 8)%>%
+    kableExtra::row_spec(9, bold = T)
+  
+}
 ```
 
 
@@ -1084,7 +1113,8 @@ opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   col.names = c("Statistique","Unité de mesure","Valeurs extrêmes"),
   caption = "Résumé de la sensibilité de la moyenne et des mesures de dispersion",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 
@@ -1092,7 +1122,7 @@ knitr::kable(df,
 
 #### Vérifier la normalité d'une variable quantitative
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 De nombreuses méthodes statistiques qui seront abordées dans les chapitres suivants – entre autres, la corrélation de Pearson, les test *t* et l'analyse de variance, les régressions simple et multiple – requièrent que la variable quantitative suive une **distribution normale** (nommée aussi **distribution gaussienne**).
 
 Dans cette sous-section, nous décrirons trois démarches pour vérifier si la distribution d'une variable est normale : les coefficients d'asymétrie et d'applatissement (*skewness* et *kurtosis* en anglais), les graphiques (histogramme avec courbe normale, diagramme quantile-quantile), les tests de normalité (tests de Shapiro-Wilk, Kolmogorov-Smirnov, Lilliefors, Anderson-Darling et Jarque-Bera).
@@ -1102,7 +1132,7 @@ Dans cette sous-section, nous décrirons trois démarches pour vérifier si la d
 
 Une distribution est normale quand elle est symétrique et mésokurtique (figure \@ref(fig:figFormeDistr)).
 
-```{r figFormeDistr, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Formes d'une distribution et les coefficients d'asymétrie et d'aplatissement",  out.width='70%'}
+```{r figFormeDistr, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Formes d'une distribution et les coefficients d'asymétrie et d'aplatissement",  out.width='70%'}
 knitr::include_graphics('images/univariee/FormeDistribution.jpg', dpi = NA)
 ```
 
@@ -1110,7 +1140,7 @@ knitr::include_graphics('images/univariee/FormeDistribution.jpg', dpi = NA)
 
 **Une distribution est dite symétrique** quand la moyenne arithmétique est au centre de la distribution, c'est-à-dire que les observations sont bien réparties de part et d'autre de la moyenne qui sera alors égale à la médiane et au mode (on utilisera uniquement le mode pour une variable discrète et non pour une variable continue). Pour évaluer l'asymétrie, on utilise habituellement le coefficient d'asymétrie (*skewness* en anglais). 
 
-Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing] : $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans ![](images/logos/Rlogo.png) avec la fonction `skewness` du *package* **moments**), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* **DescTools** ou **e1071**, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quelle que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie)) :
+Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing] : $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans R avec la fonction `skewness` du *package* **moments**), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* **DescTools** ou **e1071**, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quelle que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie)) :
 
 * quand la valeur du *skewness* est négative, la **distribution est asymétrique négative**. La distribution est alors tirée à gauche par des valeurs extrêmes faibles, mais peu nombreuses. On emploie souvent l'expression *la queue de distribution* est étirée vers la gauche. La moyenne est alors inférieure à la médiane.
 * quand la valeur du *skewness* est égale à 0, **la distribution est symétrique** (la médiane sera égale à la moyenne). Pour une variable discrète, les valeurs du mode, de la moyenne et de la médiane seront égales.
@@ -1281,7 +1311,7 @@ Gp <- ggplot(data = df, mapping = aes(x=P))+
 ggarrange(Gp, Gm, Gl, ncol = 2, nrow=2)
 ```
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+::: {.bloc_attention data-latex=""}
 Regardez attentivement les équations \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3); vous remarquez que pour $g_2$ et $b_2$, il y a une soustraction de $-3$ et une addition $+6$ pour $G_2$. On parle alors de *kurtosis* normalisé (*excess kurtosis* en anglais). Pour une distribution normale, il prendra la valeur de 0, comparativement à la valeur de 3 pour un *kurtosis* non normalisé. Par conséquent, avant de calculer du *kurtosis*, il convient de s'assurer que la fonction que vous utilisez implémente une méthode de calcul normalisée (donnant une valeur de 0 pour une distribution normale). Par exemple, la fonction `Kurt` du *package* **DescTools** calcule les trois formules normalisées tandis que la fonction `kurtosis` du *package* **moments** renvoie un *kurtosis* non normalisé.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
@@ -1369,7 +1399,9 @@ knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),   
   col.names = c("Test","Propriétés et interprétation", "Fonction R"),
   caption = "Les différents tests d'hypothèse pour la normalité",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8) %>%
+  kableExtra::column_spec(c(2,3), width="6cm")
 ```
 
 Dans le tableau ci-dessous sont reportées les valeurs des différents tests pour les cinq types de distribution générées à la figure \@ref(fig:CourbeNormale). Sans surprise, pour l'ensemble des tests, la valeur de *P* est inférieur à 0,05 pour la distribution normale.
@@ -1454,16 +1486,17 @@ knitr::kable(Tests,
              col.names = c("Normale","Asymétrie négative",
                            "Asymétrie positive","Leptokurtique", "Platikurtique"),
              caption = "Calculs des tests de normalité pour différentes distributions",
-             booktabs = TRUE, valign = 't', row.names = TRUE)
+             booktabs = TRUE, valign = 't', row.names = TRUE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+::: {.bloc_attention data-latex=""}
 **Attention** ! La plupart des auteurs s'entendent sur le fait que ces tests sont très restrictifs : plus la taille de votre échantillon ($n$) est importante, plus les tests risquent de vous signaler que vos distributions sont anormales (à la lecture des valeurs de P).
 
 Certains conseillent même de ne pas les utiliser quand $n>200$ et de vous fier uniquement aux graphiques (histogramme et diagramme Q-Q) !
 :::
 
-::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+::: {.bloc_astuce data-latex=""}
 Bref, vérifier la normalité d'une variable n'est pas une tâche si simple. De nouveau, nous vous conseillons vivement de :
 
 * construire les graphiques pour analyser visuellement la forme de la distribution (histogramme avec courbe normale et diagramme Q-Q)
@@ -1482,7 +1515,7 @@ Comme nous l'avons vu, la distribution normale n'est que l'une des multiples dis
 3. Présélectionnez un ensemble de distributions candidates compte tenu des observations précédentes. Vous pouvez également vous reporter à la littérature existante sur votre sujet d'étude pour inclure d'autres distributions. Soyez flexible ! Une variable strictement positive pourrait tout de même avoir une forme normale. De même, une variable décrivant des comptages suffisamment grands pourrait être mieux décrite par une distribution normale qu'une distribution de poisson.
 4. Tentez d'ajuster chacune des distributions retenues à vos données et comparez les qualités d'ajustements pour retenir la plus adaptée.
 
-Pour ajuster une distribution à un jeu de données, il faut trouver les valeurs des paramètres de cette distribution qui lui permettront d'adopter une forme la plus proche possible des données. On appelle cette opération **ajuster un modèle**, puisque la distribution théorique est utilisée pour modéliser les données. L'ajustement des paramètres est un problème d'optimisation que plusieurs algorithmes sont capables de résoudre (*gradient descent*, *Newton-Raphson method*, *Fisher scoring*, etc.). Dans ![](images/logos/Rlogo.png), le *package* **fitdistrplus** permet d'ajuster pratiquement n'importe quelle distribution à des données en offrant plusieurs stratégies d'optimisation grâce à la fonction `fitdist`. Il suffit de disposer d'une fonction représentant la distribution de densité ou de masse de la distribution en question, généralement noté `dnomdeladistribution` (`dnorm`, `dgamma`, `dpoisson`, etc.) dans ![](images/logos/Rlogo.png). Notez que certains *packages* comme **VGAM** ou **gamlss.dist** ajoutent un grand nombre de fonctions de densité et de masse à celles déjà disponibles de base dans ![](images/logos/Rlogo.png).
+Pour ajuster une distribution à un jeu de données, il faut trouver les valeurs des paramètres de cette distribution qui lui permettront d'adopter une forme la plus proche possible des données. On appelle cette opération **ajuster un modèle**, puisque la distribution théorique est utilisée pour modéliser les données. L'ajustement des paramètres est un problème d'optimisation que plusieurs algorithmes sont capables de résoudre (*gradient descent*, *Newton-Raphson method*, *Fisher scoring*, etc.). Dans R, le *package* **fitdistrplus** permet d'ajuster pratiquement n'importe quelle distribution à des données en offrant plusieurs stratégies d'optimisation grâce à la fonction `fitdist`. Il suffit de disposer d'une fonction représentant la distribution de densité ou de masse de la distribution en question, généralement noté `dnomdeladistribution` (`dnorm`, `dgamma`, `dpoisson`, etc.) dans R. Notez que certains *packages* comme **VGAM** ou **gamlss.dist** ajoutent un grand nombre de fonctions de densité et de masse à celles déjà disponibles de base dans R.
 
 Pour comparer l'ajustement de plusieurs distributions théoriques à des données, trois approches doivent être combinées : 
 
@@ -1490,14 +1523,14 @@ Pour comparer l'ajustement de plusieurs distributions théoriques à des donnée
 * Comparer les *loglikelihood*. Le *loglikelihood* est un score d'ajustement des distributions aux données. Pour faire simple, plus le *loglikelihood* est grand, plus la distribution théorique est proche des données. Référez-vous à l'encadré suivant pour une description plus en profondeur du *loglikelihood*.
 * Utiliser le test de Kolmogorov-Smirnov pour déterminer si une distribution particulière est mieux ajustée pour les données.
 
-::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+::: {.bloc_aller_loin data-latex=""}
 **Qu'est-ce-que le loglikelihood** ? 
 
 Le *loglikelihood* est une mesure de l'ajustement d'un modèle à des données. Il est utilisé à peu près partout en statistique. Comprendre sa signification est donc un exercice important pour développer une meilleure intuition du fonctionnement général de nombreuses méthodes. Si les concepts de fonction de densité et de fonction de masse vous semblent encore flous, reportez-vous à la section \@ref(sect024) sur les distributions dans un premier temps.
 
 Admettons que nous disposons d'une variable continue *v* que nous avons tenté de modéliser avec une distribution *d* (il peut s'agir de n'importe quelle distribution). *d* a une fonction de densité avec laquelle il est possible de calculer pour chacune des valeurs de *v* sa probabilité d'être observée selon le modèle *d*.
 
-Prenons un exemple concret dans ![](images/logos/Rlogo.png). Admettons que nous avons une variable comprenant 10 valeurs (oui, c'est un petit échantillon, mais c'est pour faire un exemple simple).
+Prenons un exemple concret dans R. Admettons que nous avons une variable comprenant 10 valeurs (oui, c'est un petit échantillon, mais c'est pour faire un exemple simple).
 
 ```{r}
 v <- c(5,8,7,8,10,4,7,6,9,7)
@@ -1543,7 +1576,7 @@ Passons à la pratique avec deux exemples.
 
 Analysons les temps de retard pris par les bus de la ville de Toronto lorsqu'un évènement perturbe la circulation. Ce jeu de données est disponible sur le site de l'[Open Data](https://open.toronto.ca/catalogue/?search=bus%20delay&sort=score%20desc){target="_blank"} de la ville de Toronto. Compte tenu de la grande quantité d'observations, nous avons fait le choix de nous concentrer sur les évènements ayant eu lieu durant le mois de janvier 2019. Puisque la variable étudiée est une durée exprimée en minutes, elle est strictement positive (supérieure à 0), car un bus avec zéro minute de retard est à l'heure. Nous considérons également qu'un bus ayant plus de 150 minutes de retard (2h30) n'est tout simplement pas passé (personne ne risque d'attendre 2h30 pour prendre son bus). Commençons par charger les données et observer leur distribution empirique.
 
-```{r figbustrt, fig.align='center', fig.cap="Distribution empirique des temps de retard des bus à Toronto en janvier 2019", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
+```{r figbustrt, fig.align='center', fig.cap="Distribution empirique des temps de retard des bus à Toronto en janvier 2019", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
 library(ggplot2)
 # charger le jeu de données
 data_trt_bus <- read.csv('data/univariee/bus-delay-2019_janv.csv', sep =';')
@@ -1565,7 +1598,7 @@ Compte tenu de la forme de la distribution empirique et de sa nature, quatre dis
 
 Commençons par ajuster les quatre distributions avec la fonction `fitdist` du *package* **fitdistrplus** et représentons-les graphiquements pour éliminer les moins bons candidats. Nous utilisons également le *package* **actuar** pour la fonction de densité de Pareto (`dpareto`).
 
-```{r figbustrt2, fig.align='center', fig.cap="Comparaison des distributions ajustées aux données de retard des bus", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
+```{r figbustrt2, fig.align='center', fig.cap="Comparaison des distributions ajustées aux données de retard des bus", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
 library(fitdistrplus)
 library(actuar)
 library(ggpubr)
@@ -1621,8 +1654,8 @@ knitr::kable(
   df, booktabs = TRUE,
   col.names = c("Distributon","LogLikelihood"),
   caption = 'Comparaison des LogLikekelihood des trois distributions',
-  escape = FALSE
-)
+  escape = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 Le plus grand *logLikelihood* est obtenu par la distribution de Gamma qui s'ajuste donc le mieux à nos données. Pour finir, nous pouvons tester formellement avec le test de Kolmogorov-Smirnov si nos données proviennent bien de cette distribution de Gamma.
 
@@ -1660,7 +1693,7 @@ Par conséquent, si un matin à Toronto votre bus a plus de 45 minutes de retard
 
 Le second jeu de données représente le nombre d'accidents de la route impliquant un vélo sur les intersections dans les quartiers centraux de Montréal. Le jeu de données complet est disponible sur le site des [données ouvertes](http://donnees.ville.montreal.qc.ca/dataset/collisions-routieres){target="_blank"} de la ville de Montréal. Puisque ces données correspondent à des comptages, la première distribution à envisager est la distribution de poisson. Cependant, puisque nous aurons également un grand nombre d'intersections sans accident, il serait judicieux de tester la distribution de poisson avec excès de zéro.
 
-```{r figaccmtl, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Distribution empirique du nombre d'accidents par intersection impliquant un cycliste à Montréal en 2017 dans les quartiers centraux",  out.width='65%'}
+```{r figaccmtl, fig.align='center', auto_pdf = TRUE, fig.cap="Distribution empirique du nombre d'accidents par intersection impliquant un cycliste à Montréal en 2017 dans les quartiers centraux",  out.width='65%'}
 library(ggplot2)
 # charger le jeu de données
 data_accidents <- read.csv('data/univariee/accidents_mtl.csv', sep =',')
@@ -1676,7 +1709,7 @@ ggplot(data = counts) +
 ```
 Nous avons effectivement de nombreux zéros ici, essayons d'ajuster nos deux distributions à ce jeu de données. Dans le graphique suivant, les barres grises représentent la distribution empirique du jeu de données et les barres rouges les distributions théoriques ajustées. Nous utilisons ici le *package* **gamlss.dist** pour avoir la fonction de masse d'une distribution de poisson avec excès de zéros.
 
-```{r figaccmtldist, fig.align='center', fig.cap="Ajustement des distributions de poisson et poisson avec excès de zéros", message=FALSE, warning=FALSE, auto_pdf=TRUE, include=identical(knitr:::pandoc_to(), 'html'), out.width='65%'}
+```{r figaccmtldist, fig.align='center', fig.cap="Ajustement des distributions de poisson et poisson avec excès de zéros", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
 library(gamlss.dist)
 #ajuster le modèle de poisson
 model_poisson <- fitdist(data_accidents$nb_accident, distr = "pois")
@@ -1738,7 +1771,7 @@ Comme énoncé au début de cette section, plusieurs méthodes statistiques néc
 * Asymétrie positive importante : le logarithme de la variable avec `log10(df$x)`
 * Asymétrie positive sévère : l'inverse de la variable avec `1/(df$x)`
 
-::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+::: {.bloc_astuce data-latex=""}
 Attention, pour une valeur égale ou inférieure à 0, on ne peut pas calculer une racine carrée ou un logarithme. Par conséquent, il convient de décaler simplement la distribution vers la droite afin de s'assurer qu'il n'y ait plus de valeurs négative ou égale à 0 :
 
 * `sqrt(df$x - min(df$x+1))`avec pour une asymétrie positive avec des valeurs négatives ou égales à 0
@@ -1752,7 +1785,7 @@ Par exemple, si la valeur minimale de la variable est égale à -10, la valeur m
 * Asymétrie négative sévère : `1/(max(df$x+1) - df$x)`
 ::: 
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+::: {.bloc_attention data-latex=""}
 
 **Transformation des variables pour atteindre la normalité : ce n'est pas toujours la panacée !**
 
@@ -1822,7 +1855,8 @@ knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),           
   col.names = c("Observation","$x_i$","Côte $z$","Rang","0 à 1"),
   caption = "Illustration des trois tranformations",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 Pour un *dataframe* nommé *df* comprenant une variable *x*, la syntaxe ci-dessous illustre comment obtenir quatre transformations (côte $z$, rangs, 0 à 1 et 0 à 100).
@@ -1843,12 +1877,12 @@ df2$x01 <- (df2$x-min(df2$x))/(max(df2$x)-min(df2$x))
 df2$x0100 <- (df2$x-min(df2$x))/(max(df2$x)-min(df2$x))*100
 ```
 
-::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+::: {.bloc_aller_loin data-latex=""}
 Ces trois transformations sont parfois utilisées pour générer un indice composite à partir de plusieurs variables ou encore dans une analyse de sensibilité avec les indices de Sobol [-@Sobol1993].
 :::
 
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect0256}
+### Mise en œuvre dans R {#sect0256}
 Il existe une multitude de *packages* dédiés au calcul des statistiques descriptives univariées. Par parcimonie, nous en utiliserons uniquement trois : `DescTools`, `nortest` et `stats`. Libre à vous de faire vos recherches sur Internet pour utiliser d'autres *packages* au besoin. Les principales fonctions que nous utilisons ici sont :
 
 * `summary` : pour obtenir un résumé sommaire des statistiques descriptives (minimum, Q1, Q2 Q3, Maximum)
@@ -1926,7 +1960,7 @@ JarqueBeraTest(dataMTL$PctFRev)
 
 Pour construire un histogramme avec la courbe normale, vous pourez consulter la section \@ref(sect03213) ou la syntaxe ci-dessous.
 
-```{r GcourbeNormale, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Histogramme avec courbe normale",  out.width='65%'}
+```{r GcourbeNormale, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme avec courbe normale",  out.width='65%'}
 moyenne <- mean(dataMTL$PctFRev)
 ecart_type <- sd(dataMTL$PctFRev)
 
@@ -1995,11 +2029,11 @@ sapply(dataMTL[VarsSelect], ad.test)           # Anderson-Darling
 sapply(dataMTL[VarsSelect], JarqueBeraTest)    # Jarque-Bera
 ```
 
-#### Transformer une variable dans ![](images/Rlogo.png) {#sect02563}
+#### Transformer une variable dans R {#sect02563}
 
 La syntaxe ci-dessous illustre trois exemples de transformation (logarithme, racine carrée et inverse de la variable). Rappelez-vous qu'il faut compare les valeurs de forme (*skewness* et *kurtosis*) et de forme (tests de Shapiro-Wilk) avant et après les transformations pour identifier celle qui est la plus efficace.
 
-```{r GTranf, fig.align='center', include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Histogramme des transformations",  out.width='75%'}
+```{r GTranf, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme des transformations",  out.width='75%'}
 
 library(ggpubr)
 
@@ -2115,11 +2149,12 @@ knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),           
   col.names = c("Mode de transport","FAS","FRS","FRS (%)","FAC", "FRC", "FRC (%)"),
   caption = "Les différents types de fréquences sur une variable qualitative ou semi-qualitative",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+::: {.bloc_attention data-latex=""}
 **Les fréquences cumulées : peu pertinentes pour les variables nomimales**
 
 Le calcul et l'analyse des fréquences cumulées (absolues et relatives) sont très souvent inutiles pour les variables nominales.
@@ -2168,7 +2203,8 @@ knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),           
   col.names = c("Groupes d'âge","FAS","FRS","FRS (%)","FAC", "FRC", "FRC (%)"),
   caption = "Les différents types de fréquences sur une variable semi-qualitative",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 Différents graphiques peuvent être construits pour illustrer la répartition des observations : les graphiques en barres (verticales et horizontales) avec les fréquences absolues,  les diagrammes circulaires ou en anneau pour les fréquences relatives (figure \@ref(fig:GraphiquesFreq1)). Ces graphiques seront présentés plus en détails dans le chapitre suivant.
@@ -2236,7 +2272,7 @@ ggarrange(plotlist = list_plot, ncol = 2, nrow=2,
 options(scipen = 0)
 ```
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect0262}
+### Mise en œuvre dans R {#sect0262}
 
 La syntaxe ci-dessous permet de calculer les différentes fréquences présentées au tableau \@ref(tab:Frequences2). Notez que pour les fréquences cumulées, nous utilisons la fonction `cumsum`.
 
@@ -2305,10 +2341,11 @@ knitr::kable(df,
   format.args = list(decimal.mark = ",", big.mark = " "),           
   col.names = c("Observation","$x_i$","$w_i$","$x_i \\times w_i$"),
   caption = "Calcul de la moyenne pondérée",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
-::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+::: {.bloc_notes data-latex=""}
 **Calcul d’autres statistiques descriptives pondérées**
 
 Nous n’allons pas reporter ici les formules des versions pondérées de toutes les statistiques descriptives. Retenez toutefois le principe suivant permettant de les calculer à partir de l’exemple du tableau \@ref(tab:MoyPondCalcul). Pour la variable *X*, dupliquons respectivement 20, 80, 50, 200 fois les observations 1 à 4. Si nous calculons la moyenne arithmétique sur ces valeurs dupliquées, alors cette valeur sera identique à la celle de la moyenne arithmétique pondérée. Le même principe reposant sur la duplication des valeurs s'applique à l'ensemble des statistiques descriptives.
@@ -2324,7 +2361,7 @@ Pour chaque secteur de recensement, Alvarenga et al. [-@de2018accessibilite] dis
 
 Il est alors possible de calculer les statistiques descriptives de la proximité à l'aire de jeux la plus proche en tenant compte du nombre d'enfants résidant dans chaque secteur de recensement (tableau \@ref(tab:MoyPondParc)). Cet exercice permet de conclure que : « [...] globalement, les enfants ont une bonne accessibilité aux aires de jeux sur le territoire de la CMM. [...] Les enfants sont en moyenne à un peu plus de 500 m de l’aire de jeux la plus proche (moyenne = 559 ; médiane = 512). Toutefois, les valeurs percentiles extrêmes signalent que respectivement 10% et 5% des enfants résident à près de 800 m et à plus de 1000 m de l’aire de jeux la plus proche » [-@de2018accessibilite, p. 236].
 
-```{r FigParcCMM, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Accessibilité aux aires de jeux par secteur de recensement, Communauté métropolitaine de Montréal, 2016",  out.width='85%'}
+```{r FigParcCMM, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Accessibilité aux aires de jeux par secteur de recensement, Communauté métropolitaine de Montréal, 2016",  out.width='85%'}
 knitr::include_graphics('images/bivariee/BivarieeFigureParc.jpg', dpi = NA)
 ```
 
@@ -2342,7 +2379,8 @@ opts <- options(knitr.kable.NA = "")
 knitr::kable(df, 
   format.args = list(decimal.mark = ",", big.mark = " "),           
   caption = "Statistiques de l'aire de jeux la plus proche par secteur de recensement pondérées par la population de moins de 10 ans",
-  booktabs = TRUE, valign = 't', row.names = FALSE)
+  booktabs = TRUE, valign = 't', row.names = FALSE) %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 De nombreux *packages* sont disponibles pour calculer des statistiques pondérées, dont notamment `Weighted.Desc.Stat` et `Hmisc` utilisés dans la syntaxe ci-dessous.

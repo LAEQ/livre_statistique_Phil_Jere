@@ -1,6 +1,6 @@
 --- 
 title: "Introduction aux méthodes quantitatives en sciences sociales avec R"
-author: "Apparicio Philippe et Gelb Jeremy"
+author: "Philippe Apparicio et Jérémy Gelb"
 date: "`r Sys.Date()`"
 colorlinks: yes
 cover-image: images/cover.png
@@ -18,67 +18,34 @@ description: Ce livre propose une introduction aux méthodes quantitatives en sc
   sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre
   boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et
   bonne lecture !
-documentclass: krantz
+documentclass: book
 fontsize: 11pt
-github-repo: rstudio/rmarkdown-book
+github-repo: LAEQ/livre_statistique_Phil_Jere
 graphics: yes
 link-citations: yes
 lof: yes
 lot: yes
-mainfont: Palatino
-monofont: Source Code Pro
-monofontoptions: Scale=0.8
+mainfont: Palatino Linotype
+monofont: "Source Code Pro"
+monofontoptions: "Scale=0.8"
+mathfontoptions: "Scale=0.5"
 site: bookdown::bookdown_site
 biblio-style: apalike
 url: https\://bookdown.org/yihui/rmarkdown/
+geometry: "left=2cm,right=2cm,top=2cm,bottom=2cm"
+toc-title: "Table des matières"
+lang: fr
 ---
 
-```{r setup, include=FALSE}
-options(
-  htmltools.dir.version = FALSE, formatR.indent = 2,
-  width = 55, digits = 4, warnPartialMatchAttr = FALSE, warnPartialMatchDollar = FALSE
-)
-
-options(bookdown.post.latex = function(x) {
-  # only build a skeleton for the online version
-  if (Sys.getenv('BOOKDOWN_FULL_PDF', '') == 'false') return(bookdown:::strip_latex_body(
-    x, '\nThis PDF is only a skeleton. Please either read the free online HTML version, or purchase a hard-copy of this book.\n'
-    ))
-
-  # fix syntax highlighting:
-  # \FunctionTok{tufte:}\AttributeTok{:tufte_html: default} ->
-  # \FunctionTok{tufte::tufte_html:}\AttributeTok{ default}
-  x = gsub('(\\\\FunctionTok\\{[^:]+:)(})(\\\\AttributeTok\\{)(:[^:]+:)', '\\1\\4\\2\\3', x)
-  # an ugly hack for Table 16.1 (Pandoc's widths are not good)
-  if (length(grep('0.47\\\\columnwidth', x)) == 0) stop('Table 16.1 not found')
-  x = gsub('( & \\\\begin\\{minipage\\}\\[[tb]]\\{)0.47(\\\\columnwidth})', '\\10.65\\2', x)
-  x = gsub('(^\\\\begin\\{minipage\\}\\[[tb]]\\{)0.47(\\\\columnwidth})', '\\10.33\\2', x)
-  if (length(i <- grep('^\\\\begin\\{longtable\\}', x)) == 0) return(x)
-  i1 = bookdown:::next_nearest(i, which(x == '\\toprule'))
-  i2 = bookdown:::next_nearest(i, which(x == '\\endfirsthead'))
-  x[i1 - 1] = paste0(x[i1 - 1], '\n\\begin{tabular}{', gsub('[^lcr]', '', gsub('.*\\[]', '', x[i])), '}')
-  x[i] = '\\begin{table}'
-  x[x == '\\end{longtable}'] = '\\end{tabular}\n\\end{table}'
-  x[x == '\\endhead'] = ''
-  x = x[-unlist(mapply(seq, i1, i2, SIMPLIFY = FALSE))]
-  x
-})
-
-lapply(c('xfun'), function(pkg) {
-  if (system.file(package = pkg) == '') install.packages(pkg)
-})
-
-if (!xfun::loadable('sigma', new_session = TRUE)) source('https://install-github.me/jjallaire/sigma')
-```
 
 # Préface {-}
 
 ```{asis, echo=identical(knitr:::pandoc_to(), 'html')}
 
-Ce livre propose une introduction aux méthodes quantitatives en sciences sociales basée sur le logiciel ouvert ![](images/Rlogo.png). Il a d'ailleurs été écrit intégralement dans ![](images/Rlogo.png) avec **rmarkdown**. Le contenu est pensé pour être accessible même à ceux n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront également des sections sur des méthodes plus avancées comme les modèles généralisés additifs à effets mixtes ou les méthodes factorielles mixtes. Ceux cherchant à passer à ![](images/Rlogo.png) pour enfin abandonner SPSS, SAS ou STATA trouveront dans cet ouvrage les clefs pour une transition en douceur. La philosophie de se livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées afin de facilité l'assimilation par le lecteur. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et bonne lecture !
+Ce livre propose une introduction aux méthodes quantitatives en sciences sociales basée sur le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec **rmarkdown**. Le contenu est pensé pour être accessible même à ceux n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront également des sections sur des méthodes plus avancées comme les modèles généralisés additifs à effets mixtes ou les méthodes factorielles mixtes. Ceux cherchant à passer à R pour enfin abandonner SPSS, SAS ou STATA trouveront dans cet ouvrage les clefs pour une transition en douceur. La philosophie de se livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées afin de facilité l'assimilation par le lecteur. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et bonne lecture !
 
 
-::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+::: {.bloc_notes data-latex=""}
 
 **Ce livre est un projet en cours d'écriture !**
 
@@ -93,27 +60,27 @@ Il sert de matériel pour le cours **Méthodes quantitatives appliquées aux ét
 Si vous googlez l'expression « comment lire un livre ? », vous trouverez une multitude de conseils et astuces. Pour ce livre, nous conseillons de le lire de gauche à droite et page par page. Plus sérieusement, il comprend plusieurs types de blocs de texte qui, on l'espère, faciliteront la lecture.
 
 
-::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
-**Bloc packages**: habituellement localisé en début du chapitre, il comprend la liste des packages ![](images/Rlogo.png) utilisés pour un chapitre.
+::: {.bloc_package data-latex=""}
+**Bloc packages**: habituellement localisé en début du chapitre, il comprend la liste des packages R utilisés pour un chapitre.
 :::
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 **Bloc objectif**: comprend une description des objectifs d'une section.
 :::
 
-::: {.bloc_notes .bloc_notes_png data-latex="{blocs/notes}"}
+::: {.bloc_notes  data-latex=""}
 **Bloc notes**: comprend une information secondaire sur une notion, un élément, une idée abordée dans une section.
 :::
 
-::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+::: {.bloc_aller_loin data-latex=""}
 **Bloc pour aller plus loin** : peut comprendre des références ou des extensions d'une méthode statistique abordée dans une section.
 :::
 
-::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
-**Bloc astuce**: décrit un élément qui vous facilera le vie : une propriété statistique, un *package*, une fonction, une syntaxe ![](images/Rlogo.png).
+::: {.bloc_astuce data-latex=""}
+**Bloc astuce**: décrit un élément qui vous facilera le vie : une propriété statistique, un *package*, une fonction, une syntaxe R.
 :::
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+::: {.bloc_attention data-latex=""}
 **Bloc attention**:  comprend une notion ou un élément important à bien maîtriser.
 :::
 
@@ -126,11 +93,6 @@ Si vous googlez l'expression « comment lire un livre ? », vous trouverez une m
 ## Remerciements {-}
 
 Note au beau Cargo (chien Mira) qui nous supporte dans l'écriture du livre !
-
-![](images/Cargo.jpg) 
-
-```{block2, type='flushright', html.tag='p'}
-Philippe Apparicio et Jérémy Gelb
-
-Montréal, Québec
+```{r cargo, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo, le plus beau",  out.width='50%'}
+knitr::include_graphics('images/Cargo.jpg', dpi = NA)
 ```

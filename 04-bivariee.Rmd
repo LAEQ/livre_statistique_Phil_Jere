@@ -4,13 +4,13 @@
 
 Dans ce chapitre, nous présentons les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables, et ce, en fonction de leur type : deux variables quantitatives, deux variables qualitatives ou encore une variable quantitative _versus_ une variable qualitative (comprenant deux modalités ou plus de deux modalités) (figure \@ref(fig:fig1)). 
 
-```{r fig1, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Les principales méthodes bivariées",  out.width='65%'}
+```{r fig1, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Les principales méthodes bivariées",  out.width='65%'}
 knitr::include_graphics('images/bivariee/figure1.jpg', dpi = NA)
 ```
 
-Plus spécifiquement, nous présentrons puis mettrons en œuvre dans le logiciel ![](images/logos/Rlogo.png) les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect041)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect042)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect043)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect044)).
+Plus spécifiquement, nous présentrons puis mettrons en œuvre dans le logiciel  les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect041)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect042)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect043)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect044)).
 
-::: {.bloc_package .bloc_package_png data-latex="{blocs/package}"}
+::: {.bloc_package data-latex=""}
 Dans cette section, nous utiliserons principalement les *packages* suivants : 
 
 * Pour créer des graphiques :
@@ -28,7 +28,7 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
   - **corrplot**, pour créer des graphiques de matrices de corrélation
 * Pour le tableau de contignence (section \@ref(sect0412)) :
   - **gmodels**, pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes (section \@ref(sect0424))
-  - **vcd**, pour construire un graphique pour un tableau de contigence (section \@ref(sect0424))
+  - **vcd**, pour construire un graphique pour un tableau de contigence ((section \@ref(sect0424)))
 * Pour les test *t* : 
   - **sjstats** pour réaliser des test *t* pondérés
   - **effectsize**, pour calculer les tailles d'effet de tests de *t*
@@ -40,7 +40,7 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
 
 ## Relation linéaire entre deux variables quantitatives {#sect041}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 **Deux variables continues varient-elles dans le même sens ou bien en sens contraire ?** Répondre à cette question est une démarche exploratoire classique en sciences sociales puisque les données socioéconomiques sont souvent associées linéairement. En d'autres termes, lorsque l'une des deux variables tant à augmenter, la seconde augmente également ou diminue systématiquement.
 
 En études urbaines, on pourrait vouloir vérifier si certaines variables socioéconomiques sont associées positivement ou négativement à des variables environnementales jugées positives (comme la couverture végétale ou des mesures d’accessibilité spatiale aux parcs) ou négatives (pollutions atmosphériques et sonores). 
@@ -64,7 +64,7 @@ Vérifier le postulat de la linéarité consiste à évaluer si deux variables q
 * pour le cas **d**,  la relation entre les deux variables est aussi curvilinéaire; d'abord négative, puis positive.
 
 
-```{r fig2, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Relations linéaires et curvilinéaires entre deux variables continues",  out.width='85%'}
+```{r fig2, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Relations linéaires et curvilinéaires entre deux variables continues",  out.width='85%'}
 knitr::include_graphics('images/bivariee/figure2.jpg', dpi = NA)
 ```
 
@@ -73,7 +73,7 @@ Prenons un exemple concret. Dans une étude portant sur l'équité environnement
 * la couverture de la végétation totale et celle des arbres augmentent quand l'âge médian des bâtiments croît jusqu'à atteindre un pic autour de 60 ans (autour de 1950). On peut supposer que les secteurs récemment construits, surtout ceux dans les banlieues, présentent des niveaux de végétation plus faibles. Au fur et au fur que le quartier vieillit, les arbres plantés lors du développement résidentiel deviennent matures — canopée plus importante –, d'où l'augmentation des valeurs de la couverture végétale totale et de celle des arbres.
 *  Par contre, dans les secteurs développés avant les années 1950, la densité du bâti est plus forte, laissant ainsi moins de place pour la végétation, ce qui explique une diminution des variables relatives à la couverture végétale (figure \@ref(fig:fig3)).
 
-```{r fig3, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Exemples de relations curvilinéaires",  out.width='65%'}
+```{r fig3, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Exemples de relations curvilinéaires",  out.width='65%'}
 knitr::include_graphics('images/bivariee/figure3.jpg', dpi = NA)
 ```
 
@@ -144,7 +144,7 @@ r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1
 (\#eq:cor)
 \end{equation}
 
-La syntaxe ![](images/Rlogo.png) ci-dessous démontre que le coefficient de corrélation de Pearson est bien égal à la moyenne du produit de deux variables centrées-réduites.
+La syntaxe  ci-dessous démontre que le coefficient de corrélation de Pearson est bien égal à la moyenne du produit de deux variables centrées-réduites.
 
 ```{r message=FALSE, warning=FALSE}
 library("MASS")
@@ -225,8 +225,8 @@ df <- data.frame(
 knitr::kable(
   head(df, 3), booktabs = TRUE,
   col.names = c("Corrélation","Négative","Positive"),
-  caption = 'Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales'
-)
+  caption = 'Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales')  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
@@ -303,7 +303,7 @@ r_{xy} = \frac{cov(rg_{x},rg_{y})}{\sigma_{rg_{x}}\sigma_{rg_{y}}}
 (\#eq:spearman)
 \end{equation}
 
-La syntaxe ![](images/Rlogo.png) ci-dessous démontre clairement que le coefficient de Spearman est bien le coefficient de Pearson calculé sur les rangs (\@ref(sect04131)).
+La syntaxe  ci-dessous démontre clairement que le coefficient de Spearman est bien le coefficient de Pearson calculé sur les rangs (\@ref(sect04131)).
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -330,7 +330,6 @@ Le **coefficient de Kendall** est une autre mesure non-paramétrique calculée c
 \end{equation}
 
 avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observations **c**oncordantes et **d**iscordantes; et le dénominateur étant le nombre totale de paires d'observations. Des paires sont dites corcondantes quand les valeurs des deux observations vont dans les même sens pour les deux variables ($x_{i}>x_{j}$ et $y_{i}>y_{j}$ ou  $x_{i}<x_{j}$ et $y_{i}<y_{j}$), et discordantes quand elles vont en sens contraire ($x_{i}>x_{j}$ et $y_{i}<y_{j}$ ou $x_{i}<x_{j}$ et $y_{i}>y_{j}$). Contrairement au calcul du coefficient de Spearman, celui de Kendall peut être chronophage : plus le nombre d'observations sera élevé, plus les temps de calcul et la mémoire utilisée sont importants. En effet, avec _n_=1000, le nombre de paires d'observations (${0.5*n(n-1)}$) sera de 499500, contre près de 50 millions avec _n_=10000 (49 995 000).
-
 
 ```{r fig8, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Comparaison des coefficients de Pearson, Spearman et Kendall sur deux variables anormalement distribuées', out.width='75%'}
 library("moments")
@@ -376,9 +375,8 @@ ggarrange(Plot1, Plot2, Plot3, ncol=3,nrow=1)
 
 Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs aberrantes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois, les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser dans des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit : 
 
-
 \begin{equation}
-\begin{split}
+\begin{aligned}
 &u_{i} = \frac{x_{i} - med(x)}{9 * (med(|x_{i} - med(x)|))} \text{ et } v_{i} = \frac{y_{i} - med(y)}{9 * (med(|y_{i} - med(y)|))}\\
 &w_{i}^{(x)} = (1 - u_{i}^2)^2 I(1 - |u_{i}|) \text{ et } w_{i}^{(y)} = (1 - v_{i}^2)^2 I(1 - |v_{i}|)\\
 &I(x) = 
@@ -386,12 +384,10 @@ Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des v
 1, \text{si} x = 1\\
 0, \text{sinon}
 \end{cases}\\
-
 &\tilde{x}_{i} = \frac{(x_{i} - med(x))w_{i}^{(x)}}{\sqrt{(\sum_{j=1}^m)[(x_{j} - med(x))w_{j}^{(x)}]^2}} \text{ et } \tilde{y}_{i} = \frac{(y_{i} - med(y))w_{i}^{(y)}}{\sqrt{(\sum_{j=1}^m)[(y_{j} - med(y))w_{j}^{(y)}]^2}}\\
-&bicor(x,y) = \sum_{i=1}^m \tilde{x_i}\tilde{y_i}\\
-\end{split}
+&bicor(x,y) = \sum_{i=1}^m \tilde{x_i}\tilde{y_i}
+\end{aligned}
 (\#eq:bicor)
-
 \end{equation}
 
 Comme le souligne l'équation \@ref(eq:bicor), la *Biweight midcorrelation* est basée sur les écarts à la médiane, plutôt que sur les écarts à la moyenne.
@@ -415,7 +411,8 @@ names(dfCorr) <- c("r","IC_05","CI_95")
 dfCorr$method <- methods
 kableExtra::kable(dfCorr,digits = 2, 
                   caption = 'Comparaison de différentes corrélations pour les variables densité de population et pourcentage de personnes ayant 65 ans et plus',
-                  col.names=c("r","IC 5%","IC 95%", "Méthode"))
+                  col.names=c("r","IC 5%","IC 95%", "Méthode"))  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche : les méthodes les plus connues sont les plus utilisées car elles sont plus facilement acceptées par les autres chercheurs. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumissions pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
@@ -424,7 +421,7 @@ Il est intéressant de mentionner que ces trois corrélations sont rarement util
 
 Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents ? Le calcul de ce degré de significativité nous permet de quantifier notre niveau de certitude quant à l'existance d'une corrélation entre nos deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté : $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant le coefficient de corrélation et le nombre d'observations. De manière classique, on utilisera la table des valeurs critiques de la distribution de $t$ : si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degré de liberté), alors le coefficient est significatif à 5%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon aurait été inférieure à 5%. Dans ce contexte, on peut raisonnablement rejeter l'hypothèse nulle (corrélation réelle de 0). 
 
-La courte syntaxe ![](images/Rlogo.png) illustre comment calculer la valeur de $t$, le nombre de degrés de liberté et la valeur de _p_ pour une corrélation donnée.
+La courte syntaxe  illustre comment calculer la valeur de $t$, le nombre de degrés de liberté et la valeur de _p_ pour une corrélation donnée.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
@@ -439,7 +436,7 @@ cat("\nCorrélation =", round(r, 4),
     "\np=", round(p, 4))        
 ```
 
-Plus simplement, la fonction `cor.test` permet d'obtenir en une seule ligne de code le coefficient de corrélation, l'intervalle de confiance à 95% et les valeurs de _t_ et de _p_, tel qu'illustré dans la syntaxe ![](images/Rlogo.png) ci-dessous. Si l'intervalle de confiance est à cheval sur 0, c'est-à-dire que la borne inférieure est négative et la borne supérieure positive, alors le coefficient de corrélation n'est pas significatif au seuil choisi (95% habituellement). Dans l'exemple ci-dessous, le relation linéaire entre les deux variables est significativement négative avec une corrélation de Pearson de −0,158 (P=0,000) et un intervalle de confiance de [−0,219 −0,095].
+Plus simplement, la fonction `cor.test` permet d'obtenir en une seule ligne de code le coefficient de corrélation, l'intervalle de confiance à 95% et les valeurs de _t_ et de _p_, tel qu'illustré dans la syntaxe  ci-dessous. Si l'intervalle de confiance est à cheval sur 0, c'est-à-dire que la borne inférieure est négative et la borne supérieure positive, alors le coefficient de corrélation n'est pas significatif au seuil choisi (95% habituellement). Dans l'exemple ci-dessous, le relation linéaire entre les deux variables est significativement négative avec une corrélation de Pearson de −0,158 (P=0,000) et un intervalle de confiance de [−0,219 −0,095].
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Intervalle de confiance à 95%
@@ -464,7 +461,7 @@ cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .90)
 cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .99)
 ```
 
-**Corrélation et _bootstrap_.** Dans le premier chapitre (LIEN BOOTSTRAP), nous avons abordé la notion de _bootstrap_, soit des méthodes d'inférence statistique basées sur des réplications des données initiales par rééchantillonnage. Il est possible d'appliquer la même méthode aux corrélations afin d'obtenir un intervale de confiance avec _r_ réplications, tel qu'illustré à partir de la syntaxe ![](images/Rlogo.png) ci-dessous.
+**Corrélation et _bootstrap_.** Dans le premier chapitre (LIEN BOOTSTRAP), nous avons abordé la notion de _bootstrap_, soit des méthodes d'inférence statistique basées sur des réplications des données initiales par rééchantillonnage. Il est possible d'appliquer la même méthode aux corrélations afin d'obtenir un intervale de confiance avec _r_ réplications, tel qu'illustré à partir de la syntaxe  ci-dessous.
 
 
 ```{r fig9, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Histogramme pour les valeurs de corrélation issues du Bootstrap', out.width='75%'}
@@ -501,7 +498,7 @@ Le _bootstrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Le
 
 #### Corrélation partielle {#sect04136} 
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 
 **Quelle est la relation entre deux variables continues une fois pris en compte une ou plusieurs variables dites de contrôle ?** En études urbaines, on pourrait vouloir vérifier si deux variables sont ou non associées une fois contrôlée la densité de population ou encore la distance au centre-ville.
 
@@ -542,9 +539,9 @@ cat("Corr. partielle avec ppcor  = ",
     "\nCorr. partielle (formule)  = ", round(CorP, 5))
 ```
 
-#### Mise en œuvre dans ![](images/Rlogo.png) {#sect04137}
+#### Mise en œuvre dans  {#sect04137}
 
-Comme vous l'aurez compris, il est possible d'arriver au même résultat dans ![](images/Rlogo.png) par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test` . Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
+Comme vous l'aurez compris, il est possible d'arriver au même résultat dans  par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test` . Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
 
 * **Hmisc** dont la fonction `rcorr` permet de calculer des corrélations de Pearson et Spearman (mais non celle de Kendall) avec la valeur de _p_.
 * **psych** dont la fonction `corr.test` permet d'obtenir la matrice de corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de _p_.
@@ -586,7 +583,7 @@ apaTables::apa.cor.table(df[, c("RevMedMen","Locataire","LogTailInc")],
 ```
 
 
-::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+::: {.bloc_astuce data-latex=""}
 **Une image vaut mille mots, surtout pour une matrice de corrélation !** Le package **corrplot** vous permet justement de construire de belles figures avec une matrice de corrélation (figures \@ref(fig:figcorrplot1) et \@ref(fig:figcorrplot2)). L'intérêt de ce type de figure est de repérer rapidemment des associations intéressantes lorsque l'on calcule les corrélations entre un grand nombre de variables.
 :::
 
@@ -630,8 +627,7 @@ Pour un texte en anglais, référez-vous à : [https://www.socscistatistics.com/
 
 ### Régression linéaire simple  {#sect0414}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
-
+::: {.bloc_objectif data-latex=""}
 **Comment expliquer et prédire une variable continue en fonction d'une autre variable?** Répondre à cette question relève de la statistique inférentielle. Il s'agit en effet d'établir une équation simple du type $Y = a + bX$, pour expliquer et prédire les valeurs d'une variable dépendante (*Y*) à partir d'une variable indépendante (*X*). L'équation de la régression est construite grâce à un jeu de données (un échantillon). À partir de cette équation, il est possible de prédire la valeur attendue de *Y* pour n'importe quelle valeur de *X*. On appelle cette équation un modèle, car elle cherche à représenter la réalité de façon simplifiée.
 
 La régression linéaire simple se distingue ainsi de la **covariance** (section \@ref(sect0412)) et de la **corrélation** (section \@ref(sect0413)), relevant de la statistique bivariée descriptive et exploratoire. 
@@ -641,12 +637,11 @@ Par exemple, la régression linéaire simple pourrait être utilisée pour expli
 Formulons un exemple d'application de la régression linéaire simple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). On supposerait alors que plus cette proportion est importante, plus la température est faible et inversement, soit une relation linéaire négative. Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions à prédire efficacement la température moyenne des îlots avec uniquement la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc. Il faudrait alors inclure non pas une, mais plusieurs variables explicatives (indépendantes).
 
 Ainsi, on distinguera la **régression linéaire simple** (une variable indépendante, explicative) de la **régression linéaire multiple** (plusieurs variables indépendantes); cette dernière sera largement abordée au chapitre \@ref(chap05).
-
 :::
 
 Dans cette section, nous décrirons succinctement la régression linéaire simple. Concrètement, nous verrons comment déterminer la droite de régression, interpréter ses différents paramètres du modèle et comment évaluer la qualité d'ajustement du modèle. Nous n'aborderons pas les hypothèses liées au modèle de régression linéaire des moindres carrés ordinaires (MCO), ni les conditions d'application. Ces éléments seront expliqués au chapitre \@ref(chap05) consacré à la régression linéaire multiple.
 
-::: {.bloc_attention .bloc_attention_png data-latex="{blocs/attention}"}
+::: {.bloc_attention data-latex=""}
 **Corrélation, régression simple et causalité : attention aux raccourcis !**
 
 Si une variable *X* explique et prédit efficacement une variable *Y*, cela ne veut pas dire pour autant que *X* cause *Y*. Autrement dit, la corrélation, l'association entre deux variables ne signifie qu'il existe un lien de causalité entre elles.
@@ -659,15 +654,11 @@ Deuxièmement, bien qu'une variable puisse expliquer efficacement une autre vari
 
 * Dans un article intitulé *Chocolate Consumption, Cognitive Function, and Nobel Laureates*, Messerli [-@Messerli] a trouvé une corrélation positive entre la consommation de chocolat par habitant et le nombre de prix Nobel pour dix millions d'habitants pour 23 pays. Ce résultat a d'ailleurs été rapporté par de nombreux médias ([Radio Canada](https://ici.radio-canada.ca/nouvelle/582457/chocolat-consommateurs-nobels), [La Presse]("https://www.lapresse.ca/vivre/sante/nutrition/201210/11/01-4582347-etude-plus-un-pays-mange-de-chocolat-plus-il-a-de-prix-nobel.php"), [Le Point](https://www.lepoint.fr/insolite/le-chocolat-dope-aussi-l-obtention-de-prix-nobel-12-10-2012-1516159_48.php), etc.), sans pour autant que Messerli [-@Messerli] et les journalistes concluent à un lien de causalité entre les deux variables. Tout chercheur sait que la consommation de chocolat ne permet pas d'obtenir des résultats intéressants et de publier dans des revues prestigieuses; c'est plutôt le café ! Plus sérieusement, il est probable que les pays les plus riches investissent davantage dans la recherche et obtiennent ainsi plus de prix Nobel. Dans les pays les plus riches, il est aussi probable que l'on consomme plus de chocolat, considéré comme un produit de luxe dans les pays les plus pauvres.
 
-Pour approfondir le sujet sur la confusion entre *corrélation, régression simple et causalité*, vous pourrez visionner cette courte vidéo ludique de vulgarisation.
+Pour approfondir le sujet sur la confusion entre *corrélation, régression simple et causalité*, vous pourrez visionner cette courte [vidéo ludique](https://www.youtube.com/embed/A-_naeATJ6o) de vulgarisation.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/A-_naeATJ6o" frameborder="0" allowfullscreen></iframe>
+L'association entre deux variables peut aussi être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du *data mining*, le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret, admettons que l'on ait collecté 100 variables et que l'on calcule les corrélations entre chaque paire de variables. On obtient une matrice de corrélation de 100 x 100, à laquelle on peut enlever la diagonale et une moitié de la matrice, ce qui nous laisse un total de 4950 corrélations différentes. Admettons que l'on choisisse un seuil de significativité de 5%, on doit alors s'attendre à ce que le hasard produise des résultats significatifs dans 5% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément l'illustrer avec la syntaxe  suivante :
 
- 
-L'association entre deux variables peut aussi être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du *data mining*, le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret, admettons que l'on ait collecté 100 variables et que l'on calcule les corrélations entre chaque paire de variables. On obtient une matrice de corrélation de 100 x 100, à laquelle on peut enlever la diagonale et une moitié de la matrice, ce qui nous laisse un total de 4950 corrélations différentes. Admettons que l'on choisisse un seuil de significativité de 5%, on doit alors s'attendre à ce que le hasard produise des résultats significatifs dans 5% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément l'illustrer avec la syntaxe ![](images/Rlogo.png) suivante :
-
-
-```{r corraleatoire, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Corrélations significatives obtenues aléatoirement', out.width='60%'}
+```{r corraleatoire, message=FALSE, warning=FALSE, out.width='60%', eval = FALSE}
 library("Hmisc")
 nbVars <- 100 # nous utilisons 100 variables générées aléatoirement pour l'expérience
 nbExperiment <- 1000 # nous reproduirons 1000 fois l'expérience avec les 100 variables
@@ -706,7 +697,13 @@ ggplot(df, aes(x = Values)) +
   xlab("Nombre de corrélations significatives")+
   ylab("densité")
 ```
+
+```{r replicationhist, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Corrélations significatives obtenues aléatoirement",  out.width='80%', fig.pos = "H", out.extra = ""}
+knitr::include_graphics('images/bivariee/replication_hist.PNG', dpi = NA)
+```
+
 :::
+
 #### Principe de base de la régression linéaire simple {#sect04141}
 La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
 \begin{equation} 
@@ -727,7 +724,8 @@ knitr::kable(list(df1, df2),
    format.args = list(decimal.mark = ",", big.mark = " "),           
    col.names = c("Municipalité","Vélo","KMCV"),
    caption = "Données fictives sur l'utilisation du vélo par municipalité",
-   booktabs = TRUE, valign = 't', row.names = FALSE)
+   booktabs = TRUE, valign = 't', row.names = FALSE)  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relation linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient de corrélation (*r* = −0,86). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit alors : **Vélo = 30,603 − 1,448 x KmCV**.
@@ -843,7 +841,8 @@ knitr::kable(
   head(df, nrow(df)), booktabs = TRUE, valign = 't', row.names = FALSE,
    format.args = list(decimal.mark = ",", big.mark = " "),           
   col.names = c("Municipalité","Vélo","KMCV","Valeur prédite","Résidu", "Résidu au carré"),
-  caption = "Valeurs observées, prédites et résidus")
+  caption = "Valeurs observées, prédites et résidus")  %>%
+  kableExtra::kable_styling(font_size = 8)
 ``` 
 
 #### Mesurer la qualité d'ajustement du modèle {#sect04143}
@@ -908,7 +907,8 @@ opts <- options(knitr.kable.NA = "--")
 knitr::kable(head(df, nrow(df)),
    format.args = list(decimal.mark = ",", big.mark = " "),           
    caption = "Calcul du coefficient de détermination",
-   booktabs = TRUE, valign = 't', row.names = FALSE)
+   booktabs = TRUE, valign = 't', row.names = FALSE)  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 
@@ -954,8 +954,8 @@ summary(modele)
 
 Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}{52.26} = 34.75$ avec une valeur de $p < 0.001$. Par conséquent, le modèle est significatif.
 
-#### Mise en œuvre dans ![](images/Rlogo.png) {#sect04144}
-Comment calculer une régression linéaire simple dans ![](images/Rlogo.png)? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
+#### Mise en œuvre dans  {#sect04144}
+Comment calculer une régression linéaire simple dans ? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
@@ -975,7 +975,7 @@ Nous avons calculé une régression linéaire simple pour prédire le pourcentag
 
 ## Relation entre deux variables qualitatives {#sect042}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 **Deux variables qualitatives sont-elles associées entre elles?** Plus spécifiquement, certaines modalités d'une variable qualitative sont-elles associées significativement à certaines modalités d'une variable qualitative.
 
 Prenons l'exemple de deux variables qualitatives : l'une intitulée *groupe d'âge* comprenant trois modalités (15 à 29 ans, 30 à 44 ans, 45 à 64 ans); l'autre intitulée *mode de transport habituel pour se rendre au travail* comprenant quatre modalités (véhicule motorisé, transport en commun, vélo, marche). 
@@ -1034,7 +1034,7 @@ cat("Valeurs de p du Khi2 obtenu (63.54291) avec 12 degrés de liberté :", "\n"
     pchisq(q=63.54291, df=12, lower.tail = FALSE))
 ```
 
-::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+::: {.bloc_aller_loin data-latex=""}
 Outre le khi^2^, d'autres mesures d'association permettent de mesurer le degré d'association entre deux variables qualitatives. Les plus courantes sont reportées au tableau ci-dessous. À des fins de comparaison, le khi^2^ décrit précédemment est aussi reporté sur la première ligne du tableau.
 
 Statistique | Formule | Propriété et interprétation
@@ -1047,7 +1047,7 @@ Coefficient Phi | $\phi=\sqrt{\frac{\chi^2}{n}}$ | Simplement le Khi^2^ divisé 
 V de Cramer | $V=\sqrt{\frac{\chi^2/n}{min(c-1,l-1)}}$ | Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que pour un tableau de 2 x 2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.
 :::
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect0423}
+### Mise en œuvre dans  {#sect0423}
 
 Pour calculer le Khi^2^ entre deux variables qualitatives, on utilise la fonction de base : `chisq.test(x = ..., y = ...)` qui renvoie le nombre de degré de liberté, les valeurs du Khi^2^ et de *p*.
 
@@ -1134,7 +1134,7 @@ round(Matrice/rowSums(Matrice)*100,2)
 round(Matrice/colSums(Matrice)*100,2)
 ```
 
-Pour obtenir les autres mesures d'association, on pourra utiliser la syntaxe ![](images/Rlogo.png) suivante :
+Pour obtenir les autres mesures d'association, on pourra utiliser la syntaxe  suivante :
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 df <- read.csv("data/bivariee/hlm.csv")
@@ -1180,9 +1180,11 @@ AutresMesuresKhi2 <- function(x, y){
         P = round(c(Pchi2, PG, PMH, polyP , NA, NA),10))
   return(dfsortie)
 }
+
 kableExtra::kable(AutresMesuresKhi2(df$Periode, df$Taille),
           digits = 3,
-          caption="Mesures d'association entre deux variables qualitatives")
+          caption="Mesures d'association entre deux variables qualitatives")  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 ### Interprétation d'un tableau de contingence {#sect0424}
@@ -1193,14 +1195,15 @@ Nous vous proposons une démarche très simple pour vérifier l'association entr
 
 * S'il y a dépendance ($khi_{observé}^2 > khi_{critique}^2$), trouver les cellules *ij* où les contributions au Khi^2^ sont les plus fortes, c'est-à-dire où les liens entre les modalités *i* de la variable en ligne et les modalités *j* de la variable en colonne sont les plus marqués. Pour ces cellules, le phénomène *ij* est surreprésenté si la déviation est positive ou sous-représenté si la déviation est négative. Commentez ces associations et utilisez les pourcentages en lignes ou en colonnes pour appuyer vos propos.
 
-::: {.bloc_astuce .bloc_astuce_png data-latex="{blocs/astuce}"}
+::: {.bloc_astuce data-latex=""}
 Pour repérer rapidement les cellules où les contributions au Khi^2^ sont les plus fortes, vous pouvez construire un graphique avec la fonction **mosaic** du *package* **vcd**. À la figure \@ref(fig:figVDC), la taille des rectangles représentent les effectifs entre les deux modalités tandis que les associations sont représentées comme suit : 
 en gris lorsqu'elles ne sont pas significatives, en rouge pour des déviations significatives et négatives et en bleu pour des déviations significatives et positives.
 
-```{r figVDC, echo=TRUE, fig.align='center', fig.cap='Graphique pour un tableau de contingence', message=FALSE, warning=FALSE, out.width='65%'}
+```{r figVDC, echo=TRUE, message=FALSE, warning=FALSE, out.width='65%', fig.pos="H"}
 library(vcd)
 mosaic(~ Taille+Periode, data=dataHLM,shade=TRUE, legend=TRUE)
 ```
+
 :::
 
 **Exemple d'interprétation.** « Les résultats du test du khi^2^ signale qu'il existe des associations entre les modalités de la taille et de la période de construction des projets d'habitation ($\chi$ =63,5, *p* < 0,001). Les fortes contributions au khi^2^ et le signe positif ou négatif des déviations correspondantes permettent de repérer cinq associations majeures entre les modalités de taille et de période de construction des projets HLM : **1)** la répulsion entre les projets d’habitation de moins de 25 logements et la période de construction 1964-1974; **2)** l’attraction entre les projets d’habitation de 100 logements et plus et la période de construction de 1969-1974; **3)** l’attraction entre les projets d’habitation de moins de 25 logements et la période de construction de 1990-1994; **4)** la répulsion entre les projets d’habitation de 50 à 99 logements et la période de construction 1990-1994; **5)** la répulsion entre les projets d’habitation de 100 logements et plus et la période de construction 1990-1994.
@@ -1208,7 +1211,7 @@ On observe donc une tendance bien marquée dans l’évolution du type de constr
 
 Vous pouvez aussi construire un graphique pour appuyer vos constats, soit avec les pourcentages en ligne ou en colonne (figure \@ref(fig:fighlm) tirée de @apparicio2006).
 
-```{r fighlm, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Taille des ensembles HLM selon la période de construction",  out.width='80%'}
+```{r fighlm, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Taille des ensembles HLM selon la période de construction",  out.width='80%'}
 knitr::include_graphics('images/bivariee/figurehlm.png', dpi = NA)
 ```
 
@@ -1222,7 +1225,7 @@ Pour un texte en anglais, vous pourrez consulter [https://www.socscistatistics.c
 
 ## Relation entre une variable quantitative et une variable qualitative à deux modalités {#sect043}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 
 **Les moyennes de deux groupes de population sont-elles significativement différentes?** On souhaite ici comparer deux groupes de population en fonction d'une variable continue. 
 Par exemple, pour deux échantillons respectivement d'hommes et de femmes travaillant dans le même secteur d'activité, on pourrait souhaiter vérifier si les moyennes des salaires des hommes et des femmes sont différentes et ainsi vérifier la présence ou l'absence d'une iniquité systématique. En études urbaines, dans le cadre d'une étude sur un espace public, on pourrait vouloir vérifier si la différence des moyennes du sentiment de sécurité des femmes et des hommes est significative (c'est-à-dire différente de 0).
@@ -1264,7 +1267,7 @@ avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d
 
 $t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_A}{n_A}+\frac{S^2_B}{n_B}}}$ et $dl = \frac{ \left( \frac{S^2_{X_A}}{n_A}+\frac{S^2_{X_B}}{n_B} \right)^2} {\frac{S^4_{X_A}}{n^2_A(n_A-1)}+\frac{S^4_{X_B}}{n^2_B(n_B-1)}}$
 
-Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculés les moyennes, nombres d'observations et variances pour les deux groupes, le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement à la vitesse de déplacement de cyclistes utilisant un vélo personnel ou un vélo en libre service (généralement plus lourd et moins utilisé par des cyclistes expérimentés) :
+Dans la syntaxe  ci-dessous, nous avons écrit une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculés les moyennes, nombres d'observations et variances pour les deux groupes, le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement à la vitesse de déplacement de cyclistes utilisant un vélo personnel ou un vélo en libre service (généralement plus lourd et moins utilisé par des cyclistes expérimentés) :
 
 * Au cas 1, 60 cyclistes utilisant un vélo personnel roulant en moyenne à 18 km/h (écart-type de 1,5) et 50 utilisateurs du système de vélo partage avec une vitesse moyenne de 15 km/h (écart-type de 1,5).
 
@@ -1374,7 +1377,7 @@ Pour le test de student avec des échantillons appariées, la valeur de *t* se c
 $$t = \frac{\bar{D}-\mu_0}{\sigma_D / \sqrt{n}}$$
 avec $\bar{D}$ étant la moyenne des différences entre les observations appariées de la série A et de la série B, $\sigma_D$ l'écart des différences, *n* le nombre d'observations, et finalement $\mu_0$ la valeur de l'hypothèse nulle que l'on veut tester (habituellement 0). Bien entendu, il est possible fixer une autre valeur pour $\mu_0$ : par exemple, avec $\mu_0 = 10$, on chercherait ainsi à vérifier si la moyenne des différences est significativement différente de 10. Le nombre de degrés de liberté sera égal à $n-1$.
 
-Dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons écrit une fonction dénommée `tstudent_dependants` permettant de réaliser le test de student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
+Dans la syntaxe  ci-dessous, nous avons écrit une fonction dénommée `tstudent_dependants` permettant de réaliser le test de student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
 
 Pour illustrer l'utilisation de la fonction, nous avons créé aléatoirement deux jeux de données. Imaginons que ces données décrivent 50 personnes utilisant habituellement l'automobile pour se rendre au travail. Pour ces personnes, nous avons généré des valeurs du risque perçu de l'utilisation du vélo (de 0 à 100), et ce, avant et après une période de 20 jours ouvrables durant lesquels ils devaient impérativement se rendre au travail à vélo.
 
@@ -1463,12 +1466,12 @@ df <- data.frame(
         Cohen = c("", "0,2 : Faible", "0,5 : Moyen","0,8 : Fort", "", ""))
 knitr::kable(
   head(df, nrow(df)), booktabs = TRUE,
-  caption = 'Conventions pour l’interprétation du d de Cohen'
-)
+  caption = 'Conventions pour l’interprétation du d de Cohen')  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 
-#### Mise en œuvre dans ![](images/Rlogo.png) {#sect04313}
+#### Mise en œuvre dans  {#sect04313}
 
 Nous avons écrit précédemment les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe des fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux tests avec une seule ligne de code.
 
@@ -1496,10 +1499,10 @@ Notez que pour toutes ces fonctions deux écritures sont possibles :
 
 La figure \@ref(fig:figlocataires) représente la cartographie du pourcentage de locataires par secteur de recensement (SR) pour la région métropolitaine de recensement de Montréal (RMR) en 2016, soit une variable continue. L'objectif est de vérifier si la moyenne de ce pourcentage des SR de l'agglomération de Montréal est significativement différente de celles de SR hors de l'agglomération. 
 
-Les résultats de la syntaxe ![](images/Rlogo.png) ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%); cette différence de 32,5 points de pourcentage est d'ailleurs significative et très forte (t = -23,95; p ˂ 0,001, d de Cohen = 1,54).
+Les résultats de la syntaxe  ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%); cette différence de 32,5 points de pourcentage est d'ailleurs significative et très forte (t = -23,95; p ˂ 0,001, d de Cohen = 1,54).
 
 
-```{r figlocataires, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Pourcentage de locataires par secteur de recensement, RMR de Montréal, 2016",  out.width='95%'}
+```{r figlocataires, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Pourcentage de locataires par secteur de recensement, RMR de Montréal, 2016",  out.width='95%'}
 knitr::include_graphics('images/bivariee/FigureLocataires.jpg', dpi = NA)
 ```
 
@@ -1561,7 +1564,7 @@ hedges_g(Locataire ~ Montreal, data = dfRMR, paired = FALSE)
 ```
 Notez que le *d* de Cohen et le *g* de Hedge sont très proches ici, rappelons que le second est une correction du premier pour des échantillons de taille réduite. Avec 951 observations, nous disposons d'un échantillon suffisamment grand pour que cette correction soit négligeable.
 
-**Exemple de syntaxe ![](images/Rlogo.png) pour un test de Student pour des échantillons dépendants**
+**Exemple de syntaxe  pour un test de Student pour des échantillons dépendants**
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("ggpubr")
@@ -1599,7 +1602,7 @@ t.test(risque ~ periode, data=df2, paired = TRUE)
 
 #### Comparer des moyennes pondérées {#sect04314}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 En études urbaines et en géographie, le recours aux données agrégées (non individuelles) est fréquent, par exemple au niveau des secteurs de recensement (comprenant généralement entre 2500 à 8000 habitants). Dans ce contexte, un secteur de recensement plus peuplé devrait avoir un poids plus important dans l'analyse. Il est possible d'utiliser les versions pondérées des tests présentés précédemment. Prenons deux exemples pour illustrer le tout :
 
 * Pour chaque secteur de recensement des îles de Montréal et de Laval, nous avons calculé la distance au parc le plus proche à travers le réseau de rues avec un Système d'Information Géographique (SIG). On souhaite vérifier si les enfants âgés de moins de 15 ans résidant sur l'île de Montréal bénéficient en moyenne d'une meilleure accessibilité au parc.
@@ -1610,7 +1613,7 @@ Pour réaliser un test *t* pondéré, nous pouvons utiliser la fonction `weighte
 
 :::
 
-En guise d'exemple appliqué, dans la syntaxe ![](images/Rlogo.png) ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend.
+En guise d'exemple appliqué, dans la syntaxe  ci-dessous, nous avons refait le même test *t* que précédemment (`Locataire ~ Montreal`) en pondérant chaque secteur de recensement par le nombre de logements qu'il comprend.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("sjstats")
@@ -1653,7 +1656,7 @@ Pour un texte en anglais, vous pourrez consulter
 
 ### Test non paramétrique de Wilcoxon {#sect0432}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 Si la variable continue est fortement anormalement distribuée, il est déconseillé d'utiliser les tests de Student et de Welch. On privilégiera le test des rangs signés de Wilcoxon (*Wilcoxon rank-sum test* en anglais). Attention, il est aussi appelé test U de Mann-Whitney. Ce test permet alors de vérifier si les deux groupes présentent des médianes différentes.
 
 Pour ce faire, on utilise la fonction `wilcox.test` dans laquelle le paramètre `paired` permettra de spécifier si les échantillons sont indépendants ou non (`FALSE` ou `TRUE`).
@@ -1716,7 +1719,7 @@ Lorsque l'on rapporte les résultats d'un test de Wilcoxon, il est important de 
 
 ## Relation entre une variable quantitative et une variable qualitative à plus de deux modalités {#sect044}
 
-::: {.bloc_objectif .bloc_objectif_png data-latex="{blocs/objectif}"}
+::: {.bloc_objectif data-latex=""}
 
 **Existe-il une relation entre une variable continue et une variable qualitative comprenant plus de deux modalités?** Pour répondre à cette question, on pourra recourir à deux méthodes : l’analyse de variance – **ANOVA**, _**AN**alysis Of **VA**riance_ en anglais – et le test non paramétrique de Kruskal-Wallis. La première permet de vérifier si les moyennes de plusieurs groupes d'une population donnée sont ou non significativement différentes; la seconde si leurs médianes sont différentes.
 :::
@@ -1779,7 +1782,7 @@ VT = Var_{inter} + Var_{intra} \mbox{ ou } VT = VNE + VE
 \end{equation}
 
 
-::: {.bloc_astuce .bloc_astuce_png data-latex="{.bloc_astuce}"}
+::: {.bloc_astuce data-latex=""}
 **La décomposition de la variance totale** – égale à la somme des variances intragroupe et intergroupe – est fondamentale en statistique. Nous verrons qu'elle est aussi utilisée pour évaluer la qualité d'une partition d'une population dans le chapitre sur les méthodes de classification (chapitre \@ref(chap10)). En ANOVA, on retiendra que :
 
 * plus la variance intragroupe est faible, plus les différents groupes sont homogènes;
@@ -1855,7 +1858,8 @@ knitr::kable(
                 "$(y_{i}-\\overline{y_{B}})^2$",
                 "$(y_{i}-\\overline{y_{C}})^2$"
                 ),
-  caption = "Données fictives et calcul des trois variances (cas 1)")
+  caption = "Données fictives et calcul des trois variances (cas 1)")  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 Examinons un deuxième jeu de données fictives pour lequel le type de vélo utilisé n'aurait que peu d'effet sur la vitesse des cyclistes (tableau \@ref(tab:aovfictive2)). D'emblée, les moyennes des trois groupes semblent très similaires (19,3, 17,9 et 18,7). Les valeurs des trois variances sont les suivantes :
@@ -1927,7 +1931,8 @@ knitr::kable(
                 "$(y_{i}-\\overline{y_{B}})^2$",
                 "$(y_{i}-\\overline{y_{C}})^2$"
                 ),
-  caption = "Données fictives et calcul des trois variances (cas 2)")
+  caption = "Données fictives et calcul des trois variances (cas 2)")  %>%
+  kableExtra::kable_styling(font_size = 8)
 ```
 
 
@@ -1983,7 +1988,7 @@ Vous l'aurez compris, dans de nombreux cas en statistique, les choix méthodolog
 
 Le test non paramétrique de Kruskal-Wallis est une alternative à l'ANOVA classique lorsque le jeu de données présente de graves problèmes de normalité et d'hétéroscédaticité. Cette méthode représente une ANOVA appliquée à une variable continue transformée préalablement en rangs. Du fait de la transformation en rangs, on ne vérifie plus si les moyennes sont différentes, mais bel et bien si les médianes de la variable continue sont différentes. Pour ce faire, on utilisera la fonction `kruskal.test`.
 
-### Mise en œuvre dans ![](images/Rlogo.png) {#sect0443}
+### Mise en œuvre dans  {#sect0443}
 
 Dans une étude récente, Apparicio *et al.* [-@apparicio2018exposure] ont comparé les expositions au bruit et à la pollution atmosphérique aux heures de pointe à Montréal en fonction du mode de transport utilisé. Pour ce faire, trois équipes de trois personnes ont été constituées : un cycliste, un automobiliste et un utilisateur du transport en commun, équipés de capteurs de pollution, de sonomètres, de vêtements biométriques et d’une montre GPS. Chaque matin, à huit heures précises, les membres de chaque équipe ont réalisé un trajet d'un quartier périphérique de Montréal vers un pôle d'enseignement (université) ou d'emploi localisé au centre-ville. Le trajet inverse était réalisé le soir à 17h. Au total, une centaine de trajets ont ainsi été réalisés. Des analyses de variance ont ainsi permis de comparer entre les trois modes (automobile, vélo et transport en commun) : les temps de déplacement, les niveaux d'exposition au bruit, les niveaux d'exposition au dioxyde d'azote et la dose totale inhalée de dioxyde d'azote. Nous vous proposons ici d'analyser une partie de ces données.
 
@@ -2078,8 +2083,7 @@ Dans ce second exercice, nous allons analyser les différences d'exposition au b
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library("rstatix")
 # chargement des dataframes
-setwd("data/bivariee")
-load("dataPollution.RData")
+load("data/bivariee/dataPollution.RData")
 # Statistiques descriptives pour les groupes (moyenne et écart-type)
  df_Bruit %>%                                 # Nom du dataframe
    group_by(Mode) %>%                                # Variable qualitative
@@ -2178,7 +2182,7 @@ Plusieurs éléments doivent être reportés pour détailler les résultats d'un
 
 * Les résultats du test de Kruskal-Wallis démontre qu'il existe des différences significatives d'exposition au bruit entre les trois modes de transport (χ2(2) = 784,74, p<0,001) avec des moyennes de rangs de 1094 pour l'automobile, 1124 pour le vélo et 1207 pour le transport en commun.
 
-::: {.bloc_aller_loin .bloc_aller_loin_png data-latex="{blocs/aller_loin}"}
+::: {.bloc_aller_loin data-latex=""}
 Nous avons vu que l'ANOVA permet de comparer les moyennes d'une variable continue à partir d'une variable qualitative comprenant plusieurs modalités (facteur) pour des observations indépendantes. Il y a un donc une seule variable dépendante (continue) et une seule variable indépendante. Sachez qu'il existe de nombreuses extensions de l'ANOVA classique : 
 
 * **une ANOVA à deux facteurs**, soit avec une variable dépendante continue et deux variables indépendantes qualitatives (_two-way ANOVA_ en anglais). On évalue ainsi les effets des deux variables (*a*, *b*) et de leur interaction (*ab*) sur une variable continue.
