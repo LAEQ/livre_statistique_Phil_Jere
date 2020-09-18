@@ -1,4 +1,4 @@
-# (PART) Analyses bivariées {-} 
+# (PART) Analyse bivariée {-} 
 
 # Analyses bivariées {#chap04}
 
@@ -86,7 +86,7 @@ Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives
 La covariance\index{covariance} (eq. \@ref(eq:cov)), écrite $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives :
 
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 cov(x,y) = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{n-1} = \frac{covariation}{n-1}
 (\#eq:cov)
 \end{equation} 
@@ -139,7 +139,7 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 #### Formulation {#sect04131} 
 Le coefficient de corrélation de Pearson ($r$) est égal à la covariance (numérateur) divisée par le produit des écart-types des deux variables *X* et *Y* (dénominateur). Il représente une standardisation de la covariance. Autrement dit, le coefficient de corrélation repose sur un centrage (moyenne = 0) et une réduction (variance = 1) des deux variables, c’est-à-dire à soustraire à chaque valeur sa moyenne correspondante et à la diviser par son écart-type. Il correspond ainsi à la moyenne du produit des deux variables centrées réduites. Il s'écrit alors :
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2(y_i - \bar{y})^2}}=\sum_{i=1}^n\frac{ZxZy}{n-1}
 (\#eq:cor)
 \end{equation}
@@ -222,10 +222,11 @@ df <- data.frame(
         Correlation = c("Faible","Moyenne", "Forte"), 
         Negative = c("de −0,3 à 0,0","de −0,5 à −0,3", "de −1,0 à −0,5"), 
         Positive = c("de 0,0 à 0,3","de 0,3 à 0,5", "de 0,5 à 1,0"))
-
-show_table(df, 
-           caption = 'Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales',
-           col.names = c("Corrélation","Négative","Positive"))
+knitr::kable(
+  head(df, 3), booktabs = TRUE,
+  col.names = c("Corrélation","Négative","Positive"),
+  caption = 'Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales')  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
@@ -297,7 +298,7 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 Lorsque les variables sont fortement anormalement distribuées, le coefficient de corrélation de Pearson est peu adapté pour analyser leurs relations linéaires. Il est alors conseillé d'utiliser deux statistiques non-paramétriques : principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le coefficient de Kendall ($\tau$, prononcez Tau), qui varient aussi tous deux de −1 à 1. 
 Calculé sur les rangs des deux variables, **le coefficient de Spearman** est le rapport entre la covariance des deux variables de rangs sur les écart-types des variables de rangs. En d'autres termes, il représente simplement le coefficient de Pearson calculé sur les rangs des deux variables :
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 r_{xy} = \frac{cov(rg_{x},rg_{y})}{\sigma_{rg_{x}}\sigma_{rg_{y}}}
 (\#eq:spearman)
 \end{equation}
@@ -323,7 +324,7 @@ cat("Covariance divisée par le produit des écart-types sur les rangs :",
 
 Le **coefficient de Kendall** est une autre mesure non-paramétrique calculée comme suit :
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 \tau = \frac{n_{c}-n_{d}}{\frac{1}{2}n(n-1)}
 (\#eq:tau)
 \end{equation}
@@ -374,7 +375,7 @@ ggarrange(Plot1, Plot2, Plot3, ncol=3,nrow=1)
 
 Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs aberrantes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois, les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser dans des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit : 
 
-\begin{equation}\footnotesize
+\begin{equation}
 \begin{aligned}
 &u_{i} = \frac{x_{i} - med(x)}{9 * (med(|x_{i} - med(x)|))} \text{ et } v_{i} = \frac{y_{i} - med(y)}{9 * (med(|y_{i} - med(y)|))}\\
 &w_{i}^{(x)} = (1 - u_{i}^2)^2 I(1 - |u_{i}|) \text{ et } w_{i}^{(y)} = (1 - v_{i}^2)^2 I(1 - |v_{i}|)\\
@@ -408,12 +409,10 @@ rs <- lapply(methods,function(m){
 dfCorr <- data.frame(do.call(rbind,rs))
 names(dfCorr) <- c("r","IC_05","CI_95")
 dfCorr$method <- methods
-
-show_table(dfCorr,
-           digits = 2,
-            caption = 'Comparaison de différentes corrélations pour les variables densité de population et pourcentage de personnes ayant 65 ans et plus',
-           col.names=c("r","IC 5%","IC 95%", "Méthode")
-           )
+kableExtra::kable(dfCorr,digits = 2, 
+                  caption = 'Comparaison de différentes corrélations pour les variables densité de population et pourcentage de personnes ayant 65 ans et plus',
+                  col.names=c("r","IC 5%","IC 95%", "Méthode"))  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche : les méthodes les plus connues sont les plus utilisées car elles sont plus facilement acceptées par les autres chercheurs. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumissions pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
@@ -510,7 +509,7 @@ La corrélation partielle\index{corrélation partielle} permet d'évaluer la rel
 
 Le coefficient de corrélation partielle peut être calculé pour les trois méthodes (Pearson, Spearman et Kendall). Variant aussi de −1 à 1, il est calculé comme suit :
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 r_{ABC} = \frac{r_{AB}-r_{AC}r_{BC}}{\sqrt{(1-r_{AC}^2)(1-r_{BC}^2)}}
 (\#eq:corpartielle)
 \end{equation}
@@ -540,7 +539,7 @@ cat("Corr. partielle avec ppcor  = ",
     "\nCorr. partielle (formule)  = ", round(CorP, 5))
 ```
 
-#### Mise en œuvre dans R {#sect04137}
+#### Mise en œuvre dans  {#sect04137}
 
 Comme vous l'aurez compris, il est possible d'arriver au même résultat dans  par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test` . Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
 
@@ -707,7 +706,7 @@ knitr::include_graphics('images/bivariee/replication_hist.PNG', dpi = NA)
 
 #### Principe de base de la régression linéaire simple {#sect04141}
 La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
-\begin{equation}\footnotesize 
+\begin{equation} 
 \widehat{y_i} = \beta_{0} + \beta_{1}x_{i}
 (\#eq:regsimple)
 \end{equation}
@@ -721,11 +720,12 @@ Considérons un exemple fictif de dix municipalités d'une région métropolitai
 df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
 df1 <- df[1:5,]
 df2 <- df[6:10,]
-
-show_table(list(df1, df2),
-           col.names = c("Municipalité","Vélo","KMCV"),
-           caption = "Données fictives sur l'utilisation du vélo par municipalité"
-           )
+knitr::kable(list(df1, df2),
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+   col.names = c("Municipalité","Vélo","KMCV"),
+   caption = "Données fictives sur l'utilisation du vélo par municipalité",
+   booktabs = TRUE, valign = 't', row.names = FALSE)  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relation linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient de corrélation (*r* = −0,86). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit alors : **Vélo = 30,603 − 1,448 x KmCV**.
@@ -759,19 +759,19 @@ ggplot(df, aes(x=KmCV, y=Velo)) +
 #### Formulation de la droite de régression des moindres carrés ordinaires {#sect04142}
 Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre la valeur observée et la valeur prédite, dénommé résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle, et par extension moins bon est le modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 min\sum_{i=1}^n{(y_i-(\beta_0+\beta_1 x_i))^2}
 (\#eq:mco)
 \end{equation}
 
 Pour minimiser ces écarts, le coefficient de régression $\beta_1$ représente le rapport entre la covariance entre *X* et *Y* et la variance de *Y* (équation \@ref(eq:b1)), tandis que la constante $\beta_0$ est la moyenne de la variable *Y* moins le produit de la moyenne de *X* et de son coefficient de régression (équation \@ref(eq:b0)).
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 \beta_1 = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2} = \frac{cov(X,Y)}{var(X)}
 (\#eq:b1)
 \end{equation}
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 \beta_0 = \widehat{Y}-\beta_1 \widehat{X}
 (\#eq:b0)
 \end{equation}
@@ -837,31 +837,32 @@ df[11,6] <- sqrtres
 df1 <- rbind(df[1:5,],df[11,])
 df2 <- rbind(df[6:10,],df[11,])
 opts <- options(knitr.kable.NA = "--")
-
-show_table(df,
-           col.names = c("Municipalité","Vélo","KMCV","Valeur prédite","Résidu", "Résidu au carré"),
-           caption = "Valeurs observées, prédites et résidus"
-           )
+knitr::kable(
+  head(df, nrow(df)), booktabs = TRUE, valign = 't', row.names = FALSE,
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Municipalité","Vélo","KMCV","Valeur prédite","Résidu", "Résidu au carré"),
+  caption = "Valeurs observées, prédites et résidus")  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ``` 
 
 #### Mesurer la qualité d'ajustement du modèle {#sect04143}
 Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (en anglais, *root-mean-square error*, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 y_i = \beta_0 + \beta_1 x_1+ \epsilon_i \Rightarrow Y= \beta_0 + \beta_1 X + \epsilon
 (\#eq:reg2)
 \end{equation}
 
 Elle comprend ainsi une partie de *Y* qui est expliquée par le modèle et une autre partie non expliquée : $\epsilon$ appelé habituellement le terme d'erreur. Ce terme d'erreur pourrait représenter d'autres variables explicatives qui n'ont pas été prises en compte pour prédire la variable indépendante ou une forme de variation aléatoire inexplicable présente lors de la mesure.
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 Y  = \underbrace{\beta_0 + \beta_1 X}_{\mbox{partie expliquée par le modèle}}+ \underbrace{\epsilon}_{\mbox{partie non expliquée}}
 (\#eq:reg3)
 \end{equation}
 
 Par exemple, pour la municipalité *A* au tableau \@ref(tab:regfictives2), nous avons : $y_A = \widehat{y}_A - \epsilon_A \Rightarrow 12.5 = 10.138+2.362$. Souvenez-vous que la variance d'une variable est la somme des écarts à la moyenne, divisée par le nombre d'observations. Par extension, il est alors possible de décomposer la variance de *Y* comme suit :
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 \underbrace{\sum_{i=1}^n (y_{i}-\bar{y})^2}_{\mbox{variance de Y}} = \underbrace{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}_{\mbox{var. expliquée}} + \underbrace{\sum_{i=1}^n (y_{i}-\widehat{y})^2}_{\mbox{var. non expliquée}} \Rightarrow 
 SCT = SCE + SCR
 (\#eq:reg4)
@@ -901,12 +902,13 @@ for (i in c(2,4:7))
   df[i] <- round(df[i], 2)
 }
 df[3] <- round(df[3], 2)
+colnames(df) <- c("Municipalité", "$y_i$", "$\\widehat{y}_i$", "$\\epsilon_i$","$(y_i-\\bar{y})^2$","$(\\widehat{y}_i-y_i)^2$", "$\\epsilon_i^2$")
 opts <- options(knitr.kable.NA = "--")
-
-show_table(df, 
-           caption = "Calcul du coefficient de détermination",
-           col.names = c("Municipalité", "$y_i$", "$\\widehat{y}_i$", "$\\epsilon_i$","$(y_i-\\bar{y})^2$","$(\\widehat{y}_i-y_i)^2$", "$\\epsilon_i^2$")
-           )
+knitr::kable(head(df, nrow(df)),
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+   caption = "Calcul du coefficient de détermination",
+   booktabs = TRUE, valign = 't', row.names = FALSE)  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 
@@ -914,7 +916,7 @@ show_table(df,
 
 La somme des résidus au carré (*SCR*) divisée par le nombre d'observations représente donc le carré moyen des erreurs (en anglais, *mean square error - MSE*), soit la variance résiduelle du modèle ($52,26 / 10 = 5,23$). Plus sa valeur sera faible, plus le modèle sera efficace pour prédire la variable indépendante. L'erreur quadratique moyenne (en anglais, *root-mean-square error - RMSE*) est simplement la racine carrée de la somme des résidus au carré divisée par le nombre d'observations ($n$) :
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 RMSE = \frac{\sqrt{\sum_{i=1}^n (y_{i}-\widehat{y})^2}}{n}
 (\#eq:reg5)
 \end{equation}
@@ -925,7 +927,7 @@ Elle représente ainsi une **mesure absolue des erreurs** qui est exprimée dans
 
 Nous avons largement démontré que la variance totale est égale à la variance expliquée plus la variance non expliquée. La qualité du modèle peut donc être évaluée avec le coefficient de détermination ($R^2$), soit le rapport entre les variances expliquée et totale : 
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 R^2 = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
 (\#eq:reg6)
 \end{equation}
@@ -936,7 +938,7 @@ Comparativement au RMSE qui est une mesure absolue, le coefficient de détermina
 
 La statistique _F_ de Fisher permet de vérifier la significativité globale du modèle.
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 F = (n-2)\frac{R^2}{1-R^2} = (n-2)\frac{SCE}{SCR}
 (\#eq:reg7)
 \end{equation}
@@ -952,7 +954,7 @@ summary(modele)
 
 Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}{52.26} = 34.75$ avec une valeur de $p < 0.001$. Par conséquent, le modèle est significatif.
 
-#### Mise en œuvre dans R {#sect04144}
+#### Mise en œuvre dans  {#sect04144}
 Comment calculer une régression linéaire simple dans ? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -1179,12 +1181,10 @@ AutresMesuresKhi2 <- function(x, y){
   return(dfsortie)
 }
 
-dfkhi2 <- AutresMesuresKhi2(df$Periode, df$Taille)
-
-show_table(dfkhi2,
-           caption="Mesures d'association entre deux variables qualitatives",
-           digits = 3
-           )
+kableExtra::kable(AutresMesuresKhi2(df$Periode, df$Taille),
+          digits = 3,
+          caption="Mesures d'association entre deux variables qualitatives")  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 ### Interprétation d'un tableau de contingence {#sect0424}
@@ -1374,7 +1374,7 @@ Nous disposons de plusieurs individus pour lesquelles nous avons mesuré un phé
 
 Pour le test de student avec des échantillons appariées, la valeur de *t* se calcule comme suit :
 
-$$\footnotesize t = \frac{\bar{D}-\mu_0}{\sigma_D / \sqrt{n}}$$
+$$t = \frac{\bar{D}-\mu_0}{\sigma_D / \sqrt{n}}$$
 avec $\bar{D}$ étant la moyenne des différences entre les observations appariées de la série A et de la série B, $\sigma_D$ l'écart des différences, *n* le nombre d'observations, et finalement $\mu_0$ la valeur de l'hypothèse nulle que l'on veut tester (habituellement 0). Bien entendu, il est possible fixer une autre valeur pour $\mu_0$ : par exemple, avec $\mu_0 = 10$, on chercherait ainsi à vérifier si la moyenne des différences est significativement différente de 10. Le nombre de degrés de liberté sera égal à $n-1$.
 
 Dans la syntaxe  ci-dessous, nous avons écrit une fonction dénommée `tstudent_dependants` permettant de réaliser le test de student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
@@ -1441,18 +1441,18 @@ Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'e
 
 **Pourquoi utiliser le *d* de cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie que quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de tailles différentes, il s'écrit : 
 
-$$\footnotesize d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{(n_A-1)S^2_A+(n_B-1)S^2_B}{n_A+n_B-2}}}$$
+$$d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{(n_A-1)S^2_A+(n_B-1)S^2_B}{n_A+n_B-2}}}$$
 avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d'observations et les variances pour les groupes *A* et *B*, $S^2_p$.
 
 Si les échantillons sont de tailles identiques ($n_A=n_B$), alors *d* peut s'écrire :
-$$\footnotesize d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{(S^2_A+\S^2_A)/2}} = \frac{\bar{X}_{A}-\bar{X}_{B}}{(\sigma_A+\sigma_B)/2}$$
+$$d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{(S^2_A+\S^2_A)/2}} = \frac{\bar{X}_{A}-\bar{X}_{B}}{(\sigma_A+\sigma_B)/2}$$
 avec $\sigma_A$ et $\sigma_B$ étant les écart-types des deux groupes (rappel : l'écart-type est la racine carrée de la variance !).
 
 Le *g* de Hedge est simplement une correction de *d*, particulièrement importante quand les échantillons sont de taille réduite.
-$$\footnotesize g = d- \left(1- \frac{3}{4(n_A+n_B)-9} \right)$$
+$$g = d- \left(1- \frac{3}{4(n_A+n_B)-9} \right)$$
 
 Moins utilisé en sciences sociales, mais surtout en études cliniques, le delta de Glass est simplement la différence des moyennes des groupes indépendants (numérateur) sur l'écar-type du deuxième groupe (démoninateur). Dans une étude clinique, on a habituellement un groupe qui subit un traitement (groupe de traitement) et un groupe qui a reçu un placebo (groupe de contrôle ou groupe témoin). L'effet de taille est ainsi évalué par rapport au groupe de contrôle : 
-$$\footnotesize \Delta = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sigma_B}$$
+$$\Delta = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sigma_B}$$
 
 
 Finalement, pour des échantillons dépendants (pairés), il s'écrit simplement $d = \bar{D}/{\sigma_D}$ avec $\bar{D}$ et $\sigma_D$ étant la moyenne et l'écart-type des différences entre les observations.
@@ -1464,10 +1464,10 @@ Finalement, pour des échantillons dépendants (pairés), il s'écrit simplement
 df <- data.frame(
         Sawilowsky = c("0,1 : Très faible", "0,2 : Faible", "0,5 : Moyen","0,8 : Fort", "1,2 : Très fort", "2,0 : Énorme"), 
         Cohen = c("", "0,2 : Faible", "0,5 : Moyen","0,8 : Fort", "", ""))
-
-show_table(df,
-           caption = 'Conventions pour l’interprétation du *d* de Cohen'
-           )
+knitr::kable(
+  head(df, nrow(df)), booktabs = TRUE,
+  caption = 'Conventions pour l’interprétation du d de Cohen')  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 
@@ -1752,17 +1752,17 @@ L'ANOVA repose sur le calcul de trois variances :
 
 * la **variance intragroupe**  (*Var~intra~*) ou variance non expliquée (*VNE*), soit la somme des variances des groupes de la variable indépendante (équation \@ref(eq:anova3)).
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 VT=\sum_{i=1}^n (y_{i}-\overline{y})^2
 (\#eq:anova1)
 \end{equation}
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 Var_{inter} \mbox{ ou } VE=\sum_{i\in{g_1}}(\overline{y_{g_1}}-\overline{y})^2 + \sum_{i\in{g_2}}(\overline{y_{g_2}}-\overline{y})^2 + ... + \sum_{i\in{g_n}}(\overline{y_{g_k}}-\overline{y})^2
 (\#eq:anova2)
 \end{equation}
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 Var_{intra} \mbox{ ou } VNE=\sum_{i\in{g_1}}(y_{i}-\overline{y_{g_1}})^2 + \sum_{i\in{g_2}}(y_{i}-\overline{y_{g_2}})^2 + ... + \sum_{i\in{g_n}}(y_{i}-\overline{y_{g_k}})^2 
 (\#eq:anova3)
 \end{equation}
@@ -1771,12 +1771,12 @@ avec $\overline{y}$ est la moyenne de l'ensemble de la population; $\overline{y_
 
 La variance totale (*VT*) est égale à la somme de la variance intergroupe (expliquée) et la variance intragroupe (non expliquée) (équation \@ref(eq:anova5)). Le ratio entre la variance intergroupe (expliquée) et la variance totale est dénommé *Eta^2^* (équation \@ref(eq:anova6)). Il varie de 0 à 1 et exprime la proportion de la variance de la variable continue qui est expliquée par les différentes modalités de la variable qualitative.
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 VT = Var_{inter} + Var_{intra} \mbox{ ou } VT = VNE + VE
 (\#eq:anova5)
 \end{equation}
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 \eta^2= \frac{Var_{inter}}{VT} \mbox{ ou }  \eta^2= \frac{VE}{VT}
 (\#eq:anova6)
 \end{equation}
@@ -1848,17 +1848,18 @@ tabl$VNE_A <- round(tabl$VNE_A,3)
 tabl$VNE_B <- round(tabl$VNE_B,3)
 tabl$VNE_C <- round(tabl$VNE_C,3)
 opts <- options(knitr.kable.NA = "--")
-
-show_table(tabl, 
-           caption = "Données fictives et calcul des trois variances (cas 1)",
-             col.names = c("Type de vélo",
+knitr::kable(
+  head(tabl, nrow(tabl)), booktabs = TRUE, valign = 't', row.names = FALSE,
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Type de vélo",
                 "km/h",
                 "$(y_{i}-\\overline{y})^2$",
                 "$(y_{i}-\\overline{y_{A}})^2$",
                 "$(y_{i}-\\overline{y_{B}})^2$",
                 "$(y_{i}-\\overline{y_{C}})^2$"
-                )
-)
+                ),
+  caption = "Données fictives et calcul des trois variances (cas 1)")  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 Examinons un deuxième jeu de données fictives pour lequel le type de vélo utilisé n'aurait que peu d'effet sur la vitesse des cyclistes (tableau \@ref(tab:aovfictive2)). D'emblée, les moyennes des trois groupes semblent très similaires (19,3, 17,9 et 18,7). Les valeurs des trois variances sont les suivantes :
@@ -1920,29 +1921,18 @@ tabl$VNE_A <- round(tabl$VNE_A,3)
 tabl$VNE_B <- round(tabl$VNE_B,3)
 tabl$VNE_C <- round(tabl$VNE_C,3)
 opts <- options(knitr.kable.NA = "--")
-
-show_table(tabl, 
-           caption = "Données fictives et calcul des trois variances (cas 2)",
-            col.names = c("Type de vélo",
+knitr::kable(
+  head(tabl, nrow(tabl)), booktabs = TRUE, valign = 't', row.names = FALSE,
+   format.args = list(decimal.mark = ",", big.mark = " "),           
+  col.names = c("Type de vélo",
                 "km/h",
                 "$(y_{i}-\\overline{y})^2$",
                 "$(y_{i}-\\overline{y_{A}})^2$",
                 "$(y_{i}-\\overline{y_{B}})^2$",
                 "$(y_{i}-\\overline{y_{C}})^2$"
-                )
-           )
-# knitr::kable(
-#   head(tabl, nrow(tabl)), booktabs = TRUE, valign = 't', row.names = FALSE,
-#    format.args = list(decimal.mark = ",", big.mark = " "),           
-#   col.names = c("Type de vélo",
-#                 "km/h",
-#                 "$(y_{i}-\\overline{y})^2$",
-#                 "$(y_{i}-\\overline{y_{A}})^2$",
-#                 "$(y_{i}-\\overline{y_{B}})^2$",
-#                 "$(y_{i}-\\overline{y_{C}})^2$"
-#                 ),
-#   caption = "Données fictives et calcul des trois variances (cas 2)")  %>%
-#   kableExtra::kable_styling(font_size = font_size_table)
+                ),
+  caption = "Données fictives et calcul des trois variances (cas 2)")  %>%
+  kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 
@@ -1951,7 +1941,7 @@ show_table(tabl,
 Pour vérifier si les moyennes sont satistiquement différentes (autrement dit, si leur différence est significativement différente de 0), on a recours au test *F* de Fisher. Pour ce faire, on pose l'hypothèse nulle (H~0~), soit que les moyennes des groupes sont égales; autrement dit que la variable qualitative n'a pas d'effet sur la variable continue (indépendance entre les deux variables). L'hypothèse alternative (H~1~) est donc que les moyennes sont différentes. Pour nos deux jeux de données fictives ci-dessus comprenant trois groupes, H~0~ signifie que $\overline{y_{A}}=\overline{y_{B}}=\overline{y_{C}}$. La statistique *F* se calcule comme suit :
 
 
-\begin{equation}\footnotesize 
+\begin{equation} 
 F = \frac{\frac{Var{inter}}{k-1}}{\frac{Var{intra}}{n-k}}\mbox{ ou } F = \frac{\frac{VE}{k-1}}{\frac{VNE}{n-k}}
 (\#eq:anovaF)
 \end{equation}

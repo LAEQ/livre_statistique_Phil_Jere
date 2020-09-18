@@ -28,7 +28,7 @@ lot: yes
 mainfont: Palatino Linotype
 monofont: "Source Code Pro"
 monofontoptions: "Scale=0.8"
-mathfontoptions: "Scale=0.5"
+mathfontoptions: "Scale=0.1"
 site: bookdown::bookdown_site
 biblio-style: apalike
 url: https\://bookdown.org/yihui/rmarkdown/
@@ -95,4 +95,83 @@ Si vous googlez l'expression « comment lire un livre ? », vous trouverez une m
 Note au beau Cargo (chien Mira) qui nous supporte dans l'écriture du livre !
 ```{r cargo, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo, le plus beau",  out.width='50%'}
 knitr::include_graphics('images/Cargo.jpg', dpi = NA)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+## quelques parametres generaux en fonction du type de document
+library(tidyverse)
+
+if (knitr::is_latex_output()){
+  font_size_table <- 8
+}else{
+  font_size_table <- 14
+}
+
+clean_df_latex <- function(df){
+  
+  if(inherits(df, "list") == F){
+    df <- list(df)
+  }
+  df2 <- lapply(df, function(i){
+    i %>% 
+      mutate_if(~is.character(.), funs(str_replace_all(., "`", ""))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "\\*{2}([^\"]*)\\*{2}", replacement = "\\\\textbf{\\1}"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "\\*{2}([^\"]*)\\*{2}", replacement = "\\\\textbf{\\1}"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "%", "\\%"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "&", "\\\\&"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "\\*{2}", "doublestars"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "\\*([^\"]*?)\\*", replacement = "\\\\textit{\\1}"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "doublestars", "**"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "\\(\\%\\)", "(\\\\%)"))) %>%
+      mutate_if(~is.character(.), funs(str_replace_all(., "_", "\\\\_")))
+  })
+  return(df2)
+}
+
+show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, col.width = NULL, digits = getOption("digits")){
+  ## dans le cas d'un tableau LATEX
+  if (knitr::is_latex_output()){
+    
+    #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
+    df2 <- clean_df_latex(df)
+    
+    if(is.na(col.names)==F){
+      col.names <- gsub("\\(\\%\\)","(\\\\%)",col.names)
+      col.names <- gsub("\\%","\\\\%",col.names)
+    }
+    if(is.null(caption)==F){
+      caption <- gsub("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", caption)
+      caption <- gsub("\\*([^\"]*?)\\*","\\\\textit{\\1}", caption)
+    }
+    
+    
+    table1 <- knitr::kable(
+      df2, booktabs = TRUE,
+      format = "latex",
+      digits = digits,
+      format.args = list(decimal.mark = ",", big.mark = " "),
+      valign = 't', row.names = FALSE,
+      col.names = col.names,
+      caption = caption,
+      escape = FALSE) %>% 
+      kableExtra::kable_styling(font_size = 8,protect_latex = T)
+    if (is.null(col.to.resize) == FALSE){
+      table1 <- table1 %>% 
+        kableExtra::column_spec(col.to.resize, width=col.width)
+    }
+  ## dans le cas d'un tableau HTLM
+  }else{
+    table1 <- knitr::kable(
+      df, booktabs = TRUE,
+      format.args = list(decimal.mark = ",", big.mark = " "),
+      col.names = col.names,
+      valign = 't', row.names = FALSE,
+      caption = caption,
+      escape = FALSE)
+  }
+  return(table1)
+}
+
 ```
