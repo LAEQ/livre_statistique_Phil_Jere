@@ -1,4 +1,1746 @@
 # (PART) Modèles de régression {-} 
 # La régression linéaire multiple  {#chap05}
 
-À juste titre, Bressoux [-@bressoux2010, pp 15] signale que « la causalité relève d'une interprétation théorique de la relation et celle-ci n'est jamais déterminée par les calculs statistiques ».
+Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales : la régression linéaire multiple. À titre de rappel, dans le chapitre précédent (section \@ref(sect0414)), nous avons vu que la régression linéaire multiple, basé sur la méthode des moindres carrées, permet d’expliquer, de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est peu probable que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple : elle permet ainsi de prédire, expliquer une variable indépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
+
+Plus spécifiquement, nous aborderons ici les principes et hypothèses de la régression linéaire multiple, comment mesurer la qualité d’ajustement du modèle, introduire des variables explicatives particulières (variable qualitative dichotomique ou polytomique, variable d’interaction, etc.), interpréter les sorties d’un modèle de régression et finalement la mettre en oeuvre dans R.
+
+
+::: {.bloc_package data-latex=""}
+Dans cette section, nous utiliserons principalement les *packages* suivants : 
+
+A MODIFIER A LA FIN
+
+* Pour créer des graphiques :
+  - **ggplot2**, le seul, l'unique
+  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles
+* Pour manipuler des données : 
+  - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
+* Pour les corrélations (section \@ref(sect0411)) : 
+  - **correlation**, de l'ensemble de package **easy_stats**, offrant une large gamme de méthodes de corrélations
+  - **boot** pour réaliser des corrélations avec *bootstrap* 
+  - **Hmisc** pour calculer des corrélations de Pearson et Spearman
+  - **ppcor**, notamment pour des corrélations partielles
+  - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
+  - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
+  - **corrplot**, pour créer des graphiques de matrices de corrélation
+* Pour le tableau de contignence (section \@ref(sect0412)) :
+  - **gmodels**, pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes (section \@ref(sect0424))
+  - **vcd**, pour construire un graphique pour un tableau de contigence ((section \@ref(sect0424)))
+* Pour les test *t* : 
+  - **sjstats** pour réaliser des test *t* pondérés
+  - **effectsize**, pour calculer les tailles d'effet de tests de *t*
+* Pour la section sur les ANOVA (section \@ref(sect0441)) : 
+  - **car**, pour les ANOVA classiques
+  - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
+  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
+:::
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### Brant test pour vglm (adapte du package brant) ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+print.testresult.vglm <- function(model,X2,df.v,by.var) {
+  p.values = pchisq(X2,df.v,lower.tail=FALSE) 
+  woit <- grepl("Intercept",names(coef(model)),fixed=T) == F
+  if(by.var){
+    var.names = unlist(strsplit(as.character(formula(model))[3],split=" \\+ "))
+  }else{
+    var.names = names(coef(model)[woit])
+  }
+  # longest name
+  longest.char = max(nchar(var.names))
+  n.tabs = ceiling(longest.char/7)
+  n.tabs = ifelse(n.tabs<2,2,n.tabs)
+  cat(paste0(rep("-",28+8*n.tabs),collapse = ""),"\n")
+  cat(paste0("Test for",paste0(rep("\t",n.tabs-1),collapse = ""),"X2\tdf\tprobability"),"\n")
+  cat(paste0(rep("-",28+8*n.tabs),collapse = ""),"\n")
+  cat(paste0("Omnibus",paste0(rep("\t",n.tabs),collapse = ""),round(X2[1],digits=2),"\t",df.v[1],"\t",round(p.values[1],digits=2)))
+  cat("\n")
+  for(i in 1:length(var.names)){
+    name = var.names[i]
+    tabs.sub = ceiling(nchar(name)/7)-1
+    cat(paste0(name,paste0(rep("\t",n.tabs-tabs.sub),collapse = ""),round(X2[i+1],digits=2),"\t",df.v[i+1],"\t",round(p.values[i+1],digits=2),"\n"))
+  }
+  cat(paste0(rep("-",28+8*n.tabs),collapse = ""),"\n\n")
+  cat("H0: Parallel Regression Assumption holds")
+  result.matrix = matrix(c(X2, df.v, p.values), ncol = 3)
+  rownames(result.matrix) = c("Omnibus", var.names)
+  colnames(result.matrix) = c("X2","df","probability")
+  result.matrix
+}
+
+getCombiCoefs.vglm <- function(model){
+  classes = sapply(model@model, class)
+  factors = ifelse(classes[2:length(classes)]!="numeric",T,F)
+  f = i = var = 1
+  woit <- grepl("Intercept",names(coef(model)),fixed=T) == F
+  len <- length(coef(model)[woit])
+  result = data.frame(i=1:len,var=NA)
+  for(factor in factors){
+    if(factor){
+      n = length(unlist(model@xlevels[f]))
+      for(j in 1:(n-1)){
+        result[i,"var"] = var
+        i = i + 1
+      }
+      var = var + 1
+      f = f + 1
+    }else{
+      result[i,"var"] = var
+      var = var + 1
+      i = i + 1
+    }
+  }
+  return(result)
+}
+
+brant.vglm <- function(model,by.var=F){
+  temp.data = model@model
+  y_name = as.character(formula(model))[2]
+  x_names = as.character(formula(model))[3]
+  y = as.numeric(temp.data[[y_name]])
+  temp.data$y = y
+  
+  x.variables = strsplit(x_names," \\+ ")[[1]]
+  x.factors = c()
+  for(name in x.variables){
+    if(!is.numeric(temp.data[,name])){
+      x.factors = c(x.factors,name)
+    }
+  }
+  if(length(x.factors)>0){
+    tab = table(data.frame(temp.data[,y_name],temp.data[,x.factors]))
+    count0 = sum(tab==0)
+  }else{
+    count0 = 0
+  }
+  
+  
+  J = max(y,na.rm=T)
+  
+  woit <- grepl("Intercept",names(coef(model)),fixed=T) == F
+  
+  K = length(coef(model)[woit])
+  for(m in 1:(J-1)){
+    temp.data[[paste0("z",m)]] = ifelse(y>m,1,0)
+  }
+  binary.models = list()
+  beta.hat = matrix(NA,nrow=J-1,ncol=K+1,byrow=T)
+  var.hat = list()
+  for(m in 1:(J-1)){
+    mod = glm(paste0("z",m," ~ ",x_names),data=temp.data, family="binomial")
+    binary.models[[paste0("model",m)]] = mod
+    beta.hat[m,] = coef(mod)
+    var.hat[[m]] = vcov(mod)
+  }
+  
+  X.temp = model@model[2:length(model@model)]
+  X = matrix(1,nrow=length(X.temp[,1]),ncol=1)
+  for(var in X.temp){
+    if(is.numeric(var)){
+      X = cbind(X,var)
+    }
+    if(is.character(var)){
+      var = as.factor(var)
+    }
+    if(is.factor(var)){
+      for(level in levels(var)[2:length(levels(var))]){
+        X = cbind(X,ifelse(var==level,1,0))
+      }
+    }
+  }
+  zeta <- model@coefficients[woit==F] * -1
+  tau = matrix(zeta,nrow=1,ncol=J-1,byrow=T)
+  pi.hat = matrix(NA,nrow=length(model@model[,1]),ncol=J-1,byrow=T)
+  for(m in 1:(J-1)){
+    pi.hat[,m] = binary.models[[m]]$fitted.values
+  }
+  
+  
+  varBeta = matrix(NA,nrow = (J-1)*K, ncol = (J-1)*K)
+  for(m in 1:(J-2)){
+    for(l in (m+1):(J-1)){
+      Wml = Matrix::Diagonal(x=pi.hat[,l] - pi.hat[,m]*pi.hat[,l])
+      Wm = Matrix::Diagonal(x=pi.hat[,m] - pi.hat[,m]*pi.hat[,m])
+      Wl = Matrix::Diagonal(x=pi.hat[,l] - pi.hat[,l]*pi.hat[,l])
+      Xt = t(X)
+      varBeta[((m-1)*K+1):(m*K),((l-1)*K+1):(l*K)] = as.matrix((solve(Xt %*% Wm %*% X)%*%(Xt %*% Wml %*% X)%*%solve(Xt %*% Wl %*% X))[-1,-1])
+      varBeta[((l-1)*K+1):(l*K),((m-1)*K+1):(m*K)] = varBeta[((m-1)*K+1):(m*K),((l-1)*K+1):(l*K)]
+    }
+  }
+  
+  betaStar = c()
+  for(m in 1:(J-1)){
+    betaStar = c(betaStar,beta.hat[m,-1])
+  }
+  for(m in 1:(J-1)){
+    varBeta[((m-1)*K+1):(m*K),((m-1)*K+1):(m*K)] = var.hat[[m]][-1,-1]
+  }
+  
+  I = diag(1,K)
+  E0 = diag(0,K)
+  for(i in 1:(J-2)){
+    for(j in 1:(J-1)){
+      if(j == 1){
+        temp = I
+      }else if(j == i+1){
+        temp = cbind(temp,-I)
+      }else{
+        temp = cbind(temp,E0)
+      }
+    }
+    if(i==1){
+      D = temp
+    }else{
+      D = rbind(D,temp)
+    }
+  }
+  X2 = t(D%*%betaStar) %*% solve(D %*% varBeta %*% t(D)) %*% (D %*% betaStar)
+  df.v = (J-2)*K
+  
+  if(by.var){
+    combinations = getCombiCoefs.vglm(model)
+    for(v in unique(combinations$var)){
+      k = subset(combinations,var==v)$i
+      s = c()
+      df.v.temp = 0
+      for(e in k){
+        s = c(s,seq(from=e,to=K*(J-1),by=K))
+        df.v.temp = df.v.temp + J-2
+      }
+      s = sort(s)
+      Ds = D[,s]
+      Ds = Ds[which(!apply(Ds==0,1,all)),]
+      if(!is.null(dim(Ds)))
+        X2 = c(X2,t(Ds%*%betaStar[s]) %*% solve(Ds %*% varBeta[s,s] %*% t(Ds)) %*% (Ds %*% betaStar[s]))
+      else
+        X2 = c(X2,t(Ds%*%betaStar[s]) %*% solve(Ds %*% varBeta[s,s] %*% t(t(Ds))) %*% (Ds %*% betaStar[s]))
+      df.v = c(df.v,df.v.temp)
+    }
+  }else{
+    for(k in 1:K){
+      s = seq(from=k,to=K*(J-1),by=K)
+      Ds = D[,s]
+      Ds = Ds[which(!apply(Ds==0,1,all)),]
+      if(!is.null(dim(Ds)))
+        X2 = c(X2,t(Ds%*%betaStar[s]) %*% solve(Ds %*% varBeta[s,s] %*% t(Ds)) %*% (Ds %*% betaStar[s]))
+      else
+        X2 = c(X2,t(Ds%*%betaStar[s]) %*% solve(Ds %*% varBeta[s,s] %*% t(t(Ds))) %*% (Ds %*% betaStar[s]))
+      df.v = c(df.v,J-2)
+    }
+  }
+  
+  result.matrix = print.testresult.vglm(model,X2,df.v,by.var)
+  if(count0!=0){
+    warning(paste0(count0," combinations in table(dv,ivs) do not occur. Because of that, the test results might be invalid."))
+  }
+  result.matrix
+}
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### parallel likelihood ratio test pour vglm ordinal ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+parallel.likelihoodtest.vglm <- function(model){
+  
+  ## recuperer les variable de l'equation
+  formule <- as.formula(as.character(model@terms))
+  xvars <- strsplit(as.character(formule)[[3]]," + ", fixed = T)[[1]]
+  
+  pb <- txtProgressBar(min = 0, max = length(xvars), style = 3)
+  i<-1
+  test_results <- lapply(xvars,function(x){
+    formule2 <- as.formula(paste(FALSE, "~ 1 +",x))
+    model2 <- vglm(formule,
+            family = cumulative(link="logitlink",parallel = formule2, reverse = TRUE),
+            data = model@model)
+    test <- anova.vglm(model2,model, type = "I")
+    values <- list(
+      "variable non parallele" = x,
+      "AIC" = round(AIC(model2)),
+      "loglikelihood" = round(logLik(model2)),
+      "p.val loglikelihood ratio test" = round(test$`Pr(>Chi)`[[2]],3))
+    setTxtProgressBar(pb, i)
+    i<<- i+1
+    return(values)
+  })
+  
+  tableau_final <- as.data.frame(t(matrix(unlist(test_results), nrow=length(unlist(test_results[1])))))
+  names(tableau_final) <- c("variable non parallele", "AIC", "loglikelihood", "p.val loglikelihood ratio test")
+  return(tableau_final)
+}
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### Analyse de type 3, modele multinomial ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+AnalyseType3<-function(modele, data, fixed_vars = NULL){
+  logModeleComplet <- -2*logLik(modele)          # valeur du loglikehood pour le modèle complet
+  results <- list()  # liste vide qui comprendra les resultats
+  all_vars <- strsplit(as.character(modele@terms), split = " ~ ")
+  vardep <- all_vars[[1]][[1]]
+  varsindep <- strsplit(all_vars[[1]][[2]], split = " + ", fixed = T)[[1]]
+  if(is.null(fixed_vars) == F){
+    testing_vars <- varsindep[varsindep %in% fixed_vars == F]
+  }else{
+    testing_vars <- varsindep
+  }
+  i <- 1
+  pb <- txtProgressBar(min = 0, max = length(testing_vars), style = 3)
+  for(x1 in testing_vars){
+    # Récupération de la liste des variables indépendantes moins chaque variable dépendante
+    listvarindep = ""
+    for(x2 in varsindep){
+      if(x1 != x2){
+        listvarindep <- paste(listvarindep, "+", x2)
+      }
+    }
+    listvarindep <-  substr(listvarindep,3,nchar(listvarindep))
+    
+    # Construction du modèle',
+    formule <- as.formula(paste(vardep, " ~ ", listvarindep))
+    model2 <- vglm(formule,
+                   family = multinomial(parallel = FALSE),
+                   data = LCGM)
+    logLikVI[i] <- -2*logLik(model2)
+    test <- anova(model2,modele, type = "I")
+    values <- list(
+      "removed" = x1,
+      "AIC" = round(AIC(model2)), 
+      "loglike" = round(-2* logLik(model2)),
+      "sign" = round(test$`Pr(>Chi)`[[2]],4))
+    results[[length(results) + 1]] <- values
+    setTxtProgressBar(pb, i)
+    i <- i + 1;
+  }
+  
+  cat("*************************************", "\n")
+  cat("Type 3 Analysis of Effects", "\n")
+  cat("*************************************", "\n")
+  cat("AIC model complet : ", round(AIC(modele)), "\n")
+  cat("loglikelihood model complet : ", round(logModeleComplet), "\n")
+  tableau_final <- as.data.frame(t(matrix(unlist(results), nrow=length(unlist(results[1])))))
+  names(tableau_final) <- c("variable retiree", 
+                            "AIC", "loglikelihood", "p.val"
+  )
+  print(tableau_final)
+  return(tableau_final)
+  
+}
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### pseudo R2 ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+rsqs <- function(loglike.full, loglike.null,full.deviance, null.deviance, nb.params, n){
+  
+  explained_dev <- 1-(full.deviance / null.deviance)
+  
+  K <- nb.params
+  
+  r2_faddenadj <- 1- (loglike.full - K) / loglike.null
+  
+  Lm <- loglike.full
+  Ln <- loglike.null
+  Rcs <- 1 - exp((-2/n) * (Lm-Ln))
+  Rn <- Rcs / (1-exp(2*Ln/n))
+  return(
+    list("deviance expliquee" = explained_dev,
+         "MacFadden ajuste" = r2_faddenadj,
+         "Cox and Snell" = Rcs,
+         "Nagelkerke" = Rn
+    )
+  )
+}
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### Afficher une belle matrice de confusion ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+nice_confusion_matrix <- function(yreal, ypred){
+  library(caret)
+  ## generation de la matrice avec caret
+  info <- confusionMatrix(as.factor(yreal), as.factor(ypred))
+  
+  ##pimper le tout
+  mat <- info[[2]]
+  rs <- rowSums(mat)
+  rp <- round(rowSums(mat) / sum(mat) * 100,1)
+  cs <- colSums(mat)
+  cp <- round(colSums(mat) / sum(mat) * 100,1)
+  mat2 <- cbind(mat,rs,rp)
+  mat3 <- rbind(mat2,c(cs,sum(mat),NA),c(cp,NA,NA))
+  
+  rowsnames <- c(paste(colnames(mat),"(predit)"),"Total", "%")
+  colsnames <- c("",paste(colnames(mat),"(reel)"),"Total", "%")
+  
+  mat4 <- cbind(rowsnames, mat3)
+  mat5 <- rbind(colsnames, mat4)
+  print(kable(mat5,
+        row.names = F
+  ))
+  
+  ## calcule des indicateurs pour chaque categorie
+  precision <- diag(mat) / rowSums(mat)
+  rappel <- diag(mat) / colSums(mat)
+  F1 <- 2*((precision*rappel)/(precision + rappel))
+  
+  macro_scores <- c(weighted.mean(precision,colSums(mat)),
+                    weighted.mean(rappel,colSums(mat)),
+                    weighted.mean(F1,colSums(mat)))
+  
+  final_table <- rbind(cbind(precision,rappel,F1),macro_scores)
+  final_table <- rbind(final_table, c(info[[3]][[2]],NA,NA), c(info[[3]][[6]],NA,NA))
+  rnames <- c(rownames(mat),"macro","Kappa","Valeur de p  (prÃ©cision > NIR)")
+  final_table <- cbind(rnames,round(final_table,2))
+  
+  print(kable(final_table, row.names =F))
+  return(list("confusion_matrix" = mat5,
+         "indicators" = final_table))
+  
+}
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### Afficher les coeff de models (glm, vglm) ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+## fonction pour cleaner les colonnes
+
+clean_columns <- function(tableau, digits){
+  for(i in 1:length(digits)){
+    d <- digits[[i]]
+    if(is.na(d)==F){
+      col <- tableau[,i]
+      #nettoyer les 0
+      test1 <- col == "0"
+      col[test1] <- paste("<0.",paste(rep("0",(d-1)),collapse=""),"1",sep="")
+      #nettoyer les arrondis trop intenses
+      col <- sapply(col,function(t){
+        if (grepl(".",t,fixed = T)){
+          dig <- strsplit(t,".",fixed=T)[[1]][[2]]
+          if(nchar(dig) == d){
+            return(t)
+          }else{
+            dif <- d - nchar(dig)
+            newt <- paste(t,paste(rep("0",dif),collapse=""),sep="")
+          }
+          return(newt)
+        }else if (t == "1"){
+          newt <- paste("1.",paste(rep("0",d),collapse=""),sep="")
+        }else{
+          return(t)
+        }
+      })
+      tableau[,i] <- col
+    }
+  }
+  return(tableau)
+}
+
+sign_col <- function(tableau){
+  i<-match("val .p", colnames(tableau))
+  col <- tableau[,i]
+  sign <- sapply(col, function(j){
+    if(j == "--"){
+      return("--")
+    }else if (j == ""){
+      return("")
+    }else{
+      num <- as.numeric(gsub("<","",j, fixed=T))
+      if(num<=0.001){
+        return("***")
+      }else if (num <= 0.01){
+        return("**")
+      }else if (num <= 0.05){
+        return("*")
+      }else if (num <= 0.1){
+        return(".")
+      }else {
+        return("")
+      }
+    }
+  })
+  return(sign)
+}
+
+## fonction generale
+build_table <- function(model, confid = T, sign = T, coef_digits = 2, std_digits = 2, z_digits = 2, p_digits = 3, OR_digits = 3){
+  
+  if (class(model)[[1]]=="vglm"){
+    tableau <- build_table.vglm(model, confid = confid, coef_digits = coef_digits, std_digits = std_digits, z_digits = z_digits, p_digits = p_digits, OR_digits = p_digits)
+  }else if(class(model)[[1]] %in% c("glm","lm")){
+    tableau <- build_table.glm(model, confid = confid, coef_digits = coef_digits, std_digits = std_digits, z_digits = z_digits, p_digits = p_digits, OR_digits = p_digits)
+  }else if(class(model)[[1]] == "gam"){
+    tableau <- build_table.gam(model, confid = confid, coef_digits = coef_digits, std_digits = std_digits, z_digits = z_digits, p_digits = p_digits, OR_digits = p_digits)
+  }
+  
+  if(sign){
+    if (class(tableau) == "matrix"){
+      newcol <- sign_col(tableau)
+      new_names <- c(colnames(tableau),"Signif. codes")
+      tableau <- cbind(tableau, newcol)
+      colnames(tableau) <- new_names
+      rownames(tableau) <- NULL
+    }else {
+      tableau <- lapply(tableau, function(t1){
+        newcol <- sign_col(t1)
+        new_names <- c(colnames(t1),"Signif. codes")
+        t1 <- cbind(t1, newcol)
+        colnames(t1) <- new_names
+        rownames(t1) <- NULL
+        return(t1)
+      })
+    }
+  }
+  
+  return(tableau)
+  
+}
+
+## pour un glm
+build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, z_digits = 2, p_digits = 3, OR_digits = 3){
+  ## extraction des elements principaux
+  base_table <- summary(model)$coefficients
+  
+  ## calcule des intervale de confiance sur les coeffs
+  if(confid){
+    base_table <- cbind(base_table, round(confint(model),coef_digits))
+  }
+  
+  ## si fonction de lien = logit : OR
+  if(class(model)=='glm'){
+    if (model$family$link == "logit"){
+      base_table <- cbind(base_table[,1], round(exp(base_table[,1]),OR_digits) , base_table[,2:ncol(base_table)])
+      if(confid){
+        n <- ncol(base_table)
+        base_table <- cbind(base_table, round(exp(base_table[,c(n-1,n)]), OR_digits))
+      }
+    }else if (model$family$link == "log"){
+      base_table <- cbind(base_table[,1], round(exp(base_table[,1]),coef_digits),base_table[,2:ncol(base_table)])
+      if (confid){
+        n <- ncol(base_table)
+        base_table <- cbind(base_table, round(exp(base_table[,c(n-1,n)]), coef_digits))
+      }
+    }
+  }
+  
+  
+  ## gerer les arrondis
+  base_table[,1] <- round(base_table[,1], coef_digits)
+  i<-match("Std. Error", colnames(base_table))
+  base_table[,i] <- round(base_table[,i], std_digits)
+  
+  testt <- i<-match("t value", colnames(base_table))
+  
+  if(is.na(testt)){
+    i<-match("z value", colnames(base_table))
+    base_table[,i] <- round(base_table[,i], z_digits)
+    i<-match("Pr(>|z|)", colnames(base_table))
+    base_table[,i] <- round(base_table[,i], p_digits)
+  }else{
+    i<-match("t value", colnames(base_table))
+    base_table[,i] <- round(base_table[,i], z_digits)
+    i<-match("Pr(>|t|)", colnames(base_table))
+    base_table[,i] <- round(base_table[,i], p_digits)
+  }
+  
+  params_names <- as.character(model$terms)
+  params_names <- params_names[3:length(params_names)]
+  params_names <- strsplit(params_names," + ", fixed = T)[[1]]
+  params_types <- sapply(params_names, function(i){
+    if(class(model)=="lm"){
+      return(class(model$model[[i]]))
+    }else{
+      return(class(model$data[[i]]))
+    }
+    
+  })
+  
+  params_names <- c("Intercept",params_names)
+  params_types <- c("numeric", params_types)
+  
+  ## creation d'un beau tableau
+  allrows <- lapply(1:length(params_names), function(i){
+    pname <- params_names[[i]]
+    ptype <- params_types[[i]]
+    rn <- rownames(base_table)
+    if(ptype %in% c("character","factor")){
+      rows <- base_table[grepl(pname,x = rn,fixed = T),]
+      uvalues <- unique(as.character(model$data[[pname]]))
+      if(length(uvalues)>2){
+        new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
+      }else{
+        oldname <- rn[grepl(pname,x = rn,fixed = T)]
+        new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
+      }
+      ref <- unique(uvalues[! uvalues %in% new_names])
+      new_table <- rbind("--", rows)
+      new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+      row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
+      new_table <- rbind(row1,new_table)
+      return(new_table)
+    }
+    if(ptype %in% c("integer", "double", "numeric")){
+      if(pname == "Intercept"){
+        row <- base_table[rn=="(Intercept)",]
+      }else{
+        row <- base_table[rn==pname,]
+      }
+      row <- c(pname, row)
+      return(row)
+    }
+  })
+  
+  if(is.na(testt)){
+    letter <- "z"
+  }else{
+    letter <- "t"
+  }
+  
+  final_table <- do.call(rbind,allrows)
+  if(class(model)!="lm"){
+    if(model$family$link == "logit" & confid){
+      colnames(final_table) <- c("variable", "coefficient", "OR",
+                                 "err. std",paste("val.",letter), "val .p",
+                                 "coeff 2.5%", "coeff 97.5%",
+                                 "OR 2.5%", "oR 97.5%")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                  z_digits,p_digits,coef_digits,coef_digits,
+                                                  OR_digits,OR_digits))
+      
+    }else if (model$family$link == "logit" & confid==F){
+      colnames(final_table) <- c("variable", "coefficient", "OR",
+                                 "err. std",paste("val.",letter), "val .p")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                  z_digits,p_digits))
+      
+    }else if(model$family$link == "log" & confid){
+      colnames(final_table) <- c("variable", "coefficient", "exp(coeff)",
+                                 "err. std",paste("val.",letter), "val .p",
+                                 "coeff 2.5%", "coeff 97.5%",
+                                 "exp(coeff 2.5%)", "exp(coeff 97.5%)")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, coef_digits, std_digits,
+                                                  z_digits,p_digits,coef_digits,coef_digits,
+                                                  coef_digits,coef_digits))
+      
+    }else if (model$family$link == "logit" & confid==F){
+      colnames(final_table) <- c("variable", "coefficient", "exp(coeff)",
+                                 "err. std",paste("val.",letter), "val .p")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, coef_digits, std_digits,
+                                                  z_digits,p_digits))
+      
+    }else if(confid){
+      colnames(final_table) <- c("variable", "coefficient",
+                                 "err. std",paste("val.",letter), "val .p",
+                                 "coeff 2.5%", "coeff 97.5%")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                  z_digits,p_digits, coef_digits, coef_digits))
+      
+    }else if(confid==F){
+      colnames(final_table) <- c("variable", "coefficient",
+                                 "err. std",paste("val.",letter), "val .p")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                  z_digits,p_digits))
+    }
+    
+  }else{
+    if(confid){
+      colnames(final_table) <- c("variable", "coefficient",
+                                 "err. std",paste("val.",letter), "val .p",
+                                 "coeff 2.5%", "coeff 97.5%")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                  z_digits,p_digits, coef_digits, coef_digits))
+    }else if(confid==F){
+      colnames(final_table) <- c("variable", "coefficient",
+                                 "err. std",paste("val.",letter), "val .p")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                  z_digits,p_digits))
+    }
+    
+  }
+  
+  rownames(final_table) <- NULL
+  return(final_table)
+}
+
+## pour un gam
+build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, z_digits = 2, p_digits = 3, OR_digits = 3){
+  ## extraction des elements principaux
+  base_table <- summary(model)
+  coeffs <- model$coefficients
+  test <- grepl("s(",names(coeffs),fixed=T) == F
+  base_table <- cbind(coeffs[test],
+                      base_table$se[test],
+                      base_table$p.t[test],
+                      base_table$p.pv[test]
+                      )
+  colnames(base_table) <- c("Estimate","Std. Error", "z value","Pr(>|z|)")
+  
+  ## calcule des intervale de confiance sur les coeffs
+  if(confid){
+    base_table <- cbind(base_table, round(hand_contint.gam(model),coef_digits))
+  }
+  
+  ## si fonction de lien = logit : OR
+  if (model$family$link == "logit"){
+    base_table <- cbind(base_table[,1], round(exp(base_table[,1]),OR_digits) , base_table[,2:ncol(base_table)])
+    if(confid){
+      n <- ncol(base_table)
+      base_table <- cbind(base_table, round(exp(base_table[,c(n-1,n)]), OR_digits))
+    }
+  }else if (model$family$link == "log"){
+    base_table <- cbind(base_table[,1], round(exp(base_table[,1]),coef_digits) , base_table[,2:ncol(base_table)])
+    if(confid){
+      n <- ncol(base_table)
+      base_table <- cbind(base_table, round(exp(base_table[,c(n-1,n)]), coef_digits))
+    }
+  }else if (as.character(model$family)[[1]] == "ziplss"){
+    base_table <- cbind(base_table[,1], round(exp(base_table[,1]),coef_digits) , base_table[,2:ncol(base_table)])
+    if(confid){
+      n <- ncol(base_table)
+      base_table <- cbind(base_table, round(exp(base_table[,c(n-1,n)]), coef_digits))
+    }
+  }
+  
+  ## gerer les arrondis
+  base_table[,1] <- round(base_table[,1], coef_digits)
+  i<-match("Std. Error", colnames(base_table))
+  base_table[,i] <- round(base_table[,i], std_digits)
+  i<-match("z value", colnames(base_table))
+  base_table[,i] <- round(base_table[,i], z_digits)
+  i<-match("Pr(>|z|)", colnames(base_table))
+  base_table[,i] <- round(base_table[,i], p_digits)
+  
+  if(as.character(model$family)[[1]] %in% c("ziplss")){
+    params_names <- strsplit(as.character(model$formula)[[1]]," ~ ", fixed = T)[[1]][[2]]
+    params_names2 <- as.character(model$formula)[[2]]
+    params_names <- strsplit(params_names," + ", fixed = T)[[1]]
+    params_names2 <- strsplit(params_names2," + ", fixed = T)[[1]]
+    params_names2 <- params_names2[2:length(params_names2)]
+    params_names <- params_names[grepl("s(",params_names, fixed=T)==F]
+    params_names2 <- params_names2[grepl("s(",params_names2, fixed=T)==F]
+    params_types <- sapply(params_names, function(i){
+      class(model$model[[i]])
+    })
+    params_types2 <- sapply(params_names2, function(i){
+      class(model$model[[i]])
+    })
+    params_names <- c("Intercept",params_names)
+    params_types <- c("numeric", params_types)
+    params_names2 <- c("Intercept",params_names2)
+    params_types2 <- c("numeric", params_types2)
+    
+  }else{
+    params_names <- as.character(model$formula)
+    params_names <- params_names[3:length(params_names)]
+    params_names <- strsplit(params_names," + ", fixed = T)[[1]]
+    params_names <- params_names[grepl("s(",params_names, fixed=T)==F]
+    params_types <- sapply(params_names, function(i){
+      class(model$model[[i]])
+    })
+    params_names2 <- NULL
+    params_names <- c("Intercept",params_names)
+    params_types <- c("numeric", params_types)
+  }
+  
+  
+  ## creation d'un beau tableau
+  allrows <- lapply(1:length(params_names), function(i){
+    pname <- params_names[[i]]
+    ptype <- params_types[[i]]
+    rn <- rownames(base_table)
+    if(ptype %in% c("character","factor")){
+      rows <- base_table[grepl(pname,x = rn,fixed = T) & grepl(".1",x=rn,fixed=F)==F,]
+      uvalues <- unique(as.character(model$data[[pname]]))
+      if(length(uvalues)>2){
+        new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
+      }else{
+        oldname <- rn[grepl(pname,x = rn,fixed = T)]
+        new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
+      }
+      ref <- unique(uvalues[! uvalues %in% new_names])
+      new_table <- rbind("--", rows)
+      new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+      row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
+      new_table <- rbind(row1,new_table)
+      return(new_table)
+    }
+    if(ptype %in% c("integer", "double", "numeric")){
+      if(pname == "Intercept"){
+        row <- base_table[rn=="(Intercept)",]
+      }else{
+        row <- base_table[rn==pname,]
+      }
+      row <- c(pname, row)
+      return(row)
+    }
+  })
+  
+  final_table <- do.call(rbind,allrows)
+  
+  if(is.null(params_names2)==F){
+    allrows2 <- lapply(1:length(params_names2), function(i){
+      pname <- params_names2[[i]]
+      ptype <- params_types2[[i]]
+      rn <- rownames(base_table)
+      if(ptype %in% c("character","factor")){
+        rows <- base_table[grepl(pname,x = rn,fixed = T) & grepl(".1",x=rn,fixed=F)==T,]
+        uvalues <- unique(as.character(model$data[[pname]]))
+        if(length(uvalues)>2){
+          new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
+        }else{
+          oldname <- rn[grepl(pname,x = rn,fixed = T)]
+          new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
+        }
+        ref <- unique(uvalues[! uvalues %in% new_names])
+        new_table <- rbind("--", rows)
+        new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+        row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
+        new_table <- rbind(row1,new_table)
+        return(new_table)
+      }
+      if(ptype %in% c("integer", "double", "numeric")){
+        if(pname == "Intercept"){
+          row <- base_table[rn=="(Intercept).1",]
+        }else{
+          row <- base_table[rn==paste(pname,".1",sep=""),]
+        }
+        row <- c(pname, row)
+        return(row)
+      }
+    })
+    
+    final_table2 <- do.call(rbind,allrows2)
+    if(confid){
+      colnames(final_table2) <- c("variable", "coefficient", "OR",
+                                  "err. std","val. z", "val .p",
+                                  "coeff 2.5%", "coeff 97.5%",
+                                  "OR 2.5%", "OR 97.5%")
+      final_table <- final_table[,c(1,2,3,4,5,6,7,8,9,10)]
+      
+      final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                  z_digits,p_digits, coef_digits, coef_digits, 
+                                                  OR_digits, OR_digits))
+      
+      colnames(final_table) <- c("variable", "coefficient", "exp(coeff)",
+                                 "err. std","val. z", "val .p",
+                                 "coeff 2.5%", "coeff 97.5%",
+                                 "exp(coeff) 2.5%", "exp(coeff) 97.5%")
+      final_table2 <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                  z_digits,p_digits, coef_digits, coef_digits, 
+                                                  OR_digits, OR_digits))
+    }else{
+      colnames(final_table2) <- c("variable", "coefficient", "OR",
+                                  "err. std","val. z", "val .p")
+      final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                  z_digits,p_digits))
+      final_table <- final_table[,c(1,2,3,4,5,6)]
+      colnames(final_table) <- c("variable", "coefficient", "exp(coeff)",
+                                 "err. std","val. z", "val .p")
+      final_table2 <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                   z_digits,p_digits))
+      
+    }
+    rownames(final_table2) <- NULL
+    rownames(final_table) <- NULL
+    return(list(final_table, final_table2))
+  }
+  
+  
+  if(model$family$link == "logit" & confid){
+    colnames(final_table) <- c("variable", "coefficient", "OR",
+                               "err. std","val. z", "val .p",
+                               "coeff 2.5%", "coeff 97.5%",
+                               "OR 2.5%", "oR 97.5%")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                z_digits,p_digits, coef_digits, coef_digits, 
+                                                OR_digits, OR_digits))
+    
+  }else if (model$family$link == "logit" & confid==F){
+    colnames(final_table) <- c("variable", "coefficient", "OR",
+                               "err. std","val. z", "val .p")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                z_digits,p_digits))
+    
+  }else if(model$family$link == "log" & confid){
+    colnames(final_table) <- c("variable", "coefficient", "exp(coeff)",
+                               "err. std","val. z", "val .p",
+                               "coeff 2.5%", "coeff 97.5%",
+                               "exp(coeff) 2.5%", "exp(coeff) 97.5%")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, coef_digits, std_digits,
+                                                z_digits,p_digits, coef_digits, coef_digits, 
+                                                coef_digits, coef_digits))
+    
+  }else if (model$family$link == "log" & confid==F){
+    colnames(final_table) <- c("variable", "coefficient", "exp(coeff)",
+                               "err. std","val. z", "val .p")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, coef_digits, std_digits,
+                                                z_digits,p_digits))
+    
+  }else if(confid){
+    colnames(final_table) <- c("variable", "coefficient",
+                               "err. std","val. z", "val .p",
+                               "coeff 2.5%", "coeff 97.5%")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                z_digits,p_digits,coef_digits,coef_digits))
+    
+  }else if(confid==F){
+    colnames(final_table) <- c("variable", "coefficient",
+                               "err. std","val. z", "val .p")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                z_digits,p_digits))
+  }
+  rownames(final_table) <- NULL
+
+  return(final_table)
+  
+}
+
+## pour un vglm
+build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2, z_digits = 2, p_digits = 3, OR_digits = 3){
+  ## extraction des elements principaux
+  base_table <- summary(model)@coef3
+  
+  ## calcule des intervale de confiance sur les coeffs
+  if(confid){
+    base_table <- cbind(base_table, round(confint(model),coef_digits))
+  }
+  
+  ## si fonction de lien = logit : OR
+  if (model@family@vfamily[[1]] %in% c("cumulative", "binomial")){
+    base_table <- cbind(base_table[,1], round(exp(base_table[,1]),OR_digits) , base_table[,2:ncol(base_table)])
+    if(confid){
+      n <- ncol(base_table)
+      base_table <- cbind(base_table, round(exp(base_table[,c(n-1,n)]), OR_digits))
+    }
+  }else if (model@family@vfamily[[1]] %in% c("gamma2")){
+    base_table <- cbind(base_table[,1],
+                        round(exp(base_table[,1]),coef_digits),
+                        base_table[,2:6]
+                        )
+  }
+  
+  ## gerer les arrondis
+  base_table[,1] <- round(base_table[,1], coef_digits)
+  i<-match("Std. Error", colnames(base_table))
+  base_table[,i] <- round(base_table[,i], std_digits)
+  i<-match("z value", colnames(base_table))
+  base_table[,i] <- round(base_table[,i], z_digits)
+  i<-match("Pr(>|z|)", colnames(base_table))
+  base_table[,i] <- round(base_table[,i], p_digits)
+  
+  params_names <- strsplit(as.character(model@terms)," ~ ")[[1]][[2]]
+  params_names <- strsplit(params_names," + ", fixed = T)[[1]]
+  params_types <- sapply(params_names, function(i){
+    class(model@model[[i]])
+  })
+  
+  
+  if(model@family@vfamily[[1]] == "cumulative"){
+    inter_names <- rownames(base_table)[grepl("(Intercept",rownames(base_table),fixed = T)]
+    params_names <- c(inter_names, params_names)
+    params_types <- c(rep("numeric", length(inter_names)),params_types)
+    
+    ##NB : dealing with not parallel elements
+    elements <- as.character(model@family@infos()$parallel[[3]])
+    if ("+" %in% elements){
+      not_paralelle <- elements[2:length(elements)]
+    }else{
+      not_paralelle <- elements
+    }
+    
+    test <- (params_names %in%  not_paralelle) == F
+    params_names <- params_names[test]
+    params_types <- params_types[test]
+    
+  }else{
+    params_names <- c("Intercept",params_names)
+    params_types <- c("numeric", params_types)
+  }
+    
+  ## creation d'un beau tableau
+  if(model@family@vfamily[[1]] == "gamma2"){
+    rownames(base_table)[1] <- "Intercept"
+    rownames(base_table)[2] <- "shape"
+  }
+  
+  rn <- rownames(base_table)
+  allrows <- lapply(1:length(params_names), function(i){
+    pname <- params_names[[i]]
+    ptype <- params_types[[i]]
+    if(ptype %in% c("character","factor")){
+      rows <- base_table[grepl(pname,x = rn,fixed = T),]
+      uvalues <- unique(as.character(model@model[[pname]]))
+      if(length(uvalues)>2){
+        new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
+      }else{
+        oldname <- rn[grepl(pname,x = rn,fixed = T)]
+        new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
+      }
+      ref <- unique(uvalues[! uvalues %in% new_names])
+      new_table <- rbind("--", rows)
+      new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+      row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
+      new_table <- rbind(row1,new_table)
+      return(new_table)
+    }
+    if(ptype %in% c("integer", "double", "numeric")){
+      if(pname == "Intercept"){
+        row <- base_table[rn=="(Intercept)",]
+      }else{
+        row <- base_table[rn==pname,]
+      }
+      row <- c(pname, row)
+      return(row)
+    }
+  })
+  
+  ## ajouter les lignes pour la fonction cumulative
+  if(model@family@vfamily[[1]] == "cumulative"){
+    k <- 1
+    more_rows <- lapply(not_paralelle,function(i){
+      type_param <- class(model@model[[i]])
+      if(type_param %in% c("character","factor")){
+        rows <- base_table[grepl(i,x = rn,fixed = T),]
+        uvalues <- unique(as.character(model@model[[i]]))
+        new_names <- gsub(pattern = i, x = row.names(rows), replacement = "", fixed = T)
+        new_names2 <- unique(sapply(new_names, function(j){strsplit(j,":",fixed=T)[[1]][[1]]}))
+        ref <- unique(uvalues[! uvalues %in% new_names2])
+        new_table <- rbind("--", rows)
+        new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+        row1 <- c(paste("*",i,"*",sep=""),rep("",ncol(new_table)-1))
+        new_table <- rbind(row1,new_table)
+      }
+      
+      if(type_param %in% c("integer", "double", "numeric")){
+        rows <- base_table[grepl(i,x = rn,fixed = T),]
+        rnames <- paste(paste(rep(i),":",sep=""),1:(ncol(model@y)-1), sep="")
+        new_table <- cbind(rnames, rows)
+      }
+      if(k == 1){
+        new_table <- rbind(rep("",ncol(new_table)),c("**Effets par niveau**", rep("",ncol(new_table)-1)), new_table)
+      }
+      
+      k <<- k + 1
+      return(new_table)
+    })
+    
+    allrows <- append(allrows,more_rows)
+  }
+  
+  ## ajouter les lignes pour le modele de gamma2
+  if(model@family@vfamily[[1]] == "gamma2"){
+    row2 <- base_table[grepl("shape",x = rn,fixed = T),]
+    row2 <- c("shape",row2)
+    row1 <- rep("",length(row2))
+    more_rows <- list(rbind(row1,row2))
+    allrows <- append(allrows,more_rows)
+  }
+  
+  
+  final_table <- do.call(rbind,allrows)
+  
+  if(model@family@vfamily[[1]] %in% c("cumulative", "binomial") & confid){
+    colnames(final_table) <- c("variable", "coefficient", "OR",
+                               "err. std","val. z", "val .p",
+                               "coeff 2.5%", "coeff 97.5%",
+                               "OR 2.5%", "oR 97.5%")
+    
+    final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                z_digits,p_digits, coef_digits, coef_digits, 
+                                                OR_digits, OR_digits))
+    
+  }else if (model@family@vfamily[[1]] %in% c("cumulative", "binomial") & confid==F){
+    colnames(final_table) <- c("variable", "coefficient", "OR",
+                               "err. std","val. z", "val .p")
+    
+    final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
+                                                z_digits,p_digits))
+    
+  }else if (model@family@vfamily[[1]] %in% c("gamma2") & confid==F){
+    colnames(final_table) <- c("variable", "coefficient", "exp(coefficient)",
+                               "err. std","val. z", "val .p")
+    
+    final_table <- clean_columns(final_table, c(NA, coef_digits, coef_digits, std_digits,
+                                                z_digits,p_digits))
+    
+  }else if (model@family@vfamily[[1]] %in% c("gamma2") & confid==T){
+    colnames(final_table) <- c("variable", "coefficient", "exp(coefficient)",
+                               "err. std","val. z", "val .p","coeff 2.5%", "coeff 97.5%")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, coef_digits, std_digits,
+                                                z_digits,p_digits,coef_digits,coef_digits))
+    
+  }else if(confid){
+    colnames(final_table) <- c("variable", "coefficient",
+                               "err. std","val. z", "val .p",
+                               "coeff 2.5%", "coeff 97.5%")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                z_digits,p_digits,coef_digits,coef_digits))
+  }else if(confid==F){
+    colnames(final_table) <- c("variable", "coefficient",
+                               "err. std","val. z", "val .p")
+    final_table <- clean_columns(final_table, c(NA, coef_digits, std_digits,
+                                                z_digits,p_digits))
+  }
+  rownames(final_table) <- NULL
+  return(final_table)
+}
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### calculer des intervals de confiance ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+hand_contint.gam <- function(model){
+  base_table <- summary(model)
+  coeffs <- model$coefficients
+  test <- grepl("s(",names(coeffs),fixed=T) == F
+  ok_coeff <- coeffs[test]
+  ok_se <- base_table$se[test]
+  freed <- length(model$y) -model$rank
+  mat <- cbind(
+    (ok_coeff - qt(0.975, df = freed) * ok_se),
+    (ok_coeff + qt(0.975, df = freed) * ok_se)
+  )
+  colnames(mat) <- c("2.5%","97.5%")
+  return(mat)
+  
+}
+
+
+```
+
+## Objectifs de la régression linéaire multiple et construction d'un modèle de régression {#sect051}
+
+Selon Tabachnich et Fidell [-@tabachnick2007], un modèle de régression permet de répondre à deux objectifs principaux relevant chacun d'une approche de modélisation particulière.
+
+La première approche tente d’identifier les relations entre une variable dépendante (VD) et plusieurs variables indépendantes (VI). Il s’agit alors d’identifier si ces relations sont positives ou négatives, significatives ou non et d'évaluer leur ampleur. La construction du modèle de régression doit alors reposer sur un cadre théorique et la formulation d’hypothèses entre chacune des VI et la VD.
+
+La seconde approche est exploratoire et très utilisée en *data mining* (forage ou fouille de données). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Par contre, ce type de démarche ne repose habituellement ni sur un cadre théorique, ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle de plus efficace possible afin de prédire (le plus précisement possible), à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle de régression final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée, que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. Or, à juste titre, Bressoux [-@bressoux2010] signale que « la causalité relève d'une interprétation théorique de la relation et celle-ci n'est jamais déterminée par les calculs statistiques ». D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
+
+
+::: {.bloc_attention data-latex=""}
+**Cadre conceptuel et élaboration d'un modèle de régression**
+
+Pour bien construire un modèle de régression, il convient de définir un cadre conceptuel élaboré suite à une revue de littérature sur votre sujet de recherche. Ce cadre conceptuel permettra d’identifier les dimensions et concepts clefs permettant d’expliquer le phénomène à l’étude. Par la suite, pour chacun de ces concepts ou dimensions, il sera alors possible 1) d’identifier les différentes variables indépendantes qui seront introduites dans le modèle et 2) de formuler pour chacune d’elles une hypothèse. Par exemple, pour telle ou telle variable explicative, on s’attendra qu’elle fasse augmenter ou diminuer significativement la variable dépendante. De nouveau, la formulation de cette hypothèse doit s'appuyer sur une interprétation théorique de la relation entre la VI et la VD.
+
+Prenons en guise d'exemple, une étude récente portant sur la multiexposition des cyclistes au bruit et à la pollution atmosphérique [@gelb2020modelling]. Brièvement, dans cet article, les auteurs s’intéressent aux caractéristiques de l’environnement urbain qui contribuent à augmenter ou réduire l’exposition des cyclistes à la pollution de l’air et au bruit routier. Pour ce faire, une collecte de données primaires a été réalisée avec trois cyclistes dans les rues de Paris du 4 au 7 septembre 2017. Au total, 64 heures et 964 kilomètres ont ainsi été parcourus à vélo afin de maximiser la couverture de la Ville de Paris et les types d'environnements urbains traversés.
+
+Leur cadre conceptuel est schématisé à la figure ci-dessous. Les deux variables indépendantes (à expliquer) sont l'exposition au dioxyde d'azote (NO<sub>2</sub>) et l'exposition au bruit (mesurée en décibel dB(A)). Avant d'identifier les caractéristiques de l'environnement urbain affectant ces deux expositions, plusieurs facteurs, dits **variables de contrôle**, sont considérées. Par exemple, la concentration de NO<sub>2</sub> varie en fonction des conditions météorologiques (vent, température, humidité) et de la pollution d'arrière-plan (selon le moment de la journée et journée de la semaine et la localisation géographique au sein de la ville). Ces dimensions doivent donc être contrôlées avant d'évaluer l'impact des caractéristiques du micro-environnement sur les expositions.
+
+Puis, ils identifient trois grandes dimensions de l'environnement urbain : les caractéristiques du segment (types de rues ou de voies cyclables empruntés, intersections traversées, pente et vitesse), celles de la forme urbaine (densité résidentielle, végétation, ouverture de la rue, occupations du sol) et celles du trafic (nombre et types de véhicules croisés, congestion, zones 30 km/h). Une fois ce cadre conceptuel proposé, il reste alors à identifier les variables qui permettent d'opérationnaliser chacune des caractéristiques des trois dimensions.
+
+```{r figcadreconcept, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Exemple de cadre conceptuel",  out.width='100%'}
+knitr::include_graphics('images/lm/CadreTheorique.jpg', dpi = NA)
+```
+
+**Notion de variables de contrôle *versus* variables explicatives**
+
+Dans un modèle de régression, on distingue habituellement trois types de variables : la variable dépendante (*Y*) que l'on souhaite prédire ou expliquer et les variables indépendantes (*X*) qui peuvent être, soit des variables de contrôle (*covariates* en anglais), soit des variables explicatives. Les premières sont souvent des facteurs qu'il faut prendre en compte avant d'évaluer nos variables d'intérêt (explicatives). 
+
+Dans l'exemple précédent, les chercheurs voulaient évaluer l'impact des caractéristiques de l'environnement urbain (variables explicatives) traversés par les cyclistes sur leurs expositions au dioxyde d'azote et au bruit, une fois contrôlés les effets de facteurs reconnus comme ayant un impact significatif sur la concentration de polluants comme les conditions météorologiques et la pollution d’arrière-plan. Autrement dit, si les variables de contrôle n'avaient pas été prise en compte, le modèle aurait été imparfait : l'ampleur des effets des caractéristiques de l'environnement urbain sur les expositions des cyclistes aurait alors été biaisée.
+
+Cela explique que certains chercheurs vont parfois construire un premier modèle avec uniquement les variables de contrôle, puis un second dans lequel sont ajoutées les variables explicatives.
+
+
+**Construction de modèles de régression imbriqués, incrémentiels**
+
+En lien avec le cadre conceptuel du modèle, il est fréquent de construire plusieurs modèles emboîtés. Par exemple, à partir du cadre conceptuel (figure \@ref(fig:figcadreconcept)), les auteurs auraient très bien pu construire quatre modèles :
+
+* un premier avec uniquement les variables de contrôle (modèle A)
+* un second incluant les variables de contrôle et les variables explicatives de la dimension des caractéristiques du segment (modèle B)
+* un troisième reprenant les variables du modèle B dans lequel sont introduites les variables explicatives relatives à la forme urbaine (modèle C)
+* un dernier modèle dans lequel sont ajoutées les variables explicatives relatives aux conditions du trafic (modèle D).
+
+L’intérêt d’une telle approche est qu'elle permet d’évaluer successivement l’apport explicatif de chacune des dimensions du modèle; nous y reviendrons dans la section \@ref(sect053).
+:::
+
+
+## Principe de base de la régression linéaire multiple {#sect052}
+
+### Un peu d'équations... {#sect0521}
+
+La régression linéaire simple vise à déterminer une équation qui résume le mieux les relations linéaires entre une variable dépendante (*Y*) et un ensemble de variables indépendantes (*X*). L'équation de régression s'écrit alors :
+
+\begin{equation}\footnotesize 
+y_i = \beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} +\ldots+ \beta_{k}x_{ki} + \epsilon_{i}
+(\#eq:regmultiple1)
+\end{equation}
+
+avec :
+
+* $y_i$ est la valeur de la variable dépendante *Y* pour l'observation *i*.
+* $\beta_{0}$ est la constante, soit la valeur prédite pour *Y* quand toutes variables indépendantes sont égales à 0.
+* $k$ est le nombre de variables indépendantes.
+* $\beta_{1}$ à  $\beta_{k}$ sont les coefficients de régression pour les variables indépendantes de 1 à *k* ($X_1$ à $X_k$). 
+* $\epsilon_{i}$ est le résidu pour l'observation de *i*, soit la partie de la valeur de $y_i$ qui n'est pas expliqué par le modèle de régression.
+
+Notez qu'il existe plusieurs écritures simplifiées de cette équation. D'une part, il est possible de ne pas indiquer l'observation *i* et de remplacer les lettres grecques *bêta* et *epsilon* ($\beta$ et $\epsilon$) par les lettres *b* et *e* :
+
+\begin{equation}\footnotesize 
+Y = b_{0} + b_{1}X_{1} + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+(\#eq:regmultiple2)
+\end{equation}
+
+D'autre part, cette équation peut être présentée sous forme matricielle. Rappelez-vous que pour chacune des *n* observations de l'échantillon, une équation est formulée :
+
+\begin{equation}\footnotesize 
+\left\{\begin{array}{l}
+y_{1}=\beta_{0}+\beta_{1} x_{1,1}+\ldots+\beta_{p} x_{1, k}+\varepsilon_{1} \\
+y_{2}=\beta_{0}+\beta_{1} x_{2,1}+\ldots+\beta_{p} x_{2, k}+\varepsilon_{2} \\
+\cdots \\
+y_{n}=\beta_{0}+a_{1} x_{n, 1}+\ldots+\beta_{p} x_{n, k}+\varepsilon_{n}
+\end{array}\right.
+(\#eq:regmultiple3)
+\end{equation}
+
+Par conséquent, sous forme matricielle, l'équation s'écrit :
+
+\begin{equation}\footnotesize
+\left(\begin{array}{c}
+y_{1} \\
+\vdots \\
+y_{n}
+\end{array}\right)=\left(\begin{array}{cccc}
+1 & x_{1,1} & \cdots & x_{1, k} \\
+\vdots & \vdots & \ddots & \vdots \\
+1 & x_{n, 1} & \cdots & x_{n, k}
+\end{array}\right)\left(\begin{array}{c}
+\beta_{0} \\
+\beta_{1} \\
+\vdots \\
+\beta_{k}
+\end{array}\right)+\left(\begin{array}{c}
+\varepsilon_{1} \\
+\vdots \\
+\varepsilon_{n}
+\end{array}\right)
+(\#eq:regmultiple4)
+\end{equation}
+
+ou tout simplement :
+
+\begin{equation}\footnotesize 
+Y = X\beta + \epsilon
+(\#eq:regmultiple5)
+\end{equation}
+
+avec :
+
+* $Y$ un vecteur de dimension $n \times 1$ pour la variable dépendante, soit une colonne avec *n* observations.
+* $X$ une matrice de dimension $n \times (k + 1)$ pour les *k* variables indépendantes, incluant une autre colonne (avec la valeur de 1 pour les *n* observations) pour la constante d'où $k + 1$.
+* $\beta$ un vecteur de dimension $k + 1$, soit les coefficients de régression pour les *k* variables et la constante. 
+* $\epsilon$ un vecteur de dimension $n \times 1$ pour les résidus.
+ 
+
+::: {.bloc_attention data-latex=""}
+Vous aurez compris que comme pour la régression linéaire simple (section \@ref(sect04143)), l'équation de la régression linéaire multiple comprend aussi une partie expliquée et une autre non expliquée (stochastique) par le modèle :
+
+\begin{equation}\footnotesize 
+Y  = \underbrace{\beta_{0} + \beta_{1}X_{i} + \beta_{2}X_{i} +\ldots+ \beta_{k}X_{k}}_{\mbox{partie expliquée par le modèle}}+ \underbrace{\epsilon}_{\mbox{partie non expliquée (stochastique)}}
+(\#eq:regmultiple6)
+\end{equation}
+
+\begin{equation}\footnotesize 
+Y  = \underbrace{b_{0} + b_{1}X_{1} + b_{2}X_{2} +\ldots+ b_{k}X_{k}}_{\mbox{partie expliquée par le modèle}}+ \underbrace{e}_{\mbox{partie non expliquée (stochastique)}}
+(\#eq:regmultiple7)
+\end{equation}
+
+\begin{equation}\footnotesize 
+Y  = \underbrace{X\beta}_{\mbox{partie expliquée par le modèle}}+ \underbrace{\epsilon}_{\mbox{partie non expliquée (stochastique)}}
+(\#eq:regmultiple8)
+\end{equation}
+:::
+
+ 
+### Les hypothèses de la régression linéaire multiples {#sect0522}
+
+
+## Mesurer la qualité d’ajustement du modèle {#sect053}
+
+Pour décrire la régression linéaire multiple, nous utilisons un jeu de données tiré d'un article portant sur la distribution spatiale de la végétation sur l'île de Montréal abordée sous l'angle de l'équité environnementale [@apparicio2016spatial]. Dans cette étude, les auteurs veulent vérifier si certains groupes de population (personnes à faible revenu, minorités visibles, personnes âgées et enfants de moins de 15 ans) ont ou non une accessibilité plus limitée à la végétation urbaine. En d’autres termes, cet article tente de répondre à la question suivante : une fois contrôlées les caractéristiques de la forme urbaine (densité de population et âge du bâti), est-ce que les quatre groupes de population résident dans des îlots urbains avec proportionnellement moins ou plus de végétation ?
+
+Dans le tableau \@ref(tab:datareg), sont reportées les variables utilisées (calculées au niveau des îlots de l'île de Montréal) introduite dans le modèle de régression : 
+
+* le pourcentage de la superficie de l'îlot couverte par de la végétation, soit la variable indépendante  (VI);
+* deux variables indépendantes de contrôle (VC) relatives à la forme urbaine;
+* les pourcentages des quatre groupes de population comme variables indépendantes explicatives (VE).
+
+
+```{r datareg, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+library("foreign")
+load("data/lm/DataVegetation.RData")
+
+vars <- c("VegPct","HABHA","AgeMedian","Pct_014","Pct_65P","Pct_MV","Pct_FR")
+intitule <- c("Végétation (%)","Habitants au km2","Âge médian des bâtiments","Moins de 15 ans (%)","65 et plus ans (%)","Minorités visible (%)","Personnes à faible revenu (%)")
+type <- c("VD","VC","VC","VE","VE","VE","VE")
+
+moy <- round(sapply(DataFinal[vars], mean),1)
+et <- round(sapply(DataFinal[vars], sd),1)
+q1 <- round(sapply(DataFinal[vars], quantile)[2,],1)
+q2 <- round(sapply(DataFinal[vars], median),1)
+q3 <- round(sapply(DataFinal[vars], quantile)[4,],1)
+
+stats <- data.frame(cbind(moy, et, q1, q2, q3))
+stats <- cbind(vars, intitule, type, stats)
+
+show_table(stats,
+           digits = 1,
+            caption = 'Statistiques descriptives pour les variables du modèle',
+           col.names=c("Nom","Intitulé","Type", "Moy.", "E.-T.", "Q1", "Q2", "Q3"),
+           align= c("l","l","c", "r", "r", "r", "r", "r")
+           )
+```
+
+
+### Mesurer la qualité d'un modèle {#sect0531}
+
+Comme pour la régression linéaire simple (section \@ref(sect04143)), les trois mesures les plus couramment utilisées pour évaluer la qualité d'un modèle sont :
+
+* Le **coefficient de détermination** (R^2^) qui indique la proportion de la variance de la variable dépendante expliquée par les variables indépendantes du modèle (équation \@ref(eq:regmR2)). Il varie ainsi de 0 à 1.
+
+* La **statistique de Fisher** qui permet d'évaluer la significativité globale du modèle (équation \@ref(eq:regmFFisher)). Dans le cas d'une régression linéaire multiple, l'hypothèse nulle du test *F* stipule que toutes les valeurs des coefficients de régression des variables indépendantes sont égales à 0; autrement dit, que les variables indépendantes n'ont aucun effet sur la variable dépendante. Tel que signalé à la section \@ref(sect04143), il est possible d'obtenir une valeur *P* rattachée avec la statistique F avec *k* degrés de liberté au dénominateur et *n-k-1* degrés de liberté au numérateur (*k* et *n* étant respectivement le nombre de variables indépendantes et le nombre d'observations). Lorsque la valeur de P est inférieure à 0,05, on pourra en conclure que le modèle est globalement significatif, c'est-à-dire qu'un ou plusieurs coefficients de régression sont significativement différents de zéro. Notez qu'il est plutôt rare qu'un modèle de régression, comprenant plusieurs variables indépendantes, soit globalement non significatif (P>0,05), et ce, surtout s'il est basé sur un cadre conceptuel et théorique solide.
+
+* **L'erreur quadratique moyenne (RMSE)** qui indique l'erreur absolue moyenne du modèle exprimée dans l'unité de mesure de la variable dépendante ou autrement dit, l'écart absolu moyen est les valeurs observées et prédites du modèle (équation \@ref(eq:regmRMSE)).
+
+
+::: {.bloc_attention data-latex=""}
+**Rappel sur la décomposition de la variance et calcul du $R^2$, de la statistique F et du RMSE**
+
+Rappelez-vous que la variance totale (SCT) est égale à la somme de la variance expliquée (SCE) par le modèle et de la variance non expliquée (SCR) par le modèle.
+
+\begin{equation}\footnotesize 
+\underbrace{\sum_{i=1}^n (y_{i}-\bar{y})^2}_{\mbox{variance de Y}} = \underbrace{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}_{\mbox{var. expliquée}} + \underbrace{\sum_{i=1}^n (y_{i}-\widehat{y})^2}_{\mbox{var. non expliquée}} \Rightarrow 
+SCT = SCE + SCR
+(\#eq:regmVariances)
+\end{equation}
+
+avec :
+
+* $y_{i}$ est la valeur observée de la variable dépendante pour *i*;
+* $\bar{y}$ est la valeur moyenne de la variable dépendante;
+* $\widehat{y}_i$ est la valeur prédite de la variable dépendante pour *i*.
+
+À partir des variance totale, expliquée et non expliquée, il est alors possible de calculer les trois mesures de la qualité d'ajustement du modèle.
+
+\begin{equation}\footnotesize 
+R^2 = \frac{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}{\sum_{i=1}^n (y_{i}-\bar{y})^2} = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
+(\#eq:regmR2)
+\end{equation}
+
+\begin{equation}\footnotesize 
+F = \frac{\frac{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}{k}}{\frac{\sum_{i=1}^n (y_{i}-\widehat{y})^2}{n-k-1}} = \frac{\frac{SCE}{k}}{\frac{SCR}{n-k-1}} = \frac{\frac{R^2}{k}} {\frac{1-R^2}{n-k-1}} = \frac{(n-k-1)R^2}{k(1-R^2)}
+(\#eq:regmFFisher)
+\end{equation}
+
+\begin{equation}\footnotesize 
+RMSE = \frac{\sqrt{\sum_{i=1}^n (y_{i}-\widehat{y})^2}}{n} = \frac{\sqrt{SCR}}{n}
+(\#eq:regmRMSE)
+\end{equation}
+:::
+
+Globalement, plus un modèle de régression est efficace, plus les valeurs du R^2^ et de la statistique F sont élevées et inversement, plus celle de RMSE sera faible. En effet, remarquez qu'à l'équation \@ref(eq:regmFFisher), la statistique F peut être obtenue à partir du R^2^; par conséquent, plus la valeur du R^2^ est forte (proche de 1), plus celle de F est aussi élevée. Notez aussi que plus un modèle est performant, plus la partie expliquée par le modèle (SCE) est importante et plus celle non expliquée (SCR) est faible; ce qui signifie que plus le R^2^ est proche de 1 (équation \@ref(eq:regmR2)), plus le RMSE – calculé à partir du SCR – est faible (équation \@ref(eq:regmRMSE)).
+
+La syntaxe R ci-dessous illustre comment calculer les différentes variances (SCT, SCE et SCR) à partir des valeurs observées et prédites par le modèle, puis les valeurs du R^2^, de F et du RMSE. Nous verrons par la suite qu'il est possible d'obtenir directement ces valeurs à partir de la fonction `summary(VotreModele)`.
+
+```{r dataregcalculs, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+
+# Construction du modèle de régression
+Modele1 <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+# Nombre d'observations 
+n <- nrow(DataFinal)
+
+# Nombre de variables indépendantes (coefficients moins la constante)
+k <- length(Modele1$coefficients)-1
+
+# Vecteur pour les valeurs observées
+Yobs <- DataFinal$VegPct
+
+# Vecteur pour les valeurs prédites
+Ypredit <- Modele1$fitted.values
+
+# Variance totale
+SCT <- sum((Yobs-mean(Yobs))^2)
+
+# Variance expliquée
+SCE <- sum((Ypredit-mean(Yobs))^2)
+
+# Variance expliquée
+SCR <- sum((Yobs-Ypredit)^2)
+
+#  Calcul du coefficient de détermination (R2)
+R2 <- SCE / SCT
+
+#  Calcul la valeur de F
+valeurF <- (R2 / k) /((1-R2)/(n-k-1))
+
+cat("\nR2 =", round(SCE / SCT,4),
+    "\nF de Fisher = ", round(valeurF,0),
+    "\nRMSE =", round(sqrt(SCR) / n,4)
+    )
+```
+
+
+### Comparer des modèles incrémentiels {#sect0532}
+
+Tel que signalé plus haut, il est fréquent de construire plusieurs modèles de régression imbriqués. Cette démarche est très utile pour évaluer l'apport de l'introduction d'une nouveau bloc de variables dans un modèle. De manière exploratoire, cela permet également de vérifier si l'introduction d'une variable indépendante supplémentaire dans un modèle a ou non un apport significatif et ainsi décider de la conserver ou non dans le modèle final. 
+
+Habituellement, plus on ajoute de variables supplémentaires dans un modèle, plus le R^2^ augmente. On ne peut donc pas utiliser directement le R^2^ pour comparer deux modèles de régression ne comprenant pas le même nombre de variables indépendantes. On préviligera alors l'utilisation du R^2^ ajusté qui, tel qu'illustré dans l'équation \@ref(eq:R2ajuste), tient compte à la fois du nombre d'observations et de variables indépendantes utilisés pour construire le modèle.
+
+\begin{equation}\footnotesize 
+R^2_{ajusté}= 1 - \frac{(1-R^2)(n-1)}{n-k-1} \mbox{ avec } R^2{ajusté} \in \left[0,1\right]
+(\#eq:R2ajuste)
+\end{equation}
+
+Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif ? Pour y répondre, il convient de comparer les valeurs des statistiques F des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de P qui lui est associée avec comme degrés de liberté le nombre de prédicteurs ajouté ($k_2-k_1$) et $n-k_2-1$. Si la valeur de P<0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5%). 
+
+
+\begin{equation}\footnotesize 
+F_{incrémentiel}= \frac{\frac{R^2_2-R^2_1}{k_2-k_1}} {\frac{1-R^2_2}{n-k_2-1}}
+(\#eq:Fincrementiel)
+\end{equation}
+:::
+
+avec $R^2_1$ et $R^2_2$ étant les coefficients de détermination des modèles 1 et 2 et $k_1$ et $k_2$ étant les nombres de variables indépendantes qu'ils comprennent ($k_2 > k_1$).
+
+Illustrons le tout avec deux modèles. Dans la syntaxe R ci-dessous, nous avons construit un premier modèle avec uniquement les variables de contrôle (`modele1`), comprenant uniquement deux variables indépendantes (`HABHA` et `AgeMedian`). Puis, dans un second modèle (`modele2`), nous ajoutons comme variables indépendantes les pourcentages des quatre groupes de population (`Pct_014`, `Pct_65P`, `Pct_MV`, `Pct_FR`). Repérez comment sont calculés les R^2^ ajustés pour les modèles et le F incrémentiel.
+
+Le R^2^ ajusté passe de 0,269 à 0,418 des modèles 1 à 2 signalant que l'ajout des quatre variables indépendantes augmente considérablement la variance expliquée. Autrement dit, le second modèle est bien plus performant. Le F incrémentiel s'élève à 653,8 et est significatif (P < 0,001). Notez que la syntaxe ci-dessous illustre comment calculer les valeurs du R^2^ ajusté et du F incrémentiel à partir des équations \@ref(eq:R2ajuste) et \@ref(eq:Fincrementiel). Sachez toutefois qu'il est possible d'obtenir directement le R^2^ ajusté avec la fonction `summary(VotreModele)` et le F incrémentiel avec la fonction `anova(modele1, modele2)`. 
+
+```{r dataregcalculs2, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+modele1 <- lm(VegPct ~ HABHA+AgeMedian, data = DataFinal)
+modele2 <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+# nombre d'observations pour les deux modèles
+n1 <- length(modele1$fitted.values)
+n2 <- length(modele2$fitted.values)
+
+# nombre de variables indépendantes
+k1 <- length(modele1$coefficients)-1
+k2 <- length(modele2$coefficients)-1
+
+# coefficient de détermination
+R2m1 <- summary(modele1)$r.squared
+R2m2 <- summary(modele2)$r.squared
+
+# coefficient de détermination ajusté
+R2ajustm1 <- 1-(((n1-1)*(1-R2m1)) / (n1-k1-1))
+R2ajustm2 <- 1-(((n2-1)*(1-R2m2)) / (n2-k2-1))
+
+# Statistique F
+Fm1 <- summary(modele1)$fstatistic[1]
+Fm2 <- summary(modele2)$fstatistic[1]
+
+# F incrementiel
+Fincrementiel <- ((R2m2-R2m1) / (k2 - k1)) / ( (1-R2m2)/(n2-k2-1))
+pFinc <- pf(Fincrementiel, k2-k1, n2-k2-1, lower.tail = FALSE)
+
+cat("\nR2 (modèle 1) =", round(R2m1,4), 
+    "; R2 ajusté = ", round(R2ajustm1,4), 
+    "; F =", round(Fm1, 1),
+    "\nR2 (modèle 2) =", round(R2m2,4), 
+    "; R2 ajusté = ", round(R2ajustm2,4), 
+    "; F =", round(Fm2, 1),
+    "\nF incrémentiel =", round(Fincrementiel,1), 
+    "; P = ", round(pFinc,3)
+)
+
+# F incrémentiel avec la fonction anova
+anova(modele1, modele2)
+```
+
+
+## Les différentes mesures pour les coefficients de régression {#sect054}
+
+Pour décrire les différentes mesures d'une régression linéaire, nous avons construit un modèle avec comme variable dépendante le pourcentage de la superficie de l'îlot couverte par de la végétation et six variables indépendantes. L'équation du modèle s'écrit alors :
+
+`VegPct ~ HABHA + AgeMedian + Pct_014 + Pct_65P + Pct_MV + Pct_FR`.
+
+La fonction `summary(nom du modèle)` permet d'obtenir les sorties du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 qui signale que les prédicteurs du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
+
+
+```{r dataregmodel1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+modelereg <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+summary(modelereg)
+```
+
+### Les coefficients de régression : évaluer l'effet des variables indépendantes {#sect0541}
+
+Les différentes sorties pour les coefficients sont reportées au tableau \@ref(tab:dataregmodel2). 
+
+**La constante** ($\beta_0$) est la valeur que prend la variable dépendante (*Y*) quand les valeurs de toutes les variables indépendantes sont égales à 0. Pour ce modèle, quand les variables indépendantes sont égales à 0, plus du quart de la superficie des îlots serait en moyenne couverte par de la végétation ($\beta_0=$26,36). 
+
+**Le coefficient de régression** ($\beta_1$ à $\beta_k$) indique le changement de la variable dépendante (*Y*) lorsque la variable indépendante augmente d'une unité, toutes choses étant égales par ailleurs. Il permet ainsi d'évaluer l'effet d'une augmentation d'une unité dans laquelle est mesurée sur la VI sur la VD.
+
+::: {.bloc_attention data-latex=""}
+**Que signifie l'expression *toutes choses étant égales par ailleurs* pour un coefficient de régression ?**
+
+Cela signifie que l'on estime l'effet de la variable indépendante sur la variable dépendante, si toutes les autres variables indépendantes restaient constantes ou autrement dit, une fois contrôlés tous les autres prédicteurs. 
+
+Avec les nombreuses équations intégrées dans le livre, vous apprenez peu à peu l'alphabet grec (alpha, bêta, gamma, phi, epsilon, etc.). Passons désormais au latin ! En fait, *toutes choses étant égales par ailleurs* est la traduction de l'expression latine *ceteris paribus* que certains auteurs emploient encore; il est donc possible que vous la retrouviez dans un article scientifique... Ne pas confondre *ceteris paribus* avec *c'est terrible Paris en bus* (petite blague formulée par un étudiant ayant suivi le cours *méthodes quantitatives appliquées en études urbaines* il y a quelques années) !
+:::
+
+```{r dataregmodel2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+tabreg <- build_table(modelereg, confid = T, std_digits = 3, coef_digits = 3, z_digits = 2, p_digits = 3)
+
+show_table(tabreg,
+           caption = 'Les différentes mesures pour les coefficients',
+           col.names=c("Variable","Coef.","Erreur type", "Valeur de T", "P", "coef. 2,5%", "coef. 97,5%", ""),
+           align=c("l","r","r", "r", "r", "r", "r", "r")
+           )
+```
+
+
+À partir des coefficients du tableau ci-dessous, l'équation du modèle de régression s'écrit alors comme suit :
+
+`VegPct = 26,356 HABHA − 0,070 AgeMedian + 0,011 AgeMedian + 1,084 Pct_014 + 0,401 Pct_65P − 0,031 Pct_MV − 0,348 Pct_FR + e`
+
+
+**Comment interpréter un coefficient de régression pour une variable indépendante ?**
+
+Le signe du coefficient de régression indique si la variable indépendante est associée positivement ou négativement avec la variable dépendante. Par exemple, plus la densité de population est importante à travers les îlots de l'île de Montréal, plus la couverture végétale diminue.
+
+Quand à la valeur absolue du coefficient, elle indique la taille de l'effet du prédicteur. Par exemple, 1,084 signifie que si toutes les autres variables indépendantes restaient constantes, alors le pourcentage de végétation dans l'îlot augmenterait de 1,084 points de pourcentage pour chaque différence d’un point de pourcentage d'enfants de moins de 15 ans. Toutes choses étant égales par ailleurs, une augmentation de 10% de pourcentage d'enfants dans un îlot entraînerait alors une hausse de 10,8% de la couverture végétale dans l'îlot.
+
+L'analyse des coefficients montre ainsi qu'une fois contrôlées les deux caractéristiques relatives à la forme urbaine (densité de population et âge médian des bâtiments), plus les pourcentages d'enfants et de personnes âgées augmentent, plus la couverture végétale de l'îlot est importante (B=1,084 et 0,401), toutes choses étant égales par ailleurs. À l'inverse, une hausse des pourcentages de personnes à faible revenu et de minorités est associée à une plus faible couverture végétale (B=−0,348 et −0,031).
+
+
+**L'erreur type du coefficient de régression**
+
+L'erreur type d'un coefficient permet d'évaluer son niveau de précision. Succinctement, elle correspond à l'écart-type de l'estimation (coefficient); elle est ainsi toujours positive. Plus la valeur de l'erreur type est faible, plus l'estimation de l'effet de la variable indépendante sur la variable dépendante est précise. Notez toutefois qu'il n'ait pas judicieux de comparer les erreurs type des coefficients pour des variables exprimées dans des unités de mesure différents. 
+
+Comme nous le verrons plus loin, l'utilité principale de l'erreur type est qu'il permet de calculer la valeur de T et l'intervalle de confiance du coefficient de régression.
+
+
+### Coefficients de régression standardisés : repérer les variables les plus importantes du modèle {#sect0542}
+
+Un coefficient de régression est exprimé dans les unités de mesure des variables indépendante (VI) et dépendante (VD) : une augmentation d’une unité de la VI a un effet de $\beta$ (valeur de coefficient) unité de mesure sur la VD, toutes choses étant égales par ailleurs. Prenons l’exemple d’un modèle fictif dans lequel une variable indépendante mesurée en mètres obtiendrait un coefficient de régression de 0,000502. Si cette variable était exprimée en kilomètres et non en mètres, son coefficient serait de alors 0,502 ($0,000502 \times 1000 = 0,502$). Cela explique que pour certaines variables, il est souvent préférable de modifier son unité de mesure, particulièrement pour les variables de distance ou de revenu. Par exemple, dans un modèle de régression, on introduit habituellement une variable de revenu par tranche de 1000 dollars ou le loyer mensuel par tranche de 100 dollars puisque les coefficients du revenu ou de loyer exprimé en dollars risquent d'être faibles. Concrètement, cela signifie qu'on divisera la variable *revenu* par 1000 et celle du *loyer* par 100 avant de l'introduire dans le modèle.
+
+Du fait de leur unités de mesures souvent différentes, vous aurez compris qu'on ne peut pas comparer directement les coefficients de régression afin de repérer la ou les variables indépendantes (*X*) qui ont les effets (impacts) les plus importants sur la variable dépendante (*Y*). Pour rémédier à ce problème, on utilise les **coefficients de régression standardisés**. Ces coefficients standardisés sont simplement les valeurs de coefficients de régression qui seraient obtenus si toutes les variables du modèle (VD et VI) étaient préalablement centrées et réduites (soit avec une moyenne égale à 0 et un écart-type égal à 1; voir la section \@ref(02552) en guise de rappel). Puisque toutes les variables du modèle sont exprimées en écart-types, les coefficients standardisés permettent ainsi d'évaluer **l'effet relatif** des VI sur VD. Cela permet ainsi de repérer la ou les variables les plus « importantes » du modèle.
+
+**L'interprétation d'un coefficient de régression standardisé est donc la suivante : il indique le changement en termes d'unités d'écart-type de la variable dépendante (Y) à chaque ajout d'un écart-type de la variable indépendante, toutes choses étant égales par ailleurs**. 
+
+
+Le coefficient de régression standardisé peut être aussi facilement calculé en utilisant les écarts-types des deux variables :
+
+\begin{equation}\footnotesize 
+\beta_{standardisé}= \beta \frac{s_x}{s_y}
+(\#eq:CoefStand)
+\end{equation}
+
+La syntaxe R ci-dessous illustre trois façons d'obtenir les coefficients standardisés :
+
+* en centrant et réduisant préalablement les variables avec la fonction `scale` avant de construire le modèle avec la fonction `lm`
+*  en calculant les écarts-types de VD et VI et en appliquant l'équation ci-dessous
+* avec la fonction `lm.beta` du package **QuantPsyc**. Cette dernière méthode est moins « verbeuse » (deux lignes de codes uniquement).
+
+
+```{r CoefStand1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+
+# Modèle de régression
+Modele1 <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+#  Méthode 1 : lm sur des variables centrées-réduites
+# ---------------
+ModeleZ <- lm(scale(VegPct) ~ scale(HABHA)+scale(AgeMedian)+
+                           scale(Pct_014)+scale(Pct_65P)+
+                           scale(Pct_MV)+scale(Pct_FR), data = DataFinal)
+coefs <- ModeleZ$coefficients
+coefs[1:length(coefs)]
+
+#  Méthode 2 : à partir de l'équation
+# ---------------
+# Écart-type de la variable dépendante
+VDet <- sd(DataFinal$VegPct)
+cat("Écart-type de Y =", round(VDet,3))
+# Écarts-types des variables indépendantes
+VI <- c("HABHA","AgeMedian","Pct_014","Pct_65P","Pct_MV","Pct_FR")
+VIet <- sapply(DataFinal[VI], sd)
+# Coefficients de régression du modèle sans la constante
+coefs <- Modele1$coefficients[1:length(VIet)+1]
+# Coefficients de régression du modèle
+coefstand <- coefs * (VIet / VDet)
+coefstand
+
+#  Méthode 3 : avec la fonction lm.beta du package QuantPsyc
+# ---------------
+library(QuantPsyc)
+lm.beta(lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal))
+
+```
+
+```{r CoefStand2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+
+# Construction d'un tableau pour les coefficients
+TabCoef <- data.frame(cbind(VI, round(VIet,3), round(coefs,3), round(coefstand,3)))
+
+show_table(TabCoef,
+           digits = 3,
+           caption = 'Calcul des coefficients standardisés',
+           col.names=c("Variable dépendante", "Écart-type","Coef.","Coef. standardisé"),
+           align=c("l","r","r","r")
+           )
+```
+
+Par exemple, pour la variable `Pct_014`, le coefficient de régression standardisé est égal à : 
+
+\begin{equation}\footnotesize 
+\beta_{standardisé}= 1,084 \times \frac{5,295}{18,562}=0,309
+(\#eq:CoefStand2)
+\end{equation}
+
+avec 1,084 étant le coefficient de régression de `Pct_014`, 5,295 et 18,562 étant respectivement les écart-types de `Pct_014` (variable indépendante) et de `VegPct` (variable dépendante).
+
+Au tableau \@ref(tab:CoefStand2), on constate que la valeur absolue du coefficient de régression pour `HABHA` est inférieure à celle de `Pct_65P` (−0,070 *versus* 0,401), ce qui n'est pas le cas pour leurs coefficients standardisés (−0,281 *versus* 0,179). Rappelez-vous aussi qu'on ne peut pas directement comparer les effets de ces deux variables à partir des coefficients de régression puisqu'elles sont exprimées dans des unités de mesure différentes : `HABHA` est exprimée en habitants par hectare et `Pct_65P` en pourcentage. À la lecture des coefficients standardisés, on peut en conclure que la variable `HABHA` a un effet relatif plus important que `Pct_65P` (−0,281 *versus* 0,179); autrement dit, un apport plus important au modèle. 
+
+
+### Significativité des coefficients de régression : valeurs de T et de P {#sect0543}
+Une fois les coefficients de régression obtenus, il convient de vérifier s'ils sont ou significativement non différents de 0. Bien entendu, si le coefficient de régression d'une variable indépendante est significativement différent de 0, on en conclut que la variable a un effet significatif sur la variable dépendante, toutes choses étant égales par ailleurs. Pour ce faire, il suffit de calculer la valeur de T qui est simplement le coefficient de régression divisé par son erreur type.
+
+\begin{equation}\footnotesize 
+T=\frac{\beta_k - 0}{s(\beta_k)}  
+(\#eq:ValeurT)
+\end{equation}
+
+avec $s(\beta_k)$ étant l'erreur type du coefficient de régression. Notez que dans l'équation ci-dessous, on indique habituellement $-0$ pour signaler que l'on veut tester si le coefficient est différent de 0.
+
+En guise d'exemple, au tableau \@ref(tab:dataregmodel2), la valeur de T du la variable `HABHA` est bien égale à :
+
+`−0.070401 / 0.002202 = −31.975`.
+
+::: {.bloc_attention data-latex=""}
+
+**Démarche pour vérifier si un coefficient est significativement différent de 0 avec un seuil de confiance**
+
+1. Poser l'hypothèse nulle stipulant le coefficient est égal à 0, soit $H_0 : \beta_k = 0$. L'hypothèse alternative étant que le coefficient est différent de 0, soit $H_1 : B_k \neq 0$.
+2. Calculer la valeur de T, soit le coefficient de régression divisé par son erreur type (équation \@ref(eq:ValeurT)).
+3. Calculer le nombre de degrés de liberté, soit $dl = n − k - 1$, *n* et *k* étant respectivement les nombres d'observations et de variables indépendantes.
+4. Choisir un seuil de signification alpha (5%, 1% ou 0,1% de chances de se trouver, soit p = 0,05, 0,01 ou 0,01).
+5. Trouver la valeur critique de T dans la table T de Student (section \@ref(sect123)) avec *p* et le nombre de degrés de liberté (dl).
+6. Valider ou réfuter l'hypothèse nulle (H<sub>0</sub>) :
+  - si la valeur de T est inférieure à la valeur critique de T avec *dl* et le seuil choisi, on valide *h<sub>0</sub>* : le coefficient n'est pas significativement différent de 0.
+  - si la valeur de T est supérieure à la valeur critique de T avec *dl* et le seuil choisi, on peut réfuter l'hypothèse nulle (*h<sub>0</sub>*), et choisir l'hypothèse *H<sub>1</sub>* stipulant que le coefficient est statistiquement différent de 0.
+
+
+**Valeurs critiques de la valeur de T à retenir !**
+
+Lorsque le nombre de degrés de liberté (*n − k - 1*) est très important (supérieur à 2500), et donc le nombre d'observations de votre jeu de données, on retient habituellement les valeurs critiques suivantes : **1,65 (p=0,10), 1,96 (p=0,05)**, **2,58 (p=0,01)** et **3,29 (p=0,001)**. Concrètement, cela signifie que :
+
+* une valeur de T supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+
+* une valeur de T supérieure à 1,96 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+
+* une valeur de T supérieure à 1,96 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 0,1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+
+Concrètement, retenez et utilisez les seuils de $\pm1,96$, $\pm2,58$ et $\pm3,29$ pour repérer les variables significatives positivement ou négatifs aux seuils respectifs de 0,5, 0,1 et 0,001.
+:::
+
+Prenons deux variables indépendantes au tableau \@ref(tab:dataregmodel2) – `HABHA` et `AgeMedian` – et vérifions si leurs coefficients de régression respectifs (−0,070 et 0,011) sont significatifs. Appliquons la démarche décrite dans l'encadré ci-dessous :
+
+1. On l'hypothèse pose nulle stipulant les valeurs de ces deux coefficients sont égales à 0, soit $H_0 : \beta_k = 0$.
+2. Leurs valeurs de T sont égales à `−0,070401 / 0,002202 = −31,97139` pour `HABHA` et à `0,010790 / 0,006369 = 1,694144` pour `AgeMedian`.
+3. Le nombre de degrés de liberté est égale à *dl = n-k-1 = 10210 − 6 - 1 = 10203*.
+4. On choisit respectivement les seuil alpha de 0,10, 0,05, 0,01 ou 0,01.
+5. Avec 10210 degrés de liberté, les valeurs critiques de la table T de Student (section \@ref(sect123)) sont de 1,65 (p=0,10), 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001).
+6. Valider ou réfuter l'hypothèse nulle (H<sub>0</sub>) :
+  - pour `HABHA`, la valeur absolue de T (−31,975) est supérieure la valeur critique de 3,29. Son coefficient de régression est donc significativement différent de 0. Autrement dit, ce prédicteur a un effet significatif et négatif sur la variable dépendante.
+
+  - pour `AgeMedian`, la valeur absolue de T (1,694) est supérieure à 1,65 (p=0,10), mais inférieure à 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de p=0,10, et non au seuil de p=0,05. Cela signifie qu'on a un peu moins de 10% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
+
+
+::: {.bloc_attention data-latex=""}
+
+**Calculer et obtenir des valeurs de P dans R**
+
+Il est très rare que l'on aille à recourir à la table T de Student pour obtenir un seuil de signification. 
+
+D'une part, il est possible de calculer directement la valeur de P à partir de de la valeur de T et du nombre de degrés de liberté avec la fonction `pt` avec les paramètres suivants :
+
+`pt(q= abs(valeur de T), df= nombre de degrés de libertés, lower.tail = F) *2`
+
+```{r ValeurT, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+
+# Degrés de liberté
+dl <- nrow(DataFinal) - (length(Modele1$coefficients) - 1) + 1
+
+# Valeurs de T
+ValeurT <- summary(Modele1)$coefficients[,3]
+
+# Calcul des valeurs de P
+ValeurP <- pt(q= abs(ValeurT), df= dl, lower.tail = F) *2
+
+df_tp <- data.frame(
+                ValeurT = round(ValeurT,3), 
+                ValeurP = round(ValeurP,3)
+)
+print(df_tp)
+```
+
+D'autre part, la fonction `summary` renvoie d'emblée les valeurs de T et de P. Par convention, R comme la plupart des logiciels utilisent aussi des symboles pour indiquer le seuil de signification du coefficient (voir tableau \@ref(tab:CoefStand2)) : 
+
+ '***' p<=0,001
+ 
+ '**'  p<=0,01 
+ 
+ '*'  p<=0,05 
+ 
+ '.'   p<=0,10
+ 
+:::
+
+### Intervalle de confiance des coefficients {#sect0544}
+
+Finalement, il est possible de calculer l'intervalle de confiance d'un coefficient à partir d'un niveau de signification (habituellement 0,95 ou encore 0,99). Pour ce faire, la fonction `confint(nom du modèle, level=.95)` est très utile. L'intérêt de ces intervalles de confiance pour les coefficients de régression est double :
+
+* il permet de vérifier si le coefficient est ou non significatif au seuil retenu. Pour cela la borne inférieure et la borne supérieure du coefficient doivent être toutes deux négatives ou positives. À l'inverse, un intervalle à cheval sur 0, soit avec une borne inférieure négative et une borne supérieure positive, n'est pas significatif.
+* il permet d'effet la précision de l'estimation; si les deux bornes sont positives ou négatives, plus l'intervalle du coefficient est réduit, plus l'estimation de l'effet de la variable indépendante sera précise et significative.
+
+Cela explique que de nombreux auteurs reportent les intervalles de confiance dans les articles scientifiques (habituellement à 95%). Dans le modèle ici présenté, il serait alors possible d'écrire : toutes choses étant égales par ailleurs, le pourcentage d'enfants de moins de 15 ans est positivement et significativement associé avec le pourcentage de la couverture végétale dans l'îlot (B=1,084; IC 95% = [1,021 - 1,148], p <0.001).
+
+En guise d'exemple, à la lecture de la sortie R ci-dessous, 95% du temps, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` varie de -0,002 à 0,023. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec p=0,05.
+
+```{r confintReg, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+# Intervalle de confiance à 95% des coefficients
+round(confint(Modele1, level=.95),3)
+```
+
+## Introduction de variables explicatives particulières {#sect055}
+
+### Variable indépendante avec une fontion polynomiale {#sect0551}
+
+Dans la section \@ref(sect0411), nous avons vu que la relation entre deux variables continues n'est pas toujours linéaire. Elle peut être aussi curvilinéaire. Pour explorer les relations curvilinéaires, on introduit la variable sous une forme polynomiale d'ordre 2. L'équation de régression s'écrit alors :
+
+\begin{equation}\footnotesize 
+Y = b_{0} + b_{1}X_{1} + b_{1}X_{1}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+(\#eq:regmultiple2)
+\end{equation}
+
+Dans l'équation ci-dessous, remarque que la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{1}X_{1}^2$.  
+
+### Variable indépendante qualitative dichtonomique {#sect0552}
+
+### Variable indépendante qualitative polytomique {#sect0553}
+
+
+## Diagnostics de la régression {#sect056}
+
+
+## Comment rapporter une régression  {#sect057}
+
+## Régression linéaire multiple robuste {#sect058}
+
+## Mise en œuvre dans R {#sect059}
+
+
+Le tableau de sortie pour les coefficients comprend plusieurs colonnes, à savoir les coefficients de régression (`Estimate`), l'erreur type du coefficient (`Std. Error`), la valeur de T (`t value`) et la probabilité associée à la valeur de T (`Pr(>|t|)`). La première ligne de ce tableau (`Estimate`) est pour la constante (*Intercept* en anglais) et celles qui suivent sont pour les variables indépendantes (`HABHA`, `AgeMedian`, `Pct_014`, `Pct_65P`, `Pct_MV`, `Pct_FR`).
+
+
+
+
