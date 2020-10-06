@@ -108,7 +108,6 @@ if (knitr::is_latex_output()){
 }
 
 clean_df_latex <- function(df){
-  
   if(inherits(df, "list") == F){
     df <- list(df)
   }
@@ -135,7 +134,7 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
                        align = NULL){
   ## dans le cas d'un tableau LATEX
   if (knitr::is_latex_output()){
-    
+    df <- data.frame(df)
     #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
     df2 <- clean_df_latex(df)
     
@@ -147,8 +146,6 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       caption <- gsub("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", caption)
       caption <- gsub("\\*([^\"]*?)\\*","\\\\textit{\\1}", caption)
     }
-    
-    
     table1 <- knitr::kable(
       df2, booktabs = TRUE,
       format = "latex",
