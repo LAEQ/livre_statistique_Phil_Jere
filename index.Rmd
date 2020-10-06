@@ -130,7 +130,9 @@ clean_df_latex <- function(df){
   return(df2)
 }
 
-show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, col.width = NULL, digits = getOption("digits")){
+show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, 
+                       col.width = NULL, digits = getOption("digits"),
+                       align = NULL){
   ## dans le cas d'un tableau LATEX
   if (knitr::is_latex_output()){
     
@@ -153,6 +155,7 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       digits = digits,
       format.args = list(decimal.mark = ",", big.mark = " "),
       valign = 't', row.names = FALSE,
+      align = align,
       col.names = col.names,
       caption = caption,
       escape = FALSE) %>% 
@@ -167,6 +170,7 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       df, booktabs = TRUE,
       format.args = list(decimal.mark = ",", big.mark = " "),
       col.names = col.names,
+      align = align,
       valign = 't', row.names = FALSE,
       caption = caption,
       escape = FALSE)
