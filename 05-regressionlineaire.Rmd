@@ -1,7 +1,7 @@
 # (PART) Modèles de régression {-} 
 # La régression linéaire multiple  {#chap05}
 
-Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales : la régression linéaire multiple. À titre de rappel, dans le chapitre précédent (section \@ref(sect0414)), nous avons vu que la régression linéaire multiple, basé sur la méthode des moindres carrées, permet d’expliquer, de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est peu probable que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple : elle permet ainsi de prédire, expliquer une variable indépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
+Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales : la régression linéaire multiple. À titre de rappel, dans le chapitre précédent (section \@ref(sect0414)), nous avons vu que la régression linéaire simple, basée sur la méthode des moindres carrées, permet d’expliquer et de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est rare que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple : elle permet ainsi de prédire et expliquer une variable indépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
 
 Plus spécifiquement, nous aborderons ici les principes et hypothèses de la régression linéaire multiple, comment mesurer la qualité d’ajustement du modèle, introduire des variables explicatives particulières (variable qualitative dichotomique ou polytomique, variable d’interaction, etc.), interpréter les sorties d’un modèle de régression et finalement la mettre en oeuvre dans R.
 
@@ -35,7 +35,6 @@ A MODIFIER A LA FIN
   - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
   - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
 :::
-
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1120,34 +1119,30 @@ hand_contint.gam <- function(model){
 
 Selon Tabachnich et Fidell [-@tabachnick2007], un modèle de régression permet de répondre à deux objectifs principaux relevant chacun d'une approche de modélisation particulière.
 
-La première approche tente d’identifier les relations entre une variable dépendante (VD) et plusieurs variables indépendantes (VI). Il s’agit alors d’identifier si ces relations sont positives ou négatives, significatives ou non et d'évaluer leur ampleur. La construction du modèle de régression doit alors reposer sur un cadre théorique et la formulation d’hypothèses entre chacune des VI et la VD.
+La première approche a pour objectif d’identifier les relations entre une variable dépendante (VD) et plusieurs variables indépendantes (VI). Il s’agit alors de déterminer si ces relations sont positives ou négatives, significatives ou non et d'évaluer leur ampleur. La construction du modèle de régression repose alors sur un cadre théorique et la formulation d’hypothèses sur les relations entre chacune des VI et la VD.
 
-La seconde approche est exploratoire et très utilisée en *data mining* (forage ou fouille de données). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Par contre, ce type de démarche ne repose habituellement ni sur un cadre théorique, ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle de plus efficace possible afin de prédire (le plus précisement possible), à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle de régression final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée, que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. Or, à juste titre, Bressoux [-@bressoux2010] signale que « la causalité relève d'une interprétation théorique de la relation et celle-ci n'est jamais déterminée par les calculs statistiques ». D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
-
+La seconde approche est exploratoire et très utilisée en *data mining* (forage ou fouille de données). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Parfois, ce type de démarche ne repose ni sur un cadre théorique, ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle le plus efficacement possible afin de prédire, à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle de régression final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée, que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
 
 ::: {.bloc_attention data-latex=""}
 **Cadre conceptuel et élaboration d'un modèle de régression**
 
-Pour bien construire un modèle de régression, il convient de définir un cadre conceptuel élaboré suite à une revue de littérature sur votre sujet de recherche. Ce cadre conceptuel permettra d’identifier les dimensions et concepts clefs permettant d’expliquer le phénomène à l’étude. Par la suite, pour chacun de ces concepts ou dimensions, il sera alors possible 1) d’identifier les différentes variables indépendantes qui seront introduites dans le modèle et 2) de formuler pour chacune d’elles une hypothèse. Par exemple, pour telle ou telle variable explicative, on s’attendra qu’elle fasse augmenter ou diminuer significativement la variable dépendante. De nouveau, la formulation de cette hypothèse doit s'appuyer sur une interprétation théorique de la relation entre la VI et la VD.
+Pour bien construire un modèle de régression, il convient de définir un cadre conceptuel élaboré suite à une revue de littérature sur votre sujet de recherche. Ce cadre conceptuel permettra d’identifier les dimensions et concepts clefs permettant d’expliquer le phénomène à l’étude. Par la suite, pour chacun de ces concepts ou dimensions, il sera alors possible 1) d’identifier les différentes variables indépendantes qui seront introduites dans le modèle et 2) de formuler pour chacune d’elles une hypothèse. Par exemple, pour telle ou telle variable explicative, on s’attendra à ce qu’elle fasse augmenter ou diminuer significativement la variable dépendante. De nouveau, la formulation de cette hypothèse doit s'appuyer sur une interprétation théorique de la relation entre la VI et la VD.
 
-Prenons en guise d'exemple, une étude récente portant sur la multiexposition des cyclistes au bruit et à la pollution atmosphérique [@gelb2020modelling]. Brièvement, dans cet article, les auteurs s’intéressent aux caractéristiques de l’environnement urbain qui contribuent à augmenter ou réduire l’exposition des cyclistes à la pollution de l’air et au bruit routier. Pour ce faire, une collecte de données primaires a été réalisée avec trois cyclistes dans les rues de Paris du 4 au 7 septembre 2017. Au total, 64 heures et 964 kilomètres ont ainsi été parcourus à vélo afin de maximiser la couverture de la Ville de Paris et les types d'environnements urbains traversés.
+Prenons en guise d'exemple, une étude récente portant sur la multiexposition des cyclistes au bruit et à la pollution atmosphérique [@gelb2020modelling]. Dans cet article, les auteurs s’intéressent aux caractéristiques de l’environnement urbain qui contribuent à augmenter ou réduire l’exposition des cyclistes à la pollution de l’air et au bruit routier. Pour ce faire, une collecte de données primaires a été réalisée avec trois cyclistes dans les rues de Paris du 4 au 7 septembre 2017. Au total, 64 heures et 964 kilomètres ont ainsi été parcourus à vélo afin de maximiser la couverture de la Ville de Paris et les types d'environnements urbains traversés.
 
-Leur cadre conceptuel est schématisé à la figure ci-dessous. Les deux variables indépendantes (à expliquer) sont l'exposition au dioxyde d'azote (NO<sub>2</sub>) et l'exposition au bruit (mesurée en décibel dB(A)). Avant d'identifier les caractéristiques de l'environnement urbain affectant ces deux expositions, plusieurs facteurs, dits **variables de contrôle**, sont considérées. Par exemple, la concentration de NO<sub>2</sub> varie en fonction des conditions météorologiques (vent, température, humidité) et de la pollution d'arrière-plan (selon le moment de la journée et journée de la semaine et la localisation géographique au sein de la ville). Ces dimensions doivent donc être contrôlées avant d'évaluer l'impact des caractéristiques du micro-environnement sur les expositions.
+Leur cadre conceptuel est schématisé à la figure ci-dessous. Les deux variables indépendantes (à expliquer) sont l'exposition au dioxyde d'azote (NO<sub>2</sub>) et l'exposition au bruit (mesurée en décibel dB(A)). Avant d'identifier les caractéristiques de l'environnement urbain affectant ces deux expositions, plusieurs facteurs, dits **variables de contrôle**, sont considérées. Par exemple, la concentration de NO<sub>2</sub> varie en fonction des conditions météorologiques (vent, température, humidité) et de la pollution d'arrière-plan (variant selon le moment de la journée, le jour de la semaine et la localisation géographique au sein de la ville). Ces dimensions ne sont pas le centre d'intérêt direct de l'étude. En effet, les auteurs s'intéressent aux impacts des caractéristiques locales de l'environnement urbain. Pour pouvoir les identifier sans biais, il est nécessaire de contrôler (filtrer) l'ensemble de ces autres facteurs.
 
-Puis, ils identifient trois grandes dimensions de l'environnement urbain : les caractéristiques du segment (types de rues ou de voies cyclables empruntés, intersections traversées, pente et vitesse), celles de la forme urbaine (densité résidentielle, végétation, ouverture de la rue, occupations du sol) et celles du trafic (nombre et types de véhicules croisés, congestion, zones 30 km/h). Une fois ce cadre conceptuel proposé, il reste alors à identifier les variables qui permettent d'opérationnaliser chacune des caractéristiques des trois dimensions.
+Dans leur cadre conceptuel, les auteurs regroupent les caractéristique locale de l'environnment urbain  en trois grandes dimensions : les caractéristiques du segment (types de rues ou de voies cyclables empruntés, intersections traversées, pente et vitesse), celles de la forme urbaine (densité résidentielle, végétation, ouverture de la rue, occupations du sol) et celles du trafic (nombre et types de véhicules croisés, congestion, zones 30 km/h). Une fois ce cadre conceptuel construit, il reste alors à identifier les variables qui permettent d'opérationnaliser chacuns de concepts retenus.
 
-```{r figcadreconcept, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Exemple de cadre conceptuel",  out.width='100%'}
+```{r figcadreconcept, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Exemple de cadre conceptuel",  out.width='100%', fig.pos="H"}
 knitr::include_graphics('images/lm/CadreTheorique.jpg', dpi = NA)
 ```
 
 **Notion de variables de contrôle *versus* variables explicatives**
 
-Dans un modèle de régression, on distingue habituellement trois types de variables : la variable dépendante (*Y*) que l'on souhaite prédire ou expliquer et les variables indépendantes (*X*) qui peuvent être, soit des variables de contrôle (*covariates* en anglais), soit des variables explicatives. Les premières sont souvent des facteurs qu'il faut prendre en compte avant d'évaluer nos variables d'intérêt (explicatives). 
+Dans un modèle de régression, on distingue habituellement trois types de variables : la variable dépendante (*Y*) que l'on souhaite prédire ou expliquer et les variables indépendantes (*X*) qui peuvent être, soit des variables de contrôle (*covariates* en anglais), soit des variables explicatives. Les premières sont des facteurs qu'il faut prendre en compte (contrôler) avant d'évaluer nos variables d'intérêt (explicatives). 
 
-Dans l'exemple précédent, les chercheurs voulaient évaluer l'impact des caractéristiques de l'environnement urbain (variables explicatives) traversés par les cyclistes sur leurs expositions au dioxyde d'azote et au bruit, une fois contrôlés les effets de facteurs reconnus comme ayant un impact significatif sur la concentration de polluants comme les conditions météorologiques et la pollution d’arrière-plan. Autrement dit, si les variables de contrôle n'avaient pas été prise en compte, le modèle aurait été imparfait : l'ampleur des effets des caractéristiques de l'environnement urbain sur les expositions des cyclistes aurait alors été biaisée.
-
-Cela explique que certains chercheurs vont parfois construire un premier modèle avec uniquement les variables de contrôle, puis un second dans lequel sont ajoutées les variables explicatives.
-
+Dans l'exemple précédent, les chercheurs voulaient évaluer l'impact des caractéristiques de l'environnement urbain (variables explicatives) traversés par les cyclistes sur leurs expositions au dioxyde d'azote et au bruit, une fois contrôlés les effets de facteurs reconnus comme ayant un impact significatif sur la concentration de polluants comme les conditions météorologiques et la pollution d’arrière-plan. Autrement dit, si les variables de contrôle n'avaient pas été prise en compte, l'étude des variables d'intérêt serait biaisée par les effets de ces facteurs qui n'auraient pas été contrôlés. À titre d'exemple, il serait possible que les zones de circulation limitées à 30 km/h soient concentrées dans les quartiers centraux et denses de Paris. Dans ces quartiers, la pollution d'arrière plan a tendance à être supérieure. Si l'on ne tient pas compte de cette pollution d'arrière plan, on pourrait arriver à la conclusion que les zones 30 sont des milieux dans lesquels les cyclistes sont plus exposés à la pollution atmosphérique.
 
 **Construction de modèles de régression imbriqués, incrémentiels**
 
@@ -1159,38 +1154,45 @@ En lien avec le cadre conceptuel du modèle, il est fréquent de construire plus
 * un dernier modèle dans lequel sont ajoutées les variables explicatives relatives aux conditions du trafic (modèle D).
 
 L’intérêt d’une telle approche est qu'elle permet d’évaluer successivement l’apport explicatif de chacune des dimensions du modèle; nous y reviendrons dans la section \@ref(sect053).
+
+On dit donc de deux modèles qu'ils sont imbriqués si le modèle avec le plus de variables comprends également **toutes** les variables du modèle avec le moins de variables.
 :::
 
 
-## Principe de base de la régression linéaire multiple {#sect052}
+## Principes de base de la régression linéaire multiple {#sect052}
 
 ### Un peu d'équations... {#sect0521}
 
-La régression linéaire simple vise à déterminer une équation qui résume le mieux les relations linéaires entre une variable dépendante (*Y*) et un ensemble de variables indépendantes (*X*). L'équation de régression s'écrit alors :
+La régression linéaire multiple vise à déterminer une équation qui résume le mieux les relations linéaires entre une variable dépendante (*Y*) et un ensemble de variables indépendantes (*X*). L'équation de régression s'écrit alors :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation} 
 y_i = \beta_{0} + \beta_{1}x_{1i} + \beta_{2}x_{2i} +\ldots+ \beta_{k}x_{ki} + \epsilon_{i}
 (\#eq:regmultiple1)
 \end{equation}
+\normalsize
 
 avec :
 
-* $y_i$ est la valeur de la variable dépendante *Y* pour l'observation *i*.
-* $\beta_{0}$ est la constante, soit la valeur prédite pour *Y* quand toutes variables indépendantes sont égales à 0.
-* $k$ est le nombre de variables indépendantes.
-* $\beta_{1}$ à  $\beta_{k}$ sont les coefficients de régression pour les variables indépendantes de 1 à *k* ($X_1$ à $X_k$). 
-* $\epsilon_{i}$ est le résidu pour l'observation de *i*, soit la partie de la valeur de $y_i$ qui n'est pas expliqué par le modèle de régression.
+* $y_i$ la valeur de la variable dépendante *Y* pour l'observation *i*.
+* $\beta_{0}$ la constante, soit la valeur prédite pour *Y* quand toutes variables indépendantes sont égales à 0.
+* $k$ le nombre de variables indépendantes.
+* $\beta_{1}$ à  $\beta_{k}$ les coefficients de régression pour les variables indépendantes de 1 à *k* ($X_1$ à $X_k$). 
+* $\epsilon_{i}$ le résidu pour l'observation de *i*, soit la partie de la valeur de $y_i$ qui n'est pas expliqué par le modèle de régression.
 
 Notez qu'il existe plusieurs écritures simplifiées de cette équation. D'une part, il est possible de ne pas indiquer l'observation *i* et de remplacer les lettres grecques *bêta* et *epsilon* ($\beta$ et $\epsilon$) par les lettres *b* et *e* :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 Y = b_{0} + b_{1}X_{1} + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
 (\#eq:regmultiple2)
 \end{equation}
+\normalsize
 
 D'autre part, cette équation peut être présentée sous forme matricielle. Rappelez-vous que pour chacune des *n* observations de l'échantillon, une équation est formulée :
 
-\begin{equation}\footnotesize 
+\footnotesize 
+\begin{equation}
 \left\{\begin{array}{l}
 y_{1}=\beta_{0}+\beta_{1} x_{1,1}+\ldots+\beta_{p} x_{1, k}+\varepsilon_{1} \\
 y_{2}=\beta_{0}+\beta_{1} x_{2,1}+\ldots+\beta_{p} x_{2, k}+\varepsilon_{2} \\
@@ -1199,10 +1201,12 @@ y_{n}=\beta_{0}+a_{1} x_{n, 1}+\ldots+\beta_{p} x_{n, k}+\varepsilon_{n}
 \end{array}\right.
 (\#eq:regmultiple3)
 \end{equation}
+\normalsize
 
 Par conséquent, sous forme matricielle, l'équation s'écrit :
 
-\begin{equation}\footnotesize
+\footnotesize
+\begin{equation}
 \left(\begin{array}{c}
 y_{1} \\
 \vdots \\
@@ -1223,13 +1227,16 @@ y_{n}
 \end{array}\right)
 (\#eq:regmultiple4)
 \end{equation}
+\normalsize
 
 ou tout simplement :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 Y = X\beta + \epsilon
 (\#eq:regmultiple5)
 \end{equation}
+\normalsize
 
 avec :
 
@@ -1242,35 +1249,39 @@ avec :
 ::: {.bloc_attention data-latex=""}
 Vous aurez compris que comme pour la régression linéaire simple (section \@ref(sect04143)), l'équation de la régression linéaire multiple comprend aussi une partie expliquée et une autre non expliquée (stochastique) par le modèle :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 Y  = \underbrace{\beta_{0} + \beta_{1}X_{i} + \beta_{2}X_{i} +\ldots+ \beta_{k}X_{k}}_{\mbox{partie expliquée par le modèle}}+ \underbrace{\epsilon}_{\mbox{partie non expliquée (stochastique)}}
 (\#eq:regmultiple6)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize 
-Y  = \underbrace{b_{0} + b_{1}X_{1} + b_{2}X_{2} +\ldots+ b_{k}X_{k}}_{\mbox{partie expliquée par le modèle}}+ \underbrace{e}_{\mbox{partie non expliquée (stochastique)}}
-(\#eq:regmultiple7)
-\end{equation}
-
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 Y  = \underbrace{X\beta}_{\mbox{partie expliquée par le modèle}}+ \underbrace{\epsilon}_{\mbox{partie non expliquée (stochastique)}}
 (\#eq:regmultiple8)
 \end{equation}
+\normalsize
 :::
 
- 
 ### Les hypothèses de la régression linéaire multiples {#sect0522}
 
 
 ## Mesurer la qualité d’ajustement du modèle {#sect053}
 
-Pour décrire la régression linéaire multiple, nous utilisons un jeu de données tiré d'un article portant sur la distribution spatiale de la végétation sur l'île de Montréal abordée sous l'angle de l'équité environnementale [@apparicio2016spatial]. Dans cette étude, les auteurs veulent vérifier si certains groupes de population (personnes à faible revenu, minorités visibles, personnes âgées et enfants de moins de 15 ans) ont ou non une accessibilité plus limitée à la végétation urbaine. En d’autres termes, cet article tente de répondre à la question suivante : une fois contrôlées les caractéristiques de la forme urbaine (densité de population et âge du bâti), est-ce que les quatre groupes de population résident dans des îlots urbains avec proportionnellement moins ou plus de végétation ?
+Pour illustrer la régression linéaire multiple, nous utilisons un jeu de données tiré d'un article portant sur la distribution spatiale de la végétation sur l'île de Montréal abordée sous l'angle de l'équité environnementale [@apparicio2016spatial]. Dans cette étude, les auteurs veulent vérifier si certains groupes de population (personnes à faible revenu, minorités visibles, personnes âgées et enfants de moins de 15 ans) ont ou non une accessibilité plus limitée à la végétation urbaine. En d’autres termes, cet article tente de répondre à la question suivante : une fois contrôlées les caractéristiques de la forme urbaine (densité de population et âge du bâti), est-ce que les quatre groupes de population résident dans des îlots urbains avec proportionnellement moins ou plus de végétation ?
 
 Dans le tableau \@ref(tab:datareg), sont reportées les variables utilisées (calculées au niveau des îlots de l'île de Montréal) introduite dans le modèle de régression : 
 
 * le pourcentage de la superficie de l'îlot couverte par de la végétation, soit la variable indépendante  (VI);
 * deux variables indépendantes de contrôle (VC) relatives à la forme urbaine;
 * les pourcentages des quatre groupes de population comme variables indépendantes explicatives (VE).
+
+L'équation de départ du premier modèle de régression est donc :
+`VegPct ~ HABHA + AgeMedian + Pct_014 + Pct_65P + Pct_MV + Pct_FR`
+
+**Notez que ce jeu de données est utilisé tout au long du chapitre.**
+
 
 
 ```{r datareg, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -1305,21 +1316,22 @@ Comme pour la régression linéaire simple (section \@ref(sect04143)), les trois
 
 * Le **coefficient de détermination** (R^2^) qui indique la proportion de la variance de la variable dépendante expliquée par les variables indépendantes du modèle (équation \@ref(eq:regmR2)). Il varie ainsi de 0 à 1.
 
-* La **statistique de Fisher** qui permet d'évaluer la significativité globale du modèle (équation \@ref(eq:regmFFisher)). Dans le cas d'une régression linéaire multiple, l'hypothèse nulle du test *F* stipule que toutes les valeurs des coefficients de régression des variables indépendantes sont égales à 0; autrement dit, que les variables indépendantes n'ont aucun effet sur la variable dépendante. Tel que signalé à la section \@ref(sect04143), il est possible d'obtenir une valeur *P* rattachée avec la statistique F avec *k* degrés de liberté au dénominateur et *n-k-1* degrés de liberté au numérateur (*k* et *n* étant respectivement le nombre de variables indépendantes et le nombre d'observations). Lorsque la valeur de P est inférieure à 0,05, on pourra en conclure que le modèle est globalement significatif, c'est-à-dire qu'un ou plusieurs coefficients de régression sont significativement différents de zéro. Notez qu'il est plutôt rare qu'un modèle de régression, comprenant plusieurs variables indépendantes, soit globalement non significatif (P>0,05), et ce, surtout s'il est basé sur un cadre conceptuel et théorique solide.
+* La **statistique de Fisher** qui permet d'évaluer la significativité globale du modèle (équation \@ref(eq:regmFFisher)). Dans le cas d'une régression linéaire multiple, l'hypothèse nulle du test *F* est que toutes les valeurs des coefficients de régression des variables indépendantes sont égales à 0; autrement dit, qu'aucune des variables indépendantes n'a d'effet sur la variable dépendante. Tel que décrit à la section \@ref(sect04143), il est possible d'obtenir une valeur *P* rattachée avec la statistique F avec *k* degrés de liberté au dénominateur et *n-k-1* degrés de liberté au numérateur (*k* et *n* étant respectivement le nombre de variables indépendantes et le nombre d'observations). Lorsque la valeur de P est inférieure à 0,05, on pourra en conclure que le modèle est globalement significatif, c'est-à-dire qu'au moins un coefficients de régression est significativement différent de zéro. Notez qu'il est plutôt rare qu'un modèle de régression, comprenant plusieurs variables indépendantes, soit globalement non significatif (P>0,05), et ce, surtout s'il est basé sur un cadre conceptuel et théorique solide. Le test de la statistique de Fisher est donc facile à passer et ne constitue pas une preuve absolue de la pertinence du modèle.
 
-* **L'erreur quadratique moyenne (RMSE)** qui indique l'erreur absolue moyenne du modèle exprimée dans l'unité de mesure de la variable dépendante ou autrement dit, l'écart absolu moyen est les valeurs observées et prédites du modèle (équation \@ref(eq:regmRMSE)).
-
+* **L'erreur quadratique moyenne (RMSE)** qui indique l'erreur absolue moyenne du modèle exprimée dans l'unité de mesure de la variable dépendante ou autrement dit, l'écart absolu moyen est les valeurs observées et prédites du modèle (équation \@ref(eq:regmRMSE)). Une valeur élevée indique que le modèle se trompe largement en moyenne et inversement.
 
 ::: {.bloc_attention data-latex=""}
 **Rappel sur la décomposition de la variance et calcul du $R^2$, de la statistique F et du RMSE**
 
 Rappelez-vous que la variance totale (SCT) est égale à la somme de la variance expliquée (SCE) par le modèle et de la variance non expliquée (SCR) par le modèle.
 
-\begin{equation}\footnotesize 
+\footnotesize 
+\begin{equation}
 \underbrace{\sum_{i=1}^n (y_{i}-\bar{y})^2}_{\mbox{variance de Y}} = \underbrace{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}_{\mbox{var. expliquée}} + \underbrace{\sum_{i=1}^n (y_{i}-\widehat{y})^2}_{\mbox{var. non expliquée}} \Rightarrow 
 SCT = SCE + SCR
 (\#eq:regmVariances)
 \end{equation}
+\normalsize
 
 avec :
 
@@ -1329,20 +1341,26 @@ avec :
 
 À partir des variance totale, expliquée et non expliquée, il est alors possible de calculer les trois mesures de la qualité d'ajustement du modèle.
 
-\begin{equation}\footnotesize 
+\footnotesize 
+\begin{equation}
 R^2 = \frac{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}{\sum_{i=1}^n (y_{i}-\bar{y})^2} = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
 (\#eq:regmR2)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation} 
 F = \frac{\frac{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}{k}}{\frac{\sum_{i=1}^n (y_{i}-\widehat{y})^2}{n-k-1}} = \frac{\frac{SCE}{k}}{\frac{SCR}{n-k-1}} = \frac{\frac{R^2}{k}} {\frac{1-R^2}{n-k-1}} = \frac{(n-k-1)R^2}{k(1-R^2)}
 (\#eq:regmFFisher)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize 
-RMSE = \frac{\sqrt{\sum_{i=1}^n (y_{i}-\widehat{y})^2}}{n} = \frac{\sqrt{SCR}}{n}
+\footnotesize 
+\begin{equation}
+RMSE = \sqrt{\frac{\sum_{i=1}^n (y_{i}-\widehat{y})^2}{n}} = \sqrt{\frac{SCR}{n}}
 (\#eq:regmRMSE)
 \end{equation}
+\normalsize
 :::
 
 Globalement, plus un modèle de régression est efficace, plus les valeurs du R^2^ et de la statistique F sont élevées et inversement, plus celle de RMSE sera faible. En effet, remarquez qu'à l'équation \@ref(eq:regmFFisher), la statistique F peut être obtenue à partir du R^2^; par conséquent, plus la valeur du R^2^ est forte (proche de 1), plus celle de F est aussi élevée. Notez aussi que plus un modèle est performant, plus la partie expliquée par le modèle (SCE) est importante et plus celle non expliquée (SCR) est faible; ce qui signifie que plus le R^2^ est proche de 1 (équation \@ref(eq:regmR2)), plus le RMSE – calculé à partir du SCR – est faible (équation \@ref(eq:regmRMSE)).
@@ -1381,32 +1399,47 @@ R2 <- SCE / SCT
 #  Calcul la valeur de F
 valeurF <- (R2 / k) /((1-R2)/(n-k-1))
 
-cat("\nR2 =", round(SCE / SCT,4),
+cat("R2 =", round(SCE / SCT,4),
     "\nF de Fisher = ", round(valeurF,0),
-    "\nRMSE =", round(sqrt(SCR) / n,4)
+    "\nRMSE =", round(sqrt(SCR/ n),4)
     )
 ```
 
 
 ### Comparer des modèles incrémentiels {#sect0532}
 
-Tel que signalé plus haut, il est fréquent de construire plusieurs modèles de régression imbriqués. Cette démarche est très utile pour évaluer l'apport de l'introduction d'une nouveau bloc de variables dans un modèle. De manière exploratoire, cela permet également de vérifier si l'introduction d'une variable indépendante supplémentaire dans un modèle a ou non un apport significatif et ainsi décider de la conserver ou non dans le modèle final. 
+Tel que signalé plus haut, il est fréquent de construire plusieurs modèles de régression imbriqués. Cette démarche est très utile pour évaluer l'apport de l'introduction d'une nouveau bloc de variables dans un modèle. De manière exploratoire, cela permet également de vérifier si l'introduction d'une variable indépendante supplémentaire dans un modèle a ou non un apport significatif et ainsi décider de la conserver ou non dans le modèle final selon le principe de parcinomie. 
 
-Habituellement, plus on ajoute de variables supplémentaires dans un modèle, plus le R^2^ augmente. On ne peut donc pas utiliser directement le R^2^ pour comparer deux modèles de régression ne comprenant pas le même nombre de variables indépendantes. On préviligera alors l'utilisation du R^2^ ajusté qui, tel qu'illustré dans l'équation \@ref(eq:R2ajuste), tient compte à la fois du nombre d'observations et de variables indépendantes utilisés pour construire le modèle.
+::: {.bloc_notes  data-latex=""}
+**Le principe de parcimonie** 
 
-\begin{equation}\footnotesize 
+Le principe de parcimonie appliquée aux régressions correspond à l'idée qu'il est préférable de disposer d'un **modèle plus simple** pour expliquer un phénomène qu'un **modèle compliqué** si la qualité de leurs prédictions – qualité d’ajustement des deux modèles – est équivalente.
+
+Une première justification de ce principe trouve son origine dans la philosophie des sciences avec le **rasoir d'Ockham**. Il s'agit d'un principe selon lequel il est préférable de privilégier des théories faisant appel à un plus petit nombre d'hypothèses. L'idée centrale étant d'éviter d'apporter des réponses à une question qui soulèverait davantage de nouvelles questions. Dans le cas d'une régression, on pourrait être tenté d'ajouter de nombreux prédicteurs pour améliorer la capacité de prédiction du modèle. Cette stratégie conduit généralement à observer des relations contraires à nos connaissances entre les variables du modèle, ce qui soulève de nouvelles questions de recherche (pas toujours judicieuses…). Dans notre quotidien, si une casserole tombe de son support, il est plus raisonnable d'imaginer que nous l'avions mal fixée que d'émettre l'hypothèse qu'un fantôme l'a volontairement fait tomber. Cette seconde hypothèse soulève d’autres questions (pas toujours judicieuses…) sur la nature d'un fantôme, son identité, la raison le poussant à agir, etc.
+
+Une seconde justification de ce principe s'observe dans la pratique statistique : des modèles plus complexes ont souvent une plus faible capacité de généralisation. En effet, un modèle complexe et trop bien ajusté aux données observées est souvent incapable d'effectuer des prédictions justes pour de nouvelles données. Ce phénomène est appelé surajustement ou surinterprétation (*overfitting* en anglais). 
+Le surajustement impliqué par des modèles trop complexes entre en conflit direct avec l'enjeu principal de l'inférence en statistique : pouvoir généraliser des observations faites sur un échantillon au reste d'une population.
+
+Notez que ce principe de parcimonie ne signifie pas que vous devez systématique retirer toutes les variables non significatives de votre analyse. En effet, il peut y avoir un intérêt théorique à démontrer l'absence de relation entre des variables. Il s'agit plutôt d'une ligne de conduite à garder à l'esprit lors de l'élaboration du cadre théorique et de l'interprétation des résultats.
+:::
+
+Mathématiquement, plus on ajoute de variables supplémentaires dans un modèle, plus le R^2^ augmente. On ne peut donc pas utiliser directement le R^2^ pour comparer deux modèles de régression ne comprenant pas le même nombre de variables indépendantes. On préviligera alors l'utilisation du R^2^ ajusté qui, tel qu'illustré dans l'équation \@ref(eq:R2ajuste), tient compte à la fois du nombre d'observations et de variables indépendantes utilisés pour construire le modèle.
+
+\footnotesize
+\begin{equation} 
 R^2_{ajusté}= 1 - \frac{(1-R^2)(n-1)}{n-k-1} \mbox{ avec } R^2{ajusté} \in \left[0,1\right]
 (\#eq:R2ajuste)
 \end{equation}
+\normalsize
 
 Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif ? Pour y répondre, il convient de comparer les valeurs des statistiques F des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de P qui lui est associée avec comme degrés de liberté le nombre de prédicteurs ajouté ($k_2-k_1$) et $n-k_2-1$. Si la valeur de P<0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5%). 
 
-
-\begin{equation}\footnotesize 
+\footnotesize 
+\begin{equation}
 F_{incrémentiel}= \frac{\frac{R^2_2-R^2_1}{k_2-k_1}} {\frac{1-R^2_2}{n-k_2-1}}
 (\#eq:Fincrementiel)
 \end{equation}
-:::
+\normalsize
 
 avec $R^2_1$ et $R^2_2$ étant les coefficients de détermination des modèles 1 et 2 et $k_1$ et $k_2$ étant les nombres de variables indépendantes qu'ils comprennent ($k_2 > k_1$).
 
@@ -1459,11 +1492,7 @@ anova(modele1, modele2)
 
 ## Les différentes mesures pour les coefficients de régression {#sect054}
 
-Pour décrire les différentes mesures d'une régression linéaire, nous avons construit un modèle avec comme variable dépendante le pourcentage de la superficie de l'îlot couverte par de la végétation et six variables indépendantes. L'équation du modèle s'écrit alors :
-
-`VegPct ~ HABHA + AgeMedian + Pct_014 + Pct_65P + Pct_MV + Pct_FR`.
-
-La fonction `summary(nom du modèle)` permet d'obtenir les sorties du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 qui signale que les prédicteurs du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
+La fonction `summary(nom du modèle)` permet d'obtenir les sorties du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 indiquant que les prédicteurs du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
 
 
 ```{r dataregmodel1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -1475,7 +1504,7 @@ summary(modelereg)
 
 Les différentes sorties pour les coefficients sont reportées au tableau \@ref(tab:dataregmodel2). 
 
-**La constante** ($\beta_0$) est la valeur que prend la variable dépendante (*Y*) quand les valeurs de toutes les variables indépendantes sont égales à 0. Pour ce modèle, quand les variables indépendantes sont égales à 0, plus du quart de la superficie des îlots serait en moyenne couverte par de la végétation ($\beta_0=$26,36). 
+**La constante** ($\beta_0$) est la valeur attendue de la variable dépendante (*Y*) quand les valeurs de toutes les variables indépendantes sont égales à 0. Pour ce modèle, quand les variables indépendantes sont égales à 0, plus du quart de la superficie des îlots serait en moyenne couverte par de la végétation ($\beta_0$=26,36). Notez que la constante n'a pas toujours une interprétation pratique. Il est par exemple très invraissemblable de trouver un îlot avec de la population dans lequel il n'y aurait aucune personne à faible revenu, aucune personne déclarant appartenir d'une minorité visible, aucun enfant de moins de 14 ans et aucune personne âgée 65 ans et plus. La constante a donc avant tout un rôle mathématique dans le modèle.
 
 **Le coefficient de régression** ($\beta_1$ à $\beta_k$) indique le changement de la variable dépendante (*Y*) lorsque la variable indépendante augmente d'une unité, toutes choses étant égales par ailleurs. Il permet ainsi d'évaluer l'effet d'une augmentation d'une unité dans laquelle est mesurée sur la VI sur la VD.
 
@@ -1484,13 +1513,13 @@ Les différentes sorties pour les coefficients sont reportées au tableau \@ref(
 
 Cela signifie que l'on estime l'effet de la variable indépendante sur la variable dépendante, si toutes les autres variables indépendantes restaient constantes ou autrement dit, une fois contrôlés tous les autres prédicteurs. 
 
-Avec les nombreuses équations intégrées dans le livre, vous apprenez peu à peu l'alphabet grec (alpha, bêta, gamma, phi, epsilon, etc.). Passons désormais au latin ! En fait, *toutes choses étant égales par ailleurs* est la traduction de l'expression latine *ceteris paribus* que certains auteurs emploient encore; il est donc possible que vous la retrouviez dans un article scientifique... Ne pas confondre *ceteris paribus* avec *c'est terrible Paris en bus* (petite blague formulée par un étudiant ayant suivi le cours *méthodes quantitatives appliquées en études urbaines* il y a quelques années) !
+Avec les nombreuses équations intégrées dans le livre, vous apprenez peu à peu l'alphabet grec (alpha, bêta, gamma, phi, epsilon, etc.). Passons désormais au latin ! En fait, *toutes choses étant égales par ailleurs* est la traduction de l'expression latine *ceteris paribus* que certains auteurs emploient encore; il est donc possible que vous la retrouviez dans un article scientifique... Ne pas confondre *ceteris paribus* avec *c'est terrible Paris en bus* (petite blague formulée par un étudiant ayant suivi notre cours *méthodes quantitatives appliquées en études urbaines* il y a quelques années) !
 :::
 
 ```{r dataregmodel2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 tabreg <- build_table(modelereg, confid = T, std_digits = 3, coef_digits = 3, z_digits = 2, p_digits = 3)
 
-show_table(tabreg,
+show_table(data.frame(tabreg),
            caption = 'Les différentes mesures pour les coefficients',
            col.names=c("Variable","Coef.","Erreur type", "Valeur de T", "P", "coef. 2,5%", "coef. 97,5%", ""),
            align=c("l","r","r", "r", "r", "r", "r", "r")
@@ -1498,9 +1527,9 @@ show_table(tabreg,
 ```
 
 
-À partir des coefficients du tableau ci-dessous, l'équation du modèle de régression s'écrit alors comme suit :
+À partir des coefficients du tableau ci-dessus, l'équation du modèle de régression s'écrit alors comme suit :
 
-`VegPct = 26,356 HABHA − 0,070 AgeMedian + 0,011 AgeMedian + 1,084 Pct_014 + 0,401 Pct_65P − 0,031 Pct_MV − 0,348 Pct_FR + e`
+`VegPct = 26,356 * HABHA − 0,070 * AgeMedian + 0,011 * AgeMedian + 1,084 * Pct_014 + 0,401 * Pct_65P − 0,031 * Pct_MV − 0,348 * Pct_FR + e`
 
 
 **Comment interpréter un coefficient de régression pour une variable indépendante ?**
@@ -1509,37 +1538,39 @@ Le signe du coefficient de régression indique si la variable indépendante est 
 
 Quand à la valeur absolue du coefficient, elle indique la taille de l'effet du prédicteur. Par exemple, 1,084 signifie que si toutes les autres variables indépendantes restaient constantes, alors le pourcentage de végétation dans l'îlot augmenterait de 1,084 points de pourcentage pour chaque différence d’un point de pourcentage d'enfants de moins de 15 ans. Toutes choses étant égales par ailleurs, une augmentation de 10% de pourcentage d'enfants dans un îlot entraînerait alors une hausse de 10,8% de la couverture végétale dans l'îlot.
 
-L'analyse des coefficients montre ainsi qu'une fois contrôlées les deux caractéristiques relatives à la forme urbaine (densité de population et âge médian des bâtiments), plus les pourcentages d'enfants et de personnes âgées augmentent, plus la couverture végétale de l'îlot est importante (B=1,084 et 0,401), toutes choses étant égales par ailleurs. À l'inverse, une hausse des pourcentages de personnes à faible revenu et de minorités est associée à une plus faible couverture végétale (B=−0,348 et −0,031).
+L'analyse des coefficients montre ainsi qu'une fois contrôlées les deux caractéristiques relatives à la forme urbaine (densité de population et âge médian des bâtiments), plus les pourcentages d'enfants et de personnes âgées sont fortent, plus la couverture végétale de l'îlot est importante (B=1,084 et 0,401), toutes choses étant égales par ailleurs. À l'inverse, de plus grands pourcentages de personnes à faible revenu et de minorités sont associés à une plus faible couverture végétale (B=−0,348 et −0,031).
 
 
 **L'erreur type du coefficient de régression**
 
-L'erreur type d'un coefficient permet d'évaluer son niveau de précision. Succinctement, elle correspond à l'écart-type de l'estimation (coefficient); elle est ainsi toujours positive. Plus la valeur de l'erreur type est faible, plus l'estimation de l'effet de la variable indépendante sur la variable dépendante est précise. Notez toutefois qu'il n'ait pas judicieux de comparer les erreurs type des coefficients pour des variables exprimées dans des unités de mesure différents. 
+L'erreur type d'un coefficient permet d'évaluer son niveau de précision, soit le degré d'incertitude vis à vis du coefficient. Succinctement, elle correspond à l'écart-type de l'estimation (coefficient); elle est ainsi toujours positive. Plus la valeur de l'erreur type est faible, plus l'estimation du coefficient est précise. Notez toutefois qu'il n'est pas judicieux de comparer les erreurs type des coefficients pour des variables exprimées dans des unités de mesure différents. 
 
-Comme nous le verrons plus loin, l'utilité principale de l'erreur type est qu'il permet de calculer la valeur de T et l'intervalle de confiance du coefficient de régression.
+Comme nous le verrons plus loin, l'utilité principale de l'erreur type est qu'elle permet de calculer la valeur de *T* et l'intervalle de confiance du coefficient de régression.
 
 
 ### Coefficients de régression standardisés : repérer les variables les plus importantes du modèle {#sect0542}
 
-Un coefficient de régression est exprimé dans les unités de mesure des variables indépendante (VI) et dépendante (VD) : une augmentation d’une unité de la VI a un effet de $\beta$ (valeur de coefficient) unité de mesure sur la VD, toutes choses étant égales par ailleurs. Prenons l’exemple d’un modèle fictif dans lequel une variable indépendante mesurée en mètres obtiendrait un coefficient de régression de 0,000502. Si cette variable était exprimée en kilomètres et non en mètres, son coefficient serait de alors 0,502 ($0,000502 \times 1000 = 0,502$). Cela explique que pour certaines variables, il est souvent préférable de modifier son unité de mesure, particulièrement pour les variables de distance ou de revenu. Par exemple, dans un modèle de régression, on introduit habituellement une variable de revenu par tranche de 1000 dollars ou le loyer mensuel par tranche de 100 dollars puisque les coefficients du revenu ou de loyer exprimé en dollars risquent d'être faibles. Concrètement, cela signifie qu'on divisera la variable *revenu* par 1000 et celle du *loyer* par 100 avant de l'introduire dans le modèle.
+Un coefficient de régression est exprimé dans les unités de mesure des variables indépendante (VI) et dépendante (VD) : une augmentation d’une unité de la VI a un effet de $\beta$ (valeur de coefficient) unité de mesure sur la VD, toutes choses étant égales par ailleurs. Prenons l’exemple d’un modèle fictif dans lequel une variable indépendante mesurée en mètres obtiendrait un coefficient de régression de 0,000502. Si cette variable était exprimée en kilomètres et non en mètres, son coefficient serait de alors 0,502 ($0,000502 \times 1000 = 0,502$). Cela explique que pour certaines variables, il est souvent préférable de modifier son unité de mesure, particulièrement pour les variables de distance ou de revenu. Par exemple, dans un modèle de régression, on introduit habituellement une variable de revenu par tranche de 1000 dollars ou le loyer mensuel par tranche de 100 dollars puisque les coefficients du revenu ou de loyer exprimé en dollars risquent d'être faibles. Concrètement, cela signifie que l'on divisera la variable *revenu* par 1000 et celle du *loyer* par 100 avant de l'introduire dans le modèle.
 
-Du fait de leur unités de mesures souvent différentes, vous aurez compris qu'on ne peut pas comparer directement les coefficients de régression afin de repérer la ou les variables indépendantes (*X*) qui ont les effets (impacts) les plus importants sur la variable dépendante (*Y*). Pour rémédier à ce problème, on utilise les **coefficients de régression standardisés**. Ces coefficients standardisés sont simplement les valeurs de coefficients de régression qui seraient obtenus si toutes les variables du modèle (VD et VI) étaient préalablement centrées et réduites (soit avec une moyenne égale à 0 et un écart-type égal à 1; voir la section \@ref(02552) en guise de rappel). Puisque toutes les variables du modèle sont exprimées en écart-types, les coefficients standardisés permettent ainsi d'évaluer **l'effet relatif** des VI sur VD. Cela permet ainsi de repérer la ou les variables les plus « importantes » du modèle.
+Du fait de leur unités de mesures souvent différentes, vous aurez compris qu'on ne peut pas comparer directement les coefficients de régression afin de repérer la ou les variables indépendantes (*X*) qui ont les effets (impacts) les plus importants sur la variable dépendante (*Y*). Pour rémédier à ce problème, on utilise les **coefficients de régression standardisés**. Ces coefficients standardisés sont simplement les valeurs de coefficients de régression qui seraient obtenus si toutes les variables du modèle (VD et VI) étaient préalablement centrées et réduites (soit avec une moyenne égale à 0 et un écart-type égal à 1; voir la section \@ref(02552) pour un rappel). Puisque toutes les variables du modèle sont exprimées en écart-types, les coefficients standardisés permettent ainsi d'évaluer **l'effet relatif** des VI sur VD. Cela permet ainsi de repérer la ou les variables les plus « importantes » du modèle.
 
 **L'interprétation d'un coefficient de régression standardisé est donc la suivante : il indique le changement en termes d'unités d'écart-type de la variable dépendante (Y) à chaque ajout d'un écart-type de la variable indépendante, toutes choses étant égales par ailleurs**. 
 
 
-Le coefficient de régression standardisé peut être aussi facilement calculé en utilisant les écarts-types des deux variables :
+Le coefficient de régression standardisé peut être aussi facilement calculé en utilisant les écarts-types des deux variables VI et VD :
 
-\begin{equation}\footnotesize 
+\footnotesize 
+\begin{equation}
 \beta_{standardisé}= \beta \frac{s_x}{s_y}
 (\#eq:CoefStand)
 \end{equation}
+\normalsize
 
 La syntaxe R ci-dessous illustre trois façons d'obtenir les coefficients standardisés :
 
 * en centrant et réduisant préalablement les variables avec la fonction `scale` avant de construire le modèle avec la fonction `lm`
-*  en calculant les écarts-types de VD et VI et en appliquant l'équation ci-dessous
-* avec la fonction `lm.beta` du package **QuantPsyc**. Cette dernière méthode est moins « verbeuse » (deux lignes de codes uniquement).
+* en calculant les écarts-types de VD et VI et en appliquant l'équation ci-dessous
+* avec la fonction `lm.beta` du package **QuantPsyc**. Cette dernière méthode est moins « verbeuse » (deux lignes de codes uniquement), mais nécessite de charger un package supplémentaire.
 
 
 ```{r CoefStand1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -1548,7 +1579,6 @@ La syntaxe R ci-dessous illustre trois façons d'obtenir les coefficients standa
 Modele1 <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
 
 #  Méthode 1 : lm sur des variables centrées-réduites
-# ---------------
 ModeleZ <- lm(scale(VegPct) ~ scale(HABHA)+scale(AgeMedian)+
                            scale(Pct_014)+scale(Pct_65P)+
                            scale(Pct_MV)+scale(Pct_FR), data = DataFinal)
@@ -1556,7 +1586,6 @@ coefs <- ModeleZ$coefficients
 coefs[1:length(coefs)]
 
 #  Méthode 2 : à partir de l'équation
-# ---------------
 # Écart-type de la variable dépendante
 VDet <- sd(DataFinal$VegPct)
 cat("Écart-type de Y =", round(VDet,3))
@@ -1570,7 +1599,6 @@ coefstand <- coefs * (VIet / VDet)
 coefstand
 
 #  Méthode 3 : avec la fonction lm.beta du package QuantPsyc
-# ---------------
 library(QuantPsyc)
 lm.beta(lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal))
 
@@ -1591,26 +1619,27 @@ show_table(TabCoef,
 
 Par exemple, pour la variable `Pct_014`, le coefficient de régression standardisé est égal à : 
 
-\begin{equation}\footnotesize 
-IC_{\beta_k}=  \left[ \beta_k - t_{\alpha/2} \times s(\beta_k) ; \beta_k + t_{\alpha/2} \times s(\beta_k)  \right]
+\footnotesize 
+\begin{equation}
+\beta_{standardisé}= 1,084 \times \frac{5,295}{18,562}=0,309
 (\#eq:CoefStand2)
 \end{equation}
-
-IC_{\beta_k}=  \left[ \beta_k - t_{\alpha/2} \times s(\beta_k) ; \beta_k + t_{\alpha/2} \times s(\beta_k)  \right]
-
+\normalsize
 
 avec 1,084 étant le coefficient de régression de `Pct_014`, 5,295 et 18,562 étant respectivement les écart-types de `Pct_014` (variable indépendante) et de `VegPct` (variable dépendante).
 
-Au tableau \@ref(tab:CoefStand2), on constate que la valeur absolue du coefficient de régression pour `HABHA` est inférieure à celle de `Pct_65P` (−0,070 *versus* 0,401), ce qui n'est pas le cas pour leurs coefficients standardisés (−0,281 *versus* 0,179). Rappelez-vous aussi qu'on ne peut pas directement comparer les effets de ces deux variables à partir des coefficients de régression puisqu'elles sont exprimées dans des unités de mesure différentes : `HABHA` est exprimée en habitants par hectare et `Pct_65P` en pourcentage. À la lecture des coefficients standardisés, on peut en conclure que la variable `HABHA` a un effet relatif plus important que `Pct_65P` (−0,281 *versus* 0,179); autrement dit, un apport plus important au modèle. 
-
+Au tableau \@ref(tab:CoefStand2), on constate que la valeur absolue du coefficient de régression pour `HABHA` est inférieure à celle de `Pct_65P` (−0,070 *versus* 0,401), ce qui n'est pas le cas pour leurs coefficients standardisés (−0,281 *versus* 0,179). Rappelez-vous aussi qu'on ne peut pas directement comparer les effets de ces deux variables à partir des coefficients de régression puisqu'elles sont exprimées dans des unités de mesure différentes : `HABHA` est exprimée en habitants par hectare et `Pct_65P` en pourcentage. À la lecture des coefficients standardisés, on peut en conclure que la variable `HABHA` a un effet relatif plus important que `Pct_65P` (−0,281 *versus* 0,179).
 
 ### Significativité des coefficients de régression : valeurs de T et de P {#sect0543}
-Une fois les coefficients de régression obtenus, il convient de vérifier s'ils sont ou significativement non différents de 0. Bien entendu, si le coefficient de régression d'une variable indépendante est significativement différent de 0, on en conclut que la variable a un effet significatif sur la variable dépendante, toutes choses étant égales par ailleurs. Pour ce faire, il suffit de calculer la valeur de T qui est simplement le coefficient de régression divisé par son erreur type.
 
-\begin{equation}\footnotesize 
+Une fois les coefficients de régression obtenus, il convient de vérifier s'ils sont ou non significativement différents de 0. Si le coefficient de régression d'une variable indépendante est significativement différent de 0, on en conclut que la variable a un effet significatif sur la variable dépendante, toutes choses étant égales par ailleurs. Pour ce faire, il suffit de calculer la valeur de T qui est simplement le coefficient de régression divisé par son erreur type.
+
+\footnotesize
+\begin{equation} 
 T=\frac{\beta_k - 0}{s(\beta_k)}  
 (\#eq:ValeurT)
 \end{equation}
+\normalsize
 
 avec $s(\beta_k)$ étant l'erreur type du coefficient de régression. Notez que dans l'équation ci-dessous, on indique habituellement $-0$ pour signaler que l'on veut tester si le coefficient est différent de 0.
 
@@ -1622,10 +1651,10 @@ En guise d'exemple, au tableau \@ref(tab:dataregmodel2), la valeur de T du la va
 
 **Démarche pour vérifier si un coefficient est significativement différent de 0 avec un seuil de confiance**
 
-1. Poser l'hypothèse nulle stipulant le coefficient est égal à 0, soit $H_0 : \beta_k = 0$. L'hypothèse alternative étant que le coefficient est différent de 0, soit $H_1 : B_k \neq 0$.
+1. Poser l'hypothèse nulle stipulant que le coefficient est égal à 0, soit $H_0 : \beta_k = 0$. L'hypothèse alternative est que le coefficient est différent de 0, soit $H_1 : B_k \neq 0$.
 2. Calculer la valeur de T, soit le coefficient de régression divisé par son erreur type (équation \@ref(eq:ValeurT)).
 3. Calculer le nombre de degrés de liberté, soit $dl = n − k - 1$, *n* et *k* étant respectivement les nombres d'observations et de variables indépendantes.
-4. Choisir un seuil de signification alpha (5%, 1% ou 0,1% de chances de se trouver, soit p = 0,05, 0,01 ou 0,01).
+4. Choisir un seuil de signification alpha (5%, 1% ou 0,1% de chances de se trouver, soit *p* = 0,05, 0,01 ou 0,01).
 5. Trouver la valeur critique de T dans la table T de Student (section \@ref(sect123)) avec *p* et le nombre de degrés de liberté (dl).
 6. Valider ou réfuter l'hypothèse nulle (H<sub>0</sub>) :
   - si la valeur de T est inférieure à la valeur critique de T avec *dl* et le seuil choisi, on valide *h<sub>0</sub>* : le coefficient n'est pas significativement différent de 0.
@@ -1638,14 +1667,25 @@ Lorsque le nombre de degrés de liberté (*n − k - 1*) est très important (su
 
 * une valeur de T supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de T supérieure à 1,96 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de T supérieure à 2,58 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de T supérieure à 1,96 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 0,1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de T supérieure à 3,29 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 0,1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
 Concrètement, retenez et utilisez les seuils de $\pm1,96$, $\pm2,58$ et $\pm3,29$ pour repérer les variables significatives positivement ou négatifs aux seuils respectifs de 0,5, 0,1 et 0,001.
+
+**Que signifie les seuils 0,5, 0,1 et 0,001**
+
+L'interprétation exacte des seuils de significativité des coefficients d'une régression est quelque peu alambiquée, mais mérite que l'on s'y attarde. En effet, indiquer qu'un coefficient est significatif est souvent perçu comme un argument fort pour une théorie, il est donc nécessaire d'avoir du recul et de bien comprendre ce que l'on entend par **significatif**. 
+
+
+Si un coefficient est significatif au seuil 5% dans notre modèle, cela signifie que si la valeur du coefficient est de 0 en réalité pour l’ensemble d’une population, alors nous avions moins de 5% de chances de collecter un échantillon (pour cette population) ayant produit un coefficient aussi fort que celui que nous observons dans notre propre échantillon. 
+
+Par conséquent, il serait très invraisemblable que le coefficient soit 0 puisque nous avons effectivement collecté un tel échantillon. Il s'agit d'une forme d'argumentation par l'absurde propre à la statistique fréquentiste. 
+
+Notez que si 100 études étaient conduites sur le même sujet et dans les mêmes conditions, on s'attendrait à ce que 5 d'entre elles trouvent un coefficient significatif, du fait de la variation des échantillons. Ce constat souligne le fait que la recherche est un effort collectif et qu'une seule étude n'est pas suffisante pour trancher sur un sujet. Les revues systématiques de la littérature sont donc des travaux particulièrement importants pour la construction du consensus scientifique.
 :::
 
-Prenons deux variables indépendantes au tableau \@ref(tab:dataregmodel2) – `HABHA` et `AgeMedian` – et vérifions si leurs coefficients de régression respectifs (−0,070 et 0,011) sont significatifs. Appliquons la démarche décrite dans l'encadré ci-dessous :
+Prenons deux variables indépendantes au tableau \@ref(tab:dataregmodel2) – `HABHA` et `AgeMedian` – et vérifions si leurs coefficients de régression respectifs (−0,070 et 0,011) sont significatifs. Appliquons la démarche décrite dans l'encadré ci-dessus :
 
 1. On l'hypothèse pose nulle stipulant les valeurs de ces deux coefficients sont égales à 0, soit $H_0 : \beta_k = 0$.
 2. Leurs valeurs de T sont égales à `−0,070401 / 0,002202 = −31,97139` pour `HABHA` et à `0,010790 / 0,006369 = 1,694144` pour `AgeMedian`.
@@ -1658,11 +1698,11 @@ Prenons deux variables indépendantes au tableau \@ref(tab:dataregmodel2) – `H
   - pour `AgeMedian`, la valeur absolue de T (1,694) est supérieure à 1,65 (p=0,10), mais inférieure à 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de p=0,10, et non au seuil de p=0,05. Cela signifie qu'on a un peu moins de 10% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
 
 
-::: {.bloc_attention data-latex=""}
+::: {.bloc_astuce data-latex=""}
 
 **Calculer et obtenir des valeurs de P dans R**
 
-Il est très rare que l'on aille à recourir à la table T de Student pour obtenir un seuil de signification. 
+Il est très rare que l'on utilise directement la table T de Student pour obtenir un seuil de signification. 
 
 D'une part, il est possible de calculer directement la valeur de P à partir de de la valeur de T et du nombre de degrés de liberté avec la fonction `pt` avec les paramètres suivants :
 
@@ -1703,33 +1743,456 @@ D'autre part, la fonction `summary` renvoie d'emblée les valeurs de T et de P. 
 Finalement, il est possible de calculer l'intervalle de confiance d'un coefficient à partir d'un niveau de signification (habituellement 0,95 ou encore 0,99). Pour ce faire, la fonction `confint(nom du modèle, level=.95)` est très utile. L'intérêt de ces intervalles de confiance pour les coefficients de régression est double :
 
 * il permet de vérifier si le coefficient est ou non significatif au seuil retenu. Pour cela la borne inférieure et la borne supérieure du coefficient doivent être toutes deux négatives ou positives. À l'inverse, un intervalle à cheval sur 0, soit avec une borne inférieure négative et une borne supérieure positive, n'est pas significatif.
-* il permet d'effet la précision de l'estimation; si les deux bornes sont positives ou négatives, plus l'intervalle du coefficient est réduit, plus l'estimation de l'effet de la variable indépendante sera précise et significative.
+* il permet d'estimer la précision de l'estimation; plus l'intervalle du coefficient est réduit, plus l'estimation de l'effet de la variable indépendante est précise. Inversement, un intervalle large signale que le coefficient est incertain.
 
 Cela explique que de nombreux auteurs reportent les intervalles de confiance dans les articles scientifiques (habituellement à 95%). Dans le modèle ici présenté, il serait alors possible d'écrire : toutes choses étant égales par ailleurs, le pourcentage d'enfants de moins de 15 ans est positivement et significativement associé avec le pourcentage de la couverture végétale dans l'îlot (B=1,084; IC 95% = [1,021 - 1,148], p <0.001).
 
-En guise d'exemple, à la lecture de la sortie R ci-dessous, 95% du temps, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` varie de -0,002 à 0,023. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec p=0,05.
+En guise d'exemple, à la lecture de la sortie R ci-dessous, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` se situe dans l'intervalle -0,002 à 0,023 qui est à cheval sur 0. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec p=0,05.
 
-```{r confintReg, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+```{r confintReg2, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+
 # Intervalle de confiance à 95% des coefficients
 round(confint(Modele1, level=.95),3)
 ```
+
+::: {.bloc_astuce data-latex=""}
+**Comment est calculé un intervalle de confiance ?**
+
+L'intervalle du coefficient est obtenu à partir de : 
+
+1.la valeur du coefficient ($\beta_k$),
+2. la valeur de son erreur standard $s(\beta_k)$ et 
+3. la valeur critique de T ($t_{\alpha/2}$) obtenu avec $n-k-1$ degrés de liberté et le niveau de significatité retenu (95%, 99% ou 99,9%) .
+
+\footnotesize
+\begin{equation}
+IC_{\beta_k}=  \left[ \beta_k - t_{\alpha/2} \times s(\beta_k) ; \beta_k + t_{\alpha/2} \times s(\beta_k)  \right]
+(\#eq:ICcoef)
+\end{equation}
+\normalsize
+
+Autrement dit, lorsque vous disposez d'un nombre très important d'observations, les intervalles de confiance s'écrivent simplement avec les fameuses valeurs de critiques de T de 1,96, 2,58, 3,29 :
+
+\footnotesize
+\begin{equation}
+\text{Intervalle à 95\%\: } IC_{\beta_k}=  \left[ \beta_k - 1,96 \times s(\beta_k) ; \beta_k + 1,96 \times s(\beta_k)  \right]
+(\#eq:IC95)
+\end{equation}
+\normalsize
+
+\footnotesize
+\begin{equation}
+\text{Intervalle à 99\%\: } IC_{\beta_k}=  \left[ \beta_k - 2,58 \times s(\beta_k) ; \beta_k + 2,58 \times s(\beta_k)  \right]
+(\#eq:IC99)
+\end{equation}
+\normalsize
+
+\footnotesize
+\begin{equation}
+\text{Intervalle à 99,9\%\: } IC_{\beta_k}=  \left[ \beta_k - 3,29 \times s(\beta_k) ; \beta_k + 3,29 \times s(\beta_k)  \right]
+(\#eq:IC999)
+\end{equation}
+\normalsize
+
+La syntaxe R ci-dessous illustre comment calculer les intervalles de confiance à 95% à partir de l'équation \@ref(eq:ICcoef). Rappelez toutefois qu'il est bien simple d'utiliser la fonction `confint`:
+
+* `round(confint(Modele1, level=.95),3) `
+* `round(confint(Modele1, level=.99),3)`
+* `round(confint(Modele1, level=.999),3)`
+
+```{r T, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+# Coeffients de régression
+coefs <- Modele1$coefficients
+
+# Erreur type des coef.
+coefs_se <- summary(Modele1)$coefficients[,2]
+
+# Nombre de degrés de libertés
+n <- length(Modele1$fitted.values)
+k <- length(Modele1$coefficients)-1
+dl <- n-k-1
+
+# valeurs critique de T
+t95 <-  qt(p=1 - (0.05/2),  df=dl)
+t99 <-  qt(p=1 - (0.01/2),  df=dl)
+t99.9 <-  qt(p=1 - (0.001/2),  df=dl)
+cat("Valeurs critiques de T en fonction du niveau de confiance",
+    "\n et du nombre de degrés de liberté",
+    "\n95% : ", t95,
+    "\n99% : ", t99,
+    "\n99.9% : ", t99.9
+    )
+
+# Intervalle de confiance à 95
+
+data.frame(
+  IC2.5  = round(coefs-t95*coefs_se,3),
+  IC97.5 = round(coefs+t95*coefs_se,3)
+  )
+
+# Intervalle de confiance à 99
+
+data.frame(
+  IC0.5 = round(coefs-t99*coefs_se,3),
+  IC99.5 = round(coefs+t99*coefs_se,3)
+)
+
+# Intervalle de confiance à 99.9
+data.frame(
+  IC0.05 = round(coefs-t99.9*coefs_se,3),
+  IC99.95 = round(coefs+t99.9*coefs_se,3)
+  )
+```
+:::
 
 ## Introduction de variables explicatives particulières {#sect055}
 
 ### Variable indépendante avec une fontion polynomiale {#sect0551}
 
-Dans la section \@ref(sect0411), nous avons vu que la relation entre deux variables continues n'est pas toujours linéaire. Elle peut être aussi curvilinéaire. Pour explorer les relations curvilinéaires, on introduit la variable sous une forme polynomiale d'ordre 2. L'équation de régression s'écrit alors :
+Dans la section \@ref(sect0411), nous avons vu que la relation entre deux variables continues n'est pas toujours linéaire; elle peut être aussi curvilinéaire. Pour explorer les relations curvilinéaires, on introduit la variable indépendante sous la forme polynomiale d'ordre 2. L'équation de régression s'écrit alors :
 
-\begin{equation}\footnotesize 
-Y = b_{0} + b_{1}X_{1} + b_{1}X_{1}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
-(\#eq:regmultiple2)
+\footnotesize 
+\begin{equation}
+Y = b_{0} + b_{1}X_{1} + b_{11}X_{1}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+(\#eq:regpolyordre2)
 \end{equation}
+\normalsize
 
-Dans l'équation ci-dessous, remarque que la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{1}X_{1}^2$.  
+Dans l'équation ci-dessus, la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{1}X_{1}^2$. 
+
+La démographie est certainement une des disciplines des sciences sociales qui a le plus recours aux régressions polynomiales. En effet, la variable `âge` est souvent introduite comme variable explicative dans sa forme originale et mise au carré. L'objectif est de vérifier si l'âge partage ou non une relation curvilinéaire avec un phénomène donné : par exemple, il pourrait y être associé positivement jusqu'à un certain seuil (45 ans par exemple), puis négativement à partir de ce seuil.
+
+
+::: {.bloc_aller_loin data-latex=""}
+**Régression polynomiale et nombre d'ordres**.
+
+Sachez qu'il est aussi possible de construire des régressions polynomiales avec plus deux ordres. Par exemple, une régression polynomiale d'ordre 3, comprend une variable dans sa forme originelle, puis mise au carré et au cube. Cela a l'inconvénient d'augmenter corrolairement le nombre de coefficients. Nous verrons au chapitre \@ref(chap06) qui existe une solution plus élégante et efficace : le recours aux modèles de régressions linéaires généralisées avec des *splines*. Dans le cadre de cette section, nous limiterons à des régression polynomiale d'ordre 2.
+
+\footnotesize 
+\begin{equation}
+\mbox{Ordre 2 : } Y = b_{0} + b_{1}X_{1} + b_{1}X_{11}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+(\#eq:regpolyordre2b)
+\end{equation}
+\normalsize
+
+\footnotesize 
+\begin{equation}
+\mbox{Ordre 3 : } Y = b_{0} + b_{1}X_{1} + b_{1}X_{11}^2 + b_{1}X_{111}^3 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+(\#eq:regpolyordre3)
+\end{equation}
+\normalsize
+
+\footnotesize 
+\begin{equation}
+\mbox{Ordre 4 : } Y = b_{0} + b_{1}X_{1} + b_{1}X_{11}^2 + b_{1}X_{111}^3 + b_{1}X_{1111}^4 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+(\#eq:regpolyordre4)
+\end{equation}
+\normalsize
+
+:::
+
+Pour construire une régression polynomiale dans R, il est possible d'utiliser deux fonctions de R :
+
+* `I(VI^2)` avec `VI` est la variable indépendante sur laquelle est appliquée la mise au carré.
+* `poly(VI,2)` qui utilise une forme polynomiale orthogonale pour éviter les problèmes de corrélation entre les deux termes, c'est-à-dire entre **VI** et **VI^2^**.
+
+Ces deux méthodes produiront les mêmes résultats pour les autres variables dépendantes et pour la qualité d'ajustement du modèle (R^2^, F, etc.). On privilégie la seconde fonction pour éviter ainsi les problèmes de multicolinéarité excessive.
+
+Appliquons cette démarche à la variable `AgeMedian` (âge médian des bâtiments) afin de vérifier si elle partage ou non une relation curvilinéaire avec la couverture végétale de l'îlot. À la lecture des sorties des sorties pour les deux modèles, les constats suivants peuvent être avancées :
+
+* Le R^2^ ajusté passe de 0,4179 à 0,4378 du modèle 1 au modèle 2, ce qui signale un gain de variance expliquée.
+* Le F incrémentiel entre les deux modèles s'élève à 362,64 et est significatif (P<0,001). On peut donc en conclure que le second modèle est plus performant que le premier, ce qui signale que la forme curvilinéaire pour `AgeMedian` (modèle 2) est plus efficace que la forme linéaire (modèle 1).
+* Dans le premier modèle, le coefficient de régression pour `AgeMedian` n'est pas significatif. L'âge médian des bâtiments n'est donc pas associé linéairement avec la variable dépendante.
+* Dans le second modèle, la valeur du coefficient de `poly(AgeMedian, 2)1` est positive et celle de `poly(AgeMedian, 2)2` est négative et significative. Cela indique qu'il existe une relation linéaire en forme de U inversé. Si le premier coefficient avait été négatif et le second positif, on aurait alors conclu que la forme curvilinéaire prend la forme d'un U.
+
+
+```{r calculRegPoly1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+
+# Régression linéaire
+modele1 <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+# Régression polynomiale
+modele2 <- lm(VegPct ~ HABHA+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+summary(modele1)
+summary(modele2)
+anova(modele1, modele2)
+```
+
+**Construction d'un graphique des effets marginaux**
+
+Pour visualiser la relation linéaire et curvilinéaire, nous vous proposons de réaliser un graphique des effets marginaux à partir de la syntaxe ci-dessous.
+
+Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X<sub>1</sub>* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, seule X<sub>1</sub> est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de Y quand *X<sub>1</sub>* augmente ou diminue, et ce, toute choses étant égales par ailleurs. Cette approche est particulièrement intéressante pour décrire des effets non-linéaires obtenus avec des polynomiales. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap06) et \@ref(chap08)).
+
+
+```{r calculRegPoly2, echo=TRUE, fig.align='center', fig.cap="Relations linéaire et curvilinéaire", message=FALSE, warning=FALSE, out.width='75%'}
+library(ggplot2)
+# Statistique sur la variable AgeMedian qui varie de 0 à 226 ans
+summary(DataFinal$AgeMedian)
+
+# Création d'un dataframe temporaire
+# remarquez que les autres variables indépendantes sont constantes :
+# nous leur avons attribué leur moyenne correspondante
+df <- data.frame(
+  HABHA = mean(DataFinal$HABHA),
+  AgeMedian= seq(0,200, by = 2),
+  AgeMedian2 = seq(0,200, by = 2)**2,
+  Pct_014= mean(DataFinal$Pct_014),
+  Pct_65P= mean(DataFinal$Pct_65P),
+  Pct_MV= mean(DataFinal$Pct_MV),
+  Pct_FR= mean(DataFinal$Pct_FR)
+)
+
+# calcul de la valeur de t pour un intervalle à 95%
+n <- length(modele1$fitted.values) 
+k <- length(modele1$coefficients)-1
+t95 <- qt(p=1 - (0.05/2),  df=n-k-1)
+
+# Calcul des valeurs prédites pour le 1er modèle
+# avec l'intervalle de confiance à 95%
+predsM1 <- predict(modele1,se = T, newdata = df)
+df$predM1 <- predsM1$fit
+df$lowerM1 <- predsM1$fit - t95*predsM1$se.fit
+df$upperM1 <- predsM1$fit + t95*predsM1$se.fit
+
+# Calcul des valeurs prédites pour le 2e modèle
+# avec l'intervalle de confiance à 95%
+predsM2 <- predict(modele2,se = T, newdata = df)
+df$predM2 <- predsM2$fit
+df$lowerM2 <- predsM2$fit - t95*predsM2$se.fit
+df$upperM2 <- predsM2$fit + t95*predsM2$se.fit
+
+# Graphique
+ggplot(data = df) + 
+  geom_ribbon(aes(x = AgeMedian, ymin = lowerM1, ymax = upperM1), 
+             fill = rgb(0.1,0.1,0.1,0.4)) + 
+  geom_path(aes(x = AgeMedian, y = predM1), color = 'blue', size = 1)+
+  
+  geom_ribbon(aes(x = AgeMedian, ymin = lowerM2, ymax = upperM2), 
+              fill = rgb(0.1,0.1,0.1,0.4)) + 
+  geom_path(aes(x = AgeMedian, y = predM2), color = 'red', size = 1)+
+  
+  labs(title="Effet marginal de l'âge médian des bâtiments sur la",
+       subtitle = "des îlots de l'île de Montréal",
+       capation = "bleu : relation linéaire; rouge : curvilinéaire",
+       x = "Âge médian des bâtiments",
+       y = "Couverture végétale (%)")
+```
+
+La figure \@ref(fig:calculRegPoly2) démontre bien que la relation linéaire n'est pas significative : la pente est extrêmement faible, ce qui signale que l'effet de l'âge médian est presque nul (B=0,0108, P=0,0902). Par contre, la relation linéaire est plus intéressante : la couverture végétale croît quand l'âge médian des bâtiments dans l'îlot augmente de 0 à 60 ans environ, puis, elle décroît.
 
 ### Variable indépendante qualitative dichtonomique {#sect0552}
 
+Il est très fréquent d'introduire une variable qualitative dichtonomique comme variable explicative ou de contrôle dans un modèle. À titre de rappel, une variable dichotomique comprend deux modalités (section \@ref(sect0212)). 
+
+Dans le modèle ci-dessous, nous voulons vérifier si un îlot situé sur le territoire de la Ville de Montréal a proportionnellement moins de végétation qu'un îlot situé dans une autre municipalité de l'île de Montréal, toutes choses étant égales à ailleurs. Pour ce faire, nous créons une variable binaire dénommée `VilleMtl` qui prend la valeur de 1 pour la Ville de Montréal et 0 pour une autre municipalité.
+
+Nous obtenons ainsi un coefficient de régression pour `VilleMtl` de -9,085. Cela signifie que si toutes les autres variables indépendantes du modèle étaient constantes, alors en moyenne, un îlot de la Ville de Montréal a une valeur de -9,085% de moins de végétation comparativement à un îlot situé dans une autre municipalité.
+
+```{r regmodeleDich, echo=TRUE, message=FALSE, warning=FALSE}
+
+# Création d'une variable muette pour Montréal
+DataFinal$VilleMtl <- ifelse(DataFinal$SDRNOM == "Montréal", 1, 0)
+
+# Modèle avec la variable dichtomique
+modele3 <- lm(VegPct ~ VilleMtl+HABHA+poly(AgeMedian,2)+
+              Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+```
+
+
+```{r regmodeleDich2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+
+tabreg <- build_table(modele3, confid = T, std_digits = 3, coef_digits = 3, z_digits = 2, p_digits = 3)
+ 
+ show_table(data.frame(tabreg),
+            caption = 'Modèle avec une variable dichotomique',
+            col.names=c("Variable","Coef.","Erreur type", "Valeur de T",                           "P", "coef. 2,5%", "coef. 97,5%", ""),
+            align=c("l","r","r", "r", "r", "r", "r", "r", "r", "r")
+             )
+```
+
+ 
+::: {.bloc_astuce data-latex=""}
+**Bien interpréter un coefficient d'une variable dichotomique**
+
+Nous avons vu que le coefficient de régression ($\beta_k$) indique le changement de la variable dépendante (*Y*), lorsque la variable indépendante augmente d’une unité, toutes choses étant égales par ailleurs.
+
+Pour une variable dichotomique, le coefficient indique le changement de *Y* quand les observations appartiennent à la modalité qui a la valeur de 1 (ici la ville de Montréal), comparativement à celles qui a la valeur de 0 (autres municipalités de l'île de Montréal), toutes choses étant égales par ailleurs.
+
+La modalité qui a la valeur de 0 est alors appelée la **modalité ou catégorie de référence**.
+
+Autrement dit, si la variable aurait été codée : 0 pour la Ville et de Montréal et 1 pour les autres municipalités alors le coefficient aurait été de 9,085.
+
+Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans R (section \@ref(sect0509)) qu'il est préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
+:::
+
+Comme pour une variable indépendante introduite avec une fonction polynomiale, il est peut-être très intéressant d'illuster l'effet marginal de la variable dichotomique avec un graphique qui montre l'écart entre les moyennes des deux modalités, une fois contrôlées les autres variables indépendantes (figure \@ref(fig:EffetMarginalDich)).
+
+```{r EffetMarginalDich, echo=TRUE, fig.align='center', fig.cap="Effet marginal d'une variable dichtomique", message=FALSE, warning=FALSE, out.width='70%'}
+library(ggplot2)
+library(ggeffects)
+
+# Valeurs prédites selon le modèle avec la variable dichtomique
+dfPreds <- ggpredict(modele3, terms = "VilleMtl")
+
+# Graphique
+ggplot(dfPreds, aes(x=x, y=predicted)) +
+  geom_bar(stat = "identity", position = position_dodge(), fill="wheat") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), alpha = .9,position = position_dodge())+
+  labs(title="Effet marginal de la Ville de Montréal sur la végétation",
+       x="Municipalités de la région de Montréal",
+       y="Couverture végétation de l'îlot (%)")+
+  scale_x_continuous(breaks=c(0,1),
+                     labels = c("Autre municipalité", "Ville de Montréal"))
+```                                
+                                
 ### Variable indépendante qualitative polytomique {#sect0553}
+
+Il peut être aussi pertinent d'introduire une variable qualitative polytomique comme variable explicative ou de contrôle dans un modèle. À titre de rappel, une variable polytomique comprend plus de deux modalités, qu'elle soit nominale ou ordinale (section \@ref(sect0212)). 
+
+En guise d'exemple, une variable qualitative pourrait être : différents groupes de population (groupes d'âge, minorités visibles, catégories socioprofessionnelles, etc.), différents territoires ou régions (ville centrale, première couronne, deuxième couronne, etc.), une variable semi-quantitative (par exemple une variable continue transformée en quatre ou cinq catégories ordinales selon les quartiles ou les quintiles).
+
+#### Comment est construit une modèle de régression avec variable explicative qualitative polytomique ? {#sect05531}
+
+Prenons l'exemple d'un modèle de régression comprenant deux variables indépendantes : l'une continue (`X1`), l'autre qualitative (`X2`) comprenant quatre modalités (A, B, C et D). L'introduction de la variable qualitative dans le modèle revient à :
+
+* Transformer chaque modalité en variable muette (binaire). On a ainsi quatre nouvelles variables binaires : `X2A`, `X2B`, `X2C` et `X2D`. Par exemple, les observations de la modalité *A* se verront affectées la valeur de 1 tandis que les autres observations la valeur de 0 pour `X2A`. La même démarche s'applique à `X2B`, `X2C` et `X2D` (voir tableau \@ref(tab:transfVarQMuettes)).
+
+```{r transfVarQMuettes, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+df <- data.frame(
+          obs = c(1:10),
+          Y= round(rnorm(10, mean=50, sd=10),2),
+          X1 = round(rnorm(10, mean=20, sd=5),2),
+          X2 = c("A","A","A","B","B","B","C","C","D","D")
+  )
+
+df$X2A <- ifelse(df$X2 == "A", 1, 0)
+df$X2B <- ifelse(df$X2 == "B", 1, 0)
+df$X2C <- ifelse(df$X2 == "C", 1, 0)
+df$X2D <- ifelse(df$X2 == "D", 1, 0)
+
+show_table(df,
+            caption = "Transformation d'une variable qualitative en variables muettes pour chaque modalité",
+           align= c("r","r","r","c", "c", "c", "c", "c")
+           )
+```
+
+* Toutes les modalités transformées en variables muettes sont introduites dans le modèle comme variables indépendantes **sauf une servant de catégorie de référence**. Pourquoi sauf une? Si on mettait toutes les modalités en variable muette alors chaque observation serait repérée par une valeur de 1, « il y aurait alors une parfaite multicolinéarité et aucune solution unique pour les coefficients de régression ne pourrait être trouvée » [@bressoux2010, p. 128]. 
+
+* Par exemple, si l'on choisit la modalité *A* comme catégorie de référence, l'équation de régression s'écrit alors :
+
+
+\footnotesize 
+\begin{equation}
+Y = b_{0} + b_{1}X_{1} + b_{2B}X_{2B} + b_{2C}X_{2C} + b_{2D}X_{2D}+ e
+(\#eq:regvarpoly1)
+\end{equation}
+\normalsize
+
+* Vous aurez compris que choisir la modalité *D* comme catégorie de référence revient à écrire l'équation suivante :
+
+\footnotesize 
+\begin{equation}
+Y = b_{0} + b_{1}X_{1} + + b_{2A}X_{2A} + b_{2B}X_{2B} + b_{2C}X_{2C} + e
+(\#eq:regvarpoly2)
+\end{equation}
+\normalsize
+
+#### Comment interpréter les coefficients des modalités d'une variable explicative qualitative polytomique  {#sect05532}
+
+Les coefficients des différentes modalités s'interprètent en fonction de la catégorie de référence. Dans l'exemple ci-dessous, nous avons inclus la Ville de Montréal comme catégorie de référence. On peut alors constater que toutes choses étant égales par ailleurs :
+
+* en moyenne, les îlots résidentiels de Senneville et Baie-D’Urfé ont respectivement 33,136% et 26,759% plus de végétation que ceux de la Ville de Montréal.
+* la seule municipalité comprenant en moyenne moins de végétation dans ces îlots résidentiels est celle Montréal-Nord (-2,368%) 
+* on remarque aussi que les municipalités de Sainte-Anne-de-Bellevue, Montréal-Ouest et Côte-Saint-Luc ne présentent pas significativement moins ou plus de végétation que ceux de la Ville de Montréal (leurs valeurs de P sont supérieures à 0,05).
+
+Par conséquent, les valeurs de T et de P pour une modalité permettent de vérifier si elle est ou non significativement différente de la catégorie de référence.
+
+```{r ModeleVarPoly1, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+DataFinal$Municipalité <- relevel(DataFinal$SDRNOM, ref="Montréal")
+modele4a <- lm(VegPct ~ HABHA+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR+Municipalité, data = DataFinal)
+
+tabreg <- build_table(modele4a, confid = F, std_digits = 3, coef_digits = 3, z_digits = 2, p_digits = 3)
+ 
+ show_table(data.frame(tabreg),
+            caption = 'Modèle avec une variable polytomique (Ville Montréal en catégorie de référence)',
+            col.names=c("Variable","Coef.","Erreur type", "Valeur de T","P", ""),
+            align=c("l","r","r", "r", "r", "r", "r", "r")
+             )
+```
+
+Mettons désormais la municipalité qui avait le coefficient le plus fort dans le modèle précédent, soit Senneville. Bien entendu, les coefficients des variables continues et de la constante ne changent pas. Par contre, les coefficients de toutes les municipalités sont négatifs puisque la Ville de Senneville est celle qui a proportionnellement le plus de végétation dans ces îlots, toutes choses étant égales par ailleurs.
+
+```{r ModeleVarPoly2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+DataFinal$Municipalité <- relevel(DataFinal$SDRNOM, ref="Senneville")
+modele4b <- lm(VegPct ~ HABHA+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR+Municipalité, data = DataFinal)
+
+tabreg <- build_table(modele4b, confid = F, std_digits = 3, coef_digits = 3, z_digits = 2, p_digits = 3)
+ 
+ show_table(data.frame(tabreg),
+            caption = 'Modèle avec une variable polytomique (Senneville en catégorie de référence)',
+            col.names=c("Variable","Coef.","Erreur type", "Valeur de T","P", ""),
+            align=c("l","r","r", "r", "r", "r", "r", "r")
+             )
+```
+
+À l'inverse, si Montréal-Est, soit la municipalité avec le coefficient le plus faible dans le premier modèle, tous les coefficients deviendront positifs.
+
+
+```{r ModeleVarPoly3, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+DataFinal$Municipalité <- relevel(DataFinal$SDRNOM, ref="Montréal-Est")
+modele4c <- lm(VegPct ~ HABHA+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR+Municipalité, data = DataFinal)
+
+tabreg <- build_table(modele4c, confid = F, std_digits = 3, coef_digits = 3, z_digits = 2, p_digits = 3)
+ 
+ show_table(data.frame(tabreg),
+            caption = 'Modèle avec une variable polytomique (Montréal-Est en catégorie de référence)',
+            col.names=c("Variable","Coef.","Erreur type", "Valeur de T","P", ""),
+            align=c("l","r","r", "r", "r", "r", "r", "r")
+             )
+```
+
+::: {.bloc_astuce data-latex=""}
+**Mais, mais alors Jamy comment choisir la catégorie de référence ?**
+
+Plusieurs options sont possibles, choisir :
+
+* la modalité comprenant le plus d'observations
+* la modalité avec la plus forte valeur pour la variable dépendante
+* la modalité celle avec la plus faible valeur pour la variable dépendante
+* la modalité qui fait le plus de sens avec votre cadre théorique. Prenons l'exemple d'une variable qualitative comprenant plusieurs groupes d'âge (15-29 ans, 30-39 ans, 40-49 ans, 50-54 ans, 65 ans et plus). Si votre étude porte sur les jeunes et que vous souhaitez comparer leur situation comparativement aux autres groupes d'âge, toutes choses étant égales par ailleurs, sélectionnez bien évidemment la modalité des 15 à 29 ans comme catégorie de référence.
+
+Mais surtout, éviter de choisir une catégorie comprenant très peu d'observations.
+::: 
+
+#### L'effet marginal d'une variable explicative qualitative polytomique  {#sect05533}
+
+Comme pour une variable dichotomique, il est possible d'illustrer l'effet marginal de variable qualitative dichotomique avec un graphique. Quel que soit la catégorie de référence choisi, le graphique sera le même. La figure \@ref(fig:EffetMarginalPoly) illustre ainsi la valeur moyenne avec son intervalle de confiance (à 95%) de la végétation dans les îlots résidentiels de chacune des municipalités de la région de Montréal, *ceteris paribus*.
+
+```{r EffetMarginalPoly, echo=TRUE, fig.align='center', fig.cap="Effet marginal d'une variable polytomique", message=FALSE, warning=FALSE, out.width='90%'}
+library(ggplot2)
+library(ggeffects)
+
+# Valeurs prédites selon le modèle avec la variable polytomique
+dfPreds <- ggpredict(modele4a, terms = "Municipalité")
+
+# Graphique
+Graphique <-  ggplot(dfPreds, aes(x=x, y=predicted)) +
+  geom_bar(stat = "identity", position = position_dodge(), fill="wheat") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), alpha = .9,position = position_dodge())+
+  labs(title="Effet marginal des différentes municipalités",
+       x="Municipalités de la région de Montréal",
+       y="Couverture végétation de l'îlot (%)")
+
+Graphique + coord_flip()
+
+```
+
+
+### Variable d'interaction {#sect0554}
+
+https://www.econometrics-with-r.org/8-3-interactions-between-independent-variables.html
 
 
 ## Diagnostics de la régression {#sect056}
