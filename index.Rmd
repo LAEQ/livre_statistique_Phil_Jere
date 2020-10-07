@@ -112,6 +112,7 @@ clean_df_latex <- function(df){
     df <- list(df)
   }
   df2 <- lapply(df, function(i){
+    i <- data.frame(i)
     i %>% 
       mutate_if(~is.character(.), funs(str_replace_all(., "`", ""))) %>%
       mutate_if(~is.character(.), funs(str_replace_all(., "\\*{2}([^\"]*)\\*{2}", replacement = "\\\\textbf{\\1}"))) %>%
@@ -134,7 +135,6 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
                        align = NULL){
   ## dans le cas d'un tableau LATEX
   if (knitr::is_latex_output()){
-    df <- data.frame(df)
     #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
     df2 <- clean_df_latex(df)
     

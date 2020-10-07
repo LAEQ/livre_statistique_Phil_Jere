@@ -300,22 +300,26 @@ Idéalement, le choix d’une distribution théorique devrait reposer sur ces de
 
 Puisqu’une distribution est une fonction, il est possible de la représenter à l’aide d’une formule mathématique (appelée **fonction de masse** pour les distributions discrètes et **fonction de densité** pour les distributions continues). Prenons un premier exemple concret avec la distribution théorique associée au lancer de pièce de monnaie : la distribution de **Bernoulli**. Sa formule est la suivante :
 
-\begin{equation}\footnotesize f(x ; p)=\left\{\begin{array}{ll}
+\footnotesize
+\begin{equation} f(x ; p)=\left\{\begin{array}{ll}
 q=1-p & \text { si } x=0 \\
 p & \text { si } x=1
 \end{array}\right.
 (\#eq:Bernoulli)
 \end{equation}
+\normalsize
 
 avec *p* la probabilité d’obtenir $x = 1$ (pile), et $1 – p$ la probabilité d’avoir $x = 0$ (face). La distribution de Bernoulli ne dépend que d’un paramètre : *p*. Avec différentes valeurs de *p*, on peut obtenir différentes formes pour la distribution de Bernoulli. Si *p* = 1/2, la distribution de Bernoulli décrit parfaitement l’expérience : obtenir pile à un lancer de pièce de monnaie. Si *p* = 1/6, elle décrit alors l’expérience : obtenir 4 (tout comme n’importe quelle valeur de 1 à 6) à un lancer de dé. Pour un exemple plus appliqué, la distribution de Bernoulli est utilisée en analyse spatiale pour étudier la concentration d’accidents de la route ou de crimes en milieu urbain. En chaque endroit du territoire, il est possible de calculer la probabilité qu’un tel évènement ait lieu ou non en se basant sur les données observées et cette distribution.
 La distribution continue la plus simple à décrire est certainement la distribution **uniforme**. Il s’agit d’une distribution un peu spéciale puisqu’elle attribue la même probabilité à toutes ses valeurs dans son espace d’échantillonnage. Elle est définie sur l’intervalle [-Inf ; +Inf] et a la fonction de densité suivante : 
 
-\begin{equation}\footnotesize f(x ; \mathrm{a} ; \mathrm{b})=\left\{\begin{array}{cc}
+\footnotesize
+\begin{equation} f(x ; \mathrm{a} ; \mathrm{b})=\left\{\begin{array}{cc}
 \frac{1}{a-b} & \text { si } a \geq x \geq b \\
 0 & \text { sinon }
 \end{array}\right.
 (\#eq:Uniforme)
 \end{equation}
+\normalsize
 
 La fonction uniforme a donc deux paramètres, *a* et *b*, représentant respectivement les valeurs maximale et minimale au-delà desquelles les valeurs ont une probabilité 0 d’être obtenues. Pour avoir une meilleure intuition de ce que décrit une fonction de densité, il est intéressant de la représenter avec un graphique (figure \@ref(fig:fig254)). Notez que sur ce graphique, l'axe des ordonnées n'indique pas précisément la probabilité associée à chaque valeur car celle-ci serait infinidécimale. Il sert uniquement à représenter la densité de la fonction de distribution.
 
@@ -375,22 +379,26 @@ Nous avons déjà abordé cette distribution dans les exemples précédents. Ell
 #### La distribution de Bernoulli
 La distribution de Bernoulli permet de décrire une expérience pour laquelle deux résultats sont possibles. Son espace d’échantillonnage est donc $[0 ; 1]$. Sa fonction de masse est la suivante : 
 
-\begin{equation}\footnotesize f(x ; p)=\left\{\begin{array}{ll}
+\footnotesize
+\begin{equation} f(x ; p)=\left\{\begin{array}{ll}
 q=1-p & \text { si } x=0 \\
 p & \text { si } x=1
 \end{array}\right.
 (\#eq:BernoulliB)
 \end{equation}
+\normalsize
 
 avec *p*, la probabilité d’obtenir $x = 1$ (réussite) et donc $1 – p$, la probabilité d’avoir $x = 0$ (échec). La distribution de Bernoulli ne dépend que d’un paramètre : *p* contrôlant la probabilité de réussite de l’expérience. Notez que si $p = 1/2$, alors la distribution de Bernoulli est également une distribution uniforme.  Un exemple d’application de la distribution de Bernoulli en études urbaines serait la modélisation de la survie d’un cycliste (1 pour survie, 0 pour décès) lors d’une collision avec une voiture selon une vitesse donnée.
 
 #### La distribution binomiale
 La distribution binomiale est utilisée pour caractériser une somme de distributions de Bernoulli. Un exemple simple serait l’accumulation des lancers d’une pièce de monnaie. Si l’on compte le nombre de fois où l’on fait pile, cette expérience est décrite par une distribution binomiale. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers). Sa fonction de masse est la suivante : 
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation} 
     f(x ; n )=\binom{n}{x}p^x(1-p)^{n-x}
 (\#eq:Binomial)
 \end{equation}
+\normalsize
 
 avec *x* le nombre de tirages réussis sur *n* essais avec une probabilité *p* de réussite à chaque tirage. Pour reprendre l’exemple précédent concernant les accidents de la route, une distribution binomiale permettrait de représenter la distribution du nombre de cyclistes survivants sur dix accidents impliquant une voiture à une intersection.  
 
@@ -424,9 +432,11 @@ ggplot(df) +
 #### La distribution géométrique
 La distribution géométrique permet de représenter le nombre de tirages nécessaires avec une distribution de Bernoulli avant d’obtenir une réussite. Par exemple, avec un lancer de dé, l’idée serait de compter le nombre de lancers nécessaires avant de tomber sur un 6. Son espace d’échantillonnage est donc $[1 ; +\infty[$ (limité aux nombres entiers). Sa distribution de masse est la suivante : 
 
-\begin{equation}\footnotesize f(x ; p)= (1-p)^xp
+\footnotesize
+\begin{equation} f(x ; p)= (1-p)^xp
 (\#eq:geometrique)
 \end{equation}
+\normalsize
 
 avec *x* le nombre de tentatives avant d’obtenir une réussite, $f(x)$ la probabilité que le premier succès n’arrive qu’après *x* tentatives et *p* la probabilité de réussite à chaque tentative. Cette distribution est notamment utilisée en marketing pour modéliser le nombre d’appels nécessaires avant de réussir une vente.
 
@@ -461,12 +471,14 @@ ggplot(df) +
 #### La distribution binomiale négative
 La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre *n* de réussites $[1 ; +\infty[$ (limité aux nombres entiers positifs). Sa formule est la suivante : 
 
-\begin{equation}\footnotesize f(x ; n ; p)=\left(\begin{array}{c}
+\footnotesize
+\begin{equation} f(x ; n ; p)=\left(\begin{array}{c}
 x+n-1 \\
 n
 \end{array}\right) p^{n}(1-p)^{x}
 (\#eq:binomialnegative)
 \end{equation}
+\normalsize
 
 avec *x* le nombre de tentatives avant d’obtenir *n* réussites et *p* la probabilité d’obtenir une réussite à chaque tentative. Cette distribution pourrait être utilisée pour modéliser le nombre de questionnaires *x* à envoyer pour une enquête si l’on espère au moins *n* réponses, sachant que la probabilité d’une réponse est *p*.
 
@@ -501,9 +513,11 @@ ggplot(df) +
 #### La distribution de poisson
 La distribution de poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de poisson à une fonction de densité avec un seul paramètre $\lambda$ (lambda) et est décrite par la formule suivante : 
 
-\begin{equation}\footnotesize f(x ; \lambda)=\frac{\lambda^{x}}{x !} e^{-\lambda}
+\footnotesize
+\begin{equation} f(x ; \lambda)=\frac{\lambda^{x}}{x !} e^{-\lambda}
 (\#eq:poisson)
 \end{equation}
+\normalsize
 
 avec *x* le nombre de cas, *f(x)* la probabilité d’obtenir *x* sachant $\lambda$. $\lambda$ peut être vue comme le taux moyen d’occurrences (nombre d’évènements divisé par la durée totale de l’expérience). Il permet à la fois de caractériser le centre et la dispersion de la distribution. Notez également que plus le paramètre \lambda augmente, plus la distribution de poisson tend vers une distribution normale.
 
@@ -537,9 +551,11 @@ ggplot(df) +
 #### La distribution de poisson avec excès de zéros
 Il arrive régulièrement qu’une variable de comptage mesurée produise un très grand nombre de zéros. Prenons pour exemple le nombre de seringues de drogue injectable par tronçon de rue ramassées sur une période d’un mois. À l’échelle de toute une ville, un très grand nombre de tronçons n’auront tout simplement aucune seringue et dans ce contexte, la distribution classique de poisson n’est pas adaptée. On lui préfère alors sa version avec une inflation de zéros qui inclut un paramètre contrôlant la forte présence de zéros. Sa fonction de densité est la suivante : 
 
-\begin{equation}\footnotesize f(x ; \lambda; p)=(1-p)\frac{\lambda^{x}}{x !} e^{-\lambda}
+\footnotesize
+\begin{equation} f(x ; \lambda; p)=(1-p)\frac{\lambda^{x}}{x !} e^{-\lambda}
 (\#eq:poissonzi)
 \end{equation}
+\normalsize
 
 Plus exactement, la distribution de poisson avec excès de zéro (zero-inflated en anglais) est une combinaison de deux processus générant des zéros. En effet, un zéro peut être produit par la distribution de poisson originale (aussi appelé vrai zéro) ou alors par le processus menant à la surreprésentation des 0 dans le jeu de données, capturée par la probabilité *p* (faux zéro). *p* est donc le paramètre contrôlant la probabilité d’obtenir un zéro, indépendamment du phénomène étudié.
 
@@ -580,9 +596,11 @@ ggplot(df) +
 Plus communément appelée la distribution normale, la distribution gaussienne est utilisée pour représenter des variables continues centrées sur leur moyenne. Son espace d’échantillonnage est ]-$\infty$ ; +$\infty$[. Cette distribution joue un rôle central en statistique. Le théorème central limite stipule que la somme d’un grand nombre de distributions tend généralement vers une distribution normale. Autrement dit, lorsque nous répétons une même expérience et que nous conservons les résultats de ces expériences, la distribution du résultat de ces expériences tend vers la normalité. Ceci s’explique par le fait qu’en moyenne, chaque répétition de l’expérience produit le même résultat, mais qu’un ensemble de petits facteurs aléatoires viennent rajouter de la variabilité dans les données collectées. Prenons un exemple concret, si l’on plante une centaine d’arbres simultanément dans un parc avec un degré d’ensoleillement identique et qu’on leur apporte les mêmes soins pendant dix ans, la distribution de leurs tailles suivra une distribution normale. Un ensemble de facteurs aléatoires (composition du sol, exposition au vent, aléas génétiques, passage de nuages, etc.) auront affecté différemment chaque arbre, ajoutant ainsi un peu de hasard dans leurs tailles finales. Ces dernières seront cependant davantage affectées par des paramètres centraux (espèces, ensoleillement, arrosage, etc.), et seront donc centrées autour d’une moyenne.
 La fonction de densité de la distribution normale est la suivante :
 
-\begin{equation}\footnotesize f(x ; \mu ; \sigma)=\frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}}
+\footnotesize
+\begin{equation} f(x ; \mu ; \sigma)=\frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}}
 (\#eq:gaussien)
 \end{equation}
+\normalsize
 
 avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa probabilité, $\mu$ (mu) la moyenne de la distribution normale (paramètre de localisation) et $\sigma$ (sigma) son écart-type (paramètre de dispersion). La courbe normale suit une forme de cloche. Notez que :
 
@@ -639,9 +657,11 @@ generate_plot(dnorm,parametres,real_names,xlim,colors)
 #### La distribution gaussienne asymétrique
 La distribution normale asymétrique (skew-normal) est une extension de la distribution gaussienne permettant de modifier la forme de la distribution normale pour qu’elle ne soit plus symétrique. Son espace d’échantillonnage est donc ]-$\infty$ ; +$\infty$[. Sa fonction de densité est la suivante :
 
-\begin{equation}\footnotesize f(x;\xi;\omega;\alpha) = \frac{2}{\omega \sqrt{2 \pi}} e^{-\frac{(x-\xi)^{2}}{2 \omega^{2}}} \int_{-\infty}^{\alpha\left(\frac{x-\xi}{\omega}\right)} \frac{1}{\sqrt{2 \pi}} e^{-\frac{t^{2}}{2}} d t
+\footnotesize
+\begin{equation} f(x;\xi;\omega;\alpha) = \frac{2}{\omega \sqrt{2 \pi}} e^{-\frac{(x-\xi)^{2}}{2 \omega^{2}}} \int_{-\infty}^{\alpha\left(\frac{x-\xi}{\omega}\right)} \frac{1}{\sqrt{2 \pi}} e^{-\frac{t^{2}}{2}} d t
 (\#eq:skewgaussien)
 \end{equation}
+\normalsize
 
 avec $\xi$ (xi) le paramètre de localisation, $\omega$ (omega) le paramètre de dispersion (ou d’échelle) et $\alpha$ (alpha) le paramètre de forme (contrôlant le degré de symétrie). Si  $\alpha = 0$, alors la distribution skew-normal est une simple distribution normale. Ce type de distribution est très utile lorsque que l’on souhaite modéliser une variable pour laquelle on sait que des valeurs plus extrêmes s’observeront d’un côté ou de l’autre de la distribution. Les revenus totaux annuels des personnes ou des ménages sont de très bons exemples puisqu’ils sont distribués généralement avec une asymétrie positive : bien qu’une moyenne existe, il y a généralement plus de personnes ou de ménages avec des revenus très faibles, que de personnes ou de ménages avec des revenus très élevés.
 
@@ -657,9 +677,11 @@ generate_plot(dskewnorm,parametres,real_names,xlim,colors)
 
 #### La distribution log-normale
 Au même titre que la distribution skew-normal, la distribution log-normal est une version asymétrique de la distribution normale. Son espace d’échantillonnage est ]0 ; +$\infty$[. Cela signifie que cette distribution ne peut décrire que des données continues et positives. Sa fonction de densité est la suivante : 
-\begin{equation}\footnotesize f(x ; \mu ; \sigma)=\frac{1}{x \sigma \sqrt{2 \pi}} e^{-\left(\frac{(\ln x-\mu)^{2}}{2 \sigma^{2}}\right)}
+\footnotesize
+\begin{equation} f(x ; \mu ; \sigma)=\frac{1}{x \sigma \sqrt{2 \pi}} e^{-\left(\frac{(\ln x-\mu)^{2}}{2 \sigma^{2}}\right)}
 (\#eq:loggaussien)
 \end{equation}
+\normalsize
 
 À la différence la distribution skew-normal, la distribution log-normal ne peut avoir qu’une asymétrie positive (étirée vers la droite). Elle est cependant intéressante puisqu’elle ne compte que deux paramètres ($\mu$ et $\sigma$) ce qui la rend plus facile à ajuster. À nouveau, une distribution log-normal pourrait être utilisée pour décrire les revenus totaux annuels des individus ou des ménages ou les revenus d’emploi. Elle est aussi utilisée en économie sur les marchés financiers pour représenter les cours des actions et des biens (ces derniers ne pouvant pas être inférieurs à 0).
 
@@ -675,9 +697,11 @@ generate_plot(dlnorm,parametres,real_names,xlim,colors)
 #### La distribution de Student
 La distribution de Student joue un rôle important en statistique, elle est par exemple utilisée lors du test *t* pour calculer le degré de significativité du test. Comme la distribution gaussienne, la distribution de Student a une forme de cloche, est centrée sur sa moyenne et définie sur ]-$\infty$ ; +$\infty$[. Elle a cependant des « queues plus lourdes » (*heavy tails* en anglais). Entendez par-là que les valeurs extrêmes ont une plus grande probabilité d’occurrence dans une distribution de Student que dans une distribution gaussienne. Sa fonction de densité est la suivante : 
 
-\begin{equation}\footnotesize p(x ; \nu ; \hat{\mu} ; \hat{\sigma})=\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right) \sqrt{\pi \nu} \hat{\sigma}}\left(1+\frac{1}{\nu}\left(\frac{x-\hat{\mu}}{\hat{\sigma}}\right)^{2}\right)^{-\frac{\nu+1}{2}}
+\footnotesize
+\begin{equation} p(x ; \nu ; \hat{\mu} ; \hat{\sigma})=\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right) \sqrt{\pi \nu} \hat{\sigma}}\left(1+\frac{1}{\nu}\left(\frac{x-\hat{\mu}}{\hat{\sigma}}\right)^{2}\right)^{-\frac{\nu+1}{2}}
 (\#eq:student)
 \end{equation}
+\normalsize
 
 avec $\mu$ le paramètre de localisation, $\sigma$ le paramètre de dispersion (qui n’est cependant pas un écart-type comme pour la distribution normale) et $\nu$ le nombre de degré de liberté. Plus $\nu$ est grand, plus la distribution de Student tend vers une distribution normale. $\Gamma$ représente la fonction mathématique gamma (à ne pas confondre avec la distribution de Gamma). Un exemple d’application en études urbaines serait l’exposition au bruit environnemental de cyclistes. Cette distribution s’approcherait certainement d’une distribution normale, mais les cyclistes croisent régulièrement des secteurs peu bruyants (parcs, rues résidentielles, etc.) et des secteurs très bruyants (artères majeures, zones industrielles, etc.), ce qui conduit vers une distribution de Student.
 
@@ -696,9 +720,11 @@ generate_plot(dst,parametres,real_names,xlim,colors)
 #### La distribution de Cauchy
 La distribution de Cauchy est également une distribution symétrique définie sur l’intervalle ]-$\infty$ ; +$\infty$[. Elle a comme particularité d’avoir des queues potentiellement plus lourdes que la distribution de Student. Elle est notamment utilisée pour modéliser des phénomènes extrêmes comme les précipitations maximales annuelles, les niveaux d’inondations maximaux annuels ou les *values at risk* pour les portefeuilles financiers. Il est également intéressant de noter que le quotient de deux variables indépendantes normalement distribuées suit une distribution de Cauchy. Sa fonction de densité est la suivante : 
 
-\begin{equation}\footnotesize \frac{1}{\pi \gamma}\left[\frac{\gamma^{2}}{\left(x-x_{0}\right)^{2}+\gamma^{2}}\right]
+\footnotesize
+\begin{equation} \frac{1}{\pi \gamma}\left[\frac{\gamma^{2}}{\left(x-x_{0}\right)^{2}+\gamma^{2}}\right]
 (\#eq:cauchy)
 \end{equation}
+\normalsize
 
 Elle dépend donc de deux paramètres : $x_0$, le paramètre de localisation indiquant le pic de la distribution et $\gamma$, un paramètre de dispersion.
 
@@ -716,9 +742,11 @@ generate_plot(dcauchy,parametres,real_names,xlim,colors)
 
 La distribution du Chi<sup>2</sup> est utilisée dans de nombreux tests statistiques. Spécifiquement, le test du Chi<sup>2</sup> de Pearson est utilisé pour comparer les écarts au carré entre des fréquences attendues et observées de deux variables qualitatives. La distribution du Chi<sup>2</sup> décrit donc les sommes des carrés d’un nombre *k* de variables indépendantes normalement distribuées. Il est assez rare de modéliser un phénomène à l’aide d’une distribution du Chi<sup>2</sup>, mais son omniprésence dans les tests statistiques justifie qu’elle soit mentionnée ici. Cette distribution est définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité : 
 
-\begin{equation}\footnotesize f(x;k) = \frac{1}{2^{k / 2} \Gamma(k / 2)} x^{k / 2-1} e^{-x / 2}
+\footnotesize
+\begin{equation} f(x;k) = \frac{1}{2^{k / 2} \Gamma(k / 2)} x^{k / 2-1} e^{-x / 2}
 (\#eq:chi2)
 \end{equation}
+\normalsize
 
 Cette fonction n’a qu’un paramètre *k*, représentant donc le nombre de variables au carré sommées pour obtenir la distribution du Chi<sup>2</sup>
 
@@ -733,9 +761,11 @@ generate_plot(dchisq,parametres,real_names,xlim,colors)
 #### La distribution exponentielle
 La distribution exponentielle est une version continue de la distribution géométrique. Pour cette dernière, on s’intéresserait au nombre de tentatives nécessaires pour obtenir un résultat positif, soit une dimension discrète. Pour la distribution exponentielle, cette dimension discrète est remplacée par une dimension continue. L’exemple le plus intuitif est sûrement le cas du temps. Dans ce cas, la distribution exponentielle servirait à décrire le temps d’attente nécessaire pour qu’un évènement se produise. Il pourrait aussi s’agir d’une force que l’on applique jusqu’à ce qu’un matériau cède. Cette distribution est donc définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité :
 
-\begin{equation}\footnotesize f(x;\lambda) = \lambda e^{-\lambda x}
+\footnotesize
+\begin{equation} f(x;\lambda) = \lambda e^{-\lambda x}
 (\#eq:exponentiel)
 \end{equation}
+\normalsize
 
 
 ```{r fig266, echo=FALSE, fig.align='center', fig.cap="La distribution exponentielle", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
@@ -749,9 +779,11 @@ generate_plot(dexp,parametres,real_names,xlim,colors)
 #### La distribution de Gamma
 La distribution de Gamma est une généralisation d’un grand nombre de distributions. Elle regroupe ainsi la distribution exponentielle et du Chi<sup>2</sup>. En d’autres termes, les distributions du chi<sup>2</sup> et exponentielles sont des cas particuliers de la distribution de Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
 
-\begin{equation}\footnotesize f(x ; \alpha; \beta)=\frac{\beta^{\alpha} x^{\alpha-1} e^{-\beta x}}{\Gamma(\alpha)}
+\footnotesize
+\begin{equation} f(x ; \alpha; \beta)=\frac{\beta^{\alpha} x^{\alpha-1} e^{-\beta x}}{\Gamma(\alpha)}
 (\#eq:gamma)
 \end{equation}
+\normalsize
 
 Elle comprend donc deux paramètres : $\alpha$ et $\beta$. Le premier est le paramètre de forme et le second un paramètre d’échelle (à l’inverse d’un paramètre de dispersion, plus sa valeur est petite, plus la distribution sera dispersée). Notez que cette distribution ne dispose pas d’un paramètre de localisation. Du fait de sa flexibilité, cette distribution est largement utilisée, que ce soit dans la modélisation des temps d’attente avant un évènement, la taille des réclamations d’assurance, les quantités de précipitations, etc.
 
@@ -767,9 +799,11 @@ generate_plot(dgamma,parametres,real_names,xlim,colors)
 #### La distribution de Beta
 La distribution de Beta est définie sur l’intervalle [0 ; 1], elle est donc énormément utilisée pour représenter des variables étant des proportions ou des probabilités. Elle a aussi une utilité pratique en statistique, car en combinaison avec d’autres distributions, elle permet de modéliser leurs paramètres de probabilité (distribution beta-binomial, beta-negative-binomial, etc.). Un autre usage plus rare, mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Ceci est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2*, suit une distribution beta. Un exemple concret serait par exemple la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante : 
 
-\begin{equation}\footnotesize f(x;\alpha;\beta) = \frac{1}{\mathrm{B}(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
+\footnotesize
+\begin{equation} f(x;\alpha;\beta) = \frac{1}{\mathrm{B}(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
 (\#eq:beta)
 \end{equation}
+\normalsize
 
 Elle a donc deux paramètres $\alpha$ et $\beta$ contrôlant tous les deux la forme de la distribution. Cette caractéristique lui permet d’avoir une très grande flexibilité et même d’adopter des formes bimodales. $B$ correspondant à la fonction mathématique Beta, à ne pas confondre avec la distribution de Beta et le paramètre Beta ($\beta$) de cette même distribution.
 
@@ -785,9 +819,11 @@ generate_plot(dbeta,parametres,real_names,xlim,colors)
 #### La distribution de Weibull
 La distribution de Weibull est directement liée à la distribution exponentielle, cette dernière étant en fait un cas particulier de distribution de Weibull. Elle sert donc à représenter une quantité *x* (souvent le temps) à accumuler pour qu’un évènement se produise. La distribution de Weibull est définie sur l’intervalle [0 ; +$\infty$[ et a la fonction de densité suivante : 
 
-\begin{equation}\footnotesize f(x;\lambda) = \frac{k}{\lambda} (\frac{x}{\lambda})^{k-1} e^{-(\frac{x}{\lambda})^k}
+\footnotesize
+\begin{equation} f(x;\lambda) = \frac{k}{\lambda} (\frac{x}{\lambda})^{k-1} e^{-(\frac{x}{\lambda})^k}
 (\#eq:weibull)
 \end{equation}
+\normalsize
 
 $\lambda$ est le paramètre de dispersion (analogue a celui d’une distribution exponentielle classique) et *k* le paramètre de forme. Pour bien comprendre le rôle de *k*, prenons un exemple : la propagation d’un champignon d’un arbre à son voisin. Si $k<1$, cela signifie que la probabilité que l’évènement modélisé se produise diminue avec le temps. En d’autres termes, dans de nombreux cas la contamination se fait rapidement. Si $k=1$, alors la probabilité que l’évènement se produise reste stable dans le temps. Si $k > 1$, alors la probabilité que l’évènement se produisent augmente avec le temps, ce qui signifie une augmentation des risques de contamination à mesure que les deux arbres restent à proximité. La distribution de Weibull est très utilisée en analyse de survie, en météorologie, en ingénierie des matériaux et dans la théorie des valeurs extrêmes.
 
@@ -803,9 +839,11 @@ generate_plot(dweibull,parametres,real_names,xlim,colors)
 #### La distribution de Pareto
 La distribution de Pareto est à la distribution exponentielle ce que la distribution log-normal est à la distribution gaussienne : la distribution de l’exponentiel (e) de cette distribution originale. Elle est définie sur l’intervalle  $[x_m ; +\infty[$ avec la fonction de densité suivante : 
 
-\begin{equation}\footnotesize f(x;x_m;k) = (\frac{x_m}{x})^k
+\footnotesize
+\begin{equation} f(x;x_m;k) = (\frac{x_m}{x})^k
 (\#eq:pareto)
 \end{equation}
+\normalsize
 
 Elle comprend donc deux paramètres, $x_m$ étant un paramètre de localisation (décalant la distribution vers la droite ou vers la gauche) et $k$ un paramètre de forme. Plus $k$ augmente, plus la probabilité prédite par la distribution décroît rapidement.
 
@@ -906,17 +944,21 @@ knitr::include_graphics('images/univariee/figure3.jpg', dpi = NA)
 
 * **La variance** est la somme des déviations à la moyenne au carré (numérateur) divisée par le nombre d'observations pour une population ($\sigma^2$) ou divisée par le nombre d'observations moins une ($s^2$) pour un échantillon (eq. \@ref(eq:variance)). Puisque les déviations à la moyenne sont mises au carré, la valeur de la variance (tout comme celle de l'écart-type) sera toujours positive. Plus sa valeur est élevée, plus les observations sont dispersées autour de la moyenne. La variance représente ainsi l'écart au carré moyen des observations à la moyenne. 
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 \sigma^2=\frac{\sum_{i=1}^n (x_{i}-\mu)^2}{n} \text{ ou } s^2=\frac{\sum_{i=1}^n (x_{i}-\bar{x})^2}{n-1}
 (\#eq:variance)
 \end{equation}
+\normalsize
 
 * **L'écart-type** est la racine carrée de la variance (eq. \@ref(eq:ecartype)). Rappelez-vous que la variance est calculée à partir des déviations à la moyenne mises au carré. Étant donné que l'écart-type est la racine carrée de la variance, il est donc évalué dans les mêmes unités que la variable, contrairement à la variance. Bien entendu, comme pour la variance, plus la valeur de l'écart-type est élevée, plus la distribution des observations autour de la moyenne est dispersée.
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 \sigma=\sqrt{\sigma^2}=\sqrt{\frac{\sum_{i=1}^n (x_{i}-\mu)^2}{n}} \text{ ou } s=\sqrt{s^2}=\sqrt{\frac{\sum_{i=1}^n (x_{i}-\bar{x})^2}{n-1}}
 (\#eq:ecartype)
 \end{equation}
+\normalsize
 
 ::: {.bloc_notes data-latex=""}
 Les formules des variances et des écart-types pour une population et un échantillon sont très similaires : seul le dénominateur change avec $n$ *versus* $n-1$ observations. Par conséquent, plus le nombre d'observations de votre jeu de données sera important, plus l'écart entre ces deux mesures de dispersion pour une population et un échantillon sera minime.
@@ -932,10 +974,12 @@ Comme dans la plupart des logiciels de statistique, les fonctions de base `var` 
 * **Le coefficient de variation (CV)** est le rapport entre l'écart-type et la moyenne, représentant ainsi une standardisation de l'écart-type ou, en d'autres termes, une mesure de dispersion relative (eq. \@ref(eq:cv)). L'écart-type étant exprimé dans l'unité de mesure de la variable, il ne peut pas être utilisé pour comparer les dispersions de variables exprimées des unités de mesure différentes (par exemple, en pourcentage, en kilomètres, en dollars, etc.). Pour y remédier, on utilisera le coefficient de variation : une variable est plus dispersée qu'une autre si la valeur de son CV est plus élevée. Certains préfèreront multiplier la valeur du CV par 100 : l'écart-type est alors exprimé en pourcentage de la moyenne.
 
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 CV=\frac{\sigma}{\mu} \text{ ou } CV=\frac{s^2}{\bar{x}}
 (\#eq:cv)
 \end{equation}
+\normalsize
 
 
 Illustrons comment calculer les cinq mesures de dispersion précédemment décrites à partir de valeurs fictives pour huit observations (colonne intitulée $x_i$ au tableau \@ref(tab:datavar)). Les différentes statistiques reportées dans ce tableau sont calculées comme suit :
@@ -1110,20 +1154,26 @@ Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes
 * quand la valeur du *skewness* est égale à 0, **la distribution est symétrique** (la médiane sera égale à la moyenne). Pour une variable discrète, les valeurs du mode, de la moyenne et de la médiane seront égales.
 * quand la valeur du *skewness* est positive, la **distribution est symétrique positive**. La distribution est alors tirée à droite par des valeurs extrêmes fortes, mais peu nombreuses. La queue de distribution est alors étirée vers la droite. La moyenne est alors supérieure à la médiane. En sciences sociales, les variables de revenu (totaux ou d'emploi, des individus ou des ménages) ont souvent des distributions asymétriques positives : la moyenne est affectée par quelques observations avec des valeurs de revenu très élevées et est ainsi supérieure à la médiane. En études urbaines, la densité de population pour des unités géographiques d'une métropole donnée (secteur de recensement par exemple) a aussi souvent une distribution asymétrique positive : quelques secteurs de recensement au centre de la métropole sont caractérisés par des valeurs de densité très élevées qui tirent la distribution vers la droite.
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 g_1=\frac{ \frac{1}{n} \sum_{i=1}^n(x_i-\bar{x})^3} { \left[\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2\right] ^\frac{3}{2}}
 (\#eq:SkewType1)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 G_1= \frac{\sqrt{n(n-1)}}{n-2} g_1
 (\#eq:SkewType2)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 b_1= \left( \frac{n-1}{n} \right) ^\frac{3}{2} g_1
 (\#eq:SkewType3)
 \end{equation}
+\normalsize
 
 
 ```{r asymetrie, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Asymétrie d'une distribution", out.width='100%'}
@@ -1208,20 +1258,26 @@ ggarrange(Gl, Gn, Gr, ncol = 2, nrow=2)
 * quand la valeur du *kurtosis* est égale à 0, **la distribution est mésokurtique**, ce qui est typique d'une distribution normale.
 * quand la valeur du *kurtosis* est positive, la **distribution est leptokurtique**, signalant que l'écart-type (la dispersion des valeurs) est plutôt faible. Autrement dit, la dispersion des valeurs autour de la moyenne est faible.
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 g_2=\frac{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^4} {\left( \frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2\right)^2}-3
 (\#eq:KurtType1)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 G_2 = \frac{n-1}{(n-2)(n-3)} \{(n+1) g_2 + 6\}
 (\#eq:KurtType2)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 b_2 = (g_2 + 3) (1 - 1/n)^2 - 3
 (\#eq:KurtType3)
 \end{equation}
+\normalsize
 
 ```{r kurtosis, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Applatissement d'une distribution", out.width='100%'}
 library(DescTools)
@@ -1780,19 +1836,23 @@ Les trois transformations les plus couramment utilisées sont :
 
 * **La côte $z$** (*z score* en anglais) qui consiste à soustraire à chaque valeur sa moyenne (soit un centrage), puis à la diviser par son écart-type (soit une réduction) (eq. \@ref(eq:scorez)). Par conséquent, on parle aussi de variable centrée-réduite qui a comme propriétés intéressantes une moyenne égale à 0 et un écart-type égale à 1 (la variance est aussi égale à 1 puisque $1^2=1$). Nous verrons que cette transformation est largement utilisée dans les méthodes de classification (chapitre \@ref(chap09)) et les méthodes factorielles (chapitre \@ref(chap10)).
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 z= \frac{x_i-\mu}{\sigma}
 (\#eq:scorez)
 \end{equation}
+\normalsize
 
 * **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Spearman (section \@ref(sect04133)) et certains tests non-paramétriques (sections \@ref(sect0432) et \@ref(sect0442)). 
 
 * **La transformation sur une échelle de 0 à 1** (ou de 0 à 100) qui consiste à soustraite à chaque observation la valeur minimale et à diviser le tout par l'étendue (eq. \@ref(eq:t01)). 
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 X_{\in\lbrack0-1\rbrack}= \frac{x_i-max}{max-min} \text{ ou } X_{\in\lbrack0-100\rbrack}= \frac{x_i-min}{max-min}\times100
 (\#eq:t01)
 \end{equation}
+\normalsize
 
 
 ```{r AutresTransformation, echo=FALSE, message=FALSE, warning=FALSE}
@@ -2275,10 +2335,12 @@ Dans la section \@ref(sect025), les différentes statistiques descriptives sur d
 
 Prenez soin de comparer les deux équations ci-dessous (à gauche, la moyenne arithmétique; à droite, la moyenne arithmétique pondérée). Vous constaterez rapidement qu'il suffit simplement de multiplier chaque observation par sa pondération (numérateur) et de diviser ce produit par la somme des pondérations (dénominateur; et non par $n$, soit le nombre d’observations comme pour la moyenne arithmétique non pondérée). 
 
-\begin{equation}\footnotesize  
+\footnotesize
+\begin{equation}  
 \bar{x}=\frac{\sum_{i=1}^n x_i}{n} \text { versus } \bar{m}=\frac{\sum_{i=1}^n  w_ix_i}{\sum_{i=1}^nw_i}
 (\#eq:moypond)
-\end{equation} 
+\end{equation}
+\normalsize 
 
 
 ```{r MoyPondCalcul, echo=FALSE, message=FALSE, warning=FALSE}
