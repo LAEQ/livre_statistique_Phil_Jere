@@ -1266,6 +1266,17 @@ Y  = \underbrace{X\beta}_{\mbox{partie expliquée par le modèle}}+ \underbrace{
 
 ### Les hypothèses de la régression linéaire multiple {#sect0522}
 
+Un modèle est bien construit s'il respecte plusieurs hypothèses liées à la régression, dont les principales étant :
+
+* **Hypothèse 1**. *La variable dépendante doit être continue et non-bornée*. 
+* **Hypothèse 2**. *Indépendance des termes d'erreur*. Les résidus des observations ($\epsilon_{1}, \epsilon_{2}, \ldots, \epsilon_{n}$) ne doivent pas être corrélés entre eux. Autrement dit, les observations doivent être indépendantes les unes des autres, ce qui n'est souvent pas le cas pour des mesures temporelles. Par exemple, l'application du cadre conceptuel sur la modélisation de l'exposition des cyclistes au bruit et à la pollution atmosphérique (figure \@ref(fig:figcadreconcept)) est basée sur des données primaires collectées lors de trajets réalisés à vélo dans une ville donnée. Par conséquent, deux observations qui se suivent ont bien plus de chances de se ressembler – du point de vue des mesures de pollution et des caractéristiques de l'environnement urbain – que deux observations tirées au hasard dans le jeu de données. Ce problème d'autocorrélation temporelle doit être contrôlé, sinon, les coefficients de régression seront biaisés.
+* **Hypothèse 3**. *Normalité des résidus*.
+* **Hypothèse 4**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, on ne peut introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100%. On a donc une corrélation parfaite entre ces deux variables : le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne pourra pas être estimé avec ces deux variables et l'une des deux sera automatiquement ôtée.
+* **Hypothèse 5**. *Homoscédasticité des erreurs (ou absence d'hétéroscédasticité)*. Il y a homoscédasticité lorsqu'il y a une absence de corrélation entre les résidus et les valeurs prédites.
+* **Hypothèse 6**. *Le modèle est bien spécifié*. On dira qu'un modèle est mal spécifié (construit) quand « une ou plusieurs variables non pertinentes sont incluses dans le modèle » ou « qu’une ou plusieurs variables pertinentes sont exclues du modèle » [@bressoux2010, p. 138-139]. Concrètement, l'inclusion d'une variable non pertinente ou l'omission d'une variable peut entraîner une mauvaise estimation des effets des variables explicatives du modèle.
+
+Pour connaître les conséquences de la violation de chacune de ces hypothèses, on pourra notamment consulter l'excellent ouvrage de Bressoux [-@bressoux2010, p. 103-110]. Retenez ici que le non-respect de ces hypothèses produit des coefficients de régression biaisés.
+
 
 ## Mesurer la qualité d’ajustement du modèle {#sect053}
 
@@ -2007,12 +2018,7 @@ show_table(data.frame(tabreglog),
 Puisque l'interprétation du coefficient de régression de $log(\beta_k)$ est plus complexe, il convient de s'assurer que son apport au modèle est substantiel, et ce, de deux façons :
 
 * **Comparez les mesures d'ajustement des deux des deux modèles (surtout les R^2^)**. Si le R^2^ du modèle avec $log(\beta_k)$ est plus élevé que celui avec $\beta_k$ alors la transformation logarithmique fait de votre variable indépendante un meilleur prédicteur, toutes choses étant égales par ailleurs. 
-* **Construisez un nuage de points de l'effet marginal** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (voir le graphique ci-dessous).
-
-
-JÉRÉMY : SVP FAIRE UN NUAGE DE POINTS AVEC y ET HABHA UNE FOIS CONTROLEES LES AUTRES VARIABLES. PUIS AJOUTER LA DROITE DE RÉGRESSION ET CELLE EN LOG SVP.
-
-MODIFIER LE GRAPHIQUE CI-DESOUS
+* **Construisez les graphiques des effets marginaux** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (figure \@ref(figure:EffetMarginalVariableLogEtNon)).
 
 ```{r EffetMarginalVariableLogEtNon, echo=TRUE, fig.align='center', fig.cap="Effet marginal de la densité de population", message=FALSE, warning=FALSE, out.width='75%'}
 library(ggpubr)
@@ -2362,7 +2368,68 @@ https://www.econometrics-with-r.org/8-3-interactions-between-independent-variabl
 
 ## Diagnostics de la régression {#sect056}
 
-## Comment rapporter une régression  {#sect057}
+Pour illuster comment vérifier si le modèle respecte les hypothèses de la régression, nous utiliserons le modèle suivant :
+
+`modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)`
+
+
+### Nombre d'observations {#sect0561}
+Tous les auteurs ne s'entendent pas sur le nombre d'observations minimal que devrait comprendre une régression linéaire multiple, loin s'en faut ! Parallèlement, d'autres auteurs proposent aussi des méthodes de simulation pour estimer les coefficients de régression sur un jeu de données comprenant peu d'observations. Bien qu'aucune règle ne soit bien établie, la question du nombre d'observations mérite d'être posée puisqu'un modèle basé sur trop peu d'observations risque de produire des coefficients de régression peu fiables. Par faible fiaibilité des coefficients, on entend que la suppression d’une ou plusieurs observations pourrait drastiquement changer l’effet et/ou la significativité d’une ou plusieurs variables explicatives.
+
+Dans leur ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, pp. 123-124] proposent deux règles à la louche :
+
+1. $n \geq 50 + 8k$ avec *k* avec $N$ et $k$ étant respectivement les nombre d'observations et de variables indépendantes, pour tester le coefficient de corrélation multiples ($R^2$).
+2. $n \geq 104 + k$ pour tester individuellement chaque variable indépendante.
+
+Dans le modèle, nous avons 10210 observations et variables indépendantes. Les deux conditions sont donc largement respectées.
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE, out.width='75%'}
+modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+# Nombre d'observation
+nobs <- length(modele3$fitted.values)
+
+# Nombre de variables indépendantes (coefficients moins la constante)
+k <- length(modele3$coefficients)-1
+
+# Première règle de pouce
+cat("\n", nobs, " observations incluses dans le modèle avec",
+    "\n", k, " variables indépendantes.",
+    sep="")
+if(nobs >= 50+(8*k)){
+    cat("\nNombre d'observations suffisant pour tester le R2")
+}else{
+  cat("\nAttention ! Nombre d'observations insuffisant pour tester le R2")
+}
+
+# Deuxième règle de pouce
+if(nobs >= 104+k){
+    cat("\nNombre d'observations suffisant pour tester individuellement chaque VI")
+}else{
+  cat("\nAttention ! Nombre d'observations insuffisant pour tester individuellement chaque VI")
+}
+```
+
+
+### Normalité des résidus {#sect0562}
+Pour vérifier si les résidus sont normalement distribués, trois démarches largement décrites dans la section \@ref(sect02541) peuvent être utilisées :
+
+* le calcul des coefficients d’asymétrie et d’aplatissement
+* les tests de normalité, particulièrement le test de Shapiro-Wilk 
+* les graphiques (histogramme et courbe normale et diagramme quantile-quantile)
+
+Les deux premiers étant parfois très restrictifs, on porte habituellement une attention particulière aux graphiques.
+
+
+### Linéarité et homoscédasticité des résidus {#sect0564}
+
+
+### Absence de multicolinéarité excessive {#sect0565}
+
+
+### Absence de valeurs aberantes {#sect0566}
 
 ## Mise en œuvre dans R {#sect058}
 
@@ -2509,11 +2576,11 @@ Nous avons déjà évoqué le principe de parcimonie. À titre de rappel, l'ajou
 * Modèle 5 (R^2^=0,506). `VegPct ~ log(HABHA) + poly(AgeMedian, 2) + Pct_014 + Pct_65P + Muni`
 * Modèle 6 (R^2^=0,495). `VegPct ~ log(HABHA) + poly(AgeMedian, 2) + Pct_014 + Pct_65P + Pct_MV + Pct_FR + DistCBDkm + DistCBDkm * Pct_014`
 
-Par conséquent, il est légitime de se questionner sur le bien-fondé de conserver ces variables indépendantes additionnelles : `Muni` pour le modèle 5 et `DistCBDkm + DistCBDkm * Pct_014` pour le modèle 6. Deux options sont alors envisageables :
+Par conséquent, il est légitime de se questionner sur le bien-fondé de conserver ces variables indépendantes additionnelles : `Muni` pour le modèle 5 et `DistCBDkm + DistCBDkm * Pct_014` pour le modèle 6. Trois options sont alors envisageables :
 
 * Bien entendu, conservez l'une ou l'autre de ces variables additionnelles, si elles sont initialement reliées à votre cadre théorique.
 * Conservez l'une ou l'autre de ces variables additionnelles, si elles permettent de répondre à une question spécifique (non prévue initialement) et si les associations ainsi révélées méritent, selon vous, discussion.
-* supprimez-les si leur apport est limité et ne fait que complexifier le modèle pour rien.
+* Supprimez-les si leur apport est limité et ne fait que complexifier le modèle pour rien.
 
 :::
 
