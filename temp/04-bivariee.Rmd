@@ -86,10 +86,12 @@ Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives
 La covariance\index{covariance} (eq. \@ref(eq:cov)), écrite $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives :
 
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 cov(x,y) = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{n-1} = \frac{covariation}{n-1}
 (\#eq:cov)
-\end{equation} 
+\end{equation}
+\normalsize 
 
 avec $n$ étant le nombre d’observations; $\bar{x}$ et $\bar{y}$ (prononcez x et y barre) étant les moyennes respectives des variables *X* et *Y*.
 
@@ -139,10 +141,12 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 #### Formulation {#sect04131} 
 Le coefficient de corrélation de Pearson ($r$) est égal à la covariance (numérateur) divisée par le produit des écart-types des deux variables *X* et *Y* (dénominateur). Il représente une standardisation de la covariance. Autrement dit, le coefficient de corrélation repose sur un centrage (moyenne = 0) et une réduction (variance = 1) des deux variables, c’est-à-dire à soustraire à chaque valeur sa moyenne correspondante et à la diviser par son écart-type. Il correspond ainsi à la moyenne du produit des deux variables centrées réduites. Il s'écrit alors :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2(y_i - \bar{y})^2}}=\sum_{i=1}^n\frac{ZxZy}{n-1}
 (\#eq:cor)
 \end{equation}
+\normalsize
 
 La syntaxe  ci-dessous démontre que le coefficient de corrélation de Pearson est bien égal à la moyenne du produit de deux variables centrées-réduites.
 
@@ -297,10 +301,12 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 Lorsque les variables sont fortement anormalement distribuées, le coefficient de corrélation de Pearson est peu adapté pour analyser leurs relations linéaires. Il est alors conseillé d'utiliser deux statistiques non-paramétriques : principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le coefficient de Kendall ($\tau$, prononcez Tau), qui varient aussi tous deux de −1 à 1. 
 Calculé sur les rangs des deux variables, **le coefficient de Spearman** est le rapport entre la covariance des deux variables de rangs sur les écart-types des variables de rangs. En d'autres termes, il représente simplement le coefficient de Pearson calculé sur les rangs des deux variables :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 r_{xy} = \frac{cov(rg_{x},rg_{y})}{\sigma_{rg_{x}}\sigma_{rg_{y}}}
 (\#eq:spearman)
 \end{equation}
+\normalsize
 
 La syntaxe  ci-dessous démontre clairement que le coefficient de Spearman est bien le coefficient de Pearson calculé sur les rangs (\@ref(sect04131)).
 
@@ -323,10 +329,12 @@ cat("Covariance divisée par le produit des écart-types sur les rangs :",
 
 Le **coefficient de Kendall** est une autre mesure non-paramétrique calculée comme suit :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 \tau = \frac{n_{c}-n_{d}}{\frac{1}{2}n(n-1)}
 (\#eq:tau)
 \end{equation}
+\normalsize
 
 avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observations **c**oncordantes et **d**iscordantes; et le dénominateur étant le nombre totale de paires d'observations. Des paires sont dites corcondantes quand les valeurs des deux observations vont dans les même sens pour les deux variables ($x_{i}>x_{j}$ et $y_{i}>y_{j}$ ou  $x_{i}<x_{j}$ et $y_{i}<y_{j}$), et discordantes quand elles vont en sens contraire ($x_{i}>x_{j}$ et $y_{i}<y_{j}$ ou $x_{i}<x_{j}$ et $y_{i}>y_{j}$). Contrairement au calcul du coefficient de Spearman, celui de Kendall peut être chronophage : plus le nombre d'observations sera élevé, plus les temps de calcul et la mémoire utilisée sont importants. En effet, avec _n_=1000, le nombre de paires d'observations (${0.5*n(n-1)}$) sera de 499500, contre près de 50 millions avec _n_=10000 (49 995 000).
 
@@ -374,7 +382,8 @@ ggarrange(Plot1, Plot2, Plot3, ncol=3,nrow=1)
 
 Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs aberrantes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois, les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser dans des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit : 
 
-\begin{equation}\footnotesize
+\footnotesize
+\begin{equation}
 \begin{aligned}
 &u_{i} = \frac{x_{i} - med(x)}{9 * (med(|x_{i} - med(x)|))} \text{ et } v_{i} = \frac{y_{i} - med(y)}{9 * (med(|y_{i} - med(y)|))}\\
 &w_{i}^{(x)} = (1 - u_{i}^2)^2 I(1 - |u_{i}|) \text{ et } w_{i}^{(y)} = (1 - v_{i}^2)^2 I(1 - |v_{i}|)\\
@@ -388,6 +397,7 @@ Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des v
 \end{aligned}
 (\#eq:bicor)
 \end{equation}
+\normalsize
 
 Comme le souligne l'équation \@ref(eq:bicor), la *Biweight midcorrelation* est basée sur les écarts à la médiane, plutôt que sur les écarts à la moyenne.
 
@@ -510,10 +520,12 @@ La corrélation partielle\index{corrélation partielle} permet d'évaluer la rel
 
 Le coefficient de corrélation partielle peut être calculé pour les trois méthodes (Pearson, Spearman et Kendall). Variant aussi de −1 à 1, il est calculé comme suit :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 r_{ABC} = \frac{r_{AB}-r_{AC}r_{BC}}{\sqrt{(1-r_{AC}^2)(1-r_{BC}^2)}}
 (\#eq:corpartielle)
 \end{equation}
+\normalsize
 
 avec _A_ et _B_ étant les deux variables pour lesquelles on souhaite évaluer la relation linéaire, une fois contrôlée la variable _C_; $r$ étant le coefficient de corrélation (Pearson, Spearman ou Kendall) entre deux variables.
 
@@ -707,10 +719,12 @@ knitr::include_graphics('images/bivariee/replication_hist.PNG', dpi = NA)
 
 #### Principe de base de la régression linéaire simple {#sect04141}
 La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 \widehat{y_i} = \beta_{0} + \beta_{1}x_{i}
 (\#eq:regsimple)
 \end{equation}
+\normalsize
 
 avec $\widehat{y_i}$ et $x_{i}$ qui sont respectivement la valeur prédite de la variable indépendante et la valeur de la variable dépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais), soit la valeur prédite de la variable $Y$ quand $X$ est égale à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative, et proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la pente est forte, et plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
 
@@ -759,22 +773,28 @@ ggplot(df, aes(x=KmCV, y=Velo)) +
 #### Formulation de la droite de régression des moindres carrés ordinaires {#sect04142}
 Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre la valeur observée et la valeur prédite, dénommé résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle, et par extension moins bon est le modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 min\sum_{i=1}^n{(y_i-(\beta_0+\beta_1 x_i))^2}
 (\#eq:mco)
 \end{equation}
+\normalsize
 
 Pour minimiser ces écarts, le coefficient de régression $\beta_1$ représente le rapport entre la covariance entre *X* et *Y* et la variance de *Y* (équation \@ref(eq:b1)), tandis que la constante $\beta_0$ est la moyenne de la variable *Y* moins le produit de la moyenne de *X* et de son coefficient de régression (équation \@ref(eq:b0)).
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 \beta_1 = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2} = \frac{cov(X,Y)}{var(X)}
 (\#eq:b1)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 \beta_0 = \widehat{Y}-\beta_1 \widehat{X}
 (\#eq:b0)
 \end{equation}
+\normalsize
 
 ```{r figreg2, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Droite de régression, valeurs observées, prédites et résidus", out.width='65%'}
 df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
@@ -847,25 +867,31 @@ show_table(df,
 #### Mesurer la qualité d'ajustement du modèle {#sect04143}
 Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (en anglais, *root-mean-square error*, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 y_i = \beta_0 + \beta_1 x_1+ \epsilon_i \Rightarrow Y= \beta_0 + \beta_1 X + \epsilon
 (\#eq:reg2)
 \end{equation}
+\normalsize
 
 Elle comprend ainsi une partie de *Y* qui est expliquée par le modèle et une autre partie non expliquée : $\epsilon$ appelé habituellement le terme d'erreur. Ce terme d'erreur pourrait représenter d'autres variables explicatives qui n'ont pas été prises en compte pour prédire la variable indépendante ou une forme de variation aléatoire inexplicable présente lors de la mesure.
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 Y  = \underbrace{\beta_0 + \beta_1 X}_{\mbox{partie expliquée par le modèle}}+ \underbrace{\epsilon}_{\mbox{partie non expliquée}}
 (\#eq:reg3)
 \end{equation}
+\normalsize
 
 Par exemple, pour la municipalité *A* au tableau \@ref(tab:regfictives2), nous avons : $y_A = \widehat{y}_A - \epsilon_A \Rightarrow 12.5 = 10.138+2.362$. Souvenez-vous que la variance d'une variable est la somme des écarts à la moyenne, divisée par le nombre d'observations. Par extension, il est alors possible de décomposer la variance de *Y* comme suit :
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 \underbrace{\sum_{i=1}^n (y_{i}-\bar{y})^2}_{\mbox{variance de Y}} = \underbrace{\sum_{i=1}^n (\widehat{y}_i-\bar{y})^2}_{\mbox{var. expliquée}} + \underbrace{\sum_{i=1}^n (y_{i}-\widehat{y})^2}_{\mbox{var. non expliquée}} \Rightarrow 
 SCT = SCE + SCR
 (\#eq:reg4)
 \end{equation}
+\normalsize
 
 avec :
 
@@ -914,10 +940,12 @@ show_table(df,
 
 La somme des résidus au carré (*SCR*) divisée par le nombre d'observations représente donc le carré moyen des erreurs (en anglais, *mean square error - MSE*), soit la variance résiduelle du modèle ($52,26 / 10 = 5,23$). Plus sa valeur sera faible, plus le modèle sera efficace pour prédire la variable indépendante. L'erreur quadratique moyenne (en anglais, *root-mean-square error - RMSE*) est simplement la racine carrée de la somme des résidus au carré divisée par le nombre d'observations ($n$) :
 
-\begin{equation}\footnotesize 
-RMSE = \frac{\sqrt{\sum_{i=1}^n (y_{i}-\widehat{y})^2}}{n}
+\footnotesize
+\begin{equation}
+RMSE = \sqrt{\frac{\sum_{i=1}^n (y_{i}-\widehat{y})^2}{n}}
 (\#eq:reg5)
 \end{equation}
+\normalsize
 
 Elle représente ainsi une **mesure absolue des erreurs** qui est exprimée dans l'unité de mesure de la variable dépendante. Dans le cas présent, on a : $\sqrt{5,23}=2,29$. Cela signifie qu'en moyenne, l'écart absolu (ou erreur absolue) entre les valeurs observées et prédites est de 2,29 points de pourcentage. De nouveau, une plus faible valeur de **RMSE** indique un meilleur ajustement du modèle. Mais surtout, le RMSE permet d'évaluer avec quelle précision le modèle prédit la variable dépendante. Il est donc particulièrement important si l'objectif principal du modèle est de prédire des valeurs sur un échantillon d'observations pour lequel la variable dépendante est inconnue.
 
@@ -925,10 +953,12 @@ Elle représente ainsi une **mesure absolue des erreurs** qui est exprimée dans
 
 Nous avons largement démontré que la variance totale est égale à la variance expliquée plus la variance non expliquée. La qualité du modèle peut donc être évaluée avec le coefficient de détermination ($R^2$), soit le rapport entre les variances expliquée et totale : 
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 R^2 = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
 (\#eq:reg6)
 \end{equation}
+\normalsize
 
 Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence / est capable de prédire *Y*. Dans le cas présent, on a : $R^2 = 227.04 / 279.3 = 0.8129$, ce qui signale que 81,3% de la variance du pourcentage de cyclistes est expliquée par la distance au centre-ville. Tel que signalé dans la section \@ref(sect04132), la racine carrée du coefficient de détermination ($R^2$) est égale au coefficient de corrélation ($r$) entre les deux variables. 
 
@@ -936,10 +966,12 @@ Comparativement au RMSE qui est une mesure absolue, le coefficient de détermina
 
 La statistique _F_ de Fisher permet de vérifier la significativité globale du modèle.
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 F = (n-2)\frac{R^2}{1-R^2} = (n-2)\frac{SCE}{SCR}
 (\#eq:reg7)
 \end{equation}
+\normalsize
 
 L'hypothèse nulle (h<sub>0</sub> avec $\beta_1=0$) est rejetée si la valeur calculée de *F* est supérieure à la valeur critique de la table *F* avec *(1, n-2)* degrés de liberté et un seuil $\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de F, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `pf(f obtenu, 1, n-2, lower.tail = FALSE)` l'on obtient directement la valeur de *p* associée à la valeur de *F*. Concrètement, si le test _F_ est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus le modèle sera efficace (et plus le $R^2$ sera également élevé).
 
@@ -1752,34 +1784,44 @@ L'ANOVA repose sur le calcul de trois variances :
 
 * la **variance intragroupe**  (*Var~intra~*) ou variance non expliquée (*VNE*), soit la somme des variances des groupes de la variable indépendante (équation \@ref(eq:anova3)).
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 VT=\sum_{i=1}^n (y_{i}-\overline{y})^2
 (\#eq:anova1)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 Var_{inter} \mbox{ ou } VE=\sum_{i\in{g_1}}(\overline{y_{g_1}}-\overline{y})^2 + \sum_{i\in{g_2}}(\overline{y_{g_2}}-\overline{y})^2 + ... + \sum_{i\in{g_n}}(\overline{y_{g_k}}-\overline{y})^2
 (\#eq:anova2)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 Var_{intra} \mbox{ ou } VNE=\sum_{i\in{g_1}}(y_{i}-\overline{y_{g_1}})^2 + \sum_{i\in{g_2}}(y_{i}-\overline{y_{g_2}})^2 + ... + \sum_{i\in{g_n}}(y_{i}-\overline{y_{g_k}})^2 
 (\#eq:anova3)
 \end{equation}
+\normalsize
 
 avec $\overline{y}$ est la moyenne de l'ensemble de la population; $\overline{y_{g_1}}$, $\overline{y_{g_1}}$, $\overline{y_{g_k}}$ sont respectivements les moyennes des groupes 1 à _k_ (_k_ étant le nombre de modalités de la variables qualitative) .
 
 La variance totale (*VT*) est égale à la somme de la variance intergroupe (expliquée) et la variance intragroupe (non expliquée) (équation \@ref(eq:anova5)). Le ratio entre la variance intergroupe (expliquée) et la variance totale est dénommé *Eta^2^* (équation \@ref(eq:anova6)). Il varie de 0 à 1 et exprime la proportion de la variance de la variable continue qui est expliquée par les différentes modalités de la variable qualitative.
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 VT = Var_{inter} + Var_{intra} \mbox{ ou } VT = VNE + VE
 (\#eq:anova5)
 \end{equation}
+\normalsize
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 \eta^2= \frac{Var_{inter}}{VT} \mbox{ ou }  \eta^2= \frac{VE}{VT}
 (\#eq:anova6)
 \end{equation}
+\normalsize
 
 
 ::: {.bloc_astuce data-latex=""}
@@ -1951,10 +1993,12 @@ show_table(tabl,
 Pour vérifier si les moyennes sont satistiquement différentes (autrement dit, si leur différence est significativement différente de 0), on a recours au test *F* de Fisher. Pour ce faire, on pose l'hypothèse nulle (H~0~), soit que les moyennes des groupes sont égales; autrement dit que la variable qualitative n'a pas d'effet sur la variable continue (indépendance entre les deux variables). L'hypothèse alternative (H~1~) est donc que les moyennes sont différentes. Pour nos deux jeux de données fictives ci-dessus comprenant trois groupes, H~0~ signifie que $\overline{y_{A}}=\overline{y_{B}}=\overline{y_{C}}$. La statistique *F* se calcule comme suit :
 
 
-\begin{equation}\footnotesize 
+\footnotesize
+\begin{equation}
 F = \frac{\frac{Var{inter}}{k-1}}{\frac{Var{intra}}{n-k}}\mbox{ ou } F = \frac{\frac{VE}{k-1}}{\frac{VNE}{n-k}}
 (\#eq:anovaF)
 \end{equation}
+\normalsize
 
 avec $n$ et $k$ étant respectivement les nombres d'observations et de modalités de la variable qualitative. L'hypothèse nulle (les moyennes sont égales) sera rejetée si la valeur du *F* calculé est supérieure à la valeur critique de la table *F* avec les degrés de libertés *(k-1, n-k)* et un seuil 
 $\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de *F*, section \@ref(annexe2)). Notez qu'on utilise rarement la table *F* puisqu'avec la fonction `aov` on calcule directement la valeur *F* et celle de *p* qui lui est associée. Concrètement, si le test _F_ est significatif (avec *p*<0,05), plus la valeur de *F* sera élevée, plus la différence entre les moyennes sera élevée.
