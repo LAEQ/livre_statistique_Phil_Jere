@@ -430,7 +430,7 @@ Spécifiquement, on tente de prédire le paramètre *p* de la distribution Binom
 
 ```{r binomidentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 
-model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})x$"
+model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})x$"
 
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'applications"),
@@ -973,7 +973,7 @@ Le modèle GLM probit binomial est pour ainsi dire le frère du modèle logistiq
 
 ```{r probitdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 
-model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = \\Phi^-1(x)$"
+model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p) = \\beta_0 + \\beta X$ \\newline $g(x) = \\Phi^-1(x)$"
 
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'applications"),
@@ -989,6 +989,42 @@ show_table(tableau,
 ```
 
 #### Le modèle logistique des cotes proportionnelles
+
+Le modèle logistique des cotes proportionnelles (aussi appelé modèle logistique cumulatif) est utilisé pour modéliser une variable qualitative ordinale. Un bon exemple de ce type de variable est une échelle de satisfaction : très insatisfait, satisfait, mitigé, insatisfait, très insatisfait, qui peut être recodée avec des valeurs numériques : 4, 3, 2, 1, 0 (ces échelons étant notés *j*). Il n’existe pas à proprement parler de distribution pour représenter ces données, mais avec une petite astuce, il est possible de simplement utiliser la distribution binomiale. Cette astuce est l’hypothèse de la proportionnalité des cotes. Cette hypothèse suppose que le passage de la catégorie 0 à la catégorie 1 est proportionnel au passage de la catégorie 1 à la catégorie 2 et ainsi de suite. Si cette hypothèse est respectée, alors les coefficients du modèle pourront autant décrire le passage de la catégorie satisfait à très satisfait que de la catégorie insatisfait à mitigé. Si cette hypothèse n’est pas respectée, il faudrait des coefficients différents pour représenter les passages d’une cagoterie à l’autre (ce qui est le cas pour le modèle multinomial présenté juste après).
+
+```{r cumuldentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+
+model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p \\leq j) = \\beta_0j + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
+
+tableau <- data.frame(
+ C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'applications"),
+ C2 = c("Variable qualitative ordonnées avec *j* catégories", "Binomiale", model_formula , "probit", "p", "$\\beta$ et *j*-1 constantes \\beta_0", "Non-séparation complète, Absence de surdispersion ou sousdispersion","Proportionnalité des cotes")
+)
+
+show_table(tableau, 
+    caption = "Carte d'identité du modèle logistique des cotes proportionnelles",
+    col.names = NULL, 
+    col.to.resize = c(2),
+    col.width = "8cm"
+)
+```
+
+Ainsi, dans le modèle logistique binomial vu précédemment on modélise la probabilité d’observer un évènement $P(Y = 1)$. Dans un modèle logistique ordinal, on modélise la probabilité cumulative d’observer l’échelon *j* de notre variable ordinale $P(Y <= j)$. L’intérêt de cette reformulation est que l’on conserve la facilité d’interprétation du modèle logistique binomial classique avec les rapports de cotes, à ceci prêt qu’ils représentent maintenant la probabilité de passer à un échelon supérieur de *Y*. La différence pratique est que notre modèle se retrouve avec autant d’intercepts qu’il n’y a de catégorie à prédire moins un, chacun de ces intercepts contrôlant pour la probabilité de base de passer de la catégorie *j* à la catégorie *j*+1.
+
+##### Conditions d'application
+
+Les conditions d’application sont les mêmes que pour un modèle binomial, avec bien sûr l’ajout de l’hypothèse sur la proportionnalité des cotes. Selon cette hypothèse, l'impact de chaque variable indépendante est identique sur la probabilité de passer d'un échelon de la variable *Y* au suivant. Afin de tester cette condition, deux approches sont envisageables : 
+
+1. Utiliser l’approche de Brant [@brant1990assessing]. Il s’agit d’un test statistique comparant les résultats du modèle ordinal avec ceux d’une série de modèles logistiques binomials (1 pour chaque catégorie possible de *Y*).
+2. Ajuster un modèle ordinal sans l’hypothèse de proportionnalité des cotes et effectuer un test de ratio des likelihood pour vérifier si le premier est significativement mieux ajusté.
+
+Si certaines variables ne respectent pas cette condition d’application, trois options sont 
+possibles pour y remédier : 
+
+1. Supprimer la variable du modèle (à éviter si cette variable est importante dans votre cadre théorique)
+2. Autoriser la variable à avoir un effet différent entre chaque pallier (possible avec le package **VGAM**), ce que nous illustrons ici.
+3. Changer de modèle et opter pour un modèle des catégories adjacentes. Il s’agit du cas particulier où toutes les variables sont autorisées à changer à chaque niveau. Ne pas confondre ce dernier modèle et le modèle multinomial que nous présentons ensuite, le modèle des catégories adjacentes continue à prédire la probabilité de passer à une catégorie supérieure.
+
 
 ### Principes de base des GLM {#sect0611}
 

@@ -575,7 +575,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
         part <- strsplit(pname,",",fixed=T)[[1]][[1]]
         rows <- base_table[grepl(part,rn,fixed=T),]
         varn <- strsplit(part,"(",fixed=T)[[1]][[2]]
-        rnames <- paste(varn," degré ", 1:nrow(rows), sep = "")
+        rnames <- paste(varn," puiss ", 1:nrow(rows), sep = "")
         rows <- cbind(rnames, rows)
         return(rows)
       }else{

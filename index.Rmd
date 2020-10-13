@@ -111,25 +111,30 @@ clean_df_latex <- function(df){
   if(inherits(df, "list") == F){
     df <- list(df)
   }
-  changes <- list(c("`", ""),
-                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}"),
-                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}"),
-                  c("\\%", "\\\\%"),
-                  c("&", "\\\\&"),
-                  c("\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}"),
-                  c("\\*{2}", "doublestars"),
-                  c("\\*([^\"]*?)\\*", "\\\\textit{\\1}"),
-                  c("doublestars", "**"),
-                  c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}"),
-                  c("\\(\\%\\)", "(\\\\%)"),
-                  c("_", "\\_")
+  changes <- list(c("`", "", F),
+                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+                  c("\\%", "\\\\%", F),
+                  c("&", "\\\\&", F),
+                  c("\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}", F),
+                  c("\\*{2}", "doublestars", F),
+                  c("\\*([^\"]*?)\\*", "\\\\textit{\\1}", F),
+                  c("doublestars", "**", F),
+                  c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}", F),
+                  c("\\(\\%\\)", "(\\\\%)", F),
+                  c("_", "\\_", TRUE)
                   )
   df2 <- lapply(df, function(i){
     i <- data.frame(i)
     for(col in names(i)){
       if(is.character(i[[col]])){
         for (ch in changes){
-          i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], perl = T)
+          if(ch[[3]]){
+            i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], fixed = T)
+          }else{
+            i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], perl = T)
+          }
+          
         }
       }
     }
