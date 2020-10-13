@@ -111,21 +111,29 @@ clean_df_latex <- function(df){
   if(inherits(df, "list") == F){
     df <- list(df)
   }
+  changes <- list(c("`", ""),
+                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}"),
+                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}"),
+                  c("\\%", "\\\\%"),
+                  c("&", "\\\\&"),
+                  c("\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}"),
+                  c("\\*{2}", "doublestars"),
+                  c("\\*([^\"]*?)\\*", "\\\\textit{\\1}"),
+                  c("doublestars", "**"),
+                  c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}"),
+                  c("\\(\\%\\)", "(\\\\%)"),
+                  c("_", "\\_")
+                  )
   df2 <- lapply(df, function(i){
     i <- data.frame(i)
-    i %>% 
-      mutate_if(~is.character(.), funs(str_replace_all(., "`", ""))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "\\*{2}([^\"]*)\\*{2}", replacement = "\\\\textbf{\\1}"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "\\*{2}([^\"]*)\\*{2}", replacement = "\\\\textbf{\\1}"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "%", "\\%"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "&", "\\\\&"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "\\*{2}", "doublestars"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "\\*([^\"]*?)\\*", replacement = "\\\\textit{\\1}"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "doublestars", "**"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "\\(\\%\\)", "(\\\\%)"))) %>%
-      mutate_if(~is.character(.), funs(str_replace_all(., "_", "\\\\_")))
+    for(col in names(i)){
+      if(is.character(i[[col]])){
+        for (ch in changes){
+          i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], perl = T)
+        }
+      }
+    }
+    return(i)
   })
   return(df2)
 }
@@ -133,18 +141,24 @@ clean_df_latex <- function(df){
 show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, 
                        col.width = NULL, digits = getOption("digits"),
                        align = NULL){
+  options(knitr.kable.NA = '')
   ## dans le cas d'un tableau LATEX
   if (knitr::is_latex_output()){
     #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
     df2 <- clean_df_latex(df)
-    
-    if(is.na(col.names)==F){
-      col.names <- gsub("\\(\\%\\)","(\\\\%)",col.names)
-      col.names <- gsub("\\%","\\\\%",col.names)
+    if (is.null(col.names) == F){
+      if(is.na(col.names)==F){
+        #col.names <- gsub("\\(\\%\\)","(\\\\%)",col.names)
+        col.names <- gsub("\\%","\\\\%",col.names)
+      }
     }
+
     if(is.null(caption)==F){
       caption <- gsub("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", caption)
       caption <- gsub("\\*([^\"]*?)\\*","\\\\textit{\\1}", caption)
+    }
+    if(length(df2) == 1){
+      df2 <- df2[[1]]
     }
     table1 <- knitr::kable(
       df2, booktabs = TRUE,
@@ -163,6 +177,22 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
     }
   ## dans le cas d'un tableau HTLM
   }else{
+    
+    # gerer les newline
+    if(class(df) != "list"){
+      df <- data.frame(df)
+      for(col in names(df)){
+        if(is.character(df[[col]])){
+          df[[col]] <- gsub("\\newline","<br/>",df[[col]], fixed = T)
+        }
+      }
+    }else {
+      df <- lapply(df, function(i){
+        i <- data.frame(i)
+        i <- i %>% mutate_if(~is.character(.), funs(str_replace_all(., "\\newline", "<br/>")))
+        return(i)
+      })
+    }
     table1 <- knitr::kable(
       df, booktabs = TRUE,
       format.args = list(decimal.mark = ",", big.mark = " "),
@@ -175,4 +205,9 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
   return(table1)
 }
 
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+source("code_complementaire/JG_helper.R")
 ```
