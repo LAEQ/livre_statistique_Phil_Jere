@@ -998,7 +998,7 @@ model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p \\leq j) = \\beta_0j + \\
 
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'applications"),
- C2 = c("Variable qualitative ordonnées avec *j* catégories", "Binomiale", model_formula , "probit", "p", "$\\beta$ et *j*-1 constantes \\beta_0", "Non-séparation complète, Absence de surdispersion ou sousdispersion","Proportionnalité des cotes")
+ C2 = c("Variable qualitative ordonnées avec *j* catégories", "Binomiale", model_formula , "logistique", "p", "$\\beta$ et *j*-1 constantes \\beta_0", "Non-séparation complète, Absence de surdispersion ou sousdispersion, Proportionnalité des cotes")
 )
 
 show_table(tableau, 
@@ -1022,7 +1022,7 @@ Si certaines variables ne respectent pas cette condition d’application, trois 
 possibles pour y remédier : 
 
 1. Supprimer la variable du modèle (à éviter si cette variable est importante dans votre cadre théorique)
-2. Autoriser la variable à avoir un effet différent entre chaque pallier (possible avec le package **VGAM**), ce que nous illustrons ici.
+2. Autoriser la variable à avoir un effet différent entre chaque pallier (possible avec le package **VGAM**).
 3. Changer de modèle et opter pour un modèle des catégories adjacentes. Il s’agit du cas particulier où toutes les variables sont autorisées à changer à chaque niveau. Ne pas confondre ce dernier modèle et le modèle multinomial que nous présentons ensuite, le modèle des catégories adjacentes continue à prédire la probabilité de passer à une catégorie supérieure.
 
 

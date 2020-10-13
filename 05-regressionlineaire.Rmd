@@ -188,6 +188,17 @@ Y  = \underbrace{X\beta}_{\mbox{partie expliquée par le modèle}}+ \underbrace{
 
 ### Les hypothèses de la régression linéaire multiple {#sect0522}
 
+Un modèle est bien construit s'il respecte plusieurs hypothèses liées à la régression, dont les principales étant :
+
+* **Hypothèse 1**. *La variable dépendante doit être continue et non-bornée*. 
+* **Hypothèse 2**. *Indépendance des termes d'erreur*. Les résidus des observations ($\epsilon_{1}, \epsilon_{2}, \ldots, \epsilon_{n}$) ne doivent pas être corrélés entre eux. Autrement dit, les observations doivent être indépendantes les unes des autres, ce qui n'est souvent pas le cas pour des mesures temporelles. Par exemple, l'application du cadre conceptuel sur la modélisation de l'exposition des cyclistes au bruit et à la pollution atmosphérique (figure \@ref(fig:figcadreconcept)) est basée sur des données primaires collectées lors de trajets réalisés à vélo dans une ville donnée. Par conséquent, deux observations qui se suivent ont bien plus de chances de se ressembler – du point de vue des mesures de pollution et des caractéristiques de l'environnement urbain – que deux observations tirées au hasard dans le jeu de données. Ce problème d'autocorrélation temporelle doit être contrôlé, sinon, les coefficients de régression seront biaisés.
+* **Hypothèse 3**. *Normalité des résidus*.
+* **Hypothèse 4**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, on ne peut introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100%. On a donc une corrélation parfaite entre ces deux variables : le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne pourra pas être estimé avec ces deux variables et l'une des deux sera automatiquement ôtée.
+* **Hypothèse 5**. *Homoscédasticité des erreurs (ou absence d'hétéroscédasticité)*. Il y a homoscédasticité lorsqu'il y a une absence de corrélation entre les résidus et les valeurs prédites.
+* **Hypothèse 6**. *Le modèle est bien spécifié*. On dira qu'un modèle est mal spécifié (construit) quand « une ou plusieurs variables non pertinentes sont incluses dans le modèle » ou « qu’une ou plusieurs variables pertinentes sont exclues du modèle » [@bressoux2010, p. 138-139]. Concrètement, l'inclusion d'une variable non pertinente ou l'omission d'une variable peut entraîner une mauvaise estimation des effets des variables explicatives du modèle.
+
+Pour connaître les conséquences de la violation de chacune de ces hypothèses, on pourra notamment consulter l'excellent ouvrage de Bressoux [-@bressoux2010, p. 103-110]. Retenez ici que le non-respect de ces hypothèses produit des coefficients de régression biaisés.
+
 
 ## Mesurer la qualité d’ajustement du modèle {#sect053}
 
@@ -781,15 +792,15 @@ Y = b_{0} + b_{1}X_{1} + b_{11}X_{1}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
 \end{equation}
 \normalsize
 
-Dans l'équation ci-dessus, la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{1}X_{1}^2$. 
+Dans l'équation ci-dessus, la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{11}X_{1}^2$. Un coefficient différent est ajusté pour chacune de ces deux versions de la variable $X_{1}$
 
-La démographie est certainement la des disciplines des sciences sociales qui a le plus recours aux régressions polynomiales. En effet, la variable `âge` est souvent introduite comme variable explicative dans sa forme originale et mise au carré. L'objectif est de vérifier si l'âge partage ou non une relation curvilinéaire avec un phénomène donné : par exemple, il pourrait y être associé positivement jusqu'à un certain seuil (45 ans par exemple), puis négativement à partir de ce seuil.
+La démographie est certainement la disciplines des sciences sociales qui a le plus recours aux régressions polynomiales. En effet, la variable `âge` est souvent introduite comme variable explicative dans sa forme originale et mise au carré. L'objectif est de vérifier si l'âge partage ou non une relation curvilinéaire avec un phénomène donné : par exemple, il pourrait y être associé positivement jusqu'à un certain seuil (45 ans par exemple), puis négativement à partir de ce seuil.
 
 
 ::: {.bloc_aller_loin data-latex=""}
 **Régression polynomiale et nombre d'ordres**.
 
-Sachez qu'il est aussi possible de construire des régressions polynomiales avec plus deux ordres. Par exemple, une régression polynomiale d'ordre 3 comprend une variable dans sa forme originelle, puis mise au carré et au cube. Cela a l'inconvénient d'augmenter corrolairement le nombre de coefficients. Nous verrons au chapitre \@ref(chap06) qu'il existe une solution plus élégante et efficace : le recours aux modèles de régressions linéaires généralisés avec des *splines*. Dans le cadre de cette section, nous nous limiterons à des régressions polynomiales d'ordre 2.
+Sachez qu'il est aussi possible de construire des régressions polynomiales avec plus deux ordres. Par exemple, une régression polynomiale d'ordre 3 comprend une variable dans sa forme originelle, puis mise au carré et au cube. Cela a l'inconvénient d'augmenter corrolairement le nombre de coefficients. Nous verrons au chapitre \@ref(chap06) qu'il existe une solution plus élégante et efficace : le recours aux modèles de régressions linéaires généralisés additifs avec des *splines*. Dans le cadre de cette section, nous nous limiterons à des régressions polynomiales d'ordre 2.
 
 \footnotesize 
 \begin{equation}
@@ -819,7 +830,7 @@ Pour construire une régression polynomiale dans R, il est possible d'utiliser d
 * `I(VI^2)` avec `VI` est la variable indépendante sur laquelle est appliquée la mise au carré.
 * `poly(VI,2)` qui utilise une forme polynomiale orthogonale pour éviter les problèmes de corrélation entre les deux termes, c'est-à-dire entre **VI** et **VI^2^**.
 
-Ces deux méthodes produiront les mêmes résultats pour les autres variables dépendantes et pour la qualité d'ajustement du modèle (R^2^, F, etc.). On privilégie la seconde fonction pour éviter ainsi les problèmes de multicolinéarité excessive.
+Ces deux méthodes produiront les mêmes résultats pour les autres variables dépendantes et pour la qualité d'ajustement du modèle (R^2^, F, etc.). On privilégie la seconde fonction pour éviter de détecter à tort problèmes de multicolinéarité excessive.
 
 Appliquons cette démarche à la variable `AgeMedian` (âge médian des bâtiments) afin de vérifier si elle partage ou non une relation curvilinéaire avec la couverture végétale de l'îlot. À la lecture des sorties pour les deux modèles, les constats suivants peuvent être avancés :
 
@@ -837,8 +848,13 @@ modele1 <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = Dat
 # Régression polynomiale
 modele2 <- lm(VegPct ~ HABHA+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
 
+# affichage des résultats du modèle 1
 summary(modele1)
+
+# affichage des résultats du modèle 1
 summary(modele2)
+
+# test de Fisher pour comparer les modèles
 anova(modele1, modele2)
 ```
 
@@ -846,7 +862,7 @@ anova(modele1, modele2)
 
 Pour visualiser la relation linéaire et curvilinéaire, nous vous proposons de réaliser un graphique des effets marginaux à partir de la syntaxe ci-dessous.
 
-Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X<sub>1</sub>* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, seule X<sub>1</sub> est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de Y quand *X<sub>1</sub>* augmente ou diminue, et ce, toute choses étant égales par ailleurs. Cette approche est particulièrement intéressante pour décrire des effets non-linéaires obtenus avec des polynomiales. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap06) et \@ref(chap08)).
+Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X<sub>1</sub>* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, et seule X<sub>1</sub> est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de Y quand *X<sub>1</sub>* augmente ou diminue, et ce, toute choses étant égales par ailleurs (puisque toutes les autres variables ont une valeur fixe). Cette approche est particulièrement intéressante pour décrire des effets non-linéaires obtenus avec des polynomiales, mais aussi des interractions comme nous le verrons plus tard. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap06) et \@ref(chap08)). Notez qu'il est aussi important de représenter sur ce type de graphique l'incertitude de la prédiction. Pour cela, il est possible de construire des intervalles de confiance à 95% autours de la prédiction en utilisant l'erreur standard de la prédiction (renvoyée par la fonction `predict`).
 
 
 ```{r calculRegPoly2, echo=TRUE, fig.align='center', fig.cap="Relations linéaire et curvilinéaire", message=FALSE, warning=FALSE, out.width='75%'}
@@ -903,10 +919,11 @@ ggplot(data = df) +
        y = "Couverture végétale (%)")
 ```
 
-La figure \@ref(fig:calculRegPoly2) démontre bien que la relation linéaire n'est pas significative : la pente est extrêmement faible, ce qui signale que l'effet de l'âge médian est presque nul (B=0,0108, P=0,0902). Par contre, la relation linéaire est plus intéressante : la couverture végétale croît quand l'âge médian des bâtiments dans l'îlot augmente de 0 à 60 ans environ, puis, elle décroît.
+La figure \@ref(fig:calculRegPoly2) démontre bien que la relation linéaire n'est pas significative : la pente est extrêmement faible, ce qui signale que l'effet de l'âge médian est presque nul (B=0,0108, P=0,0902). En revanche, la relation curvilinéaire est plus intéressante : la couverture végétale croît quand l'âge médian des bâtiments dans l'îlot augmente de 0 à 60 ans environ, puis, elle décroît.
 
-#### Variable indépendante avec sous forme logarithmique {#sect05512}
-Une autre manière d'explorer une relation non-linéaire est d'intégrer la variable sous forme logarithmique [@hanck2019introduction, p. 212-218]. L'interprétation du coefficient de régression est alors plus complexe : un 1% d'augmentation de la variable $X_k$ entraîne un changement de $0,01 \times \beta_k$ de la variable indépendante. Autrement dit, il n'est plus exprimé dans les unités de mesure des deux variables.
+#### Variable indépendante sous forme logarithmique {#sect05512}
+
+Une autre manière d'explorer une relation non-linéaire est d'intégrer la variable sous forme logarithmique [@hanck2019introduction, p. 212-218]. L'interprétation du coefficient de régression est alors plus complexe : un 1% d'augmentation de la variable $X_k$ entraîne un changement de $0,01 \times \beta_k$ de la variable indépendante. Autrement dit, il n'est plus exprimé dans les unités de mesure originales des deux variables.
 
 Au tableau \@ref(tab:regmodeleLog), le coefficient de `-6,855` pour la variable `logHABHA` s'interprète alors comme suit : un changement de 1% de la variable densité de population entraîne une diminution de $0,01 \times -6,855 = -0,07$ de la couverture végétale dans l'île, toutes choses étant égales par ailleurs.
 
@@ -926,15 +943,10 @@ show_table(data.frame(tabreglog),
              )
 ```
 
-Puisque l'interprétation du coefficient de régression de $log(\beta_k)$ est plus complexe, il convient de s'assurer que son apport au modèle est substantiel, et ce, de deux façons :
+Puisque l'interprétation du coefficient de régression de $log(\beta_k)$ est plus complexe, il convient de s'assurer que son apport au modèle soit justifiée, et ce, de deux façons :
 
-* **Comparez les mesures d'ajustement des deux des deux modèles (surtout les R^2^)**. Si le R^2^ du modèle avec $log(\beta_k)$ est plus élevé que celui avec $\beta_k$ alors la transformation logarithmique fait de votre variable indépendante un meilleur prédicteur, toutes choses étant égales par ailleurs. 
-* **Construisez un nuage de points de l'effet marginal** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (voir le graphique ci-dessous).
-
-
-JÉRÉMY : SVP FAIRE UN NUAGE DE POINTS AVEC y ET HABHA UNE FOIS CONTROLEES LES AUTRES VARIABLES. PUIS AJOUTER LA DROITE DE RÉGRESSION ET CELLE EN LOG SVP.
-
-MODIFIER LE GRAPHIQUE CI-DESOUS
+* **Comparez les mesures d'ajustement des deux modèles (surtout les R^2^ ajustés)**. Si le R^2^ ajusté du modèle avec $log(\beta_k)$ est plus élevé que celui avec $\beta_k$ alors la transformation logarithmique fait de votre variable indépendante un meilleur prédicteur, toutes choses étant égales par ailleurs. 
+* **Construisez les graphiques des effets marginaux** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (figure \@ref(figure:EffetMarginalVariableLogEtNon)). Notez que cette approche graphique peut aussi ne donner aucune indication lorsque vos données sont très dispersées ou que la relation est faible entre votre variable dépendante et indépendante.
 
 ```{r EffetMarginalVariableLogEtNon, echo=TRUE, fig.align='center', fig.cap="Effet marginal de la densité de population", message=FALSE, warning=FALSE, out.width='75%'}
 library(ggpubr)
@@ -956,15 +968,19 @@ fit1b <- ggpredict(modele1b, terms = "HABHA")
 
 # Graphiques
 G1a <- ggplot(fit1a, aes(x, predicted)) +
-       geom_line() +
-      geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+      geom_point(data = DataFinal, mapping = aes(x=HABHA, y = VegPct), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
+      geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3, fill ="red")+
+      geom_line(color = "red") +
       labs(title="Variable non transformée",
            y="VD: valeur prédite",
-           x = "Habitants km2")
+           x = "Habitants km2") + 
+  ylim(0,100) + 
+  xlim(0,600)
 
 G1b <- ggplot(fit1b, aes(x, predicted)) +
-       geom_line() +
-      geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1)+
+      geom_point(data = DataFinal, mapping = aes(x=HABHA, y = VegPct), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
+      geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3, fill ="red")+
+      geom_line(color = "red") +
       labs(title="Variable transformée (log)",
            y="VD: valeur prédite",
            x = "Habitants km2")
@@ -1015,10 +1031,10 @@ La modalité qui a la valeur de 0 est alors appelée **modalité ou catégorie d
 
 Autrement dit, si la variable avait été codée : 0 pour la Ville et de Montréal et 1 pour les autres municipalités, alors le coefficient aurait été de 7,699.
 
-Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans R (section \@ref(sect059)) qu'il est préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
+Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans R (section \@ref(sect059)) qu'il peut est préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
 :::
 
-Comme pour une variable indépendante introduite avec une fonction polynomiale, il est peut-être très intéressant d'illuster l'effet marginal de la variable dichotomique avec un graphique qui montre l'écart entre les moyennes des deux modalités, une fois contrôlées les autres variables indépendantes (figure \@ref(fig:EffetMarginalDich)).
+Comme pour une variable indépendante introduite avec une fonction polynomiale, il est peut-être très intéressant d'illuster l'effet marginal de la variable dichotomique avec un graphique qui montre l'écart entre les moyennes des deux modalités, une fois contrôlées les autres variables indépendantes (figure \@ref(fig:EffetMarginalDich)). Notez que dans ce graphique, les barres d'erreurs situées au sommet des rectangles représentent les intervalles à 95% des prédictions du modèle.
 
 ```{r EffetMarginalDich, echo=FALSE, fig.align='center', fig.cap="Effet marginal d'une variable dichotomique", message=FALSE, warning=FALSE, out.width='70%'}
 library(ggplot2)
@@ -1030,7 +1046,7 @@ dfPreds <- ggpredict(modele3, terms = "VilleMtl")
 # Graphique
 ggplot(dfPreds, aes(x=x, y=predicted)) +
   geom_bar(stat = "identity", position = position_dodge(), fill="wheat") +
-  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), alpha = .9,position = position_dodge())+
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), alpha = .9,position = position_dodge(), width = 0.3)+
   labs(title="Effet marginal de la Ville de Montréal sur la végétation",
        x="Municipalités de la région de Montréal",
        y="Couverture végétation de l'îlot (%)")+
@@ -1040,13 +1056,13 @@ ggplot(dfPreds, aes(x=x, y=predicted)) +
                                 
 ### Variable indépendante qualitative polytomique {#sect0553}
 
-Il peut être aussi pertinent d'introduire une variable qualitative polytomique comme variable explicative ou de contrôle dans un modèle. À titre de rappel, une variable polytomique comprend plus de deux modalités, qu'elle soit nominale ou ordinale (section \@ref(sect0212)). 
+Il possible d'introduire une variable qualitative polytomique comme variable explicative ou de contrôle dans un modèle. À titre de rappel, une variable polytomique comprend plus de deux modalités, qu'elle soit nominale ou ordinale (section \@ref(sect0212)). 
 
 En guise d'exemple, une variable qualitative pourrait être : différents groupes de population (groupes d'âge, minorités visibles, catégories socioprofessionnelles, etc.), différents territoires ou régions (ville centrale, première couronne, deuxième couronne, etc.), une variable semi-quantitative (par exemple, une variable continue transformée en quatre ou cinq catégories ordinales selon les quartiles ou les quintiles).
 
 #### Comment est construit une modèle de régression avec variable explicative qualitative polytomique ? {#sect05531}
 
-Prenons l'exemple d'un modèle de régression comprenant deux variables indépendantes : l'une continue (`X1`), l'autre qualitative (`X2`) comprenant quatre modalités (A, B, C et D). L'introduction de la variable qualitative dans le modèle revient à :
+Prenons l'exemple d'un modèle de régression comprenant deux variables indépendantes : l'une continue (`X1`), l'autre qualitative (`X2`) avec quatre modalités (A, B, C et D). L'introduction de la variable qualitative dans le modèle revient à :
 
 * Transformer chaque modalité en variable muette (binaire). On a ainsi quatre nouvelles variables binaires : `X2A`, `X2B`, `X2C` et `X2D`. Par exemple, les observations de la modalité *A* se verront affectées la valeur de 1 versus 0 pour `X2A` pour les autres observations . La même démarche s'applique à `X2B`, `X2C` et `X2D` (voir tableau \@ref(tab:transfVarQMuettes)).
 
@@ -1113,7 +1129,7 @@ tabreg <- build_table(modele4a, confid = F, std_digits = 3, coef_digits = 3, z_d
              )
 ```
 
-Mettons désormais la municipalité qui avait le coefficient le plus fort dans le modèle précédent, soit Senneville. Bien entendu, les coefficients des variables continues et de la constante ne changent pas. Par contre, les coefficients de toutes les municipalités sont négatifs puisque la Ville de Senneville est celle qui a proportionnellement le plus de végétation dans ces îlots, toutes choses étant égales par ailleurs.
+Utilisons désormais comme référence la municipalité qui avait le coefficient le plus fort dans le modèle précédent, soit Senneville. Bien entendu, les coefficients des variables continues et de la constante ne changent pas. Par contre, les coefficients de toutes les municipalités sont négatifs puisque la Ville de Senneville est celle qui a proportionnellement le plus de végétation dans ces îlots, toutes choses étant égales par ailleurs.
 
 ```{r ModeleVarPoly2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 DataFinal$Municipalité <- relevel(DataFinal$SDRNOM, ref="Senneville")
@@ -1171,7 +1187,7 @@ dfPreds <- ggpredict(modele4a, terms = "Municipalité")
 # Graphique
 Graphique <-  ggplot(dfPreds, aes(x=x, y=predicted)) +
   geom_bar(stat = "identity", position = position_dodge(), fill="wheat") +
-  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), alpha = .9,position = position_dodge())+
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), alpha = .9,position = position_dodge(), width = 0.3)+
   labs(title="Effet marginal des différentes municipalités",
        x="Municipalités de la région de Montréal",
        y="Couverture végétation de l'îlot (%)")
@@ -1193,7 +1209,7 @@ Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \beta_{3}(X_{1}\times X_{2}) +
 \end{equation}
 \normalsize
 
-dans lequel s'ajoute un nouveau coefficient ($\beta_{3}$) pour l'interaction (la multiplication) entre les deux variables continues. **Pourquoi ajouter une interation entre deux variables?** L'objectif est d'évaluer l'effet d'une augmentation de $\beta_{1}$ en fonction d'un niveau donné de $\beta_{2}$ et inversement. Cela permet ainsi de répondre à la question suivante : l'effet de la variable $\beta_{1}$ est-elle influencé par la variable $\beta_{2}$ et inversement?
+un nouveau coefficient ($\beta_{3}$) s'ajoute pour l'interaction (la multiplication) entre les deux variables continues. **Pourquoi ajouter une interation entre deux variables?** L'objectif est d'évaluer l'effet d'une augmentation de $\beta_{1}$ en fonction d'un niveau donné de $\beta_{2}$ et inversement. Cela permet ainsi de répondre à la question suivante : l'effet de la variable $\beta_{1}$ est-elle influencé par la variable $\beta_{2}$ et inversement?
 
 Prenons un exemple concret pour illuster le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B= 0,659, P<0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59% plus de végétation.
 
@@ -1235,7 +1251,7 @@ tabreg <- build_table(modele6, confid = F, std_digits = 3, coef_digits = 3, z_di
              )
 ```
 
-À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variables dépendantes, ce que nous pouvons faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interraction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95% de la prédiction dans le deuxième et troisième panneau. On constate ainsi le modèle prédit des valeurs de végétation les plus faibles lorsque le niveau de personnes faible revenu est élevé et que la distance au centre ville est élevée (en haut à droite). En revanche, les valeurs les plus élevés de végétation sont atteintes lorsque la distance au centre ville est élevée et que le pourcentage de personnes à faible revenu est bas (en bas à droite).
+À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variables dépendantes, ce que nous pouvons faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interraction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95% de la prédiction dans le deuxième et troisième panneau. On constate ainsi le modèle prédit des valeurs de végétation les plus faibles lorsque le niveau de personnes faible revenu est élevé et que la distance au centre ville est élevée (en haut à droite). En revanche, les valeurs les plus élevés de végétation sont atteintes lorsque la distance au centre ville est élevée et que le pourcentage de personnes à faible revenu est bas (en bas à droite). Il semble donc que l'éloignement au centre-ville soit associé avec une augmentation de la densité végétale, mais que cette augmentation puisse être mitigée par l'augmentation parallèle de la proporition de personnes à faible revenu.
 
 ```{r ModeleInteraction2heat, fig.cap = "Effet marginal de l'interraction entre deux variables continues", echo=FALSE, message=FALSE, warning=FALSE, out.width='95%'}
 
@@ -1405,7 +1421,68 @@ https://www.econometrics-with-r.org/8-3-interactions-between-independent-variabl
 
 ## Diagnostics de la régression {#sect056}
 
-## Comment rapporter une régression  {#sect057}
+Pour illuster comment vérifier si le modèle respecte les hypothèses de la régression, nous utiliserons le modèle suivant :
+
+`modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)`
+
+
+### Nombre d'observations {#sect0561}
+Tous les auteurs ne s'entendent pas sur le nombre d'observations minimal que devrait comprendre une régression linéaire multiple, loin s'en faut ! Parallèlement, d'autres auteurs proposent aussi des méthodes de simulation pour estimer les coefficients de régression sur un jeu de données comprenant peu d'observations. Bien qu'aucune règle ne soit bien établie, la question du nombre d'observations mérite d'être posée puisqu'un modèle basé sur trop peu d'observations risque de produire des coefficients de régression peu fiables. Par faible fiaibilité des coefficients, on entend que la suppression d’une ou plusieurs observations pourrait drastiquement changer l’effet et/ou la significativité d’une ou plusieurs variables explicatives.
+
+Dans leur ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, pp. 123-124] proposent deux règles à la louche :
+
+1. $n \geq 50 + 8k$ avec *k* avec $N$ et $k$ étant respectivement les nombre d'observations et de variables indépendantes, pour tester le coefficient de corrélation multiples ($R^2$).
+2. $n \geq 104 + k$ pour tester individuellement chaque variable indépendante.
+
+Dans le modèle, nous avons 10210 observations et variables indépendantes. Les deux conditions sont donc largement respectées.
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE, out.width='75%'}
+modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+# Nombre d'observation
+nobs <- length(modele3$fitted.values)
+
+# Nombre de variables indépendantes (coefficients moins la constante)
+k <- length(modele3$coefficients)-1
+
+# Première règle de pouce
+cat("\n", nobs, " observations incluses dans le modèle avec",
+    "\n", k, " variables indépendantes.",
+    sep="")
+if(nobs >= 50+(8*k)){
+    cat("\nNombre d'observations suffisant pour tester le R2")
+}else{
+  cat("\nAttention ! Nombre d'observations insuffisant pour tester le R2")
+}
+
+# Deuxième règle de pouce
+if(nobs >= 104+k){
+    cat("\nNombre d'observations suffisant pour tester individuellement chaque VI")
+}else{
+  cat("\nAttention ! Nombre d'observations insuffisant pour tester individuellement chaque VI")
+}
+```
+
+
+### Normalité des résidus {#sect0562}
+Pour vérifier si les résidus sont normalement distribués, trois démarches largement décrites dans la section \@ref(sect02541) peuvent être utilisées :
+
+* le calcul des coefficients d’asymétrie et d’aplatissement
+* les tests de normalité, particulièrement le test de Shapiro-Wilk 
+* les graphiques (histogramme et courbe normale et diagramme quantile-quantile)
+
+Les deux premiers étant parfois très restrictifs, on porte habituellement une attention particulière aux graphiques.
+
+
+### Linéarité et homoscédasticité des résidus {#sect0564}
+
+
+### Absence de multicolinéarité excessive {#sect0565}
+
+
+### Absence de valeurs aberantes {#sect0566}
 
 ## Mise en œuvre dans R {#sect058}
 
@@ -1552,11 +1629,11 @@ Nous avons déjà évoqué le principe de parcimonie. À titre de rappel, l'ajou
 * Modèle 5 (R^2^=0,506). `VegPct ~ log(HABHA) + poly(AgeMedian, 2) + Pct_014 + Pct_65P + Muni`
 * Modèle 6 (R^2^=0,495). `VegPct ~ log(HABHA) + poly(AgeMedian, 2) + Pct_014 + Pct_65P + Pct_MV + Pct_FR + DistCBDkm + DistCBDkm * Pct_014`
 
-Par conséquent, il est légitime de se questionner sur le bien-fondé de conserver ces variables indépendantes additionnelles : `Muni` pour le modèle 5 et `DistCBDkm + DistCBDkm * Pct_014` pour le modèle 6. Deux options sont alors envisageables :
+Par conséquent, il est légitime de se questionner sur le bien-fondé de conserver ces variables indépendantes additionnelles : `Muni` pour le modèle 5 et `DistCBDkm + DistCBDkm * Pct_014` pour le modèle 6. Trois options sont alors envisageables :
 
 * Bien entendu, conservez l'une ou l'autre de ces variables additionnelles, si elles sont initialement reliées à votre cadre théorique.
 * Conservez l'une ou l'autre de ces variables additionnelles, si elles permettent de répondre à une question spécifique (non prévue initialement) et si les associations ainsi révélées méritent, selon vous, discussion.
-* supprimez-les si leur apport est limité et ne fait que complexifier le modèle pour rien.
+* Supprimez-les si leur apport est limité et ne fait que complexifier le modèle pour rien.
 
 :::
 
