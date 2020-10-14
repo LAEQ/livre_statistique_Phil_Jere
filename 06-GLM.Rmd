@@ -1025,6 +1025,257 @@ possibles pour y remédier :
 2. Autoriser la variable à avoir un effet différent entre chaque pallier (possible avec le package **VGAM**).
 3. Changer de modèle et opter pour un modèle des catégories adjacentes. Il s’agit du cas particulier où toutes les variables sont autorisées à changer à chaque niveau. Ne pas confondre ce dernier modèle et le modèle multinomial que nous présentons ensuite, le modèle des catégories adjacentes continue à prédire la probabilité de passer à une catégorie supérieure.
 
+##### Exemple appliqué dans R
+
+Pour cet exemple, nous allons analyser un jeu de données proposé par Inside Airbnb, une organisation sans but lucratif collectant des données des annonces sur le site d’Airbnb pour alimenter le débat sur l’impact de cette société sur les quartiers. Plus spécifiquement, nous utilisons le jeu de données pour Montréal, [compilé le 30 juin 2020](http://insideairbnb.com/get-the-data.html). Nous modélisons ici le prix par nuit des logements, ce type d’exercice est appelé modélisation hédonique. Il est particulièrement utilisé en économie urbaine pour évaluer les déterminants du marché immobilier et prédire son évolution. Le cas de Airbnb a déjà été étudié dans plusieurs articles [@teubner2017price ; @wang2017price ; @zhang2017key], il en ressort notamment que le niveau de confiance inspiré par l’hôte, les caractéristiques intrinsèques du logement et sa localisation sont les principaux prédicteurs de son prix. Nous construirons donc notre modèle sur cette base. Notez que nous avons décidé de retirer les logements avec des prix supérieur à 250\$ qui constituent des cas particuliers et qui devraient faire l'objet d'une analyse à part entière. Nous avons également retiré les observations pour lesquelles certaines données sont manquantes, et obtenons un nombre final de 9051 observations.
+
+La distribution originale du prix des logements dans notre jeu de données est présentée à la figure \@ref(fig:histopriceairbnb).
+
+```{r histopriceairbnb, message=FALSE, warning=FALSE, fig.align="center", fig.cap= "Distribution des prix des logements Airbnb", out.width="85%"}
+
+# Charger le jeu de données
+data_airbnb <- read.csv("data/glm/airbnb_data.csv")
+
+# Afficher la distribution du prix
+ggplot(data = data_airbnb) + 
+  geom_histogram(aes(x = price), bins = 30, color = "white", fill = "#1d3557", size = 0.02)
+```
+
+Nous avons ensuite découpé le prix des logements en trois catégories : inférieur à 50\$, entre 50\$ et 100\$ et entre 100\$ et 250\$. Ces catégories forment une variable ordinale de trois échelons que nous modélisons à partir de trois catégories de variables : 
+
+* Les caractéristiques propres au logement
+* Les caractéristiques environnementales autour du logement
+* Les notes obtenues par le logement sur le site d’Airbnb
+
+
+```{r message=FALSE, warning=FALSE, fig.align="center"}
+# afficher le nombre de logement par catégories
+table(data_airbnb$fac_price_cat)
+```
+
+Le tableau \@ref(tab:variablecumul) suivant présente l’ensemble des variables utilisées dans le modèle.
+
+```{r variablecumul, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+df <- data.frame(
+  C1 = c("Lit", "Jardin", "Privee", "Parking", "Accueil", "Vegetation", "Metro", "Commercial", "Note", "Propriétaire"),
+  C2 = c("Nombre de lit dans le logement", "Présence d’un jardin ou d’une arriere cours", "Le logement est entierement à disposition du locataire ou seulement une pièce", "Une place de parking gratuite est disponible sur la rue", "L’hôte accueil personnellement les locataires", "Végétation dans les environs du logement", "Présence d’une station de métro à proximité du logement", "Commerce dans les environs du logement", "Évaluation de la qualité du logement par les usagers", "Nombre total de logements détenus par l’hôte sur Airbnb"),
+  C3 = c("Variable de comptage", "Variable binaire", "Variable binaire", "Variable binaire", "Variable binaire", "Variable continue", "Variable binaire", "Variable continue", "Variable ordinale", "Variable de comptage"),
+  C4 = c("Nombre de lit dans le logement", "Oui ou Non", "Privé ou Partagé", "Oui ou Non", "Oui ou Non", "Pourcentage de surface végétale dans un rayon de 500m autour du logement", "Présence d’une station de métro dans un rayon de 500m autours du logement", "Pourcentage de surface dédiée au commerce (mode d’occupation du sol) dans un rayon de 1 km autour du logement", "Score obtenu par le logement sur un échelle allant de 1 (très mauvais) à 5 (parfait)", "Nombre total de logements détenus par l’hôte sur Airbnb")
+)
+
+show_table(df, 
+    caption = "Variable indépendantes utilisées pour prédire la catégorie de prix de logements Airbnb",
+    col.names = c("Nom de la variable","signification","Type de variable","Mesure"), 
+    col.to.resize = c(2,4),
+    col.width = "5cm"
+)
+
+```
+
+**Vérification des conditions d'applications**
+
+Avant d'ajuster le modèle, nous commençons par vérifier si nos variable indépendantes ne sont pas marquées par une multicolinéarité excessive.
+
+```{r message=FALSE, warning=FALSE}
+# notez que la fonction vif ne s'intéresse qu'au variable indépendante
+# vous pouvez donc utiliser la fonction glm avec la fonction vif quelque 
+# soit le glm que vous construisez
+vif(glm(price ~ beds +
+    Garden_or_backyard + Host_greets_you + Free_street_parking + 
+      prt_veg_500m + has_metro_500m + commercial_1km +host_total_listings_count +
+      private + cat_review, data = data_airbnb))
+```
+
+L'ensemble des valeurs de VIF sont inférieures à 2 indiquant une absence de multicolinéarité. Nous pouvons donc à présent ajuster le modèle et passer à l'analyse des distances de Cook. Pour ajuster le modèle, nous utilisons le package **VGAM** et la fonction `vglm` qui nous donnent accès à la famille `cumulative` pour ajuster des modèles logistiques ordinaux.
+
+```{r message=FALSE, warning=FALSE}
+library(VGAM)
+
+modele <- vglm(fac_price_cat ~ beds +
+                Garden_or_backyard + Free_street_parking + 
+                prt_veg_500m + has_metro_500m + commercial_1km +
+                private + cat_review + host_total_listings_count ,
+             family = cumulative(link="logitlink", # fonction de lien 
+                                 parallel = TRUE, # cote proportionelle
+                                 reverse = TRUE),
+             data = data_airbnb, model = T)
+```
+
+Notez que puisque notre variable Y a trois catégories différentes et que nous modélisons la probabilité de passer à une catégotie supérieure, chaque observation a deux (3-1) valeurs de résidus différentes. Nous pouvons donc calculer deux distances de Cook différentes que nous devons analyser conjointement. Malheureusement, la fonction `cook.distance` ne fonctionne pas avec les objets `vglm`, nous devond donc les calculer manuellement.
+
+```{r message=FALSE, warning=FALSE, fig.align="center", fig.cap = "Distances de Cook pour le modèle logistique des cotes proportionnelles", out.width = "80%"}
+
+# extraction des residus
+res <- residuals(modele, type = "pearson")
+# extraction de la hat matrix (necessaire pour calculer la distance de Cook)
+hat <- hatvaluesvlm(modele)
+
+# calcul des distances de Cook
+cooks <- lapply(1:ncol(res),function(i){
+  r <- res[,i]
+  h <- hat[,i]
+  cook <- (r/(1 - h))^2 * h/(1 * modele@rank)
+})
+
+# structuration dans un dataframe
+matcook <- data.frame(do.call(cbind, cooks))
+names(matcook) <- c("dist1","dist2")
+matcook$oid <- 1:nrow(matcook)
+
+# afficher les distances de Cook
+plot1 <- ggplot(data = matcook) + 
+  geom_point(aes(x = oid, y = dist1), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
+  labs(x = "", y = "", subtitle = "distance de Cook P(Y<=2)")+
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x = element_blank())
+
+plot2 <- ggplot(data = matcook) + 
+  geom_point(aes(x = oid, y = dist2), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
+  labs(x = "", y = "", subtitle = "distance de Cook P(Y<=3)")+
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x = element_blank())
+
+ggarrange(plot1, plot2, ncol = 2, nrow = 1)
+
+```
+
+Les distances de Cook nous permettent d'identifier quelques potentiels outliers, mais ils semblent être différents d'un graphique à l'autre. Nous décidons donc de ne pas retirer d'observations à ce stade et de passer à l'analyse des résidus simulés. Pour effectuer des simulations à partir de ce modèle, nous nous basons sur les probabilités d'appartenances prédites par le modèle
+
+```{r message=FALSE, warning=FALSE}
+# extraire les probabilites predite
+predicted <- predict(modele,type = "response")
+round(head(predicted,n = 4),3)
+```
+
+On constate ainsi que pour la première observation, la probabilité prédite d'appartenir au groupe 1 est de 69,4%, 27,7% pour le groupe 2 et 2,9% pour le groupe 3. Si nous effectuons 1000 simulations, on peut s'attendre à ce qu'en moyenne, sur ces 1000 simulations, 694 indiqueront 1 comme catégorie prédite, 277 indiqueront 2 et seulement 29 indiqueront 3.
+
+```{r message=FALSE, warning=FALSE}
+# Nous effectuerons 1000 simulations
+nsim <- 1000
+
+# lancement des simulations pour chaque observation (lignes dans predicted)
+simualtions <- lapply(1:nrow(predicted), function(i){
+  probs <- predicted[i,]
+  sims <- sample(c(1,2,3), size = nsim, replace = T, prob = probs)
+  return(sims)
+})
+
+# combiner les predictions dans un tableau
+matsim <- do.call(rbind, simualtions)
+
+# observons si nos simulations sont proches de ce que nous attendions
+table(matsim[1,])
+```
+
+À partir de ces simulations de prédiction, nous pouvons entamer le diagnostic des résidus simulés grâce au package **DHARMa**
+
+```{r diagressimcumul, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle des cotes proportionnelles", out.width="90%", fig.align = "center"}
+
+# extraction de la prédiction moyenne du modèle
+pred_cat <- unique(data_airbnb$fac_price_cat)[max.col(predicted)]
+
+# preparer les donnees avec le package DHARMa
+sim_res <- createDHARMa(simulatedResponse = matsim, 
+                            observedResponse = as.numeric(data_airbnb$fac_price_cat),
+                            fittedPredictedResponse = as.numeric(pred_cat),
+                            integerResponse = T)
+
+# Afficher le graphique de diagnostic général
+plot(sim_res)
+```
+
+La figure \@ref(fig:diagressimcumul) nous indique que les résidus simulés suivent bien une distribution uniforme et qu'aucune valeure abérrante n'est observable. Pour affiner notre diagnostic, nous verifions également si aucune relation ne semble exister entre chaque variable indépendante et les résidus. 
+
+```{r diagressimcumul2, message=FALSE, warning=FALSE, fig.cap = "Diagnostic variable par variable des résidus simulés du modèle des cotes proportionnelles", out.width="95%", fig.align = "center"}
+
+# preparons un plot multiple
+par(mfrow=c(3,4))
+vars <- c("beds","Garden_or_backyard", "Host_greets_you",
+          "Free_street_parking", "prt_veg_500m", 
+          "has_metro_500m", "commercial_1km","private",
+          "cat_review","host_total_listings_count")
+
+for(v in  vars){
+  plotResiduals(sim_res, data_airbnb[[v]], main = v)
+}
+```
+
+La figure \@ref(fig:diagressimcumul2) indique qu'aucune relation marquée n'existe entre nos variable indépendante et nos résidus simulés, sauf pour la variable nombre de lits. En effet, nous pouvons constater que les résidus ont tendance à être toujours plus faible quand le nombre de lit augmente. Cet effet est sûrement lié au fait qu'au delà de cinq lits, le logement en question est vraissemblablement un dortoire. Pour en tenir compte, il serait possible d'ajouter une polynomiale sur la variable lit, ou de convertir la variable de comptage en variable catégorielle. Dans notre cas, nous ajoutons 
+
+```{r message=FALSE, warning=FALSE}
+
+# création d'une variable dichotomique
+
+data_airbnb$nbxlits <- ifelse(data_airbnb$beds<5,0,1)
+data_airbnb$lits_d2 <- data_airbnb$beds**2
+
+#passage en facteur et définition de la catégorie de référence
+data_airbnb$inter_lits <- data_airbnb$nbxlits * data_airbnb$beds
+
+modele2 <- vglm(fac_price_cat ~ beds + lits_d2 + 
+                Garden_or_backyard + Free_street_parking + 
+                prt_veg_500m + has_metro_500m + commercial_1km +
+                private + cat_review + host_total_listings_count ,
+             family = cumulative(link="logitlink", # fonction de lien 
+                                 parallel = TRUE, # cote proportionelle
+                                 reverse = TRUE),
+             data = data_airbnb, model = T)
+```
+
+Nous pouvons ensuite recalculer les résidus simulés pour observer si cette tendance a été corrigée. La figure \@ref(fig:diagressimcumul3) montre qu'une bonne partie du problème a été corrigé, cependant la dernière catégorie (plus de 10 lits) semble se démarquer encore légèrement.
+
+```{r diagressimcumul3. message=FALSE, warning=FALSE, echo=FALSE, fig.cap = "Diagnostic variable par variable des résidus simulés du modèle des cotes proportionnelles (arpès correction)", out.width="95%", fig.align = "center"}
+# Nous effectuerons 1000 simulations
+nsim <- 1000
+predicted <- predict(modele2, type = "response")
+
+# lancement des simulations pour chaque observation (lignes dans predicted)
+simualtions <- lapply(1:nrow(predicted), function(i){
+  probs <- predicted[i,]
+  sims <- sample(c(1,2,3), size = nsim, replace = T, prob = probs)
+  return(sims)
+})
+
+# combiner les predictions dans un tableau
+matsim <- do.call(rbind, simualtions)
+
+# extraction de la prédiction moyenne du modèle
+pred_cat <- unique(data_airbnb$fac_price_cat)[max.col(predicted)]
+
+# preparer les donnees avec le package DHARMa
+sim_res <- createDHARMa(simulatedResponse = matsim, 
+                            observedResponse = as.numeric(data_airbnb$fac_price_cat),
+                            fittedPredictedResponse = as.numeric(pred_cat),
+                            integerResponse = T)
+
+par(mfrow=c(3,4))
+vars <- c("lit_cat","Garden_or_backyard", "Host_greets_you",
+          "Free_street_parking", "prt_veg_500m", 
+          "has_metro_500m", "commercial_1km","private",
+          "cat_review","host_total_listings_count")
+
+for(v in  vars){
+  plotResiduals(sim_res, data_airbnb[[v]], main = v)
+}
+```
+
+La prochaine étape du diagnostic est de vérifier si nous n'avons pas de séparation parfaite provoquée par un de nos prédicteurs. Le package **VGAM** propose pour cela la fonction `hdeff`.
+
+```{r message=FALSE, warning=FALSE}
+tests <- hdeff(modele2)
+problem <- tests[tests == TRUE]
+problem
+```
+
+La fonction nous informe qu'aucun de nos prédicteurs  ne provoque de séparation parfaite : toutes les valeurs renvoyées par la fonction `hdeff` sont égales à `FALSE.`
+
+Il ne nous reste donc plus qu'à vérifier que l'hypothèse de proportionnalité des cotes est respectée, soit que l'impact de chacune des variables indépendante est bien le même pour passer de la catégorie 1 à 2 que pour passer des catégories 2 à 3. Pour cela, deux approches sont possibles : le test de Brant ou la réalisation d'une séquence de test de rapport de vraissemblance.
+
+Le package **brant** propose une implémentation du test de Brant, mais elle ne peut être appliquée qu'à des modèles construits avec la fonction `polr` du package **MASS**. Nous avons donc récupérer le code source de la fonction `brant` du package **brant** et apporté quelques modifications pour qu'elle soit utilisable sur un objet `vglm`. Cette nouvelle fonction appelée `brant.vglm` est disponible dans le code source de ce livre.
+
+```{r message=FALSE, warning=FALSE}
+brant.vglm(modele2)
+```
 
 ### Principes de base des GLM {#sect0611}
 
