@@ -190,12 +190,13 @@ Y  = \underbrace{X\beta}_{\mbox{partie expliquée par le modèle}}+ \underbrace{
 
 Un modèle est bien construit s'il respecte plusieurs hypothèses liées à la régression, dont les principales étant :
 
-* **Hypothèse 1**. *La variable dépendante doit être continue et non-bornée*. 
-* **Hypothèse 2**. *Indépendance des termes d'erreur*. Les résidus des observations ($\epsilon_{1}, \epsilon_{2}, \ldots, \epsilon_{n}$) ne doivent pas être corrélés entre eux. Autrement dit, les observations doivent être indépendantes les unes des autres, ce qui n'est souvent pas le cas pour des mesures temporelles. Par exemple, l'application du cadre conceptuel sur la modélisation de l'exposition des cyclistes au bruit et à la pollution atmosphérique (figure \@ref(fig:figcadreconcept)) est basée sur des données primaires collectées lors de trajets réalisés à vélo dans une ville donnée. Par conséquent, deux observations qui se suivent ont bien plus de chances de se ressembler – du point de vue des mesures de pollution et des caractéristiques de l'environnement urbain – que deux observations tirées au hasard dans le jeu de données. Ce problème d'autocorrélation temporelle doit être contrôlé, sinon, les coefficients de régression seront biaisés.
-* **Hypothèse 3**. *Normalité des résidus*.
-* **Hypothèse 4**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, on ne peut introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100%. On a donc une corrélation parfaite entre ces deux variables : le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne pourra pas être estimé avec ces deux variables et l'une des deux sera automatiquement ôtée.
-* **Hypothèse 5**. *Homoscédasticité des erreurs (ou absence d'hétéroscédasticité)*. Il y a homoscédasticité lorsqu'il y a une absence de corrélation entre les résidus et les valeurs prédites.
-* **Hypothèse 6**. *Le modèle est bien spécifié*. On dira qu'un modèle est mal spécifié (construit) quand « une ou plusieurs variables non pertinentes sont incluses dans le modèle » ou « qu’une ou plusieurs variables pertinentes sont exclues du modèle » [@bressoux2010, p. 138-139]. Concrètement, l'inclusion d'une variable non pertinente ou l'omission d'une variable peut entraîner une mauvaise estimation des effets des variables explicatives du modèle.
+* **Hypothèse 1**. *La variable dépendante doit être continue et non-bornée*. Quant aux variables indépendantes (VI), elles peuvent être quantitatives (discrètes ou continues) et qualitatives (nominale ou ordinale).
+* **Hypothèse 2**.  *La variance de chaque VI doit être supérieure à 0*. Autrement dit, elle ne peut pas la même valeur pour toutes les observations.
+* **Hypothèse 3**. *Indépendance des termes d'erreur*. Les résidus des observations ($\epsilon_{1}, \epsilon_{2}, \ldots, \epsilon_{n}$) ne doivent pas être corrélés entre eux. Autrement dit, les observations doivent être indépendantes les unes des autres, ce qui n'est souvent pas le cas pour des mesures temporelles. Par exemple, l'application du cadre conceptuel sur la modélisation de l'exposition des cyclistes au bruit et à la pollution atmosphérique (figure \@ref(fig:figcadreconcept)) est basée sur des données primaires collectées lors de trajets réalisés à vélo dans une ville donnée. Par conséquent, deux observations qui se suivent ont bien plus de chances de se ressembler – du point de vue des mesures de pollution et des caractéristiques de l'environnement urbain – que deux observations tirées au hasard dans le jeu de données. Ce problème d'autocorrélation temporelle doit être contrôlé, sinon, les coefficients de régression seront biaisés.
+* **Hypothèse 4**. *Normalité des résidus* avec un moyenne centrée sur zéro.
+* **Hypothèse 5**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, on ne peut introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100%. On a donc une corrélation parfaite entre ces deux variables : le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne pourra pas être estimé avec ces deux variables et l'une des deux sera automatiquement ôtée.
+* **Hypothèse 6**. *Homoscédasticité des erreurs (ou absence d'hétéroscédasticité)*. Les résidus doivent avoir une variance constante, c'est-à-dire qu'elle doit être la même pour chaque obervation. Il y a homoscédasticité lorsqu'il y a une absence de corrélation entre les résidus et les valeurs prédites. Si cette condition n'est pas respectée, on parle alors d'hétéroscédasticité.
+* **Hypothèse 7**. *Le modèle est bien spécifié*. On dira qu'un modèle est mal spécifié (construit) quand « une ou plusieurs variables non pertinentes sont incluses dans le modèle » ou « qu’une ou plusieurs variables pertinentes sont exclues du modèle » [@bressoux2010, p. 138-139]. Concrètement, l'inclusion d'une variable non pertinente ou l'omission d'une variable peut entraîner une mauvaise estimation des effets des variables explicatives du modèle.
 
 Pour connaître les conséquences de la violation de chacune de ces hypothèses, on pourra notamment consulter l'excellent ouvrage de Bressoux [-@bressoux2010, p. 103-110]. Retenez ici que le non-respect de ces hypothèses produit des coefficients de régression biaisés.
 
@@ -968,7 +969,8 @@ fit1b <- ggpredict(modele1b, terms = "HABHA")
 
 # Graphiques
 G1a <- ggplot(fit1a, aes(x, predicted)) +
-      geom_point(data = DataFinal, mapping = aes(x=HABHA, y = VegPct), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
+      geom_point(data = DataFinal, mapping = aes(x=HABHA, y = VegPct),
+                 size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
       geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3, fill ="red")+
       geom_line(color = "red") +
       labs(title="Variable non transformée",
@@ -978,7 +980,8 @@ G1a <- ggplot(fit1a, aes(x, predicted)) +
   xlim(0,600)
 
 G1b <- ggplot(fit1b, aes(x, predicted)) +
-      geom_point(data = DataFinal, mapping = aes(x=HABHA, y = VegPct), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
+      geom_point(data = DataFinal, mapping = aes(x=HABHA, y = VegPct),
+                 size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
       geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3, fill ="red")+
       geom_line(color = "red") +
       labs(title="Variable transformée (log)",
@@ -1209,7 +1212,7 @@ Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \beta_{3}(X_{1}\times X_{2}) +
 \end{equation}
 \normalsize
 
-un nouveau coefficient ($\beta_{3}$) s'ajoute pour l'interaction (la multiplication) entre les deux variables continues. **Pourquoi ajouter une interation entre deux variables?** L'objectif est d'évaluer l'effet d'une augmentation de $\beta_{1}$ en fonction d'un niveau donné de $\beta_{2}$ et inversement. Cela permet ainsi de répondre à la question suivante : l'effet de la variable $\beta_{1}$ est-elle influencé par la variable $\beta_{2}$ et inversement?
+Un nouveau coefficient ($\beta_{3}$) s'ajoute pour l'interaction (la multiplication) entre les deux variables continues. **Pourquoi ajouter une interation entre deux variables?** L'objectif est d'évaluer l'effet d'une augmentation de $\beta_{1}$ en fonction d'un niveau donné de $\beta_{2}$ et inversement. Cela permet ainsi de répondre à la question suivante : l'effet de la variable $\beta_{1}$ est-elle influencé par la variable $\beta_{2}$ et inversement?
 
 Prenons un exemple concret pour illuster le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B= 0,659, P<0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59% plus de végétation.
 
@@ -1227,9 +1230,9 @@ tabreg <- build_table(modele5, confid = F, std_digits = 3, coef_digits = 3, z_di
              )
 ```
 
-Dans ce modèle ci-dessous (tableau \@ref(tab:ModeleInteraction1)), les pourcentages de jeunes de moins de 15 ans et de 65 ans (`Pct_014` et `Pct_65P`) et plus sont associés positivement à la variable dépendante tandis que avec celui des personnes à faible revenu (`Pct_FR`) est associé négativement.
+Dans ce modèle ci-dessous (tableau \@ref(tab:ModeleInteraction1)), les pourcentages de jeunes de moins de 15 ans et de 65 ans (`Pct_014` et `Pct_65P`) et plus sont associés positivement à la variable dépendante tandis qu'avec celui des personnes à faible revenu (`Pct_FR`) est associé négativement.
 
-Que se passe-t-il si nous introduisons une variables d'interaction entre `DistCBDkm` et `Pct_FR` (tableau \@ref(tab:ModeleInteraction2))? L’effet du pourcentage de personnes à faible revenu (%) est significatif et négatif lorsqu’elle est mise en interaction avec la distance au centre-ville. Cela indique que plus l'îlot est éloigné du centre-ville, plus `Pct_FR` a un effet négatif sur la couverture végétale (B=−0,011, P<0,001).
+Que se passe-t-il si nous introduisons une variables d'interaction entre `DistCBDkm` et `Pct_FR` (tableau \@ref(tab:ModeleInteraction2))? L’effet du pourcentage de personnes à faible revenu (%) est significatif et négatif lorsqu’il est mise en interaction avec la distance au centre-ville. Cela indique que plus l'îlot est éloigné du centre-ville, plus `Pct_FR` a un effet négatif sur la couverture végétale (B=−0,011, P<0,001).
 
 ```{r ModeleInteraction2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 DataFinal$DistCBDkmX_Pct_014 <- DataFinal$DistCBDkm*DataFinal$Pct_014
@@ -1251,7 +1254,9 @@ tabreg <- build_table(modele6, confid = F, std_digits = 3, coef_digits = 3, z_di
              )
 ```
 
-À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variables dépendantes, ce que nous pouvons faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interraction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95% de la prédiction dans le deuxième et troisième panneau. On constate ainsi le modèle prédit des valeurs de végétation les plus faibles lorsque le niveau de personnes faible revenu est élevé et que la distance au centre ville est élevée (en haut à droite). En revanche, les valeurs les plus élevés de végétation sont atteintes lorsque la distance au centre ville est élevée et que le pourcentage de personnes à faible revenu est bas (en bas à droite). Il semble donc que l'éloignement au centre-ville soit associé avec une augmentation de la densité végétale, mais que cette augmentation puisse être mitigée par l'augmentation parallèle de la proporition de personnes à faible revenu.
+À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variable dépendante, ce que nous pouvons faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interaction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95% de la prédiction dans le deuxième et troisième panneaux. 
+
+On constate ainsi que le modèle prédit des valeurs de végétation les plus faibles lorsque le pourcentage de personnes à faible revenu est élevé et que la distance au centre-ville est élevée (en haut à droite). En revanche, les valeurs les plus élevées de végétation sont atteintes lorsque la distance au centre-ville est élevée et que le pourcentage de personnes à faible revenu est faible (en bas à droite). Il semble donc que l'éloignement au centre-ville soit associé avec une augmentation de la densité végétale, mais que cette augmentation puisse être mitigée par l'augmentation parallèle du pourcentage de personnes à faible revenu.
 
 ```{r ModeleInteraction2heat, fig.cap = "Effet marginal de l'interraction entre deux variables continues", echo=FALSE, message=FALSE, warning=FALSE, out.width='95%'}
 
@@ -1309,7 +1314,7 @@ ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
 
 ```
 
-Notez que dans la figure \@ref(fig:ModeleInteraction2heat), la relation entre les deux variables indépendantes et la variable dépendante apparaît non-linéaire du fait de l'interaction. À titre de comparaison, si nous utilisons les prédictions du modèle 5 (sans interaction), nous obtenons des prédictions présentées à la figure \@ref(fig:ModeleInteraction2heat2). Vous pouvez constater sur cette figure sans interraction que les deux effets des variables indépendantes sont linéaires.
+Notez que dans la figure \@ref(fig:ModeleInteraction2heat), la relation entre les deux variables indépendantes et la variable dépendante apparaît non-linéaire du fait de l'interaction. À titre de comparaison, si nous utilisons les prédictions du modèle 5 (sans interaction), nous obtenons des prédictions présentées à la figure \@ref(fig:ModeleInteraction2heat2). Vous pouvez constater sur cette figure sans interaction que les deux effets des variables indépendantes sont linéaires puisque toutes les lignes sont parallèles.
 
 ```{r ModeleInteraction2heat2, fig.cap = "Effets marginaux de deux variables continues en cas d'absence d'interraction", echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 
@@ -1341,7 +1346,7 @@ ggplot(data = df) +
        subtitle = "Prédiction de la densité de végétation (%)")
 ```
 
-#### Variable d'interaction entre une variable continue et une variable dichtomique {#sect05542}
+#### Variable d'interaction entre une variable continue et une variable dichotomique {#sect05542}
 
 Une interaction entre une VI continue et une VI dichotomique consiste aussi à les multiplier ($X_1 \times D_2$); le modèle s'écrit alors :
 
@@ -1351,11 +1356,11 @@ Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}D_{2} + \beta_{3}(X_{1}\times D_{2}) +
 \end{equation}
 \normalsize
 
-Pour interpréter le coefficient $B_3$, il convient alors de bien connaître le nom de la modalité ayant la valeur de 1 (0 étant la modalité de référence). Dans le modèle présenté au tableau \@ref(tab:ModeleInteractionBinaire), nous avons multiplié la variable dichotomique Ville de Montréal (`VilleMtl`) avec le pourcentage de personnes à faible revenu (`Pct_FR`). Les résultats de ce modèle démontrent que toutes choses étant égales par ailleurs :
+Pour interpréter le coefficient $B_3$, il convient alors de bien connaître le nom de la modalité ayant la valeur de 1 (0 étant la modalité de référence). Dans le modèle présenté au tableau \@ref(tab:ModeleInteractionBinaire), nous avons multiplié la variable dichotomique Ville de Montréal (`VilleMtl`) avec le pourcentage de personnes à faible revenu (`Pct_FR`). Les résultats de ce modèle démontrent que, toutes choses étant égales par ailleurs :
 
-* à chaque augmentation d'une unité du pourcentage à faible revenu (`Pct_FR`), la pourcentage de la couverture végétale diminue significativement de −0,444;
+* à chaque augmentation d'une unité du pourcentage à faible revenu (`Pct_FR`), le pourcentage de la couverture végétale diminue significativement de −0,444;
 * comparativement à un îlot situé dans une autre municipalité de l'île de Montréal, un îlot de la Ville de Montréal a en moyenne −9,804 de couverture végétale;
-* à chaque augmentation d'une unité de `Pct_FR` pour un îlot de la Ville Montréal, la couverture végétale augmente de 0,166 comparativement à une autre municipalité de l'île. En d'autres termes, le `Pct_FR` sur le territoire de la Ville de Montréal est associé à une diminution de la couverture végétale moins forte que les autres municipalités, tel qu'illustré à la figure **XXX** (voir les pentes en rouge en bleu).
+* à chaque augmentation d'une unité de `Pct_FR` pour un îlot de la Ville Montréal, la couverture végétale augmente de 0,166 comparativement à une autre municipalité de l'île. En d'autres termes, le `Pct_FR` sur le territoire de la Ville de Montréal est associé à une diminution de la couverture végétale moins forte que les autres municipalités, tel qu'illustré à la figure \@ref(fig:ModeleInteractionBinaire) (voir les pentes en rouge en bleu).
 
 
 ```{r ModeleInteractionBinaire, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -1375,7 +1380,7 @@ tabreg <- build_table(modele7, confid = F, std_digits = 3, coef_digits = 3, z_di
              )
 ```
 
-L'interraction entre une variable qualitative et une variable quantitative peut être représentée par un graphique des effets marginaux. La pente (coefficient) de la variable quantitative varie en fonction des catégories de la variables qualitative.
+L'interaction entre une variable qualitative et une variable quantitative peut être représentée par un graphique des effets marginaux. La pente (coefficient) de la variable quantitative varie en fonction des deux catégories de la variable qualitative dichotomique.
 
 ```{r ModeleInteractionBinaireeffect, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%', fig.cap="Graphique de l'effet marginal de l'interraction entre une variable quantitative et qualitative"}
 
@@ -1421,7 +1426,7 @@ https://www.econometrics-with-r.org/8-3-interactions-between-independent-variabl
 
 ## Diagnostics de la régression {#sect056}
 
-Pour illuster comment vérifier si le modèle respecte les hypothèses de la régression, nous utiliserons le modèle suivant :
+Pour illuster comment vérifier si le modèle respecte ou non les hypothèses de la régression, nous utiliserons le modèle suivant :
 
 `modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)`
 
@@ -1429,15 +1434,15 @@ Pour illuster comment vérifier si le modèle respecte les hypothèses de la ré
 ### Nombre d'observations {#sect0561}
 Tous les auteurs ne s'entendent pas sur le nombre d'observations minimal que devrait comprendre une régression linéaire multiple, loin s'en faut ! Parallèlement, d'autres auteurs proposent aussi des méthodes de simulation pour estimer les coefficients de régression sur un jeu de données comprenant peu d'observations. Bien qu'aucune règle ne soit bien établie, la question du nombre d'observations mérite d'être posée puisqu'un modèle basé sur trop peu d'observations risque de produire des coefficients de régression peu fiables. Par faible fiaibilité des coefficients, on entend que la suppression d’une ou plusieurs observations pourrait drastiquement changer l’effet et/ou la significativité d’une ou plusieurs variables explicatives.
 
-Dans leur ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, pp. 123-124] proposent deux règles à la louche :
+Dans un ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, pp. 123-124] proposent deux règles à la louche :
 
-1. $n \geq 50 + 8k$ avec *k* avec $N$ et $k$ étant respectivement les nombre d'observations et de variables indépendantes, pour tester le coefficient de corrélation multiples ($R^2$).
+1. $n \geq 50 + 8k$ avec $n$ et $k$ étant respectivement les nombres d'observations et de variables indépendantes, pour tester le coefficient de corrélation multiples (*R^2^*).
 2. $n \geq 104 + k$ pour tester individuellement chaque variable indépendante.
 
 Dans le modèle, nous avons 10210 observations et variables indépendantes. Les deux conditions sont donc largement respectées.
 
 
-```{r message=FALSE, warning=FALSE, include=FALSE, out.width='75%'}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, out.width='75%'}
 modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
 
@@ -1465,24 +1470,239 @@ if(nobs >= 104+k){
 }
 ```
 
-
 ### Normalité des résidus {#sect0562}
+
 Pour vérifier si les résidus sont normalement distribués, trois démarches largement décrites dans la section \@ref(sect02541) peuvent être utilisées :
 
-* le calcul des coefficients d’asymétrie et d’aplatissement
-* les tests de normalité, particulièrement le test de Shapiro-Wilk 
-* les graphiques (histogramme et courbe normale et diagramme quantile-quantile)
+* le calcul des coefficients d’asymétrie et d’aplatissement;
+* les tests de normalité, particulièrement celui de Jarque-Bera basé sur un test multiplicateur de Lagrange;
+* les graphiques (histogramme avec courbe normale et diagramme quantile-quantile).
 
-Les deux premiers étant parfois très restrictifs, on porte habituellement une attention particulière aux graphiques.
+Les deux premiers étant parfois très restrictifs, on accorde habituellement une attention particulière aux graphiques.
+
+Pour notre modèle, les coefficients d’asymétrie (−0,263) et d’aplatissement (1,149) signalent que la distribution est plutôt symétrique, mais leptokurtique; c'est-à-dire que les valeurs des résidus sont bien réparties autour de 0, mais avec une faible dispersion. Puisque la valeur de P associée au test de Jarque-Bera est inférieure à 0,05, on peut en conclure que la distribution des résidus est anormale. La forme pointue de la distribution est d'ailleurs confirmée à la lecture de l'histogramme avec la courbe normale et du diagramme quantile-quantile.
+
+```{r VerifierNormaliteResidus, echo=FALSE, fig.align='center', fig.cap="Vérifier la normalité des résidus", message=FALSE, warning=FALSE, out.width='75%'}
+library(DescTools)
+library(stats)
+library(ggplot2)
+library(ggpubr)
+
+# Vecteur pour les résidus du modèle
+residus <- modele3$residuals
+
+# 1. coefficients d’asymétrie et d’aplatissement 
+c(Skewness= round(Skew(residus),3), 
+  Kurtosis = round(Kurt(residus),3))
+
+# 2. Test de normalité de Jarque-Bera
+JarqueBeraTest(residus)
+
+# 3. Graphiques 
+Ghisto <- ggplot() +
+  geom_histogram(aes(x = residus, y = ..density..),
+                 bins = 30, color = "#343a40", fill = "#a8dadc") +
+  stat_function(fun = dnorm, 
+                args = list(mean = mean(residus),
+                            sd = sd(residus)), 
+                color = "#e63946", size = 1.2, linetype = "dashed")+
+  labs(title="Histogramme et courbe normale",
+      y = "Densité", x="Résidus du modèle")
+
+Gqqplot <- qplot(sample = residus)+
+  geom_qq_line(line.p = c(0.25, 0.75),
+               color = "#e63946", size=1.2)+
+  labs(title="Diagramme quantile-quantile",
+     x="Valeurs théoriques",
+     y = "Résidus du modèle")
+
+ggarrange(Ghisto, Gqqplot, ncol=2, nrow=1)
+```
+
+### Linéarité et homoscédasticité des résidus {#sect0563}
+
+Un modèle est efficace si la dispersion des résidus est homogène sur tout le spectre des valeurs prédites de la variable dépendante. Dans le cas d’une absence d’homoscédasticité – appelée problème d'hétéroscédasticité –, le nuage de points construit à partir des résidus et des valeurs prédites prend la forme d’une trompette ou d'un entonnoir : les résidus seront alors faibles quand les valeurs prédites sont faibles et seront de plus en plus élevés au fur et à mesure que les valeurs prédites augmentent.
 
 
-### Linéarité et homoscédasticité des résidus {#sect0564}
+```{r VerifierHomoscedasticité, echo=FALSE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
+residus <-  modele3$residuals
+ypredits <- modele3$fitted.values
+
+ggplot() +
+  geom_point(aes(x = ypredits, y = residus),
+                 color = "#343a40", fill = "#a8dadc",
+                 alpha = 0.2, size = 0.8) +
+  geom_smooth(aes(x = ypredits, y = residus), 
+              method = lm, color = "red")+
+  labs(x="Valeurs prédites", y = "Résidus")
+
+```
+
+Le test de Breusch-Pagan est souvent utilisé pour vérifier l'homoscédasticité des résidus. Il est construit avec les hypothèses suivantes :
+
+* $H_0$ : homoscédasticité, c'est-à-dire que les termes d'erreur ont une variance constante à travers les valeurs prédites.
+* $H_1$ : hétéroscédasticité.
+
+Si la valeur de P associé à ce test est inférieure à 0,05, on refute l'hypothèse nulle et on conclut qu'il y a un problème d'hétéroscédasticité, ce qui est le cas pour notre modèle.
 
 
-### Absence de multicolinéarité excessive {#sect0565}
+```{r , echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+library(lmtest)
+bptest(modele3)
+```
+
+### Absence de multicolinéarité excessive {#sect0564}
+
+Un modèle présente un problème de multicolinéarité excessive lorsque deux variables indépendantes ou plus sont très fortement corrélées entre elles. Rappelez-vous qu'un coefficient de régression estime l'effet d'une variable dépendante ($X_k$) si toutes les autres VI restaient constantes (c'est-à-dire une fois les autres VI contrôlées, toutes choses étant égales par ailleurs...).
+
+Prenons deux variables indépendantes ($X_1$ et $X_2$) fortement corrélées avec un coefficient de Pearson très élevé (0,90 par exemple). Admettons que chacune des deux VI a un effet important et significatif sur votre variable VD lorsqu’une seule est introduite dans le modèle. Si les deux variables sont introduites dans le même modèle, vous évaluez donc : l’effet de $X_1$ une fois contrôlé $X_2$ et l’effet de $X_2$ une fois contrôlé $X_1$. Par conséquent, l’effet de l’une des deux deviendra très faible, voire probablement non significatif.
+
+#### Comment évaluer la multicolinéarité ? {#sect05641}
+
+Pour ce faire, on utilise habituellement le facteur d’inflation de la variance (*Variance Inflation Factor – VIF* en anglais). Le calcul de ce facteur pour chaque VI est basé sur trois étapes. 
+
+1. Pour chaque VI, on construit un modèle de régression multiple dans laquelle elle est expliquée par toutes les autres variables indépendantes du modèle. Par exemple, pour la première VI ($X_1$), l'équation du modèle s'écrit :
+
+\footnotesize
+\begin{equation} 
+X_1 = b_0 + b_2X_2 +\ldots+ b_kX_k + e
+(\#eq:RegVIF)
+\end{equation}
+\normalsize
+
+2. À partir de cette équation, on obtient ainsi un $R^2$ qui nous indique la proportion de la variance de $X_1$ expliquée par les autres VI. Par convention, on calcule la tolérance (équation \@ref(eq:ToleranceVIF)) qui indique la proportion de la variance de $X_k$ qui n'est pas expliquée par les autres VI. En guise d'exemple, une valeur de tolérance égale à 0,1 signale que 90% de la variance de $X_k$ est expliqué par les autres variables, ce qui est un problème de multicolinéarité en soit. Concrètement, plus la valeur de la tolérance est proche de zéro, plus c’est problématique.
+
+\footnotesize
+\begin{equation} 
+\mbox{Tolérance}_k=1-R_k^2=\frac{1}{VIF_k}
+(\#eq:ToleranceVIF)
+\end{equation}
+\normalsize
+
+3. Puis, on calcule le facteur d'inflation de la variance (équation \@ref(eq:VIF)). Là encore, des règles de pouce (à la louche) sont utilisées. Certains considéreront une valeur de VIF supérieur à 10 (soit une tolérance à 0,1 ou inférieure) comme problématique, d'autres retiendront le seuil de 5 plus conservateur (soit une tolérance à 0,2 ou inférieure).
+
+\footnotesize
+\begin{equation} 
+VIF_k = \frac{1}{1-R_k^2} 
+(\#eq:VIF)
+\end{equation}
+\normalsize
+
+Pour notre modèle, toutes les valeurs de VIF sont inférieures à 2, indiquant, sans l'ombre d'un doute, l'absence de multicolinéarité excessive.
+```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE, out.width='75%'}
+library(car)
+round(car::vif(modele3),3)
+```
+
+#### Comment régler un problème de multicolinéarité ? {#sect05642}
+
+* La prudence est de mise ! Si une ou plusieurs variables présentent une valeur de VIF supérieure à 5, construisez une matrice de corrélation de Pearson (section \@ref(sect04137)) et repérez les valeurs de corrélation supérieures à 0,8 ou inférieures à −0,8. Vous repérerez ainsi les corrélations problématiques entre deux variables indépendantes du modèle.
+
+ * Refaites ensuite un modèle en ôtant la variable indépendante avec la plus forte valeur de VIF (7 ou 12 par exemple), et revérifiez les valeurs de VIF. Refaites cette étape si le problème de multicolinéarité excessive persiste.
+
+::: {.bloc_attention data-latex=""}
+
+**Une multicolinéarité excessive n'est pas forcément inquiétante**
+
+Nous avons vu plus haut comment introduire des variables indépendantes particulières comme des variables d'interaction ($X_1 \times X_2$) ou des variables sous une forme polynomiale (ordre 2 : $X_1 + X_1^2$; ordre 3 : $X_1 + X_1^2 + X_1^3$, etc.). Bien entendu, ces termes composant les variables d'interaction ou d'une forme polynomiale sont habituellement fortement corrélés entre eux. Cela n'est toutefois pas problématique !
+
+Dans l'exemple ci-dessous, nous obtenons deux valeurs de VIF très élevées pour la variable d'interaction `Pct_014:DistCBDkm` (16,713) et l'un des paramètres à partir duquel elle est calculée, soit `DistCBDkm` (12,526). 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE, out.width='75%'}
+library(car)
+modele6 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR+
+                       DistCBDkm+DistCBDkm*Pct_014,
+                data = DataFinal)
+
+round(car::vif(modele6),3)
+```
+:::
 
 
-### Absence de valeurs aberantes {#sect0566}
+### Absence d'observations aberrantes {#sect0566}
+
+#### Détection des observations très influentes du modèle {#sect05661} 
+
+Lors de l'analyse des corrélations (section \@ref(sect0413)), nous avons que des valeurs extrêmes peuvent avoir un impact important sur le coefficient de corrélation de Pearson. Le même principe s'applique à la régression multiple, pour laquelle on s'attendrait à ce que chaque observation joue un rôle équivalent dans la détermination de l'équation du modèle.
+
+Autrement dit, il est possible que certaines observations avec des valeurs extrêmes – fortement dissemblables des autres – aient une influence importante, voire démesurée, dans l’estimation du modèle. Concrètement, cela signifie que si elles étaient ôtées, les coefficients de régression et la qualité d'ajustement du modèle pourraient changer drastiquement. Deux mesures sont habituellement utilisées pour évaluer l’influence de chaque observation sur le modèle :
+
+* **La statistique de la distance de Cook** qui mesure l’influence de chaque observation sur les résultats du modèle. Brièvement, la distance de Cook évalue l’influence de l’observation *i* en la supprimant du modèle (équation \@ref(eq:DistanceCook)). Plus sa valeur est élevée, plus l’observation joue un rôle important dans la détermination de l’équation de régression.
+
+\footnotesize
+\begin{equation} 
+D_i = \frac{\sum_{j=1}^n(\bar{y_i}-\bar{y}_{i(j)})^2}{ks^2}
+(\#eq:DistanceCook)
+\end{equation}
+\normalsize
+
+avec $\bar{y}_{i(j)}$ la valeur prédite quand l'observation *i* est ôté du modèle, *k* le nombre de variables indépendantes et $s^2$ l'erreur quadratique moyenne du modèle.
+
+* **La statistique de l'effet levier** (*leverage value* en anglais) qui varie de 0 (aucune influence) à 1 (explique tout le modèle). La somme de toutes les valeurs de cette statistique est égale au nombre de VI dans le modèle.
+
+
+**Quel critère retenir pour détecter les observations avec potentiellement une trop grande influence sur le modèle?**
+
+Pour les repérer, voire les supprimer, certains auteurs proposent les seuils suivants : $4/n$ ou $8/n$ ou $16/n$. Avec 10210 observations dans le modèle, les seuils seraient les suivants : 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE, out.width='75%'}
+nobs <- length(modele3$fitted.values)
+DistanceCook <- cooks.distance(modele3)
+n4 <- length(DistanceCook[DistanceCook > 4/nobs])
+n8 <- length(DistanceCook[DistanceCook > 8/nobs])
+n16 <-  length(DistanceCook[DistanceCook > 16/nobs])
+cat("Nombre d'observations =", nobs, "(100%)",
+    "\n 4/n =", round(4/nobs,5),
+    "\n 8/n =", round(8/nobs,5),
+    "\n 16/n =", round(16/nobs,5),
+"\nObservations avec une valeur supérieure ou égale aux différents seuils",
+    "\n 4/n =", n4, "soit", round(n4/nobs*100,2),"%",
+    "\n 8/n =", n8, "soit", round(n8/nobs*100,2),"%",
+    "\n 16/n =", n16, "soit", round(n16/nobs*100,2), "%"
+    )
+```
+
+Le critère de $4/n$ étant plutôt sévère, nombreux sont les chercheurs qui privilégient celui de $8/n$, voire $16/n$. Il est aussi possible de construire un nuage de points pour les repérer (figure \@ref(fig:GraphCookLev)).
+
+
+```{r GraphCookLev, echo=FALSE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%'}
+library(car)
+library(ggpubr)
+DistanceCook <- cooks.distance(modele3)
+LeverageValue <- hatvalues(modele3)
+
+G1 <-  ggplot()+
+  geom_point(aes(x = LeverageValue, y = DistanceCook), 
+             alpha = 0.2, size = 2, col="black", fill="red")+
+  labs(x = "Leverage value",
+       y = 'Distance de Cook',
+       title = 'Repérer les valeurs influentes',
+       subtitle = '(toutes les observations)')
+
+G2 <-  ggplot()+
+  geom_point(aes(x = LeverageValue, y = DistanceCook), 
+             alpha = 0.2, size = 2, col="black", fill="red")+
+  ylim(0,0.01)+
+  xlim(0,0.01)+
+  labs(x = "Leverage value",
+       y = 'Distance de Cook',
+       title = 'Repérer les valeurs influentes',
+       subtitle = '(agrandissement)')
+
+ggarrange(G1,G2, nrow=1, ncol=2)
+
+```
+
+#### Quoi faire avec les observations très influentes du modèle {#sect05662} 
+
+Trois approches sont possibles :
+
+* **Recourir à des régressions *boostrap***, ce qui permet généralement de supprimer l'effet de ces observations (section \@ref(sect059)). Brièvement, le principe général est de créer un nombre élevé d'échantillons du jeu de données initial (1000 à 2000 itérations par exemple) et de construire un modèle de régression pour chacun d'eux. On obtiendra ainsi des intervalles de confiance pour les coefficients de régression et les mesures d'ajustement du modèle.
+
+* **Supprimer les observations trop influentes** (avec l'un des critères de $n/4$, $n/8$ et $n/16$ décrits plus haut). Une fois supprimées, il convient de 1) recalculer le modèle, 2) refaire le diagnostic de la régression au complet et finalement, 3) comparer les modèles avant et après suppression des valeurs trop influentes, notamment la qualité d'ajustement du modèle (R^2^ ajusté) et les coefficients de régression. Des changements importants indiqueront que le premier modèle est potentiellement biaisé.
+
+* **Utiliser un modèle linéaire généralisé (GLM)** permettant d'utiliser une distribution différente correspondant plus à votre jeu de données (voir chapitre suivant).
+
 
 ## Mise en œuvre dans R {#sect058}
 
@@ -1634,12 +1854,310 @@ Par conséquent, il est légitime de se questionner sur le bien-fondé de conser
 * Bien entendu, conservez l'une ou l'autre de ces variables additionnelles, si elles sont initialement reliées à votre cadre théorique.
 * Conservez l'une ou l'autre de ces variables additionnelles, si elles permettent de répondre à une question spécifique (non prévue initialement) et si les associations ainsi révélées méritent, selon vous, discussion.
 * Supprimez-les si leur apport est limité et ne fait que complexifier le modèle pour rien.
-
 :::
-
 
 ### Diagnostic sur un modèle {#sect0583}
 
+#### Vérifier le nombre d'observations {#sect05831}
+
+La syntaxe suivante permet de vérifier si le nombre d'observations est suffisant pour tester le R^2^ et chacune des variables indépendantes.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+# Nombre d'observation
+nobs <- length(modele3$fitted.values)
+
+# Nombre de variables indépendantes (coefficients moins la constante)
+k <- length(modele3$coefficients)-1
+
+# Première règle de pouce
+if(nobs >= 50+(8*k)){
+    cat("\nNombre d'observations suffisant pour tester le R2")
+}else{
+  cat("\nAttention ! Nombre d'observations insuffisant pour tester le R2")
+}
+
+# Deuxième règle de pouce
+if(nobs >= 104+k){
+    cat("\nNombre d'observations suffisant pour tester individuellement chaque VI")
+}else{
+  cat("\nAttention ! Nombre d'observations insuffisant",
+  "\npour tester individuellement chaque VI")
+}
+```
+
+#### Vérifier la normalité des résidus {#sect05832}
+
+La syntaxe suivante permet de vérifier si la normalité des résidus selon les trois démarches classiques : 1) coefficients d’asymétrie et d’aplatissement, 2) test de normalité de Jarque-Bera (fonction `JarqueBeraTest` du *package* **DescTools**), 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile).
+
+
+```{r VerifierNormaliteResidusDia, echo=TRUE, fig.align='center', fig.cap="Diagnostic : normalité des résidus?", message=FALSE, warning=FALSE, out.width='75%'}
+library(DescTools)
+library(stats)
+library(ggplot2)
+library(ggpubr)
+
+# Vecteur pour les résidus du modèle
+residus <- modele3$residuals
+
+# 1. coefficients d’asymétrie et d’aplatissement 
+c(Skewness= round(Skew(residus),3), 
+  Kurtosis = round(Kurt(residus),3))
+
+# 2. Test de normalité de Jarque-Bera
+JarqueBeraTest(residus)
+
+# 3. Graphiques 
+Ghisto <- ggplot() +
+  geom_histogram(aes(x = residus, y = ..density..),
+                 bins = 30, color = "#343a40", fill = "#a8dadc") +
+  stat_function(fun = dnorm, 
+                args = list(mean = mean(residus),
+                            sd = sd(residus)), 
+                color = "#e63946", size = 1.2, linetype = "dashed")+
+  labs(title="Histogramme et courbe normale",
+      y = "densité", "Résidus du modèle")
+
+Gqqplot <- qplot(sample = residus)+
+  geom_qq_line(line.p = c(0.25, 0.75),
+               color = "#e63946", size=1.2)+
+  labs(title="Diagramme quantile-quantile",
+     x="Valeurs théoriques",
+     y = "Résidus")
+
+ggarrange(Ghisto, Gqqplot, ncol=2, nrow=1)
+```
+
+#### Évaluer la linéarité et l'homoscédasticité des résidus {#sect05833}
+
+La syntaxe suivante permet de vérifier si l'hypothèse d'homoscédasticité des résidus est respectée avec : 1) un nuage de points entre les valeurs prédites et des résidus, 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile) et 2) le test de Breusch-Pagan (fonction `bptest` du *package* **lmtest**).
+
+
+```{r DiaHomoscedasticité, echo=TRUE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
+
+# 1. Graphique entre les valeurs prédites et les résidus
+residus <-  modele3$residuals
+ypredits <- modele3$fitted.values
+
+ggplot() +
+  geom_point(aes(x = ypredits, y = residus),
+                 color = "#343a40", fill = "#a8dadc",
+                 alpha = 0.2, size = 0.8) +
+  geom_smooth(aes(x = ypredits, y = residus), 
+              method = lm, color = "red")+
+  labs(x="Valeurs prédites", y = "Résidus")
+
+# 2. Test de Breusch-Pagan pour vérifier l'homoscédasticité
+library(lmtest)
+bptest(modele3)
+
+if(bptest(modele3)$p.value < 0.05){
+  cat("\nAttention : problème d'hétéroscédasticité des résidus")
+}else{
+   cat("\nParfait : homoscédasticité des résidus")
+}
+```
+
+#### Vérifier la multicolinéarité excessive {#sect05834}
+Pour vérifier la présence ou l'absence de multicolinéarité excessive, on utilise habituellement la fonction `vif` du *package* **car**.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+library(car)
+
+# facteur d'inflation de la variance
+round(car::vif(modele3),3)
+
+# problème de multicollinéarité (VIF > 10)?
+car::vif(modele3) > 10
+
+# problème de multicollinéarité (VIF > 5)?
+car::vif(modele3) > 5 
+```
+
+#### Réperer les valeurs très influentes du modèle {#sect05835}
+
+La syntaxe suivante permet d'évaluer le nombre de valeurs très influentes dans le modèle avec les critères de $n/4$, $n/8$, $n/16$ pour la distance de Cook.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+nobs <- length(modele3$fitted.values)
+DistanceCook <- cooks.distance(modele3)
+n4 <- length(DistanceCook[DistanceCook > 4/nobs])
+n8 <- length(DistanceCook[DistanceCook > 8/nobs])
+n16 <-  length(DistanceCook[DistanceCook > 16/nobs])
+cat("Nombre d'observations =", nobs, "(100%)",
+    "\n 4/n =", round(4/nobs,5),
+    "\n 8/n =", round(8/nobs,5),
+    "\n 16/n =", round(16/nobs,5),
+"\nObservations avec une valeur supérieure ou égale aux différents seuils",
+    "\n 4/n =", n4, "soit", round(n4/nobs*100,2),"%",
+    "\n 8/n =", n8, "soit", round(n8/nobs*100,2),"%",
+    "\n 16/n =", n16, "soit", round(n16/nobs*100,2), "%"
+    )
+```
+
+Vous pouvez également construire un nuage de points avec la distance de Cook et l'effet de levier (*leverage value*) pour repérer visuellement les observations très influentes.
+
+```{r DiaGraphCookLev, echo=TRUE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%'}
+library(car)
+library(ggpubr)
+DistanceCook <- cooks.distance(modele3)
+LeverageValue <- hatvalues(modele3)
+
+G1 <-  ggplot()+
+  geom_point(aes(x = LeverageValue, y = DistanceCook), 
+             alpha = 0.2, size = 2, col="black", fill="red")+
+  labs(x = "Leverage value",
+       y = 'Distance de Cook',
+       title = 'Repérer les valeurs influentes',
+       subtitle = '(toutes les observations)')
+
+G2 <-  ggplot()+
+  geom_point(aes(x = LeverageValue, y = DistanceCook), 
+             alpha = 0.2, size = 2, col="black", fill="red")+
+  ylim(0,0.01)+
+  xlim(0,0.01)+
+  labs(x = "Leverage value",
+       y = 'Distance de Cook',
+       title = 'Repérer les valeurs influentes',
+       subtitle = '(agrandissement)')
+
+ggarrange(G1,G2, nrow=1, ncol=2)
+
+```
+
+#### Construite un nouveau modèle en supprimant les observations très influentes du modèle {#sect05836}
+
+Dans un premier temps, il convient de constuire un nouveau modèle sans les valeurs influentes du modèle de départ.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+
+# Nombre d'observation dans le modèle 3
+nobs <-length(modele3$fitted.values)
+
+# Distance de Cook
+cook <- cooks.distance(modele3)
+
+# Les observations très influentes avec le critère de 16/n
+DataSansOutliers <- cbind(DataFinal, cook)
+DataSansOutliers <- DataSansOutliers[DataSansOutliers$cook  < 8/nobs, ]
+modele3b <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR,
+              data = DataSansOutliers)
+nobsb <-length(modele3b$fitted.values)
+```
+
+Comparez les valeurs du R^2^ ajusté des deux modèles. Habituellement, la suppression des valeurs très influentes s'accompagne d'une augmentation du R^2^ ajusté. C'est notamment le cas ici puisque sa valeur grimpe de 0,4653 à 0,5684, signalant ainsi un gain important pour la variance expliquée.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+# Comparaison des mesures d'ajustement
+cat("\nComparaison des R2 ajustés :",
+    "\nModèle de départ (n=", nobs, "), ",
+    round(summary(modele3)$adj.r.squared,4), 
+    
+    "\nModèle sans les obs. très influentes (n=", nobsb, "), ",
+    round(summary(modele3b)$adj.r.squared,4),
+    sep=""
+)
+```
+
+Pour le modèle, il convient alors de refaire le diagnostic de la régression et de vérifier si la suppression des observations très influentes à améliorer : 1) la normalité, la linéarité et l'homoscédasticité des résidus, 2) la multicolinéarité excessive, 3) l'absence de valeurs trop influences.
+
+**La normalité des résidus s'est-elle ou non améliorée?**
+
+Pour ce faire, comparez les valeurs d’asymétrie,d’aplatissement et du test de Jarque-Bera et les graphiques de normalité. À la lecture des valeurs :
+
+* l'asymétrie est très similaire (-0,260 à -0,265)
+* l'aplatissement s'est amélioré (1,183 à 0,164)
+* le test de Jarque-Bera signale toujours un problème de normalité (P<0,001), mais sa valeur a nettement diminué (548,7 à 131,24)
+* les graphiques démontrent une nette amélioration de la normalité des résidus.
+
+```{r ResidusCompa, echo=TRUE, fig.align='center', fig.cap="Normalité des résidus avant et après la suppression des valeurs influentes", message=FALSE, warning=FALSE, out.width='65%'}
+
+# 1. coefficients d’asymétrie et d’aplatissement 
+resmodele3  <- rstudent(modele3)
+resmodele3b <- rstudent(modele3b)
+  
+c(Skewness= round(Skew(resmodele3),3), 
+  Kurtosis = round(Kurt(resmodele3),3))
+
+c(Skewness= round(Skew(resmodele3b),3), 
+  Kurtosis = round(Kurt(resmodele3b),3))
+
+# 2. Test de normalité de Jarque-Bera
+JarqueBeraTest(resmodele3)
+JarqueBeraTest(resmodele3b)
+
+# 3. Graphiques 
+Ghisto1 <- ggplot() +
+  geom_histogram(aes(x = resmodele3, y = ..density..),
+                 bins = 30, color = "#343a40", fill = "#a8dadc") +
+  stat_function(fun = dnorm,  args = list(mean = mean(resmodele3),
+                                          sd = sd(resmodele3)), 
+                color = "#e63946", size = 1.2, linetype = "dashed")+
+  labs(title="Modèle de départ", y = "densité", x="Résidus studendisés")
+
+Gqqplot1 <- qplot(sample = residus)+
+  geom_qq_line(line.p = c(0.25, 0.75), color = "#e63946", size=1.2)+
+  labs(title="Modèle de départ", x="Valeurs théoriques", y = "Résidus studendisés")
+
+Ghisto2 <- ggplot() +
+  geom_histogram(aes(x = resmodele3b, y = ..density..),
+                 bins = 30, color = "#343a40", fill = "#a8dadc") +
+  stat_function(fun = dnorm,  args = list(mean = mean(resmodele3b),
+                                          sd = sd(resmodele3b)), 
+                color = "#e63946", size = 1.2, linetype = "dashed")+
+  labs(title="Modèle après suppression", y = "densité", "Résidus studendisés")
+
+Gqqplot2 <- qplot(sample = resmodele3b)+
+  geom_qq_line(line.p = c(0.25, 0.75), color = "#e63946", size=1.2)+
+  labs(title="Modèle après suppression",
+     x="Valeurs théoriques", y = "Résidus studendisés")
+
+library(ggpubr)
+ggarrange(Ghisto1, Ghisto2, Gqqplot1, Gqqplot2, ncol=2, nrow=2)
+```
+
+**le problème d’hétéroscédasticité est-il corrigé?**
+
+* la valeur du test de Breusch-Pagan est beaucoup plus faible, mais il semble persister un problème d'hétéroscédasticité.
+
+```{r HomosComp, echo=TRUE, fig.align='center', fig.cap="Amélioration de l'homoscédasticité des résidus", message=FALSE, warning=FALSE, out.width='65%'}
+
+# homoscédasticité des résidus améliorée ou non?
+library(lmtest)
+bptest(modele3)
+bptest(modele3b)
+
+resmodele3  <- residuals(modele3)
+resmodele3b <- residuals(modele3b)
+ypredits3 <- modele3$fitted.values
+ypredits3b <- modele3b$fitted.values
+
+
+G1 <- ggplot() +
+  geom_point(aes(x = ypredits3, y = resmodele3),
+                 color = "#343a40", fill = "#a8dadc", alpha = 0.2, size = 0.8) +
+  geom_smooth(aes(x = ypredits3, y = resmodele3),  method = lm, color = "red")+
+  labs(title="Modèle de départ",x="Valeurs prédites", y = "Résidus studentisés")
+
+G2 <- ggplot() +
+  geom_point(aes(x = ypredits3b, y = resmodele3b),
+                 color = "#343a40", fill = "#a8dadc", alpha = 0.2, size = 0.8) +
+  geom_smooth(aes(x = ypredits3b, y = resmodele3b),  method = lm, color = "red")+
+  labs(title="Modèle après suppression",x="Valeurs prédites", y = "Résidus studentisés")
+
+library(ggpubr)
+ggarrange(G1, G2, ncol=2, nrow=1)
+```
+
+Finalement, il convient des comparer les coefficients de régression.
+
+```{r , echo=TRUE, message=FALSE, warning=FALSE, out.width='85%'}
+# Comparaison des coefficients
+summary(modele3)
+summary(modele3b)
+```
 
 ### Graphiques pour les effets marginaux {#sect0584}
 Tel que signalé ultérieurement, il est courant de représenter l'effet marginal d'une VI sur une VD, une fois contrôlées les autres VI. Pour ce faire, il est possible d'utiliser les *packages* `ggplot2` et `ggeffects`.
