@@ -100,6 +100,7 @@ knitr::include_graphics('images/Cargo.jpg', dpi = NA)
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 ## quelques parametres generaux en fonction du type de document
 library(tidyverse)
+library(ggpubr)
 
 if (knitr::is_latex_output()){
   font_size_table <- 8
@@ -122,7 +123,9 @@ clean_df_latex <- function(df){
                   c("doublestars", "**", F),
                   c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}", F),
                   c("\\(\\%\\)", "(\\\\%)", F),
-                  c("_", "\\_", TRUE)
+                  c("_", "\\_", TRUE),
+                  c("beta\\_", "beta_", TRUE),
+                  c("alpha\\_", "alpha_", TRUE)
                   )
   df2 <- lapply(df, function(i){
     i <- data.frame(i)

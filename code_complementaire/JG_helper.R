@@ -224,7 +224,7 @@ parallel.likelihoodtest.vglm <- function(model){
       "variable non parallele" = x,
       "AIC" = round(AIC(model2)),
       "loglikelihood" = round(logLik(model2)),
-      "p.val loglikelihood ratio test" = round(test$`Pr(>Chi)`[[2]],3))
+      "p.val loglikelihood ratio test" = test$`Pr(>Chi)`[[2]])
     setTxtProgressBar(pb, i)
     i<<- i+1
     return(values)
@@ -232,6 +232,8 @@ parallel.likelihoodtest.vglm <- function(model){
 
   tableau_final <- as.data.frame(t(matrix(unlist(test_results), nrow=length(unlist(test_results[1])))))
   names(tableau_final) <- c("variable non parallele", "AIC", "loglikelihood", "p.val loglikelihood ratio test")
+  ## ajuster les valeur de p
+  tableau_final[["p.val loglikelihood ratio test"]] <- round(p.adjust(tableau_final[["p.val loglikelihood ratio test"]], method = "fdr"),3)
   return(tableau_final)
 }
 
@@ -267,8 +269,7 @@ AnalyseType3<-function(modele, data, fixed_vars = NULL){
     formule <- as.formula(paste(vardep, " ~ ", listvarindep))
     model2 <- vglm(formule,
                    family = multinomial(parallel = FALSE),
-                   data = LCGM)
-    logLikVI[i] <- -2*logLik(model2)
+                   data = data)
     test <- anova(model2,modele, type = "I")
     values <- list(
       "removed" = x1,
@@ -326,7 +327,7 @@ rsqs <- function(loglike.full, loglike.null,full.deviance, null.deviance, nb.par
 nice_confusion_matrix <- function(yreal, ypred){
   library(caret)
   ## generation de la matrice avec caret
-  info <- confusionMatrix(as.factor(yreal), as.factor(ypred))
+  info <- confusionMatrix(as.factor(ypred),as.factor(yreal))
 
   ##pimper le tout
   mat <- info[[2]]
@@ -342,9 +343,7 @@ nice_confusion_matrix <- function(yreal, ypred){
 
   mat4 <- cbind(rowsnames, mat3)
   mat5 <- rbind(colsnames, mat4)
-  print(kable(mat5,
-        row.names = F
-  ))
+  #print(kable(mat5,row.names = F))
 
   ## calcule des indicateurs pour chaque categorie
   precision <- diag(mat) / rowSums(mat)
@@ -360,7 +359,7 @@ nice_confusion_matrix <- function(yreal, ypred){
   rnames <- c(rownames(mat),"macro","Kappa","Valeur de p  (précision > NIR)")
   final_table <- cbind(rnames,round(final_table,2))
 
-  print(kable(final_table, row.names =F))
+  #print(kable(final_table, row.names =F))
   return(list("confusion_matrix" = mat5,
          "indicators" = final_table))
 
@@ -902,7 +901,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
   }
 
   ## si fonction de lien = logit : OR
-  if (model@family@vfamily[[1]] %in% c("cumulative", "binomial")){
+  if (model@family@vfamily[[1]] %in% c("cumulative", "binomial", "multinomial")){
     base_table <- cbind(base_table[,1], round(exp(base_table[,1]),OR_digits) , base_table[,2:ncol(base_table)])
     if(confid){
       n <- ncol(base_table)
@@ -959,81 +958,88 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
     rownames(base_table)[2] <- "shape"
   }
 
-  rn <- rownames(base_table)
-  allrows <- lapply(1:length(params_names), function(i){
-    pname <- params_names[[i]]
-    ptype <- params_types[[i]]
-    if(ptype %in% c("character","factor")){
-      rows <- base_table[grepl(pname,x = rn,fixed = T),]
-      uvalues <- unique(as.character(model@model[[pname]]))
-      if(length(uvalues)>2){
-        new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
-      }else{
-        oldname <- rn[grepl(pname,x = rn,fixed = T)]
-        new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
-      }
-      ref <- unique(uvalues[! uvalues %in% new_names])
-      new_table <- rbind("--", rows)
-      new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
-      row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
-      new_table <- rbind(row1,new_table)
-      return(new_table)
-    }
-    if(ptype %in% c("integer", "double", "numeric")){
-      if(pname == "Intercept"){
-        row <- base_table[rn=="(Intercept)",]
-      }else{
-        row <- base_table[rn==pname,]
-      }
-      row <- c(pname, row)
-      return(row)
-    }
-  })
+  if(model@family@vfamily == "multinomial"){
 
-  ## ajouter les lignes pour la fonction cumulative
-  if(model@family@vfamily[[1]] == "cumulative"){
-    k <- 1
-    more_rows <- lapply(not_paralelle,function(i){
-      type_param <- class(model@model[[i]])
-      if(type_param %in% c("character","factor")){
-        rows <- base_table[grepl(i,x = rn,fixed = T),]
-        uvalues <- unique(as.character(model@model[[i]]))
-        new_names <- gsub(pattern = i, x = row.names(rows), replacement = "", fixed = T)
-        new_names2 <- unique(sapply(new_names, function(j){strsplit(j,":",fixed=T)[[1]][[1]]}))
-        ref <- unique(uvalues[! uvalues %in% new_names2])
+    final_table <- basetable.multinom(model,base_table,params_names,params_types)
+
+  }else{
+    rn <- rownames(base_table)
+    allrows <- lapply(1:length(params_names), function(i){
+      pname <- params_names[[i]]
+      ptype <- params_types[[i]]
+      if(ptype %in% c("character","factor")){
+        rows <- base_table[grepl(pname,x = rn,fixed = T),]
+        uvalues <- unique(as.character(model@model[[pname]]))
+        if(length(uvalues)>2){
+          new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
+        }else{
+          oldname <- rn[grepl(pname,x = rn,fixed = T)]
+          new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
+        }
+        ref <- unique(uvalues[! uvalues %in% new_names])
         new_table <- rbind("--", rows)
         new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
-        row1 <- c(paste("*",i,"*",sep=""),rep("",ncol(new_table)-1))
+        row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
         new_table <- rbind(row1,new_table)
+        return(new_table)
       }
-
-      if(type_param %in% c("integer", "double", "numeric")){
-        rows <- base_table[grepl(i,x = rn,fixed = T),]
-        rnames <- paste(paste(rep(i),":",sep=""),1:(ncol(model@y)-1), sep="")
-        new_table <- cbind(rnames, rows)
+      if(ptype %in% c("integer", "double", "numeric")){
+        if(pname == "Intercept"){
+          row <- base_table[rn=="(Intercept)",]
+        }else{
+          row <- base_table[rn==pname,]
+        }
+        row <- c(pname, row)
+        return(row)
       }
-      if(k == 1){
-        new_table <- rbind(rep("",ncol(new_table)),c("**Effets par niveau**", rep("",ncol(new_table)-1)), new_table)
-      }
-
-      k <<- k + 1
-      return(new_table)
     })
 
-    allrows <- append(allrows,more_rows)
+    ## ajouter les lignes pour la fonction cumulative
+    if(model@family@vfamily[[1]] == "cumulative"){
+      k <- 1
+      more_rows <- lapply(not_paralelle,function(i){
+        type_param <- class(model@model[[i]])
+        if(type_param %in% c("character","factor")){
+          rows <- base_table[grepl(i,x = rn,fixed = T),]
+          uvalues <- unique(as.character(model@model[[i]]))
+          new_names <- gsub(pattern = i, x = row.names(rows), replacement = "", fixed = T)
+          new_names2 <- unique(sapply(new_names, function(j){strsplit(j,":",fixed=T)[[1]][[1]]}))
+          ref <- unique(uvalues[! uvalues %in% new_names2])
+          new_table <- rbind("--", rows)
+          new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+          row1 <- c(paste("*",i,"*",sep=""),rep("",ncol(new_table)-1))
+          new_table <- rbind(row1,new_table)
+        }
+
+        if(type_param %in% c("integer", "double", "numeric")){
+          rows <- base_table[grepl(i,x = rn,fixed = T),]
+          rnames <- paste(paste(rep(i),":",sep=""),1:(ncol(model@y)-1), sep="")
+          new_table <- cbind(rnames, rows)
+        }
+        if(k == 1){
+          new_table <- rbind(rep("",ncol(new_table)),c("**Effets par niveau**", rep("",ncol(new_table)-1)), new_table)
+        }
+
+        k <<- k + 1
+        return(new_table)
+      })
+
+      allrows <- append(allrows,more_rows)
+    }
+
+    ## ajouter les lignes pour le modele de gamma2
+    if(model@family@vfamily[[1]] == "gamma2"){
+      row2 <- base_table[grepl("shape",x = rn,fixed = T),]
+      row2 <- c("shape",row2)
+      row1 <- rep("",length(row2))
+      more_rows <- list(rbind(row1,row2))
+      allrows <- append(allrows,more_rows)
+    }
+
+    final_table <- do.call(rbind,allrows)
   }
 
-  ## ajouter les lignes pour le modele de gamma2
-  if(model@family@vfamily[[1]] == "gamma2"){
-    row2 <- base_table[grepl("shape",x = rn,fixed = T),]
-    row2 <- c("shape",row2)
-    row1 <- rep("",length(row2))
-    more_rows <- list(rbind(row1,row2))
-    allrows <- append(allrows,more_rows)
-  }
 
-
-  final_table <- do.call(rbind,allrows)
 
   if(model@family@vfamily[[1]] %in% c("cumulative", "binomial") & confid){
     colnames(final_table) <- c("variable", "coefficient", "OR",
@@ -1051,6 +1057,28 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
 
     final_table <- clean_columns(final_table, c(NA, coef_digits, OR_digits, std_digits,
                                                 z_digits,p_digits))
+
+  }else if (model@family@vfamily[[1]] == "multinomial"){
+    oldnames <- names(final_table)
+    final_table2 <- lapply(final_table,function(el){
+      if(confid){
+        colnames(el) <- c("variable", "coefficient", "OR",
+                          "err. std","val. z", "val .p",
+                          "coeff 2.5%", "coeff 97.5%",
+                          "OR 2.5%", "oR 97.5%")
+        el <-  clean_columns(el, c(NA, coef_digits, OR_digits, std_digits,
+                                   z_digits,p_digits, coef_digits, coef_digits,
+                                   OR_digits, OR_digits))
+      }else{
+        colnames(el) <- c("variable", "coefficient", "OR",
+                          "err. std","val. z", "val .p")
+        el <-  clean_columns(el, c(NA, coef_digits, OR_digits, std_digits,
+                                            z_digits,p_digits))
+      }
+      return(el)
+    })
+    names(final_table2) <- oldnames
+    final_table <- final_table2
 
   }else if (model@family@vfamily[[1]] %in% c("gamma2") & confid==F){
     colnames(final_table) <- c("variable", "coefficient", "exp(coefficient)",
@@ -1081,6 +1109,109 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
   return(final_table)
 }
 
+
+basetable.multinom <- function(model,base_table,params_names,params_types){
+  ## checker les parametres generaux
+  fixedformula <- model@family@infos()$parallel
+  if(fixedformula != FALSE){
+    terms <- as.character(fixedformula[[3]])
+    terms <- terms[terms!="+"]
+    if("1" %in% terms){
+      terms[terms == "1"] <- "Intercept"
+    }
+    test <- params_names %in% terms
+    terms_types <- params_types[match(terms,params_names)]
+    terms_types <- ifelse(is.na(terms_types), "numeric",terms_types)
+    params_names <- params_names[test == F]
+    params_types <- params_types[test == F]
+  }
+
+  rn <- rownames(base_table)
+  types <- model@extra$colnames.y
+  reflevel <- types[model@extra$use.refLevel]
+  complevels <- types[types!=reflevel]
+  ids <- 1:length(complevels)
+
+  ## tableau pour tous les parametres classiques
+  list_rows <- lapply(ids, function(j){
+    idpart <- paste(":",j,sep="")
+    allrows <- lapply(1:length(params_names), function(i){
+      pname <- params_names[[i]]
+      ptype <- params_types[[i]]
+      if(ptype %in% c("character","factor")){
+        rows <- base_table[grepl(pname,x = rn,fixed = T) & grepl(idpart,x = rn,fixed = T),]
+        uvalues <- unique(as.character(model@model[[pname]]))
+        if(length(uvalues)>2){
+          new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
+          new_names <- gsub(pattern = idpart, x = new_names, replacement = "", fixed = T)
+        }else{
+          oldname <- rn[grepl(pname,x = rn,fixed = T)]
+          new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
+          new_names <- gsub(pattern = idpart, x = new_names, replacement = "", fixed = T)
+        }
+        ref <- unique(uvalues[! uvalues %in% new_names])
+        new_table <- rbind("--", rows)
+        new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+        row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
+        new_table <- rbind(row1,new_table)
+        return(new_table)
+      }
+      if(ptype %in% c("integer", "double", "numeric")){
+        if(pname == "Intercept"){
+          row <- base_table[rn==paste("(Intercept)",idpart,sep=""),]
+        }else{
+          row <- base_table[rn==paste(pname,idpart,sep=""),]
+        }
+        row <- c(pname, row)
+        return(row)
+      }
+    })
+  return(do.call(rbind,allrows))
+  })
+
+  names(list_rows) <- paste(reflevel," VS ",complevels, sep="")
+
+  ## tableau pour tous les parametres fixes
+  if(fixedformula != FALSE){
+    allrows_fixed <- lapply(1:length(terms), function(i){
+      pname <- terms[[i]]
+      ptype <- terms_types[[i]]
+      if(ptype %in% c("character","factor")){
+        rows <- base_table[grepl(pname,x = rn,fixed = T),]
+        uvalues <- unique(as.character(model@model[[pname]]))
+        if(length(uvalues)>2){
+          new_names <- gsub(pattern = pname, x = row.names(rows), replacement = "", fixed = T)
+        }else{
+          oldname <- rn[grepl(pname,x = rn,fixed = T)]
+          new_names <- gsub(pattern = pname, x = oldname, replacement = "", fixed = T)
+        }
+        ref <- unique(uvalues[! uvalues %in% new_names])
+        new_table <- rbind("--", rows)
+        new_table <- cbind(c(paste("ref : ",ref,sep=""),new_names),new_table)
+        row1 <- c(paste("*",pname,"*",sep=""),rep("",ncol(new_table)-1))
+        new_table <- rbind(row1,new_table)
+        return(new_table)
+      }
+      if(ptype %in% c("integer", "double", "numeric")){
+        if(pname == "Intercept"){
+          row <- base_table[rn=="(Intercept)",]
+        }else{
+          row <- base_table[rn==pname,]
+        }
+        row <- c(pname, row)
+        return(row)
+      }
+    })
+  fixed_table <- do.call(rbind,allrows_fixed)
+  onames <- names(list_rows)
+  list_rows <- append(list_rows,list(fixed_table))
+  names(list_rows) <- c(onames,"Parametre Fixes")
+  }
+
+
+
+  return(list_rows)
+}
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #### calculer des intervals de confiance ####
