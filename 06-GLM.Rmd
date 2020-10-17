@@ -266,13 +266,13 @@ Le *AIC* n’a pas d’interprétation directe, mais permet de comparer deux mod
 
 #### Comparer les distributions originale et prédites
 
-Une façon rapide de vérifier si un modèle est mal ajusté est de comparer la forme de la distribution originale et celle capturée par le modèle. L’idée est la suivante, si le modèle est bien ajusté aux données, il est possible de se servir de celui-ci pour générer de nouvelles données dont la distribution ressemble à la distribution des données originales. Si une différence importante est observable, alors les résultats du modèle ne sont pas fiables car le modèle échoue à reproduire le phénomène étudié. Cette lecture graphique ne permet pas de s’assurer que le modèle est valide ou bien ajusté, mais simplement d’écarter rapidement les mauvais candidats. Notez que cette méthode ne s’applique pas lorsque la variable modélisée est binaire, multinomiale ou ordinale.
+Une façon rapide de vérifier si un modèle est mal ajusté est de comparer la forme de la distribution originale et celle capturée par le modèle. L’idée est la suivante, si le modèle est bien ajusté aux données, il est possible de se servir de celui-ci pour générer de nouvelles données dont la distribution ressemble à celle des données originales. Si une différence importante est observable, alors les résultats du modèle ne sont pas fiables car le modèle échoue à reproduire le phénomène étudié. Cette lecture graphique ne permet pas de s’assurer que le modèle est valide ou bien ajusté, mais simplement d’écarter rapidement les mauvais candidats. Notez que cette méthode ne s’applique pas lorsque la variable modélisée est binaire, multinomiale ou ordinale.
 Le graphique à réaliser comprend donc : la distribution de la variable dépendante Y (représentée avec un histogramme ou un graphique de densité) et plusieurs distributions simulées à partir du modèle. Cette approche est plus répandue dans la statistique bayésienne, mais elle reste pertinente dans l’approche fréquentiste. Il est rare de reporter ces figures, mais elles doivent faire partie de votre diagnostic.
 
 ::: {.bloc_attention data-latex=""}
 **Distinction entre simulation et prédiction**:
 
-Notez ici que simuler des données à partir d’un modèle et prédire des données à partir d’un modèle sont deux opérations différentes. Prédire une valeur à partir d’un modèle revient simplement à appliquer son équation de régression à des données. Si l’on réutilise les mêmes données, la prédiction renvoie toujours le même résultat, il s’agit de la partie systématique du modèle. 
+Notez ici que **simuler des données** à partir d’un modèle et **effectuer des prédictions** à partir d’un modèle sont deux opérations différentes. Prédire une valeur à partir d’un modèle revient simplement à appliquer son équation de régression à des données. Si l’on réutilise les mêmes données, la prédiction renvoie toujours le même résultat, il s’agit de la partie systématique du modèle. 
 Pour illustrer cela, admettons que nous ayons ajusté un modèle GLM de type gaussien (fonction de lien identitaire) avec trois variables continues *X1*, *X2* et *X3* et des coefficients respectifs de 0,5, 1,2 et 1,8 ainsi qu’un intercept de 7. Nous pouvons utiliser ces valeurs pour prédire la valeur attendue de *Y* quand *X1* = 3, *X2* = 5 et *X3* = 5 : 
 
 $Prediction = 7 + 3*0.5 + 5*1.2 + 1.8*5 = 23.5$
@@ -2368,14 +2368,14 @@ ggplot(data = df)+
 Nous observons dans la figure \@ref(fig:cookdistnb) que deux observations se distinguent très nettement des autres. 
 
 ```{r message=FALSE, warning=FALSE}
-cas_etrange <- subset(data_accidents, cooksd > 0.05)
+cas_etrange <- subset(data_accidents, cooksd > 0.03)
 print(cas_etrange)
 ```
 
-Il s'agit à nouveau des deux observations avec un très grand nombre d'accidents. Nous décidons de les retirer du jeu de données pour ne pas fausser les résultats concernant l'ensemble des autres intersections. Dans une analyse plus détaillée, il serait judicieux de chercher à comprendre pourquoi ces deux observations sont particulièrement accidentogènes.
+Il s'agit à nouveau des quatre observations avec un grand nombre d'accidents. Nous décidons de les retirer du jeu de données pour ne pas fausser les résultats concernant l'ensemble des autres intersections. Dans une analyse plus détaillée, il serait judicieux de chercher à comprendre pourquoi ces quatre observations sont particulièrement accidentogènes.
 
 ```{r cookdistnb2, fig.cap = "Distances de Cook pour le modèle négatif binomial (après avoir retiré deux observations fortement influentes)", fig.align = "center", message=FALSE, warning=FALSE, out.width='75%'}
-data2 <- subset(data_accidents, cooksd < 0.05)
+data2 <- subset(data_accidents, cooksd < 0.03)
 
 # ajustement d'une première version du modèle
 modelnb <- gam(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + 
