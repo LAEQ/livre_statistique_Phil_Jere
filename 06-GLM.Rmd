@@ -3108,3 +3108,88 @@ ggplot() +
   geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..), color = "black", fill = "white", bins = 50)+
   geom_density(data = df, aes(x = value, group = Var2), color = rgb(0.4,0.4,0.4,0.4), fill = rgb(0,0,0,0))
 ```
+
+Il est également possible de vérifier si la condition d'homogénéité de la variance  s'applique bien aux données : 
+
+```{r gausssim2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Comparaison de la distribution originale de la variable et des simulations issues du modèle", out.width = "95%"}
+
+# extraction des prédiction du modèle
+mus <- predict(modele, type = "response")
+sigma_model <- sigma(modele)
+
+# création d'un dataframe pour contenir la prédiction et les vraie valeurs
+df1 <- data.frame(
+  mus = mus,
+  reals = DataFinal2$VegPct
+)
+
+# calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
+# et stockage dans un second dataframe
+seqa <- seq(0,100,10)
+df2 <- data.frame(
+  mus = seqa,
+  lower = qnorm(p = 0.025, mean = seqa, sd = sigma_model),
+  upper = qnorm(p = 0.975, mean = seqa, sd = sigma_model)
+)
+
+# affichage des valeurs réelles et prédites (en rouge)
+# et de leur variance selon le modèle (en noir)
+ggplot() + 
+  geom_point(data = df1, 
+             mapping = aes(x = mus, y = reals),
+             color ="red", size = 0.5) + 
+  geom_errorbar(data = df2,
+                mapping = aes(x = mus, ymin = lower, ymax = upper),
+                width = 0.2, color = rgb(0.4,0.4,0.4)) + 
+  labs(x = 'valeurs prédites',
+       y = "valeurs réelles")
+
+
+```
+
+À nouveau, on peut constater que le modèle s'attendrait à trouver des valeurs négative pour la concentration de végétation, ce que n'est pas possible dans notre cas. En revanche, il semblerait que la variance soit bien homogène puisque la dispersion des observations semble à peu prêt suivre la dispersion attendue par le modèle (en noir).
+
+Malgré ces différents constats indiquant clairement qu'un modèle Gaussien est un  choix sous-optimal pour ces données, nous allons poursuivre l'analyse de ce modèle.
+
+**Vérification de la qualité d'ajustement**
+
+```{r warning = FALSE, message=FALSE}
+# ajustement d'un modèle nul
+modelenull <- glm(VegPct ~ 1,
+                  data = DataFinal2, 
+                  family = gaussian())
+
+# calcul des pseudo R2
+rsqs(loglike.full = logLik(modele),
+     loglike.null = logLik(modelenull),
+     full.deviance = deviance(modele),
+     null.deviance = deviance(modelenull), 
+     nb.params = modele$rank,
+     n = nrow(DataFinal2)
+     )
+```
+
+Le modèle parvient à expliquer 47% de la déviance totale, mais obtient un R^2^ ajusté de MacFadden de seulement 0,07.
+
+```{r warning = FALSE, message=FALSE}
+# calcul du RMSE
+sqrt(mean((predict(modele, type = "response") - DataFinal2$VegPct)**2))
+
+```
+
+L'erreur quadratique moyenne et de 13,5 points de pourcentage, ce qui indique que le modèle a une assez faible capacité prédictive.
+
+**Interprétation des résultats**
+
+L'ensemble des coefficients du modèle sont accessibles via la fonction `summary`, nous proposons le tableau \@ref(tab:tableaugauss) qui présente l'ensemble des résultats du modèle.
+
+```{r tableaugauss, warning = FALSE, message=FALSE, echo = FALSE}
+# afficher le tableau
+tab <- build_table(modele, coef_digits = 3, p_digits = 3)
+
+show_table(tab, 
+    caption = "Résultats du modèle Gaussien",
+    col.names = c('Variable',"Coeff.","Err.std","Val.z","IC coeff 2,5%", "IC coeff 97,5%", "Sign.")
+)
+
+```
