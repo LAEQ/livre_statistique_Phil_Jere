@@ -1,3 +1,227 @@
+--- 
+title: "Introduction aux méthodes quantitatives en sciences sociales avec R"
+author: "Philippe Apparicio et Jérémy Gelb"
+date: "`r Sys.Date()`"
+colorlinks: yes
+cover-image: images/cover.png
+bibliography: book.bib
+description: Ce livre propose une introduction aux méthodes quantitatives en sciences
+  sociales basée sur le logiciel ouvert R. Le contenu est pensé pour être accessible
+  même à ceux n'ayant presque aucune base en statistique ou en programmation. Les
+  personnes plus expérimentées y découvriront également des sections sur des méthodes
+  poussées comme les modèles généralisés additifs à effets mixtes ou les méthodes
+  factorielles mixtes. Ceux cherchant à passer à R et abandonner SPSS, SAS ou STATA
+  trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie
+  de se livre est de donner toutes les clefs de compréhension et de mise en œuvre
+  des méthodes abordées afin de faciliter l'assimilation par le lecteur. La présentation
+  des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique
+  sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre
+  boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et
+  bonne lecture !
+documentclass: book
+fontsize: 11pt
+github-repo: LAEQ/livre_statistique_Phil_Jere
+graphics: yes
+link-citations: yes
+lof: yes
+lot: yes
+mainfont: Palatino Linotype
+monofont: "Source Code Pro"
+monofontoptions: "Scale=0.8"
+mathfontoptions: "Scale=0.1"
+site: bookdown::bookdown_site
+biblio-style: apalike
+url: https\://bookdown.org/yihui/rmarkdown/
+geometry: "left=2cm,right=2cm,top=2cm,bottom=2cm"
+toc-title: "Table des matières"
+lang: fr
+---
+
+
+# Préface {-}
+
+```{asis, echo=identical(knitr:::pandoc_to(), 'html')}
+
+Ce livre propose une introduction aux méthodes quantitatives en sciences sociales basée sur le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec **rmarkdown**. Le contenu est pensé pour être accessible même à ceux n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront également des sections sur des méthodes plus avancées comme les modèles généralisés additifs à effets mixtes ou les méthodes factorielles mixtes. Ceux cherchant à passer à R pour enfin abandonner SPSS, SAS ou STATA trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de se livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées afin de facilité l'assimilation par le lecteur. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et bonne lecture !
+
+
+::: {.bloc_notes data-latex=""}
+
+**Ce livre est un projet en cours d'écriture !**
+
+Il sert de matériel pour le cours **Méthodes quantitatives appliquées aux études urbaines** (EUR8219), dispensé au Centre INRS Urbanisation Culture Société de l'INRS. Son contenu est amené à changer et des erreurs peuvent encore être présentes. À terme, nous espérons le publier. Par conséquent, **son contenu ne peut donc en aucun cas être partagé en dehors du cours**. Vos commentaires et suggestions sur le contenu et la forme sont bienvenus ! Si certains passages vous semblent peu clairs, n'hésitez à nous en faire part.
+
+:::
+
+```
+
+## Comment lire ce livre {-}
+
+Si vous googlez l'expression « comment lire un livre ? », vous trouverez une multitude de conseils et astuces. Pour ce livre, nous conseillons de le lire de gauche à droite et page par page. Plus sérieusement, il comprend plusieurs types de blocs de texte qui, on l'espère, faciliteront la lecture.
+
+
+::: {.bloc_package data-latex=""}
+**Bloc packages**: habituellement localisé en début du chapitre, il comprend la liste des packages R utilisés pour un chapitre.
+:::
+
+::: {.bloc_objectif data-latex=""}
+**Bloc objectif**: comprend une description des objectifs d'une section.
+:::
+
+::: {.bloc_notes  data-latex=""}
+**Bloc notes**: comprend une information secondaire sur une notion, un élément, une idée abordée dans une section.
+:::
+
+::: {.bloc_aller_loin data-latex=""}
+**Bloc pour aller plus loin** : peut comprendre des références ou des extensions d'une méthode statistique abordée dans une section.
+:::
+
+::: {.bloc_astuce data-latex=""}
+**Bloc astuce**: décrit un élément qui vous facilera le vie : une propriété statistique, un *package*, une fonction, une syntaxe R.
+:::
+
+::: {.bloc_attention data-latex=""}
+**Bloc attention**:  comprend une notion ou un élément important à bien maîtriser.
+:::
+
+
+
+## Structure du livre {-}
+
+À écrire plus tard.
+
+## Remerciements {-}
+
+Note au beau Cargo (chien Mira) qui nous supporte dans l'écriture du livre !
+```{r cargo, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo, le plus beau",  out.width='50%'}
+knitr::include_graphics('images/Cargo.jpg', dpi = NA)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+## quelques parametres generaux en fonction du type de document
+library(tidyverse)
+library(ggpubr)
+
+if (knitr::is_latex_output()){
+  font_size_table <- 8
+}else{
+  font_size_table <- 14
+}
+
+clean_df_latex <- function(df){
+  if(inherits(df, "list") == F){
+    df <- list(df)
+  }
+  changes <- list(c("`", "", F),
+                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+                  c("\\%", "\\\\%", F),
+                  c("&", "\\\\&", F),
+                  c("\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}", F),
+                  c("\\*{2}", "doublestars", F),
+                  c("\\*([^\"]*?)\\*", "\\\\textit{\\1}", F),
+                  c("doublestars", "**", F),
+                  c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}", F),
+                  c("\\(\\%\\)", "(\\\\%)", F),
+                  c("_", "\\_", TRUE),
+                  c("beta\\_", "beta_", TRUE),
+                  c("alpha\\_", "alpha_", TRUE)
+                  )
+  df2 <- lapply(df, function(i){
+    i <- data.frame(i)
+    for(col in names(i)){
+      if(is.character(i[[col]])){
+        for (ch in changes){
+          if(ch[[3]]){
+            i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], fixed = T)
+          }else{
+            i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], perl = T)
+          }
+          
+        }
+      }
+    }
+    return(i)
+  })
+  return(df2)
+}
+
+show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, 
+                       col.width = NULL, digits = getOption("digits"),
+                       align = NULL){
+  options(knitr.kable.NA = '')
+  ## dans le cas d'un tableau LATEX
+  if (knitr::is_latex_output()){
+    #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
+    df2 <- clean_df_latex(df)
+    if (is.null(col.names) == F){
+      if(is.na(col.names)==F){
+        #col.names <- gsub("\\(\\%\\)","(\\\\%)",col.names)
+        col.names <- gsub("\\%","\\\\%",col.names)
+      }
+    }
+
+    if(is.null(caption)==F){
+      caption <- gsub("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", caption)
+      caption <- gsub("\\*([^\"]*?)\\*","\\\\textit{\\1}", caption)
+    }
+    if(length(df2) == 1){
+      df2 <- df2[[1]]
+    }
+    table1 <- knitr::kable(
+      df2, booktabs = TRUE,
+      format = "latex",
+      digits = digits,
+      format.args = list(decimal.mark = ",", big.mark = " "),
+      valign = 't', row.names = FALSE,
+      align = align,
+      col.names = col.names,
+      caption = caption,
+      escape = FALSE) %>% 
+      kableExtra::kable_styling(font_size = 8,protect_latex = T)
+    if (is.null(col.to.resize) == FALSE){
+      table1 <- table1 %>% 
+        kableExtra::column_spec(col.to.resize, width=col.width)
+    }
+  ## dans le cas d'un tableau HTLM
+  }else{
+    
+    # gerer les newline
+    if(class(df) != "list"){
+      df <- data.frame(df)
+      for(col in names(df)){
+        if(is.character(df[[col]])){
+          df[[col]] <- gsub("\\newline","<br/>",df[[col]], fixed = T)
+        }
+      }
+    }else {
+      df <- lapply(df, function(i){
+        i <- data.frame(i)
+        i <- i %>% mutate_if(~is.character(.), funs(str_replace_all(., "\\newline", "<br/>")))
+        return(i)
+      })
+    }
+    table1 <- knitr::kable(
+      df, booktabs = TRUE,
+      format.args = list(decimal.mark = ",", big.mark = " "),
+      col.names = col.names,
+      align = align,
+      valign = 't', row.names = FALSE,
+      caption = caption,
+      escape = FALSE)
+  }
+  return(table1)
+}
+
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+source("code_complementaire/JG_helper.R")
+```
+
+<!--chapter:end:index.Rmd-->
+
 # Régressions linéaires généralisées (GLM)  {#chap06}
 
 ::: {.bloc_objectif data-latex=""}
@@ -3188,7 +3412,223 @@ tab <- build_table(modele, coef_digits = 3, p_digits = 3)
 
 show_table(tab, 
     caption = "Résultats du modèle Gaussien",
-    col.names = c('Variable',"Coeff.","Err.std","Val.z", "val.p","IC coeff 2,5%", "IC coeff 97,5%", "Sign.")
+    col.names = c('Variable',"Coeff.","Err.std","Val.z","IC coeff 2,5%", "IC coeff 97,5%", "Sign.")
 )
 
 ```
+
+<!--chapter:end:06-GLM.Rmd-->
+
+# Régressions à effets mixtes (GLMM) et régression multiniveaux  {#chap07}
+
+## Principes de base des GLMM {#sect071}
+
+Notion de pseudo-réplications
+
+Effets aléatoire *versus* effets fixes
+
+## Application à une variable continue {#sect072}
+
+## Régressions multiniveaux {#sect073}
+
+<!--chapter:end:07-GLMM.Rmd-->
+
+# Modèles généralisés additifs  {#chap08}
+
+## Principes de base des GAM {#sect081}
+
+## Extensions des GAM {#sect082}
+
+### GAMM {#sect0821}
+### GAMMAR {#sect0822}
+
+<!--chapter:end:08-GAM.Rmd-->
+
+
+# (PART) Analyses exploratoires multivariées {-} 
+
+# Méthodes factorielles {#chap09}
+
+## Un petit historique {#sect091}
+
+## Analyses de composantes principales (ACP) {#sect092}
+
+## Analyses factorielles de correspondances (AFC)  {#sect093}
+
+## Analyses factorielles de correspondances multiples (AFM)  {#sect094}
+
+## Analyses factorielles de correspondances mixte  {#sect095}
+
+<!--chapter:end:09-AnalysesFactorielles.Rmd-->
+
+# Méthodes de classification non-supervisées {#chap10}
+
+## Un aperçu sur la multitude des méthodes de classications {#sect101}
+
+## Combinaisons méthodes factorielles et méthodes de classications {#sect102}
+
+## Classification ascendantes hiérachiques {#sect103}
+
+## Nuées dynamiques  {#sect104}
+
+### k-means  {#sect1041}
+### k-median  {#sect1042}
+### Les extensions en logique floues : c-means, c-median  {#sect1043}
+
+<!--chapter:end:10-MethodeClassification.Rmd-->
+
+# Conclusion {#conclusion}
+
+## Synthèse des méthodes abordées  {#sect111}
+*Road map method*
+
+## Autres méthodes non abordées {#sect112}
+
+### Régressions par quantile {#sect1121}
+### Régressions par panel {#sect1122}
+### Régressions par Tobit {#sect1123}
+### Analyses de survie {#sect1124}
+### Équations structurelles {#sect1125}
+
+
+## Deux écoles de statistique inférielle : fréquentiste et bayésienne  {#sect113}
+
+
+## Éthique en méthodes quantitatives {#sect114}
+
+<!--chapter:end:11-Conclusion.Rmd-->
+
+# Annexes {#annexes}
+
+## Tableau des valeurs critiques de khi^2^ {#annexe1}
+
+La courte syntaxe ![](Images/Rlogo.png) ci-dessous permet de générer un tableau avec les valeurs critiques du khi^2^ pour différents degrés de signification (valeurs de p).
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
+library(stargazer)
+
+# vecteur pour les degrés de liberté de 1 à 30, puis 40 et 50
+dl <- c(1:30, 40, 50, 100, 250, 500) 
+# la fonction qchisq permet d'obtenir la valeur théorique en fonction 
+# d'une valeur de p et d'un nombre de degrés de liberté
+tableChi2 <- cbind(dl,
+                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
+                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = FALSE),3),
+                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = FALSE),3))
+# Impression du tableau avec la library stargazer
+stargazer(tableChi2, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 3,
+          title="Distribution des valeurs critiques du Khi2")
+```
+
+
+```{r tableCritiqueChi2, echo=FALSE, message=FALSE, warning=FALSE}
+dl <- c(1:30, 40, 50, 100, 250, 500)
+tableChi2 <- cbind(dl,
+                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
+                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = FALSE),3),
+                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = FALSE),3))
+
+# knitr::kable(
+#   head(tableChi2, n=nrow(tableChi2)), booktabs = TRUE,
+#   col.names=c("dl", "p=0,05", "p=0,01", "p=0,001"),
+#   caption = 'Distribution des valeurs critiques du khi2'
+#   )
+
+show_table(tableChi2, 
+           caption = "Distribution des valeurs critiques du khi2",
+           col.names=c("dl", "p=0,05", "p=0,01", "p=0,001")
+)
+```
+
+## Tableau des valeurs critiques de F {#annexe2}
+
+La courte syntaxe ![](Images/Rlogo.png) ci-dessous permet de générer un tableau avec les valeurs critiques de F avec _p_=0,05.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
+library(stargazer)
+
+dl1 <- c(1:10, 15, 20, 25, 30, 50, 100, 500)
+dl2 <- c(1:30, 40, 50, 100)
+matrice <- matrix(ncol=length(dl1), nrow=length(dl2), byrow = TRUE)
+for(r in 1:length(dl1)){
+  for(c in 1:length(dl2)){
+    matrice[c,r] <- round(qf(p=0.05, dl1[r], dl2[c], lower.tail = FALSE),2)
+  }
+}
+
+tableF_p0.05 <- as.data.frame(matrice, row.names = paste0("dl2=",dl2, sep=""))
+colnames(tableF_p0.05) <- paste0("dl1=",dl1, sep="")
+
+stargazer(tableF_p0.05, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 3,
+          title="Distribution des valeurs critiques de F avec p=0,05")
+```
+
+
+```{r tableCritiqueF, echo=FALSE, message=FALSE, warning=FALSE}
+dl1 <- c(1:10, 15, 20, 25, 30, 50, 100, 500)
+dl2 <- c(1:30, 40, 50, 100)
+matrice <- matrix(ncol=length(dl1), nrow=length(dl2), byrow = TRUE)
+for(r in 1:length(dl1)){
+  for(c in 1:length(dl2)){
+    matrice[c,r] <- round(qf(p=0.05, dl1[r], dl2[c], lower.tail = FALSE),2)
+  }
+}
+
+tableF_p0.05 <- as.data.frame(matrice, row.names = paste0("dl2=",dl2, sep=""))
+colnames(tableF_p0.05) <- paste0("dl1=",dl1, sep="")
+
+# knitr::kable(
+#   head(tableF_p0.05, n=nrow(tableF_p0.05)), booktabs = TRUE,
+#   row.names = TRUE,
+#   caption = 'Distribution des valeurs critiques de F avec p=0,05'
+# )
+
+show_table(tableF_p0.05, 
+           caption = "Distribution des valeurs critiques de F avec p=0,05")
+```
+
+
+## Tableau des valeurs critiques de *t* {#annexe3}
+
+La courte syntaxe ![](Images/Rlogo.png) ci-dessous permet de générer un tableau avec les valeurs critiques de T avec _p_=0,05, 0,01 et 0,01.
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
+library(stargazer)
+
+# vecteur pour les degrés de liberté de 1 à 30, puis 40 et 50
+dl <- c(1:30, 40, 50, 60, 70, 80, 90, 100, 250, 500, 1000, 2500) 
+# la fonction qchisq permet d'obtenir la valeur théorique en fonction 
+# d'une valeur de p et d'un nombre de degrés de liberté
+tableT <- cbind(dl,
+                p0.10 =  round(qt(p=1 - (0.10/2),  df=dl),2),
+                p0.05 =  round(qt(p=1 - (0.05/2),  df=dl),2),
+                p0.01 =  round(qt(p=1 - (0.01/2),  df=dl),2),
+                p0.001 = round(qt(p=1 - (0.001/2), df=dl),2))
+# Impression du tableau avec la library stargazer
+stargazer(tableT, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 2,
+          title="Distribution des valeurs critiques de t")
+```
+
+
+```{r tableCritiqueT, echo=FALSE, message=FALSE, warning=FALSE}
+# vecteur pour les degrés de liberté de 1 à 30, puis 40 et 50
+dl <- c(1:30, 40, 50, 60, 70, 80, 90, 100, 250, 500, 1000, 2500) 
+# la fonction qchisq permet d'obtenir la valeur théorique en fonction 
+# d'une valeur de p et d'un nombre de degrés de liberté
+tableT <- cbind(dl,
+                p0.10 =  round(qt(p=1 - (0.10/2),  df=dl),2),
+                p0.05 =  round(qt(p=1 - (0.05/2),  df=dl),2),
+                p0.01 =  round(qt(p=1 - (0.01/2),  df=dl),2),
+                p0.001 = round(qt(p=1 - (0.001/2), df=dl),2))
+
+# Impression du tableau avec la library stargazer
+# stargazer(tableT, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 3,
+          # title="Distribution des valeurs critiques du t")
+
+show_table(tableT, 
+           caption = "Distribution des valeurs critiques de t")
+```
+
+<!--chapter:end:19-Annexes.Rmd-->
+
