@@ -1436,7 +1436,7 @@ model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p = k\\text{ avec }ref = a)
 
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'applications"),
- C2 = c("Variable qualitative multinomiale avec *K* catégories", "Binomiale", model_formula , "logistique", "p", "$\\beta_{0k}$, $\\beta$k pour $k \\in [2,...,K]$", "Non-séparation complète, Absence de surdispersion ou sousdispersion")
+ C2 = c("Variable qualitative multinomiale avec *K* catégories", "Binomiale", model_formula , "logistique", "p", "$\\beta_{0k}$, $\\beta$k pour $k \\in [2,...,K]$", "Non-séparation complète, Absence de surdispersion ou sousdispersion, ’Indépendance des alternatives non pertinentes")
 )
 
 show_table(tableau, 
@@ -2066,8 +2066,46 @@ library(AER)
 # test de surdispersion
 dispersiontest(modele)
 ```
+contrairement à la forme classique d’un modèle de poisson pour laquelle la dispersion attendue est de 1, le test nous indique qu’une dispersion de 1,89 serait mieux ajustée aux données.
 
-contrairement à la forme classique d’un modèle de poisson pour laquelle la dispersion attendue est de 1, le test nous indique qu’une dispersion de 1,89 serait mieux ajustée aux données. Pour tenir compte de cette particularité des données, nous modifions légèrement le modèle pour utiliser une distribution de quasi-Poisson, intégrant spécifiquement un paramètre de dispersion. Cet ajustement ne modifie pas l'estimation des coefficient du modèle, mais modifie le calcul des erreurs standards et par extension les valeurs de *p* pour les rendre moins sensibles au problème de surdispersion. Une autre approche aurait été de calculer une version robuste des erreurs standards avec le *package* **sandwich** comme nous l'avons fait dans la section sur le modèle binomial (@ref(sectexemplebinom)). Après réajustement du modèle, le nouveau paramètre de dispersion estimé est de 1,92.
+Il est également possible de constater graphiquement cet écart avec un graphique représentant les valeurs réelles, les valeurs prédites, ainsi que la variance (sous forme de barres d'erreurs) attendue par le modèle (figure : \@ref(fig:surdisppoiss)). Nous constatons ainsi que les valeurs réelles ont largement tendance à dépasser la variance attendue par le modèle, surtout pour les valeurs les plus faibles de la distribution.
+
+```{r surdisppoiss, message=FALSE, warning=FALSE, fig.aling = "center", fig.cap="Représentation de la sur-dispersion des données dans le modèle de Poisson"}
+
+# extraction des prédiction du modèle
+lambdas <- predict(modele, type = "response")
+
+# création d'un dataframe pour contenir la prédiction et les vraie valeurs
+df1 <- data.frame(
+  lambdas = lambdas,
+  reals = data2$Nbr_acci
+)
+
+# calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
+# et stockage dans un second dataframe
+seqa <- seq(0,round(max(lambdas)),1)
+df2 <- data.frame(
+  lambdas = seqa,
+  lower = qpois(p = 0.025, lambda = seqa),
+  upper = qpois(p = 0.975, lambda = seqa)
+)
+
+# affichage des valeurs réelles et prédites (en rouge)
+# et de leur variance selon le modèle (en noir)
+ggplot() + 
+  geom_errorbar(data = df2,
+                mapping = aes(x = lambdas, ymin = lower, ymax = upper),
+                width = 0.2, color = rgb(0.4,0.4,0.4)) + 
+  geom_point(data = df1, 
+             mapping = aes(x = lambdas, y = reals),
+             color ="red", size = 0.5) + 
+  labs(x = 'valeurs prédites',
+       y = "valeurs réelles")
+
+```
+
+Pour tenir compte de cette particularité des données, nous modifions légèrement le modèle pour utiliser une distribution de quasi-Poisson, intégrant spécifiquement un paramètre de dispersion. Cet ajustement ne modifie pas l'estimation des coefficient du modèle, mais modifie le calcul des erreurs standards et par extension les valeurs de *p* pour les rendre moins sensibles au problème de surdispersion. Une autre approche aurait été de calculer une version robuste des erreurs standards avec le *package* **sandwich** comme nous l'avons fait dans la section sur le modèle binomial (@ref(sectexemplebinom)). Après réajustement du modèle, le nouveau paramètre de dispersion estimé est de 1,92.
+
 
 ::: {.bloc_notes  data-latex=""}
 **Les quasi-distributions**
@@ -2426,7 +2464,7 @@ sim_res <- createDHARMa(simulatedResponse = mat_sims,
 plot(sim_res)
 ```
 
-La figure \@ref(fig:diagresnb) présentant le diagnostic des résidus simulé montre que ces derniers suivent bien une distribution uniforme, aucun problème de dispersion ni de valeur aberrantes. La figure \@ref(fig:compnbdistr2) permet de comparer la distribution originale de la variable *Y* et les simulations issues du modèle (intervalles de confiance représentés en bleu). On constate que le modèle parvient bien à reproduire la distribrution originale, et ce même pour les valeurs les plus à droites de la distribution.
+La figure \@ref(fig:diagresnb) présentant le diagnostic des résidus simulés montre que ces derniers suivent bien une distribution uniforme, aucun problème de dispersion ni de valeur aberrantes. La figure \@ref(fig:compnbdistr2) permet de comparer la distribution originale de la variable *Y* et les simulations issues du modèle (intervalles de confiance représentés en bleu). On constate que le modèle parvient bien à reproduire la distribrution originale, et ce même pour les valeurs les plus à droites de la distribution.
 
 ```{r compnbdistr2, message=FALSE, warning=FALSE, fig.align ="center", fig.cap="Comparaison de la distribution originale et des simulations pour le modèle Négatif binomial", out.width = "65%"}
 
@@ -2481,6 +2519,43 @@ ggplot() +
        x = "nombre d'accidents",
        y = "nombre d'occurence")
 ```
+
+À titre de comparaison, nous pouvons à nouveau réaliser le graphique permettant de visualiser si la variance attendue par le modèle est proche de celle effectivement observée dans les données. Nous avions constaté avec ce graphique lorsque nous ajustions un modèle de Poisson que la variance des données était trop grande comparativement à celle attendue par le modèle (\@ref:surdisppoiss)
+
+```{r surdispnb, message=FALSE, warning=FALSE, fig.aling = "center", fig.cap="Représentation de la sur-dispersion des données dans le modèle de Poisson"}
+
+# extraction des prédiction du modèle
+mus <- predict(modelnb, type = "response")
+
+# création d'un dataframe pour contenir la prédiction et les vraie valeurs
+df1 <- data.frame(
+  mus = mus,
+  reals = data2$Nbr_acci
+)
+
+# calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
+# et stockage dans un second dataframe
+seqa <- seq(0,round(max(mus)),1)
+df2 <- data.frame(
+  mus = seqa,
+  lower = qnbinom(p = 0.025, mu = seqa, size = theta),
+  upper = qnbinom(p = 0.975, mu = seqa, size = theta)
+)
+
+# affichage des valeurs réelles et prédites (en rouge)
+# et de leur variance selon le modèle (en noir)
+ggplot() + 
+  geom_errorbar(data = df2,
+                mapping = aes(x = mus, ymin = lower, ymax = upper),
+                width = 0.2, color = rgb(0.4,0.4,0.4)) + 
+  geom_point(data = df1, 
+             mapping = aes(x = mus, y = reals),
+             color ="red", size = 0.5) + 
+  labs(x = 'valeurs prédites',
+       y = "valeurs réelles")
+```
+
+Nous pouvons ainsi constater à la figure (\@ref:surdispnb) que le modèle Négatif Binomial autorise une variance bien plus large que le modèle de Poisson et est ainsi mieux ajusté aux données.
 
 **Vérification de la qualité d'ajustement**
 
@@ -2682,7 +2757,7 @@ cols <- lapply(1:length(lambdas),function(i){
 })
 mat_sims <- do.call(rbind, cols)
 
-# calculer les residus simules
+# calculer les residus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = data2$Nbr_acci,
                             fittedPredictedResponse = preds,
@@ -2883,3 +2958,153 @@ En d’autres termes, un modèle de Hurdle modélise les données à zéro et le
 
 Prenons un exemple pour rendre la distinction plus concrète. Admettons que nous utilisons un capteur capable de mesurer la concentration de particules fines dans l’air. D’après les spécifications du fabriquant, le capteur est capable de mesurer des taux de concentration à partir de 0,001 ug/m^3^. Dans une ville avec des niveaux de concentration très faibles, il sera très fréquent pour le capteur de renvoyer zéro. Considérant ce phénomène, il serait judicieux de modéliser le processus avec un modèle de Hurdle Gamma puisque les 0 représentent une limite qui n’a pas été franchie : le seuil de détection du capteur. On va donc traiter différemment les secteurs sous ce seuil, et au-dessus de seuil. Si l’on reprend notre exemple sur les accidents des piétons à des intersections, il est plus judicieux dans ce cas de modéliser le phénomène avec un modèle avec excès de zéro puisque l’on peut observer zéro accident sur une intersection dangereuse (vrai zéro), et zéro accident sur une intersection sur laquelle aucune piéton ne traverse jamais (faux zéro).
 :::
+
+### Les modèles GLM pour des variables continues
+
+Comme nous avons pu le voir dans la section \@ref(sect024), il existe un grand nombre de distributions permettant de décrire une grande diversité de variables continues. Il serait fastidieux de tous les présenter, nous allons seulement revenir sur les plus fréquents.
+
+#### Le modèle GLM Gaussien
+
+Comme nous l'avons vu en introduction, il s'agit du GLM le plus simple puisqu'il correspond à la transposition de la régression linéaire classique (des moindres carrés) dans la forme des modèles généralisés.
+
+```{r gaussiandentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+
+model_formula <- "$Y \\sim Normal(\\mu,\\sigma)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = x$"
+
+tableau <- data.frame(
+ C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'applications"),
+ C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Notmale", model_formula , "identitaire", "$\\mu$", "$\\beta_0$, $\\beta$ et $\\sigma$", "Homoscédasticité")
+)
+
+show_table(tableau, 
+    caption = "Carte d'identité du modèle Gaussien",
+    col.names = NULL, 
+    col.to.resize = c(2),
+    col.width = "8cm"
+)
+```
+
+##### Conditions d'applications
+
+Les conditions d'applications sont les mêmes que celles pour une régression linéaire classique. La condition de l'Homoscédasticité (homogénéité de la variance), est dûe au fait que la variance du modèle est contrôlée par un seul paramètre fixe $var(y) = \sigma$ (l'écart type de la distribution normale). À tire de comparaison, rappelons que dans un modèle de Poisson, la variance est égale à la moyenne ($var(y) = E(y)$) alors que dans un modèle Négatif Binomial, la variance est fonction de la moyenne et d'un paramètre $\theta$ ($var(y) = E(y) + E(y)^{\frac{2}{\theta}}$). Pour ces deux exemples, la variance augmente au fur et à mesure que la moyenne augmente.
+
+##### Interprétation des paramètres
+
+L'interprétation des paramètres est la même que pour une régression linéaire classique : 
+
+* $\beta_0$ : il s’agit de l’intercept, donc de la moyenne attendue de la variable *Y* lorsque les valeurs de toutes les variables *X* sont 0.
+* $\beta$ : les coefficients de régressions, ils quantifient l’impact d’une augmentation d’une unité des variables *X* sur la moyenne de la variable *Y*.
+* $\sigma$ : l’écart type de *Y* après avoir contrôlé les variables *X*. Il peut s’interpréter comme l’incertitude restante après modélisation de la moyenne de *Y*. Concrètement, si vous utilisez votre équation de régression pour prédire une nouvelle valeur de *Y* : $\hat{Y}$, l’intervalle de confiance à 95% de cette prédiction est ($\hat{Y} - 3\sigma\text{ ; }\hat{Y} + 3\sigma$). Vous noterez donc que plus $\sigma$ est grand, plus grande est l'incertitude de la prédiction.
+
+##### Exemple appliqué dans R
+
+Pour cet exemple, nous reprenons le modèle LM que nous avions présenté dans la section \@ref(sect0583). Pour rappel, l'objectif est de modéliser la densité végétale dans les secteurs de recensement de Montréal. Pour cela, nous utilisons des variables caractérisant des populations vulnérables au niveau physiologique ou socio-économique, tout en contrôlant l'impact de l'environnement urbain. Parmi ces dernières, l'âge médian des bâtiments est ajouté au modèle avec une polynomiale d'ordre deux, et la densité d'habitant transformé avec la fonction logarithme.
+
+**Vérification des conditions d'application**
+
+La première étape de la vérification des conditions d'application est bien sûr la vérification de l'absence de multicolinéarité. 
+
+```{r message=FALSE, warning=FALSE}
+# chargement des données
+load("data/lm/DataVegetation.RData")
+
+# calcul du VIF
+vif(glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal))
+```
+
+Puisque l'ensemble des valeurs de VIF sont inférieures à deux, nos données ne sont pas marquées par une multicolinéarité problématique. La seconde étape du diagnostic est de calculer et d'afficher les distances de Cook.
+
+```{r gausscook, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distances de Cook pour le modèle Gaussien", out.width = "50%"}
+# ajustement du modèle
+modele <- glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
+
+# calcul des distances de Cook
+cooksd <- cooks.distance(modele)
+
+# affichage des valeurs
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+
+ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+
+```
+
+La figure \@ref(fig:gausscook) indique clairement que trois observations sont très influentes dans le modèle. 
+
+```{r message=FALSE, warning=FALSE}
+# selection des cas étranges
+cas_etranges <- subset(DataFinal, cooksd > 0.03)
+print(cas_etranges)
+```
+
+Il s'agit de quatre observations dans Montréal avec des logements très anciens : plus de 200 ans alors que la moyenne est de 52 ans pour le reste de la zone d'étude. Le fait que nous ayons dans le modèle une polynomiale d'ordre 2 pour cette variable intensifie l'impact de ces valeurs extrèmes. En conséquence nous décidons de simplement les supprimer. Nous verrons plus tard qu'une alternative envisageable est de changer la distribution du modèle pour une distribution de Student (plus robuste aux valeurs extrèmes).
+
+```{r gausscook2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distances de Cook pour le modèle Gaussien après suppression des observations influentes", out.width = "50%"}
+
+# retirer les cas étranges
+DataFinal2 <- subset(DataFinal, cooksd < 0.03)
+
+# ajustement du modèle
+modele <- glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2, 
+              family = gaussian())
+
+# calcul des distances de Cook
+cooksd <- cooks.distance(modele)
+
+# affichage des valeurs
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+
+ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+
+```
+
+Une fois ces observations retirée, les nouvelles distances de Cook (figure \@ref(fig:gausscook2)) ne rèvèlent plus d'observations fortement influentes. Nous pouvons passer à l'analyse des résidus similés. La figure \@ref(fig:gaussresid) nous montre cependant que nos résidus dévient significativement d'une distribution uniforme, que des valeurs aberrantes sont encore présente et qu'il existe un lien entre résidus et prédiction dans le modèle.
+
+```{r gaussresid, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Diagnostic général des résidus simulés pour le modèle Gaussien", out.width = "95%"}
+
+# extraction des prédictions du modèle
+mus <- predict(modele, type = 'response')
+modsigma <- sigma(modele)
+
+# extraction de l'écart type du modèle
+
+# generation de 1000 simulation pour chaque prediction
+nsim <- 1000
+cols <- lapply(1:length(mus),function(i){
+  mu <- mus[[i]]
+  sims <- rnorm(nsim, mean=mu, sd = modsigma)
+  return(sims)
+})
+mat_sims <- do.call(rbind, cols)
+
+# calculer les residus simulés
+sim_res <- createDHARMa(simulatedResponse = mat_sims, 
+                            observedResponse = DataFinal2$VegPct,
+                            fittedPredictedResponse = mus,
+                            integerResponse = F)
+plot(sim_res)
+
+```
+
+Pour mieux cerner le problème que nous avons ici, nous pouvons dans un premier temps comparer la distribution originale des données et les simulations issues du modèle. La figure \@ref(fig:gausssim) montre clairement le problème : la distribution normale est mal ajustée aux données. Ces dernières sont légèrement asymétriques et ne peuvent pas être inférieures à zéro, ce que la distribution normale ne parvient pas à reproduire.
+
+```{r gausssim, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Comparaison de la distribution originale de la variable et des simulations issues du modèle", out.width = "95%"}
+
+df <- reshape2::melt(mat_sims[,1:30])
+
+ggplot() + 
+  geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..), color = "black", fill = "white", bins = 50)+
+  geom_density(data = df, aes(x = value, group = Var2), color = rgb(0.4,0.4,0.4,0.4), fill = rgb(0,0,0,0))
+```
