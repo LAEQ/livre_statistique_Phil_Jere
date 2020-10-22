@@ -1,7 +1,7 @@
-# (PART) Modèles de régression {-} 
+◘# (PART) Modèles de régression {-} 
 # La régression linéaire multiple  {#chap05}
 
-Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales : la régression linéaire multiple. À titre de rappel, dans le chapitre précédent (section \@ref(sect0414)), nous avons vu que la régression linéaire simple, basée sur la méthode des moindres carrées, permet d’expliquer et de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est rare que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple : elle permet ainsi de prédire et expliquer une variable indépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
+Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales : la régression linéaire multiple. À titre de rappel, dans le chapitre précédent (section \@ref(sect0414)), nous avons vu que la régression linéaire simple, basée sur la méthode des moindres carrées, permet d’expliquer et de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est rare que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple : elle permet ainsi de prédire et expliquer une variable dépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
 
 Plus spécifiquement, nous aborderons ici les principes et hypothèses de la régression linéaire multiple, comment mesurer la qualité d’ajustement du modèle, introduire des variables explicatives particulières (variable qualitative dichotomique ou polytomique, variable d’interaction, etc.), interpréter les sorties d’un modèle de régression et finalement la mettre en oeuvre dans R.
 
@@ -9,31 +9,20 @@ Plus spécifiquement, nous aborderons ici les principes et hypothèses de la ré
 ::: {.bloc_package data-latex=""}
 Dans cette section, nous utiliserons principalement les *packages* suivants : 
 
-A MODIFIER A LA FIN
-
 * Pour créer des graphiques :
   - **ggplot2**, le seul, l'unique
-  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles
-* Pour manipuler des données : 
-  - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*
-* Pour les corrélations (section \@ref(sect0411)) : 
-  - **correlation**, de l'ensemble de package **easy_stats**, offrant une large gamme de méthodes de corrélations
-  - **boot** pour réaliser des corrélations avec *bootstrap* 
-  - **Hmisc** pour calculer des corrélations de Pearson et Spearman
-  - **ppcor**, notamment pour des corrélations partielles
-  - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
-  - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en Html ou en LaTeX ou en ASCII.
-  - **corrplot**, pour créer des graphiques de matrices de corrélation
-* Pour le tableau de contingnence (section \@ref(sect0412)) :
-  - **gmodels**, pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes (section \@ref(sect0424))
-  - **vcd**, pour construire un graphique pour un tableau de contigence ((section \@ref(sect0424)))
-* Pour les test *t* : 
-  - **sjstats** pour réaliser des test *t* pondérés
-  - **effectsize**, pour calculer les tailles d'effet de tests de *t*
-* Pour la section sur les ANOVA (section \@ref(sect0441)) : 
-  - **car**, pour les ANOVA classiques
-  - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances 
-  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**
+  - **ggpubr**, pour combiner les graphiques
+* Pour obtenir les coefficients standardisés : 
+  - **QuantPsyc**, avec la fonction *lm.beta* (section \@ref(sect0542)).
+* Pour les effets marginaux des variables indépendantes : 
+  - **ggeffects**, avec la fonction *ggpredict* (section \@ref(sect0574)).
+* Pour vérifier la normalité des résidus : 
+  - **DescTools**, avec la fonction *Skewness* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect0562)).
+* Pour vérifier l'homoscédasticité des résidus : 
+  - **lmtest**, avec la fonction *bptest* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect05733)).
+* Pour vérifier la multicolinéarité excessive : 
+  - **car**, avec la fonction *vif* (section \@ref(sect05734)).
+
 :::
 
 
@@ -1492,8 +1481,8 @@ library(ggpubr)
 residus <- modele3$residuals
 
 # 1. coefficients d’asymétrie et d’aplatissement 
-c(Skewness= round(Skew(residus),3), 
-  Kurtosis = round(Kurt(residus),3))
+c(Skewness= round(DescTools::Skew(residus),3), 
+  Kurtosis = round(DescTools::Kurt(residus),3))
 
 # 2. Test de normalité de Jarque-Bera
 JarqueBeraTest(residus)
@@ -1704,9 +1693,9 @@ Trois approches sont possibles :
 * **Utiliser un modèle linéaire généralisé (GLM)** permettant d'utiliser une distribution différente correspondant plus à votre jeu de données (voir chapitre suivant).
 
 
-## Mise en œuvre dans R {#sect058}
+## Mise en œuvre dans R {#sect057}
 
-### Les fonctions `lm`, `summary()` et `confint()` {#sect0581}
+### Les fonctions `lm`, `summary()` et `confint()` {#sect0571}
 
 Les fonctions de base `lm`, `summary()` `confint()` permettent respectivement de 1) contruire un modèle, 2) d'afficher ces résultats et 3) obtenir les intervalles de confiance des coefficients de régression : 
 
@@ -1785,7 +1774,7 @@ confint(modele3)
 ```
 
 
-### Comparer des modèles {#sect0582}
+### Comparer des modèles {#sect0572}
 
 Tel que détaillé à la section \@ref(sect04132), pour comparer des modèles imbriqués, il convient d'analyser les valeurs du R^2^ ajusté et du F incrémentiel, ce qui peut être fait en trois étapes.
 
@@ -1856,9 +1845,9 @@ Par conséquent, il est légitime de se questionner sur le bien-fondé de conser
 * Supprimez-les si leur apport est limité et ne fait que complexifier le modèle pour rien.
 :::
 
-### Diagnostic sur un modèle {#sect0583}
+### Diagnostic sur un modèle {#sect0573}
 
-#### Vérifier le nombre d'observations {#sect05831}
+#### Vérifier le nombre d'observations {#sect05731}
 
 La syntaxe suivante permet de vérifier si le nombre d'observations est suffisant pour tester le R^2^ et chacune des variables indépendantes.
 
@@ -1888,7 +1877,7 @@ if(nobs >= 104+k){
 }
 ```
 
-#### Vérifier la normalité des résidus {#sect05832}
+#### Vérifier la normalité des résidus {#sect05732}
 
 La syntaxe suivante permet de vérifier si la normalité des résidus selon les trois démarches classiques : 1) coefficients d’asymétrie et d’aplatissement, 2) test de normalité de Jarque-Bera (fonction `JarqueBeraTest` du *package* **DescTools**), 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile).
 
@@ -1903,8 +1892,8 @@ library(ggpubr)
 residus <- modele3$residuals
 
 # 1. coefficients d’asymétrie et d’aplatissement 
-c(Skewness= round(Skew(residus),3), 
-  Kurtosis = round(Kurt(residus),3))
+c(Skewness= round(DescTools::Skew(residus),3), 
+  Kurtosis = round(DescTools::Kurt(residus),3))
 
 # 2. Test de normalité de Jarque-Bera
 JarqueBeraTest(residus)
@@ -1930,12 +1919,12 @@ Gqqplot <- qplot(sample = residus)+
 ggarrange(Ghisto, Gqqplot, ncol=2, nrow=1)
 ```
 
-#### Évaluer la linéarité et l'homoscédasticité des résidus {#sect05833}
+#### Évaluer la linéarité et l'homoscédasticité des résidus {#sect05733}
 
 La syntaxe suivante permet de vérifier si l'hypothèse d'homoscédasticité des résidus est respectée avec : 1) un nuage de points entre les valeurs prédites et des résidus, 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile) et 2) le test de Breusch-Pagan (fonction `bptest` du *package* **lmtest**).
 
 
-```{r DiaHomoscedasticité, echo=TRUE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
+```{r DiaHomoscedasticite, echo=TRUE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
 
 # 1. Graphique entre les valeurs prédites et les résidus
 residus <-  modele3$residuals
@@ -1960,7 +1949,7 @@ if(bptest(modele3)$p.value < 0.05){
 }
 ```
 
-#### Vérifier la multicolinéarité excessive {#sect05834}
+#### Vérifier la multicolinéarité excessive {#sect05734}
 Pour vérifier la présence ou l'absence de multicolinéarité excessive, on utilise habituellement la fonction `vif` du *package* **car**.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -1976,7 +1965,7 @@ car::vif(modele3) > 10
 car::vif(modele3) > 5 
 ```
 
-#### Réperer les valeurs très influentes du modèle {#sect05835}
+#### Réperer les valeurs très influentes du modèle {#sect05735}
 
 La syntaxe suivante permet d'évaluer le nombre de valeurs très influentes dans le modèle avec les critères de $n/4$, $n/8$, $n/16$ pour la distance de Cook.
 
@@ -2027,7 +2016,7 @@ ggarrange(G1,G2, nrow=1, ncol=2)
 
 ```
 
-#### Construite un nouveau modèle en supprimant les observations très influentes du modèle {#sect05836}
+#### Construite un nouveau modèle en supprimant les observations très influentes du modèle {#sect05736}
 
 Dans un premier temps, il convient de constuire un nouveau modèle sans les valeurs influentes du modèle de départ.
 
@@ -2159,10 +2148,10 @@ summary(modele3)
 summary(modele3b)
 ```
 
-### Graphiques pour les effets marginaux {#sect0584}
+### Graphiques pour les effets marginaux {#sect0574}
 Tel que signalé ultérieurement, il est courant de représenter l'effet marginal d'une VI sur une VD, une fois contrôlées les autres VI. Pour ce faire, il est possible d'utiliser les *packages* `ggplot2` et `ggeffects`.
 
-#### Effet marginal pour une variable continue {#sect05841}
+#### Effet marginal pour une variable continue {#sect05741}
 
 La syntaxe ci-dessous illustre comment obtenir un graphique pour nos quatre variables explicatives. Bien entendu, si le coefficient de régression est positif (comme pour les pourcentages de jeunes de moins de 15 ans et les personnes âgées), la pente sera alors montante, et inversement décroissante pour des coefficients négatifs (comme pour la minorités visibles et les personnes à faible revenu). En outre, plus la valeur absolue du coefficient sera forte, plus la pente sera prononcée.
 
@@ -2205,7 +2194,7 @@ G4 <-ggplot(fitV4, aes(x, predicted)) +
 ggarrange(G1, G2, G3, G4, ncol =2, nrow =2)
 ```
 
-#### Effet marginal pour une variable avec une fonction polynomiale d'ordre 2 {#sect05842}
+#### Effet marginal pour une variable avec une fonction polynomiale d'ordre 2 {#sect05742}
 
 ```{r Titi, echo=TRUE, fig.align='center', fig.cap="Effet marginal d'une variable avec un fonction polynomiale d'ordre 2", message=FALSE, warning=FALSE, out.width='70%'}
 library(ggplot2)
@@ -2221,7 +2210,7 @@ fitAgeMedian <- ggpredict(modele3, terms = "AgeMedian")
        y="VD: valeur prédite", x = "Âge médian des bâtiments")
 ```
 
-#### Effet marginal pour une variable transformée en logarithme {#sect05843}
+#### Effet marginal pour une variable transformée en logarithme {#sect05743}
 
 ```{r EffetMarginalVariableLog, echo=TRUE, fig.align='center', fig.cap="Effet du logarithme de la densité", message=FALSE, warning=FALSE, out.width='75%'}
 
@@ -2233,7 +2222,7 @@ ggplot(fitHabHa, aes(x, predicted)) +
   labs(y="VD: valeur prédite", x = "Habitants km2")
 ```
 
-#### Effet marginal pour une variable dichotomique {#sect05844}
+#### Effet marginal pour une variable dichotomique {#sect05744}
 
 ```{r EffetMarginalDichCode, echo=TRUE, fig.align='center', fig.cap="Effet marginal d'une variable dichotomique", message=FALSE, warning=FALSE, out.width='70%'}
 
@@ -2251,7 +2240,7 @@ ggplot(fitVilleMtl, aes(x=x, y=predicted)) +
                      labels = c("Autre municipalité", "Ville de Montréal"))
 ``` 
 
-#### Effet marginal pour une variable polytomique {#sect05845}
+#### Effet marginal pour une variable polytomique {#sect05745}
 
 ```{r EffetMarginalPolyT, echo=TRUE, fig.align='center', fig.cap="Effet marginal d'une variable polytomique", message=FALSE, warning=FALSE, out.width='70%'}
 
@@ -2270,7 +2259,7 @@ Graphique <- ggplot(fitVilles, aes(x=x, y=predicted)) +
 Graphique + coord_flip()
 ``` 
 
-#### Effet marginal pour une variable d'interaction (deux VI continues) {#sect05846}
+#### Effet marginal pour une variable d'interaction (deux VI continues) {#sect05746}
 
 
 ```{r ModeleInteraction2heatex, fig.cap = "Effet marginal de l'interraction entre deux variables continues", echo=FALSE, message=FALSE, warning=FALSE, out.width='95%'}
@@ -2328,7 +2317,7 @@ ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
 
 ```
 
-#### Effet marginal pour une variable d'interaction (une VI continue et une VI dichotomique) {#sect05847}
+#### Effet marginal pour une variable d'interaction (une VI continue et une VI dichotomique) {#sect05747}
 
 ```{r ModeleInteractionBinaireeffectex, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%', fig.cap="Graphique de l'effet marginal de l'interraction entre une variable quantitative et qualitative"}
 
@@ -2364,5 +2353,5 @@ ggplot(data = df) +
 
 ```
 
-## Régression linéaire multiple robuste {#sect059}
+## Régression linéaire multiple robuste {#sect058}
 
