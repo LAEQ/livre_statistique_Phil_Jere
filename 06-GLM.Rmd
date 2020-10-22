@@ -1892,7 +1892,7 @@ show_table(tableau,
 
 ##### Interprétation des paramètres
 
-Les coefficients du modèle expriment l’impact du changement d’une unité des variables *X* sur $\lambda$ (le nombre de cas) dans l’échelle logarithmique (*log-scale*). Pour rappel, l’échelle logarithmique est multiplicative, ce qui complique quelque peu la tâche lorsque l’on tente de revenir à l’échelle originale des données. En effet, si l’on convertit les coefficients dans leur échelle originale avec la fonction exponentielle, leur effet n’est plus additif, mais multiplicatif.
+Les coefficients du modèle expriment l’impact du changement d’une unité des variables *X* sur $\lambda$ (le nombre de cas) dans l’échelle logarithmique (*log-scale*). Pour rappel, l’échelle logarithmique est multiplicative : si l’on convertit les coefficients dans leur échelle originale avec la fonction exponentielle, leur effet n’est plus additif, mais multiplicatif.
 Prenons un exemple concret, admettons que nous ayons ajusté un modèle de Poisson à une variable de comptage *Y* avec deux variables $X_1$ et $X_2$ et que nous ayons obtenus les coefficients suivants :
 
 $\beta_0 = 1,8 \text{ ; } \beta_1 = 0,5 \text{ ; } \beta_2 = -1,5$
@@ -1928,7 +1928,7 @@ Puisque la distribution de Poisson n’a qu’un seul paramètre, le modèle GLM
 
 avec $N$ et $p$ étant respectivement les nombres d'observations et de paramètres. Il est également possible de tester formellement si la surdispersion est signifcative avec un test de dispersion.
 
-La question de l’excès de zéros a été abordée dans la section \@ref(#02437) présentant les distributions. Il s’agit d’une situation où un plus grand nombre de zéros sont présents dans les données que supposé selon la distribution de Poisson. Dans ce cas, il convient d'utiliser la distribution de Poisson avec excès de zéros. Une façon simple de vérifier si nous avons un trop grand nombre de zéros est de comparer les quantités prédites par le modèle de Poisson avec les quantités réelle (variable *Y*).
+La question de l’excès de zéros a été abordée dans la section \@ref(sect02437) présentant les distributions. Il s’agit d’une situation où un plus grand nombre de zéros sont présents dans les données que supposé selon la distribution de Poisson. Dans ce cas, il convient d'utiliser la distribution de Poisson avec excès de zéros.
 
 ##### Exemple appliqué dans R
 
@@ -2106,10 +2106,11 @@ ggplot() +
 
 ```
 
-Pour tenir compte de cette particularité des données, nous modifions légèrement le modèle pour utiliser une distribution de quasi-Poisson, intégrant spécifiquement un paramètre de dispersion. Cet ajustement ne modifie pas l'estimation des coefficients du modèle, mais modifie le calcul des erreurs standards et par extension les valeurs de *p* pour les rendre moins sensibles au problème de surdispersion. Une autre approche aurait été de calculer une version robuste des erreurs standards avec le *package* **sandwich** comme nous l'avons fait dans la section sur le modèle binomial (@ref(sect06211)). Après réajustement du modèle, le nouveau paramètre de dispersion estimé est de 1,92.
+Pour tenir compte de cette particularité des données, nous modifions légèrement le modèle pour utiliser une distribution de quasi-Poisson, intégrant spécifiquement un paramètre de dispersion. Cet ajustement ne modifie pas l'estimation des coefficients du modèle, mais modifie le calcul des erreurs standards et par extension les valeurs de *p* pour les rendre moins sensibles au problème de surdispersion. Une autre approche aurait été de calculer une version robuste des erreurs standards avec le *package* **sandwich** comme nous l'avons fait dans la section \@ref(sect06211) sur le modèle binomial. Après réajustement du modèle, le nouveau paramètre de dispersion estimé est de 1,92.
 
 
 ::: {.bloc_notes  data-latex=""}
+
 **Les quasi-distributions**
 
 Les distributions binomiale et Poisson ne disposent chacune que d’un paramètre décrivant à la fois leur variance et leur espérance. Elles manquent donc de flexibilité et échouent parfois à représenter fidèlement des données avec une forte variance. Il existe donc des distributions alternatives, respectivement les distributions quasi-binomiale et quasi-Poisson comprenant chacune un paramètre supplémentaire pour contrôler la variance. Bien que cette solution soit attrayante, il ne faut pas perdre de vue que la sur ou la sous dispersion peuvent être causées par l’absence de certaines variables explicatives, la sur représentation de zéros, ou encore une séparation parfaite de la variable dépendante causée par une variable indépendante.:::
@@ -2319,7 +2320,8 @@ exp2.5 <- exp(coeffs - 1.96*err.std)
 exp975 <- exp(coeffs - 1.96*err.std)
 pvals <- tableau[,4]
 
-cbind(coeffs,err.std,expcoeff,exp2.5,exp975,pvals)
+tableauComplet <- cbind(coeffs,err.std,expcoeff,exp2.5,exp975,pvals)
+# print(tableauComplet)
 ```
 
 ```{r coeffpoiss, message=FALSE, warning=FALSE, echo=FALSE}
@@ -2633,14 +2635,16 @@ modelnull <- glm(formula = Nbr_acci ~ 1,
                family = poisson(link="log"),
                data = data_accidents)
 
-# Calcul de la deviance expliquee
+# Constante pour p
+coeff_p <- modelzi$sigma.coefficients
+cat("Coefficient pour p =", round(coeff_p,4))
 
+# Calcul de la deviance expliquée
 1 - deviance(modelzi) / deviance(modelnull)
 
 # Calcul de la probabilité de base p d'être un faux 0
 # en appliquant l'inverse de la fonction logistique
-exp(-1.4376) / (1+exp(-1.4376))
-
+exp(-coeff_p) / (1+exp(-coeff_p))
 ```
 
 Nous constatons immédiatement que le modèle avec excès fixe de zéro est peu ajusté aux données. Cette version du modèle ne parvient à capter que 8% de la déviance, ce qui s’explique facilement, car nous n’avons donné aucune variable au modèle pour distinguer les vrais et les faux zéros. Pour cela, nous devons passer au prochain modèle : Poisson avec excès ajusté de zéros. Notons tout de même que d'après ce modèle, 19% des observations seraient des faux zéros.
