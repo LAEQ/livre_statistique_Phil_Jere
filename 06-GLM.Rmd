@@ -2978,7 +2978,7 @@ model_formula <- "$Y \\sim Normal(\\mu,\\sigma)$ \\newline $g(\\mu) = \\beta_0 +
 
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
- C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Notmale", model_formula , "identitaire", "$\\mu$", "$\\beta_0$, $\\beta$ et $\\sigma$", "Homoscédasticité")
+ C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Normale", model_formula , "identitaire", "$\\mu$", "$\\beta_0$, $\\beta$ et $\\sigma$", "Homoscédasticité")
 )
 
 show_table(tableau, 
@@ -3040,7 +3040,7 @@ ggplot(data = df) +
 
 ```
 
-La figure \@ref(fig:gausscook) indique clairement que trois observations sont très influentes dans le modèle. 
+La figure \@ref(fig:gausscook) indique clairement que quatres observations sont très influentes dans le modèle. 
 
 ```{r message=FALSE, warning=FALSE}
 # selection des cas étranges
@@ -3198,4 +3198,676 @@ show_table(tab,
     col.names = c('Variable',"Coeff.","Err.std","Val.z", "val.p","IC coeff 2,5%", "IC coeff 97,5%", "Sign.")
 )
 
+```
+
+Les résultats de ce modèle avaient déjà été interprétés dans le chapitre \@ref(chap05), nous ne reviendrons donc pas dessus ici.
+
+
+### Le modèle GLM avec distribution de Student
+
+Pour rappel, la distribution de Student ressemble à une distribution normale. Elle est symétrique autours de sa moyenne et a également une forme de cloche. Cependant, elle dispose de queues lourdes, ce qui signifie qu’elle permet de représenter des phénomènes présentant d’avantages de valeurs extrêmes qu’une distribution normale. Pour contrôler le poids des queues, la distribution de Student intègre un troisième paramètre : $\nu$ (nu). Lorsque $\nu$ tends vers l’infini, la distribution de student tend vers une distribution normale.
+
+Comme vous pouvez le constater dans la carte d'identité du tableau \@ref(tab:studentdentity), le modèle GLM Student est très proche du modèle GLM Gaussien. On modélise explicitement la moyenne de la distribution et son paramètre de dispersion (variance) est laissé fixe. Ce GLM est même souvent utilisé comme une version « robuste » du modèle Gaussien du fait de sa capacité à intégrer explicitement l’effet des observations extrêmes. En effet, dans un modèle Gaussien, les observations extrêmes (aussi appelées observations aberrantes) vont davantage influencer les paramètres du modèle que si une distribution de Student est utilisée.
+
+```{r studentdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+
+model_formula <- "$Y \\sim Student(\\mu,\\sigma,\\nu)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = x$"
+
+tableau <- data.frame(
+ C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
+ C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Student", model_formula , "identitaire", "$\\mu$", "$\\beta_0$, $\\beta$,  $\\sigma$ et $\\nu$", "Homoscédasticité")
+)
+
+show_table(tableau, 
+    caption = "Carte d'identité du modèle Gaussien",
+    col.names = NULL, 
+    col.to.resize = c(2),
+    col.width = "8cm"
+)
+```
+
+#### Conditions d'applications
+
+Les conditions d’applications sont les mêmes que pour un modèle GLM Gaussien, à ceci prêt que ce modèle utilisant la distribution de Student est moins sensible aux observations extrèmes.
+
+#### Interprétation des paramètres
+
+L’interprétation des paramètres est la même que pour un modèle Gaussien puisque l’on modélise la moyenne de la distribution et que la fonction de lien est la fonction identitaire. Le seul paramètre supplémentaire est $\nu$ qui n’a en soit aucune interprétation pratique. Notez simplement que si $\nu$ est supérieur à 30, un simple modèle GLM Gaussien serait sûrement suffisant.
+
+#### Exemple appliqué dans R
+
+Nous proposons ici de simplement réajuster le modèle Gaussien présenté dans la section précédente en utilisant une distribution de Student. Nous utilisons pour cela la fonction `gam` du *package* **mgcv** avec le paramètre `family=scat` pour utiliser une distribution de Student. Les valeurs de VIF ont déjà été calculées dans l'exemple précédent, nous pouvons donc passer directement au calcul des distances de Cook.
+
+
+```{r stucookdist, fig.align = "center", out.width = "50%", fig.cap = "Distances de Cook pour un modèle GLM avec une distribution de Student", message=FALSE, warning=FALSE}
+# chargement des données
+load("data/lm/DataVegetation.RData")
+
+# ajustement du modèle
+modele <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal,
+              family = scat)
+
+# Calcul des distances de Cook
+cooksd <- cooks.distance(modele)
+
+# Affichage des valeurs
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+
+ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+
+```
+
+Nous retrouvons les quatre observations avec des distances de Cook très fortes que nous avions observé dans le modèle Gaussien. Nous décidons donc de les enlever pour les mêmes raisons que précédemment.
+
+```{r stucookdist2, fig.align = "center", out.width = "50%", fig.cap = "Distances de Cook pour un modèle GLM avec une distribution de Student, après suppression des valeurs fortement influentes", message=FALSE, warning=FALSE}
+# chargement des données
+DataFinal2 <- subset(DataFinal, cooksd<0.1)
+
+# ajustement du modèle
+modele <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2,
+              family = scat)
+
+# Calcul des distances de Cook
+cooksd <- cooks.distance(modele)
+
+# Affichage des valeurs
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+
+ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+
+```
+
+Nous pouvons à présente vérifier si les résidus simulés se comportent tel qu'attendu.
+
+```{r studentresid, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Diagnostic général des résidus simulés pour le GLM avec distribution de Student", out.width = "95%"}
+
+# extraction des prédictions du modèle
+mus <- predict(modele, type = 'response')
+
+#affichage des parametres nu et sigma
+modele$family$family
+sigma_model <- 11.281
+nu_model <- 6.333
+
+library(LaplacesDemon) # pour simuler des donnees d'une distribution de Student
+
+# generation de 1000 simulation pour chaque prediction
+nsim <- 1000
+cols <- lapply(1:length(mus),function(i){
+  mu <- mus[[i]]
+  sims <- rst(nsim, mu=mu, sigma = sigma_model, nu = nu_model)
+  return(sims)
+})
+mat_sims <- do.call(rbind, cols)
+
+# calculer les residus simulés
+sim_res <- createDHARMa(simulatedResponse = mat_sims, 
+                            observedResponse = DataFinal2$VegPct,
+                            fittedPredictedResponse = mus,
+                            integerResponse = F)
+plot(sim_res)
+```
+Il semble que nous obtenions des résultats similaires à ceux du modèle Gaussien, nos résidus ne suivent pas une distribution uniforme (figure : \@ref(fig:studentresid)) et nous avons potentiellement des valeurs aberrantes dans les données. Le graphique de quantile-quantile n'est parfois pas très adapté pour discerner une déviation de la distribution uniforme, nous pouvons dans ce cas afficher un histrogramme des résidus pour en avoir le coeur net (figure : \@ref(fig:studentresid2)).
+
+```{r studentresid2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distribution des résidus simulé du modèle GLM avec distribution de Student", out.width = "95%"}
+ggplot()+
+  geom_histogram(aes(x = residuals(sim_res)), bins = 50, color = "white")
+```
+
+Dans notre cas, il est intéressant de comparer les formes des simulations issues du modèle Gaussien et du modèle de Student pour bien distinguer la différence entre les deux.
+
+```{r studentresid3, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Simulations issues des modèles Gaussien et Student, comparées aux données originales", echo = F, out.width = "95%"}
+
+# formattage des simulations Students
+df1 <- reshape2::melt(mat_sims[,1:20])
+
+# simulation pour un modèle Gaussien
+modeleGau <- glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                       Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2)
+
+sigma2 <- sigma(modeleGau)
+mus <- predict(modeleGau, type = 'response')
+
+nsim <- 1000
+cols <- lapply(1:length(mus),function(i){
+  mu <- mus[[i]]
+  sims <- rnorm(nsim, mean=mu, sd = sigma2)
+  return(sims)
+})
+mat_sims2 <- do.call(rbind, cols)
+
+df2 <- reshape2::melt(mat_sims2[,1:20])
+
+P1 <- ggplot()+
+  geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..), color = 'white', bins = 50) + 
+  geom_density(data = df1, aes(x = value, group = Var2), color = rgb(0.9,0.22,0.27,0.4)) + 
+  labs(x="Densité de végétation",
+       y = "",
+       subtitle = "Simulations du modèle Student")+
+  xlim(-10,110) + 
+  ylim(0,0.023) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+
+P2 <- ggplot()+
+  geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..), color = 'white', bins = 50) + 
+  geom_density(data = df2, aes(x = value, group = Var2), color = rgb(0.11,0.21,0.34,0.4)) + 
+  labs(x="Densité de végétation",
+       y = "",
+       subtitle = "Simulations du modèle Gaussien")+
+  xlim(-10,110) + 
+  ylim(0,0.023) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+  
+ggarrange(P1,P2, ncol = 2, nrow = 1)
+
+```
+
+Nous constatons ainsi que la différence entre les deux modèles est ici très mince (voir inexistante). La seule chose que l'on peut noter est que le modèle de Student à une courbe (une queue de distribution) mois applatie vers la droite. Cela lui permettrait de mieux tenir de compte de cas extrèmes avec de fortes densité de végétation (ce qui concerne donc très peu d'observations puisque cette variable a un maximum de 100).
+
+Pour déterminer si le modèle de Student est plus pertinent à retenir que le modèle Gaussien, nous pouvons ajuster un second modèle de Studen pour lequel nous forçon artificiellement $\nu$ à être très élevé. Pour rappel, quand $\nu$ tend vers l'infini, la distribution de Student tend vers une distribution normale. Nous forçons ici $\nu$ à être supérieur à 100 pour créer un second modèle de Student se comportant quasiment comme un modèle Gaussien et calculons les AIC des deux modèles.
+
+```{r message=FALSE, warning=FALSE}
+
+# calcul d'un modèle de Student ientique à un modèle Gaussien
+modele2 <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
+                   Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2,
+               family = scat(min.df = 100))
+
+# calcul des deux AIC
+AIC(modele)
+AIC(modele2)
+```
+
+Le second AIC (modèle de Student) est plus élevé, indiquant donc que le modèle est moins bien ajusté aux données. Dans le cas présent, il est plus pertinent de s'en ternir au modèle Gaussien. Ce résultat n'est pas surprenant si l'on consdière le fait que la variable Y (densité de végétation dans les secteurs de recensement de Montréal) est relativement compacte et comporte peu / pas de valeurs pouvant être qualifiées de valeurs extrèmes.
+
+Nous ne détaillons pas ici l'interprétation des coefficients du modèle (accessible avec la fonction `summary`) puisqu'ils ont la même interprétation que pour le modèle GLM Gaussien et donc un simple LM.
+
+### Le modèle GLM avec distribution de Gamma
+
+Pour rappel, la distribution de Gamma est strictement positive ($[0;+\infty[$), asymétrique et a une variance proportionnelle à sa moyenne (hétéroscedastique). Dans la section sur les distributions (\@ref(sectgammadistrib)), nous avions vu que la distribution de Gamma était formulée avec deux paramètres : sa forme ($\alpha$ ou shape) et son échelle ($b$ ou scale). Ces deux paramètres n’ont pas une interprétation très intuitive, mais il est possible avec un peu de jonglage mathématique d’arriver à une reparamétrisation intéressante. Nous détaillons cela dans l'encadré pour aller plus loin ci-dessous, mais il n'est pas nécessaire de le comprendre parfaitement pour pouvoir passer à la suite.
+
+::: {.bloc_aller_loin data-latex=""}
+**Reparamétrisation d'une distribution de Gamma pour un GLM**
+
+Si nous disposons d’une variable *Y*, suivant une distribution de Gamma telle que $Y \sim Gamma(\alpha,b)$ avec $\alpha$ le paramètre de forme et $b$ le paramètre d’échelle, alors, l'espérance de *Y* et la variance de *Y* peuvent être définies ainsi : 
+
+\footnotesize
+\begin{equation}
+\begin{aligned}
+&E(Y) = \alpha * b \\
+&Var(Y) = \alpha * b^2\\
+\end{aligned}
+\end{equation}
+\normalsize
+
+En d’autres termes, l’espérance (l’équivalent de la moyenne pour une distribution normale) de notre variable *Y* est égale au produit des paramètres de forme et d’échelle.
+
+Avec ces propriétés, il est possible de redéfinir la fonction de densité de la distribution de Gamma, et d’arriver à une nouvelle formulation : $Y \sim Gamma(\mu,\alpha)$. $\mu$ est donc l'espérance de *Y* (interprétable comme sa moyenne, soit sa valeur attendue) et $\alpha$ permet de capturer la dispersion de la distribution de Gamma. Par extension des relations présentées ci-dessus, on reformuler la variance en fonction de $\mu$ et $\alpha$.
+
+\footnotesize
+\begin{equation}
+\begin{aligned}
+&Var(Y) = \alpha \times b^2\\
+&\mu = \alpha \times b \text{ soit }b = \frac{\mu}{a}\\
+&Var(Y) = \alpha \times (\frac{\mu}{\alpha})^2 \text{ soit } Var(Y) = \frac{\mu^2}{\alpha}\\
+\end{aligned}
+\end{equation}
+\normalsize
+
+On observer donc que la variance dans un modèle Gamma augmente de façon quadratique avec la moyenne, mais est tempérée par le paramètre de forme. On en conclut qu'un paramètre de forme plus grand produira une distribution moins étalée.
+
+Dans ce contexte, $\mu$ doit être strictement positif : la valeur attendue moyenne d'une distribution de Gamma doit être positive par définition puisque qu'une distribution de Gamma ne peut pas produire de valeurs négative. il est donc naturel d’utiliser la fonction logarithme comme fonction de lien, puisque sa contrepartie (la fonction exponentielle) ne produit que des résultats positifs. 
+:::
+
+Pour résumer, nous nous retrouvons donc avec un modèle qui prédit sur une échelle logarithmique la moyenne d’une distribution de Gamma. Notez qu’il existe d’autre façons de spécifier un modèle GLM avec une distribution de Gamma, mais celle-ci est la plus intuitive.
+
+```{r gammadentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+
+model_formula <- "$Y \\sim Gamma(\\mu,\\alpha)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = log(x)$"
+
+tableau <- data.frame(
+ C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
+ C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Student", model_formula , "log", "$\\mu$", "$\\beta_0$, $\\beta$, et  $\\alpha$", "$Variance = \\frac{\\mu^2}{\\alpha}$")
+)
+
+show_table(tableau, 
+    caption = "Carte d'identité du modèle Gamma",
+    col.names = NULL, 
+    col.to.resize = c(2),
+    col.width = "8cm"
+)
+```
+
+##### Interprétation des paramètres
+
+Puisque le modèle utilise la fonction de lien log, alors les coefficients $\beta$ expriment l’augmentation de l’espérance (la valeur attendue de *Y*, ce qui est proche de l'idée de moyenne) de la variable Y sur une échelle logarithmique (comme dans un modèle de Poisson). Il est possible de convertir les coefficients dans l’échelle originale de la variable *Y* en utilisant la fonction exponentielle (l’inverse de la fonction log), mais ces coefficients représentent alors des effets multiplicatifs et pas des effets additifs.
+Prenons un exemple, admettons que le coefficient $\beta_1$, associé à la variable $X_1$ soit de 1,5. Cela signifie qu’une augmentation d’une unité de $X_1$, augmente le log de *Y* de 1,5 unité. L’exponentielle du coefficient est 4,48, ce qui signifie qu’une augmentation d’une unité entraîne une multiplication par 4,48 de la valeur attendue de *Y* (l’espérance de *Y*). Le paramètre de forme ($\alpha$) n’a pas d’interprétation pratique, bien qu’il soit utilisé dans les différents tests des conditions d’application du modèle et dans le calcul de sa déviance.
+
+##### Conditions d'applications
+
+Dans un modèle GLM Gaussien, la variance est capturée par un paramètre $\sigma$ et est constante, produisant la condition d'homoscésadicité des résidus. Dans un modèle Gamma, la variance varie en fonction de l'espérance et du paramètre de forme selon la relation : $Var(Y) = \frac{E(Y)^2}{\alpha}$. Les résidus sont donc par nature hétéroscédastiques dans un modèle Gamma et doivent suivre cette relation.
+
+##### Exemple appliqué dans R
+
+Pour cet exemple, nous nous intéressons à la durée de déplacements en milieu urbain. Ce type d’analyse permet notamment de mieux comprendre les habitudes de déplacement de la population et d’orienter les politiques de transport. Plusieurs travaux concluent que les durées de déplacement en milieu urbains varient en fonction du motif du déplacement, du mode de transport utilisé, des caractéristiques socio-économique de l’individu qui se déplace, et des caractéristiques du trajet en lui-même [@anastasopoulos2012analysis; @frank2008urban]. Nous modélisons ici la durée en minute d’un ensemble de déplacement effectués par des Montréalais en 2017 et enregistré avec l’application MTL Trajet proposée par la ville de Montréal. Ces données sont disponibles sur le site web des [données ouvertes de Montréal](http://donnees.ville.montreal.qc.ca/dataset/mtl-trajet) et son anonymisées. Nous ne disposons donc d’aucune information au niveau individuel.  Compte tenu du très grand nombre d’observations (plus de 185 000), nous n’avons dû effectuer quelques opérations de tri, nous avons ainsi supprimé :
+
+* Les trajets utilisant de multiples modes de transport (sauf en combinaison avec à pied, par exemple, un trajet effectué à pied et en transport en commun à été recatégorisé pour transport en commun uniquement). Les déplacements multimodaux se distinguent largement des déplacements unimodaux dans la littérature scientifique.
+* Les trajets de nuit (seuls les trajets démarrant entre 07h et 21h ont été conservé.
+* Les trajets dont le point de départ est un arrondissement / municipalité pour lequel moins de 150 trajets ont été enregistrés (trop peu d’observations)
+* Les trajets de plus de deux heures (cas rares, considérés comme des données aberrantes.
+* Les trajets dont le point de départ est à moins de 100 mètres du point d’arrivée (formant des boucles plutôt que des déplacements).
+
+Nous arrivons ainsi à un total de 24969 observations. Pour modéliser ces durées de déplacement, nous utilisons les prédicteurs présentés dans le tableau
+
+```{r variablegamma, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+df <- data.frame(
+  C1 = c("Mode", "Motif", "HeureDep", "ArrondDep", "LogDist", "MemeArrond", "Semaine"),
+  C2 = c("Mode de déplacement", "Motif du déplacement", "L’heure de départ", "Arrondissement de départ", "Logarithme de la distance à vol d’oiseau en km", "L’arrivée du trajet du trajet se situe-t-elle dans le même arrondissement que le départ", "Le trajet a-t-il été effectué en semaine ou en fin de semaine"),
+  C3 = c("Variable catégorielle", "Variable catégorielle", "Variable catégorielle", "Variable catégorielle", "Variable continue", "Variable binaire", "Variable binaire"),
+  C4 = c("Transport collectif ; piéton ; vélo et véhicule individuel", "Travail ; loisir ; magasinage et éducation", "De 07h à 21h", "Nom de l’arrondissement dont part le trajet", "Logarithme de la distance à vol d’oiseau en km entre le point de départ et d’arrivée", "Oui ou non", "Semaine ou fin de semaine")
+)
+
+show_table(df, 
+    caption = "Variable indépendantes utilisées dans le modèle Gamma",
+    col.names = c("Nom de la variable","signification","Type de variable","Mesure"), 
+    col.to.resize = c(2,4),
+    col.width = "5cm"
+)
+
+```
+
+Les temps de trajets forment une variable strictement postive et très vraissemblablement asymétrique. En effet, nous nous attendons à observer une certaine concentration de valeurs autours d'une moyenne, et davantage de trajets avec de petites durées que de trajets avec de longues durées. Pour nous en assurer, nous pouvons commencer par afficher la distribution de notre variable *Y* et la comparer à une distribution normale et une distribution Gamma.
+
+```{r gammadatadistrib, fig.cap = "Distribution des temps de trajet diurne à Montréal", fig.align = "center",  message=FALSE, warning=FALSE, out.width='50%'}
+
+# chargement des données
+dataset <- read.csv("data/glm/DureeTrajets.csv", stringsAsFactors = F)
+
+# definissons 7H du matin comme la référence pour la variable Heure de départ
+
+dataset$HeureDep <- relevel(
+  factor(dataset$HeureDep, levels = as.character(7:21)),
+  ref = "7")
+
+# Comparaison de la distribution originale avec une distribution 
+# normale et une distribution Gamma
+library(fitdistrplus)
+model_gamma <- fitdist(dataset$Duree, distr = "gamma")
+
+ggplot(data = dataset) + 
+  geom_histogram(aes(x=Duree, y = ..density..), bins = 40, color = "white")+
+  stat_function(fun = dgamma, color = 'red', size = 0.8, 
+                args = as.list(model_gamma$estimate))+
+  stat_function(fun = dnorm, color = 'blue', size = 0.8, 
+                args = list(mean = mean(dataset$Duree), 
+                            sd = sd(dataset$Duree)))+
+  labs(x = 'temps de déplacement (min)',
+       y = '',
+       subtitle = "modèle Gamma et Gaussien")
+```
+
+La figure \@ref(fig:gammadatadistrib) permet de bien de constater l'asymétrie de la distribution des temps de trajets et qu'un modèle Gamma (ligne rouge) a plus de chance d'être adapté aux données qu'un modèle Gaussien (ligne bleue).
+
+**Vérification des conditions d'application**
+
+Comme pour les modèles précédents, nous commençons par la vérification de l'absence de multicolinéarité.
+
+```{r  message=FALSE, warning=FALSE, out.width='50%'}
+## Calcul du VIF
+vif(glm(Duree ~ Mode + Motif + HeureDep + LogDist +
+          ArrondDep + MemeArrond + Jour,
+        data = dataset,
+        family = Gamma(link="log")))
+```
+
+L'ensemble des valeurs de VIF sont inférieures à trois, indiquant donc l'absence de multicolinéarité excessive. Nous pouvons donc ajuster une première version du modèle (ici avec le *package* **VGAM** et la fonction `vglm`) et calculer les distances de Cook.
+
+```{r cookdistgamma, message=FALSE, warning=FALSE, out.width='50%', fig.cap = "Distances de Cook pour le modèle Gamma", fig.align = "center"}
+# Calcul du modele avec VGAM
+modele <- vglm(Duree ~ Mode + Motif + HeureDep + LogDist +
+                 ArrondDep+ MemeArrond + Semaine,
+               data = dataset,
+               family=gamma2(lmu = "loglink"))
+
+# calcul des distances de Cook
+hats <- hatvaluesvlm(modele)[,1]
+res <- residuals(modele,type = "pearson")[,1]
+disp <- modele@coefficients[[2]]**-1
+nbparams <- modele@rank
+
+cooksd <- (res/(1 - hats))^2 * hats/(disp * nbparams)
+
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+
+# Représentation des distances de Cook
+ggplot(data = df)+
+  geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4,0.4)) + 
+  geom_hline(yintercept = 0.003, color = "red") +
+  labs(x = "", y = "Distance de Cook")
+```
+Puisque nous disposons d'un (très) grand nombre d'observations, nous pouvons nous permettre de retirer les quelques observations fortement influentes (distance de Cook > 0,003 dans notre cas) qui apparaissent dans la figure \@ref(fig:cookdistgamma). Nous retirons ainsi 28 observations qui n'avaient pas spécifiquement de points communs et réajustons le modèle.
+
+```{r message=FALSE, warning=FALSE}
+# retirer les valeurs influentes
+dataset2 <- subset(dataset, cooksd<0.003)
+
+# Calcul du modele avec VGAM
+modele <- vglm(Duree ~ Mode + Motif + HeureDep + LogDist +
+                 ArrondDep+ MemeArrond + Semaine,
+               data = dataset2,
+               family=gamma2(lmu = "loglink"))
+```
+
+Nous constatons ainsi à la figure \@ref(fig:cookdistgamma2) que dans la nouvelle version du modèle, aucune valeur particulièrement influente n'émerge du groupe.
+
+```{r cookdistgamma2, message=FALSE, warning=FALSE, out.width='50%', fig.cap = "Distances de Cook pour le modèle Gamma (sans les observations fortement influentes)", fig.align = "center", echo = FALSE}
+
+# calcul des distances de Cook
+hats <- hatvaluesvlm(modele)[,1]
+res <- residuals(modele,type = "pearson")[,1]
+disp <- modele@coefficients[[2]]**-1
+nbparams <- modele@rank
+
+cooksd <- (res/(1 - hats))^2 * hats/(disp * nbparams)
+
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+
+# Représentation des distances de Cook
+ggplot(data = df)+
+  geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4,0.4))
+```
+
+```{r simdistribgamma, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Comparaison de la distribution originale et de simulations issues du modèle Gamma", fig.align = "center", echo = TRUE}
+
+# extraction des predictions du modèle (mu)
+mus <- modele@fitted.values
+# extration du paramètre de forme
+shape <- exp(modele@coefficients[[2]])
+
+#calcul des simulations
+nsim <- 1000
+
+cols <- lapply(1:length(mus),function(i){
+  mu <- mus[[i]]
+  sims <- rgamma(n = nsim,shape = shape, scale = mu/shape)
+  return(sims)
+})
+mat_sims <- do.call(rbind, cols)
+
+
+# représentation graphique de 20 simulations
+df2 <- reshape2::melt(mat_sims[,0:20])
+
+ggplot() + 
+  geom_histogram(aes(x = Duree, y = ..density..),
+                 data = dataset, bins = 100, color = "black", fill = "white") + 
+  geom_density(aes(x = value, y=..density.., group = Var2), data = df2, 
+               fill = rgb(0,0,0,0), color = rgb(0.9,0.22,0.27,0.4), size = 1)+
+  xlim(0,200)
+
+```
+Avant de calculer les résidus simulés, nous comparons la distribution originale des données et des simulations issues du modèle. La figure \@ref(fig:simdistribgamma) permet de constater que le modèle semble bien capturer l’essentiel de la forme de la variable *Y* originale. Nous notons un léger décalage entre la pointe des deux distributions, laissant penser que les valeurs prédites par le modèle tendent à être légèrement plus grandes que les valeurs réelles. Pour mieux appréhender ce constat, nous passons à l'analyser des résidus simulés.
+
+```{r gammaresids message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Distribution des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
+
+# DHarma tests
+sim_res <- createDHARMa(simulatedResponse = mat_sims, 
+                            observedResponse = dataset2$Duree,
+                            fittedPredictedResponse = modele@fitted.values[,1],
+                            integerResponse = F)
+
+ggplot() + 
+  geom_histogram(aes(x = residuals(sim_res)), bins = 100, color = "white") + 
+  labs(x = "résidus simulés",
+        y = "")
+```
+
+Nul besoin d'un test statistique pour constater que ces résidus (figure : \@ref(fig:gammaresids)) ne suivent pas une distribution uniforme. Nous observons une nette surreprésentation de résidus à 1 et une nette sous-représentation de résidus à 0 0. Il y a donc de nombreuses observations dans notre modèle pour lesquelles les simulations sont soit systématique trop fortes, et pas assez pour lesquelles les simulations seraient systématiquement trop faibles.
+
+```{r gammaresids2 message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
+plot(sim_res)
+```
+
+La figure \@ref(fig:gammaresids2) indique que le modèle souffre à la fois d'un problème de dispersion (la relation espérance-variance n'est donc pas respectée) et est affecté par des valeurs aberrantes. Considérant que nous avons encore un très grand nombre d'observation, nous faisons le choix de retirer celles pour lesquelles la méthode des résidus simulés estiment qu'elles sont des outliers dans au moins 1% des simulations, soit environ 620 observations.
+
+```{r gammaresids3 message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma (après suppression d'environ 620 valeurs aberrantes)", fig.align = "center", echo = TRUE}
+
+# selection des valeurs aberrantes au seuil 0.01
+sim_outliers <- outliers(sim_res, 
+                         lowerQuantile = 0.01,
+                         upperQuantile = 0.99, 
+                         return = "logical")
+table(sim_outliers)
+
+# retirer ces observations des données
+dataset3 <- subset(dataset2, sim_outliers==FALSE)
+
+# réajuster le modèle
+modele <- vglm(Duree ~ Mode + Motif + HeureDep + 
+                 LogDist + ArrondDep + MemeArrond + Semaine,
+               data = dataset3,
+               model = T,
+               family=gamma2)
+
+# extraction des predictions du modèle (mu)
+mus <- modele@fitted.values
+# extration du paramètre de forme
+shape <- exp(modele@coefficients[[2]])
+
+#calcul des simulations
+nsim <- 1000
+
+cols <- lapply(1:length(mus),function(i){
+  mu <- mus[[i]]
+  sims <- rgamma(n = nsim,shape = shape, scale = mu/shape)
+  return(sims)
+})
+mat_sims <- do.call(rbind, cols)
+
+# calcule des résidus simulés
+sim_res <- createDHARMa(simulatedResponse = mat_sims, 
+                            observedResponse = dataset3$Duree,
+                            fittedPredictedResponse = modele@fitted.values[,1],
+                            integerResponse = F)
+
+plot(sim_res)
+```
+
+La figure \@ref(fig:gammaresids3) indique que les résidus simulés ne suivent toujours pas une distribution uniforme, et qu'il existe une relation prononcées (panneau de droite) entre les résidus et les valeurs prédites.  Cette dernière laisse penser que des prédicteurs importants ont été omis dans le modèle, ce qui n’est pas surprenant compte tenu du fait que nous ne disposons d’aucune donnée socio-économique sur les individus ayant réalisé les trajets en question. Nos données sont également potentiellement affectées par la présence de dépendance spatiale. 
+
+D'un point de vue purement pédagogique, nous pouvons comparer graphiquement la variance observée dans les données et la variance attendue par le modèle. La figure \@ref(fig:dispgamma) montre clairement que la variance des données tend à être plus grande qu'attendue quand les temps de trajets sont petits, mais diminue trop vite quand les temps de trajet augmentent. D'autres distributions pourraient être envisagées pour ajuster notre modèle : Lognormal, Weibull, etc.
+
+```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle de Gamma", out.width = "50%"}
+
+# Extraction des prédiction du modèle
+mus <- predict(modele, type = "response")[,1]
+
+# Création d'un dataframe pour contenir la prédiction et les vraie valeurs
+df1 <- data.frame(
+  mus = mus,
+  reals = dataset3$Duree
+)
+
+# Calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
+# et stockage dans un second dataframe
+seqa <- seq(10,120,10)
+
+shape <- exp(modele@coefficients[[2]])
+
+df2 <- data.frame(
+  mus = seqa,
+  lower = qgamma(p = 0.025, shape = shape, scale = seqa/shape),
+  upper = qgamma(p = 0.975, shape = shape, scale = seqa/shape)
+)
+
+# Affichage des valeurs réelles et prédites (en rouge)
+# et de leur variance selon le modèle (en noir)
+ggplot() + 
+  geom_point(data = df1, 
+             mapping = aes(x = mus, y = reals),
+             color =rgb(0.9,0.22,0.27,0.4), size = 0.5) + 
+  geom_errorbar(data = df2,
+                mapping = aes(x = mus, ymin = lower, ymax = upper),
+                width = 0.2, color = rgb(0.4,0.4,0.4)) + 
+  labs(x = 'valeurs prédites',
+       y = "valeurs réelles")
+```
+À ce stade, nous disposons de suffisamment d’élément pour douter des résultats du modèle. Nous allons tout de même poursuivre notre analyse afin d'illustrer l'estimation de la qualité d'ajustement d'un tel modèle et son interprétation.
+
+**Analyse de la qualité d'ajustement**
+```{r warning = FALSE, message=FALSE}
+#ajustement d'un modele nul
+modele.null <- vglm(Duree ~1,
+               data = dataset3,
+               model = T,
+               family=gamma2)
+
+# calcul des pseudos R2
+rsqs(loglike.full = logLik(modele),
+     loglike.null = logLik(modele.null),
+     full.deviance = logLik(modele) * -2,
+     null.deviance = logLik(modele.null) * -2,
+     nb.params = modele@rank,
+     n = nrow(dataset3)
+     )
+
+# calcul du RMSE
+preds <- predict(modele, type="response")[,1]
+sqrt(mean((preds - dataset3$Duree)**2))
+```
+Le modèle n’explique que 5% de la déviance et obtient un R2 ajusté de McFadden de 0,05, un R2 de Cox et Snell de 0,33 et un R2 de Nagelkerke de 0,33. La moyenne de l’erreur quadratique est de seulement 13,5 indiquant que le modèle se trompe en moyenne de seulement 13,5 minutes. La capcité de prédiction du modèle est donc limitée sans être catastrophique.
+
+**Interprétation des résultats**
+
+Pour rappel, la fonction de lien dans notre modèle est la fonction log. Chaque coefficient représente donc l'impact de l'augmentation d'une unité des variables indépendante sur le logarithme de l'espérance de notre variable dépendante. Si nous transformons nos coefficient avec la fonction exponentielle (exp) nous obtenons, pour chaque augmentation d'une unité des variables indépendante, la multiplication de l'espérance de notre variable dépendante.
+
+Puisque nos trajets peuvent provenir de nombreux arrondissements, nous proposons de représenter l'exponentiel de leurs coefficients avec un graphique.
+
+```{r arrondgamma, warning = FALSE, message=FALSE, fig.cap = "Effet de l'arrondissement de départ sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%"}
+
+# extraction des coefficient du modèle
+coeffs <- modele@coefficients
+# calcul des interval de confiance des coefficients
+conf <- confint(modele)
+# passage en exponentiel
+df <- exp(cbind(coeffs, conf))
+
+# extraction des coefficients pour les arrondissements
+dfArrond <- data.frame(df[grepl("ArrondDep",row.names(df), fixed = T),])
+names(dfArrond) <- c("coeff", "lower","upper")
+dfArrond$Arrondissement <- gsub("ArrondDep","",rownames(dfArrond),fixed = T)
+
+# affichage du graphique
+ggplot(data = dfArrond) + 
+  geom_vline(xintercept = 1, color = "red")+
+  geom_errorbarh(aes(y = reorder(Arrondissement, coeff), xmin = upper, xmax = lower), height = 0)+
+  geom_point(aes(y = reorder(Arrondissement, coeff), x = coeff)) + 
+  geom_text(aes(x = upper, y = reorder(Arrondissement, coeff), label = paste("coeff. : ",round(coeff,2),sep="")), size = 3, nudge_x = 0.07)+
+  labs(x = "Coefficient multiplicateur (ref : Ahuntsic-Cartierville)",
+       y = "")+
+  xlim(c(0.75,1.46))
+```
+
+La figure \@ref(fig:arrondgamma) permet de constater que les arrondissements Ville Marie et Plateau-Mont-Royal, se distinguent par des trajets plus courts (environs 20% plus court en moyenne que les trajets partant d'Ahuntsic-Cartierville). À l'inverse, Lachine est de loin l'arrondissement avec les trajets les plus long (25% plus long en moyenne que les trajets partant d'Ahuntsic-Cartierville). (EST-CE QU'ON EN FAIT UNE CARTE ?)
+
+Nous appliquons la même méthode de visualisation à la variable Heure de départ des trajets.
+
+```{r heuresgamma, warning = FALSE, message=FALSE, fig.cap = "Effet l'heure de départ sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%"}
+
+# Extraction des valeurs pour les heures de départ
+dfHeures <- data.frame(df[grepl("HeureDep",row.names(df), fixed = T),])
+names(dfHeures) <- c("coeff", "lower","upper")
+dfHeures$Heure <- gsub("HeureDep","",rownames(dfHeures),fixed = T)
+
+# rajouter des 0 et des h pour de jolies légandes
+dfHeures$Heure <- ifelse(str_length(dfHeures$Heure)==1, paste("0",dfHeures$Heure,"h",sep=""),paste(dfHeures$Heure,"h",sep=""))
+
+# afficher le graphique
+ggplot(data = dfHeures) + 
+  geom_hline(yintercept = 1, color = "red")+
+  geom_errorbar(aes(x = Heure, ymin = upper, ymax = lower), width = 0)+
+  geom_point(aes(x = Heure, y = coeff)) + 
+  geom_text(aes(y = upper, x = Heure, label = round(coeff,2)), size = 3, nudge_y = 0.07)+
+  labs(x = "Coefficient multiplicateur (ref : 07:00)",
+       y = "")
+```
+
+Nous pouvons ainsi observer à la figure La figure \@ref(fig:heuresgamma) que les trajets effectués entre 10h et 12h soient les plus long de la journée, entre 30 et 40% plus long que ceux effectués à 07h et 08h qui constituent les trajets les plus courts.
+
+Le reste des coefficients (ainsi que le paramètre de forme) sont affichés dans le tableau \@ref(tab:coeffsgamma). Comparativement à un trajet effectué à pied, un trajet en transport en commun durera en moyenne 53% plus longtemps (1,53 fois plus long), alors qu’un déplacement en véhicule individuel est en moyenne 28% moins long et un déplacement en vélo 23% moins long. Aucune différence n’est observable entre les déplacements effectués en semaine ou durant la fin de semaine.
+
+Les déplacements ayant pour motif le magasinage et le travail ont tendance à être en moyenne plus court de 11% et 6% respectivement, comparativement aux déplacement effectués pour l’éducation ou le loisir (différence non significative en loisir et éducation). Sans surprise, la distance entre le point de départ et d’arrivée du trajet affecte sa durée de façon positive. Considérant qu’il est difficile d’interpréter des log de kilomètre (dû à une transformation de la variable originale), nous représentons l’effet de cette variable avec la prédiction du modèle à la figure. Nous utilisons pour cela le cas suivant : déplacement à pied à 07h en semaine, ayant pour motif éducation, dont le point de départ se situe dans l’arrondissement Ahuntsic et donc le point d’arrivée est dans un autre arrondissement. Seule la distance du trajet varie de 1 à 40km. À titre de comparaison, nous représentons aussi pour les mêmes conditions le cas d’un cycliste (en vert), et d’un utilisateur du transport en commun (en bleu). Les lignes en pointillés représentent les intervalles des confiance à 95% des prédictions.
+
+```{r coeffsgamma, warning = FALSE, message=FALSE, echo = F}
+tableau <- build_table(modele, coef_digits = 3, OR_digits = 3)
+
+tableau_ok <- tableau[c(1:11,28,51:nrow(tableau))]
+tableau_ok <- tableau_ok[,c(1,2,3,6,7,8,9)]
+
+show_table(tableau_ok, 
+    caption = "Résultats pour le modèle GLM Gamma",
+    col.names = c('Variable',"Coeff.","Exp(Coeff.)","Val.p","IC 2,5% exp(Coeff.)","IC 97,5% exp(Coeff.)", "Sign.")
+)
+
+
+```
+
+```{r distancegamma, warning = FALSE, message=FALSE, fig.cap = "Effet de la distance à vol d'oiseau sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%"}
+
+# création d'un dataframe fictif pour la prédiction
+dfpred <- expand.grid(
+  Dist = seq(1,40, 0.5),
+  Motif = 'education',
+  HeureDep = '7',
+  MemeArrond = 'Different',
+  ArrondDep = 'Ahuntsic-Cartierville',
+  Mode = c('pieton','velo','transport collectif'),
+  Semaine = 'lundi au vendredi'
+)
+
+# mise en log de la variable de distance
+dfpred$LogDist <- log(dfpred$Dist)
+
+# calcul des prédictions et de leur erreur standard (échelle log)
+lin_pred <- predict(modele,dfpred, se = T)
+
+# calcul des intervales de confiance et mise en exponentielle des prédictions
+dfpred$pred <- exp(lin_pred$fitted.values[,1])
+dfpred$lower <- exp(lin_pred$fitted.values[,1] -1.96*lin_pred$se.fit[,1])
+dfpred$upper <- exp(lin_pred$fitted.values[,1] +1.96*lin_pred$se.fit[,1])
+
+# ajoutons les accents pour le graphiques
+dfpred$Mode <- as.character(dfpred$Mode)
+dfpred$Mode2 <- case_when(dfpred$Mode == "pieton" ~ "piéton",
+                         dfpred$Mode == "velo" ~ "vélo",
+                         TRUE ~ dfpred$Mode)
+
+# Affichage des résultats
+ggplot(data = dfpred) + 
+  geom_path(aes(x = Dist, y = lower, color = Mode2), linetype = "dashed")+
+  geom_path(aes(x = Dist, y = upper, color = Mode2), linetype = "dashed")+
+  geom_path(aes(x = Dist, y = pred, color = Mode2), size = 1) + 
+  labs(y = "temps de trajet prédit (min)",
+       x = "distance à vol d'oiseau (km)")
 ```

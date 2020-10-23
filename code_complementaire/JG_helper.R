@@ -890,6 +890,13 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
 
 }
 
+# confid = T
+# coef_digits = 2
+# std_digits = 2
+# z_digits = 2
+# p_digits = 3
+# OR_digits = 3
+
 ## pour un vglm
 build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2, z_digits = 2, p_digits = 3, OR_digits = 3){
   ## extraction des elements principaux
@@ -909,8 +916,9 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
     }
   }else if (model@family@vfamily[[1]] %in% c("gamma2")){
     base_table <- cbind(base_table[,1],
-                        round(exp(base_table[,1]),coef_digits),
-                        base_table[,2:6]
+                        round(exp(base_table[,1]),OR_digits),
+                        base_table[,c(2,3,4)],
+                        round(exp(base_table[,c(5,6)]),OR_digits)
                         )
   }
 
@@ -954,7 +962,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
 
   ## creation d'un beau tableau
   if(model@family@vfamily[[1]] == "gamma2"){
-    rownames(base_table)[1] <- "Intercept"
+    rownames(base_table)[1] <- "(Intercept)"
     rownames(base_table)[2] <- "shape"
   }
 

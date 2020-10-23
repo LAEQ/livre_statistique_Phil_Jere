@@ -1,11 +1,53 @@
 # Régressions à effets mixtes (GLMM) et régression multiniveaux  {#chap07}
 
-## Principes de base des GLMM {#sect071}
+## Introduction
+
+Condition d'application commune a tous les GLM : independance des observations
+: deux observations prises au hasard dans un jeu de donnees ne devrait pas davantage se ressembler que deux autres. Or une telle hypothese n'est que rarement realistes : 
+
+Ex : 
+
+dependance spatiale : des observations proches se ressemblent systematiquement ou au contraire sont systematique differentes
+
+dependance temporelle : des observations proches dans le temps 
+
+effet de groupe
 
 Notion de pseudo-réplications
 
-Effets aléatoire *versus* effets fixes
+Idee generale : ces structures ne font pas intrinsequement partie de la population que nous etudions : nous pouvons deplacer un individu dans l'espace, dans le temps (vers l'avant uniquement malhreusement) ou le faire changer de groupe. Ces effets sont donc exterieurs aux individus. On les appelle effets aleatoire par distinction avec les effets fixes (propres aux individus). Lorsque l'on tient compte des deux dans un modele, on obtient un modele a effets mixtes (GLMM). Notez qu'en sciences sociales on utilise aussi la nomenclature : modele hierarchique ou multiniveau.
+
+Nous nous concentrons ici uniquement sur les modeles incluant des effets de groupes, les effets spatiaux et temporels meriteraient chacun un livre dedie. Notez cependant qu'avec des effets de groupe on peut quand meme integrer des structures spatiales et temporelles
+
+Note sur la semantique (ces mots sont parfois utilises dans d'autres contextes) !
+
+Un GLMM est une extension d'un GLM ==> tout ce que nous avons vu sur les GLM tient ici
+
+Les GLMM pour repondre au probleme pose par les structures de groupe ==> dependance des observations au sein d'un groupe
+
+## Principes de base des GLMM {#sect071}
+
+### anatomie d'un GLMM
+
+plusieurs formes : intercept aleatoire / pente aleatoire / pente et intercept aleatoire
+
+Comparaison des formulations fixe : coefficient pour variable binaire / interaction binaire et continue / combinaison des deux
+
+shrinkage, partial pooling, distributon de l'effet aleatoire, deux niveaux dans le modele, structure de covariance
+
+Encadre sur le nombre de parametre (moins de parametres dans un modele a effet mixte que dans un modele a effet fixe)
+
+### distinction effets fixes et effets aleatoires
+
+les questions a se poser pour decider si un effet est fixe ou aleatoire
+
+### Analyse d'un GLMM
+
+Idem que pour un GLM, mais avec : 
+
+ICC, R2 marginal, R2 conditionnel, observation des Random Intercept et Random Coeffs. Analyse des correlations entre random intercept et Random coeff. Normalite de la distribution des effets aleatoire (ou autre distribution).
 
 ## Application à une variable continue {#sect072}
+
 
 ## Régressions multiniveaux {#sect073}
