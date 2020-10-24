@@ -15,6 +15,25 @@ Dans cette section, nous présenterons les modèles linéaires généralisés pl
 
 Nous avons vu qu’une régression linéaire multiple (LM) ne peut être appliquée que si la variable dépendante analysée est continue et si elle est normalement distribuée, une fois les variables indépendantes contrôlées. Il s’agit d’une limite très importante puisqu’elle ne peut être utilisée pour modéliser et prédire des variables binaires, multinomiales, de comptage, ordinales ou plus simplement des données anormalement distribuées. Une seconde limite importante des LM est que l’influence des variables indépendantes sur la variable dépendante ne peut être que linéaire. L’augmentation d’une unité de *X* conduit à une augmentation (ou diminution) de $\beta$ (coefficient de régression) unités de *Y*, ce qui n’est pas toujours représentatif des phénomènes étudiés. Afin de dépasser ces contraintes, @GLMnelder ont proposé une extension des modèles LM, soit les modèles linéaires généralisés (GLM).
 
+::: {.bloc_package data-latex=""}
+Dans cette section, nous utiliserons principalement les packages suivants (À MODIFIER PLUS TARD) : 
+
+* Pour créer des graphiques :
+  - **ggplot2**, le seul, l'unique
+  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes
+  
+* Pour ajuster des modèles GLM :
+  - **VGAM** et **gamlss** offrent tous les deux un très large choix de distribution et de fonction de diagnostic, mais nécessitent plusieurs manipulations manuelles
+  - **mgcv** offre moins de distributions que les deux précédents mais est plus simple d'utilisation
+
+ * Pour analyser des modèles GLM :
+  - **car** essentiellement pour la fonction `vif`
+  - **DHARMa** pour le diagnostic des résidus simulés 
+  - **DescTools** pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera
+  - **ROCR** et **caret** pour l'analys de la qualité d'ajustement de modèles pour des variables qualitatives
+  - **sandwich** pour générer des erreurs standard robustes pour le modèle GLM logistique binomial
+:::
+
 ### Formulation d'un GLM {#sect0611}
 
 Puisqu’un modèle GLM est une extension des modèles LM, il est possible de traduire un modèle LM sous forme d’un GLM. Nous utilisons ce point de départ pour détailler la morphologie d’un GLM. Nous avons vu dans la section précédente qu’un modèle LM correspond à la formule suivante (notation matricielle) :
@@ -3634,7 +3653,7 @@ ggplot() +
 ```
 Avant de calculer les résidus simulés, nous comparons la distribution originale des données et des simulations issues du modèle. La figure \@ref(fig:simdistribgamma) permet de constater que le modèle semble bien capturer l’essentiel de la forme de la variable *Y* originale. Nous notons un léger décalage entre la pointe des deux distributions, laissant penser que les valeurs prédites par le modèle tendent à être légèrement plus grandes que les valeurs réelles. Pour mieux appréhender ce constat, nous passons à l'analyser des résidus simulés.
 
-```{r gammaresids message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Distribution des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
+```{r gammaresids, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Distribution des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
 
 # DHarma tests
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
@@ -3650,13 +3669,13 @@ ggplot() +
 
 Nul besoin d'un test statistique pour constater que ces résidus (figure : \@ref(fig:gammaresids)) ne suivent pas une distribution uniforme. Nous observons une nette surreprésentation de résidus à 1 et une nette sous-représentation de résidus à 0 0. Il y a donc de nombreuses observations dans notre modèle pour lesquelles les simulations sont soit systématique trop fortes, et pas assez pour lesquelles les simulations seraient systématiquement trop faibles.
 
-```{r gammaresids2 message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
+```{r gammaresids2, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
 plot(sim_res)
 ```
 
 La figure \@ref(fig:gammaresids2) indique que le modèle souffre à la fois d'un problème de dispersion (la relation espérance-variance n'est donc pas respectée) et est affecté par des valeurs aberrantes. Considérant que nous avons encore un très grand nombre d'observation, nous faisons le choix de retirer celles pour lesquelles la méthode des résidus simulés estiment qu'elles sont des outliers dans au moins 1% des simulations, soit environ 620 observations.
 
-```{r gammaresids3 message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma (après suppression d'environ 620 valeurs aberrantes)", fig.align = "center", echo = TRUE}
+```{r gammaresids3, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma (après suppression d'environ 620 valeurs aberrantes)", fig.align = "center", echo = TRUE}
 
 # selection des valeurs aberrantes au seuil 0.01
 sim_outliers <- outliers(sim_res, 
@@ -3876,7 +3895,6 @@ show_table(tableau_ok,
     col.names = c('Variable',"Coeff.","Exp(Coeff.)","Val.p","IC 2,5% exp(Coeff.)","IC 97,5% exp(Coeff.)", "Sign.")
 )
 
-
 ```
 
 ```{r distancegamma, warning = FALSE, message=FALSE, fig.cap = "Effet de la distance à vol d'oiseau sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%"}
@@ -4005,9 +4023,9 @@ show_table(df,
 
 Sans suprise, nous commençons par charger nos données et nous assurer de l'absence de multicolinéarité excessives entre nos variables indépendantes.
 
-```{r, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 ## chargement des donnees
-dataset <- read.csv("data/glm/data_chaleur.csv")
+dataset <- read.csv("data/glm/data_chaleur.csv",fileEncoding = "utf8")
 
 ## calcul des valeurs de vif
 vif(glm(hot ~
@@ -4040,7 +4058,7 @@ ggplot(data = df)+
 
 Nous pouvons observer à la figure \@ref(fig:cookdistbeta) que seulement deux observations se distinguent très nettement des autres. Nous les isolons donc dans un premier temps
 
-```{r, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 cas_etranges <- subset(dataset, df$cooksd >= 0.01)
 print(cas_etranges[,23:ncol(cas_etranges)])
 ```
@@ -4094,7 +4112,7 @@ ggplot(data = df3)+
   labs(x = "", y = "Distance de Cook")
 ```
 
-Tout semble aller pour le mieux après ce second passage (figure : \@ref(fig:cookdistbeta3)). Si nous avions continué à observer des valeurs aussi influentes, nous aurions dû commencer à sérieusement questionner nos données. La prochaine étape du diagnostic est donc l'analyse des résidus simulés.
+Tout semble aller pour le mieux après ce second passage (figure : \@ref(fig:cookdistbeta3)). Si nous avions continué à observer des valeurs aussi influentes, nous aurions dû commencer à sérieusement questionner nos données ou notre modèle. La prochaine étape du diagnostic est donc l'analyse des résidus simulés.
 
 ```{r residsimbeta, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle Beta", fig.align = "center", out.width = "95%"}
 
@@ -4125,7 +4143,7 @@ sim_res <- createDHARMa(simulatedResponse = mat_sims,
 plot(sim_res)
 ```
 
-La figure \@ref(fig:residsimbeta) indique que les résidus suivent bien une distribution uniforme. Le test des valeurs aberrante est significatif au seuil 0,05 mais pas 0,01. Considérant le grand nombre de simulations et d'observation de notre jeu de données, nous décidons de ne pas supprimer d'avantage d'observations. Le panneau de droite indique une relation non-linéaire instable mais essentiellement centrée sur la ligne droite attendue. Pour plus de détail, nous calculons comparons ces résidus simulés avec chacune des variables indépendantes.
+La figure \@ref(fig:residsimbeta) indique que les résidus suivent bien une distribution uniforme. Le test des valeurs aberrante n'est pas significatif au seuil 0,01 (nous retenons ce seuil considérant le grand nombre de simulations et d'observation de notre jeu de données), nous décidons de ne pas supprimer d'avantage d'observations. Le panneau de droite indique une relation non-linéaire instable mais essentiellement centrée sur la ligne droite attendue. Pour plus de détail, nous calculons comparons ces résidus simulés avec chacune des variables indépendantes.
 
 ```{r residsimbeta2, message=FALSE, warning=FALSE, fig.cap = "Relation entre chaque variable indépendante et les résidus simulé du modèle Beta", fig.align = "center", out.width = "95%"}
 
@@ -4186,5 +4204,116 @@ rsqs(loglike.full = modele3$deviance/-2,
 # calcul du RMSE
 sqrt(mean((modele3$fitted.values - modele3$y)**2))
 ```
+Le modèle parvient à expliquer 90% de la déviance totale et obtient des pseudo R^2^ très élevé. Il obtient cependant un RMSE de 0,10 soit une erreur quadratique moyenne de 10% dans la prédiction ce qui est tour de même important. Le modèle ne semble pas souffrir particulièrement de surajustement comme les pseudo R^2^ auraient pu nous le laisser penser. 
 
-Le modèle parvient à expliquer 90% de la déviance totale et obtient des R^2^ très élevé. Il obtient cependant un RMSE de 0,10 soit une erreur quadratique moyenne de 10% dans la prédiction ce qui est tour de même important. Le modèle ne semble pas souffrir particulièrement de sur-ajustement comme les pseudo R^2^ auraient pu nous le laisser penser. 
+L'ensemble des coefficients du modèle sont accessible via la fonction `summary`. Pour rappel il est nécessaire de les convertir avec la fonction exponentielle pour pouvoir les interpréter en termes de rapport de cote. À nouveau, nous proposons de construire dans un premier temps une figure pour observer l'effet des arrondissements.
+
+```{r betaArrond, message=FALSE, warning=FALSE, fig.cap = "Rapport de cote pour les Arrondissements dans le modèle Beta", fig.align = "center", out.width = "95%"}
+
+# identifier les coefficients pour les arrondissements
+test <- grepl("Arrond",names(modele3$coefficients), fixed = T)
+
+# extraire les coefficients et les erreurs standards
+coeffs <- modele3$coefficients[test]
+err.std <- summary(modele3)$se[test]
+
+# creer un dataframe avec les rapports de cote et les intervales de confiance
+df <- data.frame(
+  Arrond = gsub("Arrond","",names(coeffs), fixed = T),
+  coeffs = coeffs,
+  err.std = err.std,
+  RC = exp(coeffs),
+  lowerRC = exp(coeffs-1.96*err.std),
+  upperRC = exp(coeffs+1.96*err.std)
+)
+
+# retrouver l'arondissement de reference
+allArrond <- unique(dataset3$Arrond)
+refArrond <- setdiff(allArrond, df$Arrond)
+
+# creer le graphique
+ggplot(data = df) + 
+  geom_errorbarh(aes(xmin = lowerRC, xmax = upperRC, y = reorder(Arrond,RC)))+
+  geom_point(aes(x = RC, y = reorder(Arrond,RC)))+
+  geom_vline(xintercept = 1, color = "red")+
+  geom_text(aes(x = upperRC, y = reorder(Arrond, RC), label = paste("RC : ",round(RC,2),sep="")), size = 3, nudge_x = 0.3)+
+  labs(x = paste("Rapport de cote (Red : ",refArrond,')',sep=''),
+       y = 'Arrondissement')
+```
+
+Nous constatons ainsi que seuls quelques arrondissement ont une différence d'exposition au ilots de chaleurs significative au seuil 0,05 comparativement à Ahuntsic-Cartierville. Pour l'essentiel il s'agit d'arrondissements pour lesquels ont observe des rapports de cote supérieurs à 1. Verdun, Lasalle et le Plateau Mont-Royal sont les arrondissement les plus touchés avec des chances d'observer des niveaux supérieure de densité d'îlot de chaleur multipliées par 3,19, 2,89 et 2,74. Le reste des coefficients sont affichés dans le tableau \@ref(tab:coeffsbeta). Nous notons ainsi que le seul groupe associé avec une augmentation significative des chances d'observer une augmentation de la densité d'îlot de chaleur est le groupe des personnes à faible revenu (1,4% de chance supplémentaire à chaque augmentation d'un point de pourcentage de la variable indépendante). Pour mieux cerner la taille de cet effet, nous pouvons représenter l'effet marginal de ce coefficient en maintenant toutes les autres variable à leur moyenne. Nous allons également calculer ces effets marginaux pour trois arrondissement différents : Verdun (RC le plus fort), Ahuntsic-Cartierville (la référence) et Dollard-des-Ormeaux (RC le plus faible). Nous réalisons également un second graphique pour visualiser l'effet non linéaire de la variable pourcentage de végétation. La figure \@ref(fig:betaFR) nous indique ainsi que le rôle de l'arrondissement est plus important que celui du pourcentage de personne à faible revenu. Cependant, on constate que passer de 0% de personne à faible revenu dans un AD à 75% est associé avec une multiplication de la surface couverte par des îlots de chaleur par environ 1,5 (toutes choses égales par ailleur). Le rôle de la végétation dans la réduction de la surface des îlots de chaleur est très net et non linéaire. L'essentiel de la réduction est observée entre 0 et 50% de végétation dans un AD, au delà de ce seuil, la réduction des îlots de chaleur par la végétation est moins flagrante. Il semblerait donc exister à Montréal une forme d’iniquité systématique pour les populations plus pauvre, qui serait davantage exposées aux ilots de chaleur. Cependant, compte tenu de la dépendance spatiale et de l’hétéroscésadicité observée plus haut, des ajustements devraient être apporté au modèle pour confirmer ou infirmer ce résultat.
+
+
+```{r coeffsbeta, warning = FALSE, message=FALSE, echo = F}
+tableau <- build_table(modele3, coef_digits = 3, OR_digits = 3)
+
+tableau_ok <- tableau[c(1:6),]
+tableau_ok <- tableau_ok[,c(1,2,3,6,9,10,11)]
+
+show_table(tableau_ok, 
+    caption = "Résultats pour le modèle GLM Beta",
+    col.names = c('Variable',"Coeff.","RC","Val.p","IC 2,5% RC","IC 97,5% RC", "Sign.")
+)
+```
+
+```{r betaFR, message=FALSE, warning=FALSE, fig.cap = "Effets marginaux des variable pourcentage de personnes à faible revenu et densité de végétation", fig.align = "center", out.width = "95%"}
+
+# créer un dataframe pour la prédiction
+df <- expand.grid(
+  A65Pct = mean(dataset3$A65Pct),
+  A014Pct = mean(dataset3$A014Pct),
+  PopFRPct = seq(0,75, 1),
+  PopMVPct = mean(dataset3$PopMVPct),
+  prt_veg = mean(dataset3$prt_veg),
+  Arrond = c("Verdun",'Ahuntsic-Cartierville','Dollard-des-Ormeaux')
+)
+# effectuer les prédiction sur l'échelle log
+pred <- predict(modele3, df, se=T, type = "link")
+
+# calculer les predictions et leurs intervales de confiance
+ilink <- modele3$family$linkinv
+df$pred <- ilink(pred$fit)
+df$lower <- ilink(pred$fit - 1.96* pred$se.fit)
+df$upper <- ilink(pred$fit + 1.96* pred$se.fit)
+
+# afficher le resultat
+P1 <- ggplot(data = df)+
+  geom_path(aes(x = PopFRPct, y = pred, color = Arrond), size =1) + 
+  geom_path(aes(x = PopFRPct, y = lower, color = Arrond), linetype="dashed") +
+  geom_path(aes(x = PopFRPct, y = upper, color = Arrond), linetype="dashed")+
+  labs(x = "Pourcentage de personne à faible revenu", y = 'Surface des AD couverte par des îlots de chaleur (%)', color = 'Arrondissement')+
+  ylim(0,1)
+
+# pour la végétation
+df2 <- expand.grid(
+  A65Pct = mean(dataset3$A65Pct),
+  A014Pct = mean(dataset3$A014Pct),
+  PopFRPct = mean(dataset3$PopFRPct),
+  PopMVPct = mean(dataset3$PopMVPct),
+  prt_veg = seq(0,95,1),
+  Arrond = c("Verdun",'Ahuntsic-Cartierville','Dollard-des-Ormeaux')
+)
+
+# effectuer les prédiction sur l'échelle log
+pred2 <- predict(modele3, df2, se=T, type = "link")
+
+# calculer les predictions et leurs intervales de confiance
+df2$pred <- ilink(pred2$fit)
+df2$lower <- ilink(pred2$fit - 1.96* pred2$se.fit)
+df2$upper <- ilink(pred2$fit + 1.96* pred2$se.fit)
+
+# afficher le resultat
+P2 <- ggplot(data = df2)+
+  geom_path(aes(x = prt_veg, y = pred, color = Arrond), size =1) + 
+  geom_path(aes(x = prt_veg, y = lower, color = Arrond), linetype="dashed") +
+  geom_path(aes(x = prt_veg, y = upper, color = Arrond), linetype="dashed")+
+  labs(x = "Pourcentage de couverture végétale", y = '', color = 'Arrondissement')+
+  ylim(0,1)
+
+ggarrange(P1,P2, common.legend = T)
+```
+
+## 	Conclusion sur les modèles linéaires généralisés
+
+Comme vous avez dû le remarquer, les modèles linéaires généralisés constituent un monde à part entière et tout un livre pourrait être rédigé à leur sujet. Leur grande flexibilité les rend extrêmement utiles dans de nombreux contextes mais complique leur mise en œuvre, chaque modèle ayant ses propres spécificités théoriques. Ils partagent cependant tous une base commune : le choix d’une distribution et d’une fonction de lien, l’ensemble de leurs spécificités découle directement de ces deux choix.
+
