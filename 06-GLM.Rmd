@@ -3399,12 +3399,12 @@ Nous ne détaillons pas ici l'interprétation des coefficients du modèle (acces
 
 ### Le modèle GLM avec distribution de Gamma
 
-Pour rappel, la distribution de Gamma est strictement positive ($[0;+\infty[$), asymétrique et a une variance proportionnelle à sa moyenne (hétéroscedastique). Dans la section sur les distributions (\@ref(sectgammadistrib)), nous avions vu que la distribution de Gamma était formulée avec deux paramètres : sa forme ($\alpha$ ou shape) et son échelle ($b$ ou scale). Ces deux paramètres n’ont pas une interprétation très intuitive, mais il est possible avec un peu de jonglage mathématique d’arriver à une reparamétrisation intéressante. Nous détaillons cela dans l'encadré pour aller plus loin ci-dessous, mais il n'est pas nécessaire de le comprendre parfaitement pour pouvoir passer à la suite.
+Pour rappel, la distribution Gamma est strictement positive ($[0;+\infty[$), asymétrique et a une variance proportionnelle à sa moyenne (hétéroscedastique). Dans la section sur les distributions (\@ref(sectgammadistrib)), nous avions vu que la distribution Gamma était formulée avec deux paramètres : sa forme ($\alpha$ ou shape) et son échelle ($b$ ou scale). Ces deux paramètres n’ont pas une interprétation très intuitive, mais il est possible avec un peu de jonglage mathématique d’arriver à une reparamétrisation intéressante. Nous détaillons cela dans l'encadré pour aller plus loin ci-dessous, mais il n'est pas nécessaire de le comprendre parfaitement pour pouvoir passer à la suite.
 
 ::: {.bloc_aller_loin data-latex=""}
 **Reparamétrisation d'une distribution de Gamma pour un GLM**
 
-Si nous disposons d’une variable *Y*, suivant une distribution de Gamma telle que $Y \sim Gamma(\alpha,b)$ avec $\alpha$ le paramètre de forme et $b$ le paramètre d’échelle, alors, l'espérance de *Y* et la variance de *Y* peuvent être définies ainsi : 
+Si nous disposons d’une variable *Y*, suivant une distribution Gamma telle que $Y \sim Gamma(\alpha,b)$ avec $\alpha$ le paramètre de forme et $b$ le paramètre d’échelle, alors, l'espérance de *Y* et la variance de *Y* peuvent être définies ainsi : 
 
 \footnotesize
 \begin{equation}
@@ -3417,7 +3417,7 @@ Si nous disposons d’une variable *Y*, suivant une distribution de Gamma telle 
 
 En d’autres termes, l’espérance (l’équivalent de la moyenne pour une distribution normale) de notre variable *Y* est égale au produit des paramètres de forme et d’échelle.
 
-Avec ces propriétés, il est possible de redéfinir la fonction de densité de la distribution de Gamma, et d’arriver à une nouvelle formulation : $Y \sim Gamma(\mu,\alpha)$. $\mu$ est donc l'espérance de *Y* (interprétable comme sa moyenne, soit sa valeur attendue) et $\alpha$ permet de capturer la dispersion de la distribution de Gamma. Par extension des relations présentées ci-dessus, on reformuler la variance en fonction de $\mu$ et $\alpha$.
+Avec ces propriétés, il est possible de redéfinir la fonction de densité de la distribution Gamma, et d’arriver à une nouvelle formulation : $Y \sim Gamma(\mu,\alpha)$. $\mu$ est donc l'espérance de *Y* (interprétable comme sa moyenne, soit sa valeur attendue) et $\alpha$ permet de capturer la dispersion de la distribution Gamma. Par extension des relations présentées ci-dessus, on reformuler la variance en fonction de $\mu$ et $\alpha$.
 
 \footnotesize
 \begin{equation}
@@ -3431,10 +3431,10 @@ Avec ces propriétés, il est possible de redéfinir la fonction de densité de 
 
 On observer donc que la variance dans un modèle Gamma augmente de façon quadratique avec la moyenne, mais est tempérée par le paramètre de forme. On en conclut qu'un paramètre de forme plus grand produira une distribution moins étalée.
 
-Dans ce contexte, $\mu$ doit être strictement positif : la valeur attendue moyenne d'une distribution de Gamma doit être positive par définition puisque qu'une distribution de Gamma ne peut pas produire de valeurs négative. il est donc naturel d’utiliser la fonction logarithme comme fonction de lien, puisque sa contrepartie (la fonction exponentielle) ne produit que des résultats positifs. 
+Dans ce contexte, $\mu$ doit être strictement positif : la valeur attendue moyenne d'une distribution Gamma doit être positive par définition puisque qu'une distribution Gamma ne peut pas produire de valeurs négative. il est donc naturel d’utiliser la fonction logarithme comme fonction de lien, puisque sa contrepartie (la fonction exponentielle) ne produit que des résultats positifs. 
 :::
 
-Pour résumer, nous nous retrouvons donc avec un modèle qui prédit sur une échelle logarithmique la moyenne d’une distribution de Gamma. Notez qu’il existe d’autre façons de spécifier un modèle GLM avec une distribution de Gamma, mais celle-ci est la plus intuitive.
+Pour résumer, nous nous retrouvons donc avec un modèle qui prédit sur une échelle logarithmique la moyenne d’une distribution Gamma. Notez qu’il existe d’autre façons de spécifier un modèle GLM avec une distribution Gamma, mais celle-ci est la plus intuitive.
 
 ```{r gammadentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 
@@ -3442,7 +3442,7 @@ model_formula <- "$Y \\sim Gamma(\\mu,\\alpha)$ \\newline $g(\\mu) = \\beta_0 + 
 
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
- C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Student", model_formula , "log", "$\\mu$", "$\\beta_0$, $\\beta$, et  $\\alpha$", "$Variance = \\frac{\\mu^2}{\\alpha}$")
+ C2 = c("Variable continue dans l'intervalle $]0 ; + \\infty[$", "Gamma", model_formula , "log", "$\\mu$", "$\\beta_0$, $\\beta$, et  $\\alpha$", "$Variance = \\frac{\\mu^2}{\\alpha}$")
 )
 
 show_table(tableau, 
@@ -3497,6 +3497,11 @@ Les temps de trajets forment une variable strictement postive et très vraissemb
 
 # chargement des données
 dataset <- read.csv("data/glm/DureeTrajets.csv", stringsAsFactors = F)
+
+arrondMTL <- c("Mercier-Hochelaga-Maisonneuve", "Villeray-Saint-Michel-Parc-Extension", "Ville-Marie", "Verdun", "Saint-Leonard", "Saint-Laurent", "Rosemont-La Petite-Patrie", "Riviere-des-Prairies-Pointe-aux-Trembles", "Pierrefonds-Roxboro", "Outremont", "Montreal-Nord", "Le Sud-Ouest", "Le Plateau-Mont-Royal", "Lachine" , "Ahuntsic-Cartierville"  ,"Anjou" ,"Cote-des-Neiges-Notre-Dame-de-Grace", "LaSalle"  
+)
+
+dataset <- subset(dataset,dataset$ArrondDep %in% arrondMTL)
 
 # definissons 7H du matin comme la référence pour la variable Heure de départ
 
@@ -3670,6 +3675,11 @@ modele <- vglm(Duree ~ Mode + Motif + HeureDep +
                model = T,
                family=gamma2)
 
+modele2 <- vglm(Duree ~ Mode + Motif + HeureDep + ArrondDep + MemeArrond + Semaine,
+               data = dataset3,
+               model = T,
+               family=gamma2)
+
 # extraction des predictions du modèle (mu)
 mus <- modele@fitted.values
 # extration du paramètre de forme
@@ -3748,7 +3758,7 @@ rsqs(loglike.full = logLik(modele),
      loglike.null = logLik(modele.null),
      full.deviance = logLik(modele) * -2,
      null.deviance = logLik(modele.null) * -2,
-     nb.params = modele@rank,
+     nb.params = modele2@rank,
      n = nrow(dataset3)
      )
 
@@ -3756,15 +3766,15 @@ rsqs(loglike.full = logLik(modele),
 preds <- predict(modele, type="response")[,1]
 sqrt(mean((preds - dataset3$Duree)**2))
 ```
-Le modèle n’explique que 5% de la déviance et obtient un R2 ajusté de McFadden de 0,05, un R2 de Cox et Snell de 0,33 et un R2 de Nagelkerke de 0,33. La moyenne de l’erreur quadratique est de seulement 13,5 indiquant que le modèle se trompe en moyenne de seulement 13,5 minutes. La capcité de prédiction du modèle est donc limitée sans être catastrophique.
+Le modèle n’explique que 5% de la déviance et obtient un R2 ajusté de McFadden de 0,05, un R2 de Cox et Snell de 0,33 et un R2 de Nagelkerke de 0,33. La moyenne de l’erreur quadratique est de seulement 13,5 indiquant que le modèle se trompe en moyenne de seulement 13,3 minutes. La capcité de prédiction du modèle est donc limitée sans être catastrophique.
 
 **Interprétation des résultats**
 
 Pour rappel, la fonction de lien dans notre modèle est la fonction log. Chaque coefficient représente donc l'impact de l'augmentation d'une unité des variables indépendante sur le logarithme de l'espérance de notre variable dépendante. Si nous transformons nos coefficient avec la fonction exponentielle (exp) nous obtenons, pour chaque augmentation d'une unité des variables indépendante, la multiplication de l'espérance de notre variable dépendante.
 
-Puisque nos trajets peuvent provenir de nombreux arrondissements, nous proposons de représenter l'exponentiel de leurs coefficients avec un graphique.
+Puisque nos trajets peuvent provenir de nombreux arrondissements, nous proposons de représenter l'exponentiel de leurs coefficients avec un graphique. Nous pouvons d'ailleurs comparer les exponentiels des coefficients et les effets marginaux pour simplifier l'interprétation.
 
-```{r arrondgamma, warning = FALSE, message=FALSE, fig.cap = "Effet de l'arrondissement de départ sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%"}
+```{r arrondgamma, warning = FALSE, message=FALSE, fig.cap = "Effet de l'arrondissement de départ sur les temps de trajet à Montréal", fig.align = "center", out.width = "100%"}
 
 # extraction des coefficient du modèle
 coeffs <- modele@coefficients
@@ -3778,15 +3788,51 @@ dfArrond <- data.frame(df[grepl("ArrondDep",row.names(df), fixed = T),])
 names(dfArrond) <- c("coeff", "lower","upper")
 dfArrond$Arrondissement <- gsub("ArrondDep","",rownames(dfArrond),fixed = T)
 
-# affichage du graphique
-ggplot(data = dfArrond) + 
+# graphique des exponentiels des coefficients
+P1 <- ggplot(data = dfArrond) + 
   geom_vline(xintercept = 1, color = "red")+
   geom_errorbarh(aes(y = reorder(Arrondissement, coeff), xmin = upper, xmax = lower), height = 0)+
   geom_point(aes(y = reorder(Arrondissement, coeff), x = coeff)) + 
   geom_text(aes(x = upper, y = reorder(Arrondissement, coeff), label = paste("coeff. : ",round(coeff,2),sep="")), size = 3, nudge_x = 0.07)+
   labs(x = "Coefficient multiplicateur (ref : Ahuntsic-Cartierville)",
-       y = "")+
+       y = "",
+       subtitle = "Exponentiels des coefficients du modèle")+
   xlim(c(0.75,1.46))
+
+# création d'un dataframe fictif pour les effets marginaux
+dfpred <- expand.grid(
+  LogDist = mean(dataset3$LogDist),
+  Motif = 'education',
+  HeureDep = '7',
+  MemeArrond = 'Different',
+  ArrondDep = unique(dataset3$ArrondDep),
+  Mode = 'pieton','velo','transport collectif',
+  Semaine = 'lundi au vendredi'
+)
+
+# utiliser le modele pour effectuer des predictions (echelle log)
+lin_pred <- predict(modele,dfpred, se = T)
+mu_lin_pred <- lin_pred$fitted.values[,1]
+se_lin_pred <- lin_pred$se.fit[,1]
+
+dfpred2 <- data.frame(
+  pred = exp(mu_lin_pred),
+  lower = exp(mu_lin_pred- 1.96*se_lin_pred),
+  upper = exp(mu_lin_pred+ 1.96*se_lin_pred)
+)
+
+dfpred2 <- cbind(dfpred2, dfpred)
+
+# réaliser le graphique des effets marginaux
+P2 <- ggplot(data = dfpred2) + 
+  geom_col(aes(x = pred, y = ArrondDep)) + 
+  geom_errorbarh(aes(xmin = lower, xmax = upper, y = ArrondDep)) + 
+  labs(x = "temps de déplacement prédit", y="",
+       subtitle = "Prédiction du modèle")
+
+ggarrange(P1,P2, ncol = 2, nrow = 1)
+  
+
 ```
 
 La figure \@ref(fig:arrondgamma) permet de constater que les arrondissements Ville Marie et Plateau-Mont-Royal, se distinguent par des trajets plus courts (environs 20% plus court en moyenne que les trajets partant d'Ahuntsic-Cartierville). À l'inverse, Lachine est de loin l'arrondissement avec les trajets les plus long (25% plus long en moyenne que les trajets partant d'Ahuntsic-Cartierville). (EST-CE QU'ON EN FAIT UNE CARTE ?)
@@ -3815,14 +3861,14 @@ ggplot(data = dfHeures) +
 
 Nous pouvons ainsi observer à la figure La figure \@ref(fig:heuresgamma) que les trajets effectués entre 10h et 12h soient les plus long de la journée, entre 30 et 40% plus long que ceux effectués à 07h et 08h qui constituent les trajets les plus courts.
 
-Le reste des coefficients (ainsi que le paramètre de forme) sont affichés dans le tableau \@ref(tab:coeffsgamma). Comparativement à un trajet effectué à pied, un trajet en transport en commun durera en moyenne 53% plus longtemps (1,53 fois plus long), alors qu’un déplacement en véhicule individuel est en moyenne 28% moins long et un déplacement en vélo 23% moins long. Aucune différence n’est observable entre les déplacements effectués en semaine ou durant la fin de semaine.
+Le reste des coefficients (ainsi que le paramètre de forme) sont affichés dans le tableau \@ref(tab:coeffsgamma). Comparativement à un trajet effectué à pied, un trajet en transport en commun durera en moyenne 52% plus longtemps (1,53 fois plus long), alors qu’un déplacement en véhicule individuel est en moyenne 28% moins long et un déplacement en vélo 23% moins long. Aucune différence n’est observable entre les déplacements effectués en semaine ou durant la fin de semaine.
 
 Les déplacements ayant pour motif le magasinage et le travail ont tendance à être en moyenne plus court de 11% et 6% respectivement, comparativement aux déplacement effectués pour l’éducation ou le loisir (différence non significative en loisir et éducation). Sans surprise, la distance entre le point de départ et d’arrivée du trajet affecte sa durée de façon positive. Considérant qu’il est difficile d’interpréter des log de kilomètre (dû à une transformation de la variable originale), nous représentons l’effet de cette variable avec la prédiction du modèle à la figure. Nous utilisons pour cela le cas suivant : déplacement à pied à 07h en semaine, ayant pour motif éducation, dont le point de départ se situe dans l’arrondissement Ahuntsic et donc le point d’arrivée est dans un autre arrondissement. Seule la distance du trajet varie de 1 à 40km. À titre de comparaison, nous représentons aussi pour les mêmes conditions le cas d’un cycliste (en vert), et d’un utilisateur du transport en commun (en bleu). Les lignes en pointillés représentent les intervalles des confiance à 95% des prédictions.
 
 ```{r coeffsgamma, warning = FALSE, message=FALSE, echo = F}
 tableau <- build_table(modele, coef_digits = 3, OR_digits = 3)
 
-tableau_ok <- tableau[c(1:11,28,51:nrow(tableau))]
+tableau_ok <- tableau[c(1:11,28,48:nrow(tableau)),]
 tableau_ok <- tableau_ok[,c(1,2,3,6,7,8,9)]
 
 show_table(tableau_ok, 
@@ -3871,3 +3917,274 @@ ggplot(data = dfpred) +
   labs(y = "temps de trajet prédit (min)",
        x = "distance à vol d'oiseau (km)")
 ```
+
+### Le modèle GLM avec distribution Beta
+
+Pour rappel, la distribution Beta est une distribution définie sur l’intervalle $[0,1]$, elle est donc particulièrement utile pour décrire des proportions, des pourcentages ou des probabilités. Dans la section sur les distributions, nous avions présenté la paramétrisation classique de la distribution avec les paramètres $a$ et $b$ étant tous les deux des paramètres de forme. Ces deux paramètres n’ont pas d’interprétation pratique, mais il est possible (comme pour la distribution Gamma) de reparamétrer la distribution Beta avec un paramètre de centralité (espérance) et de dispersion.
+
+::: {.bloc_aller_loin data-latex=""}
+**Reparamétrer la distribution Beta**
+
+Pour une distribution Beta telle définie pas $Y \sim Beta(a,b)$, l'espérance de cette distribution et sa variance sont données par : 
+
+\footnotesize
+\begin{equation}
+\begin{aligned}
+&E(Y) = \frac{a}{a+b} \\
+&Var(Y) = \frac{a \times b}{(a+b)^2(a+b+1)}\\
+\end{aligned}
+\end{equation}
+\normalsize
+
+Pour reparamétrer cette distribution, on définit un nouveau paramètre $\phi$ (phi) tel que :
+
+\footnotesize
+\begin{equation}
+\begin{aligned}
+&a = \phi * E(Y) \\
+&b = \phi - a \\
+&Var(Y) = \frac{E(Y) \times (1-E(Y))}{1+\phi}
+\end{aligned}
+\end{equation}
+\normalsize
+
+De cette manière, il est possible d'exprimer la distribution Beta en fonction de son espérance (sa valeur attendue, ce qui s'interprète approximativement comme une moyenne) et un paramètre $\phi$ intervenant dans le calcul de sa variance. Vous noterez d'ailleurs que la variance de cette distribution dépend de sa moyenne, impliquant à nouveau une hétéroscésadicité intrinsèque.
+:::
+
+Puisqu'une distribution Beta est définie sur l'intervale $]0;1[$, son espérance doit également être comprise dans $]0;1[$. La fonction de lien d'un modèle GLM avec distribution Beta doit donc contraindre son équation de régression dans cet intervale. La candidate toute désignée est donc la fonction logistique.
+
+Pour résumer, nous nous retrouvons donc avec un modèle qui prédit la moyenne d’une distribution de Beta avec une fonction de lien Logistique. La variance de cette distribution est fonction de cette moyenne et d'un second paramètre $\phi$. Ces informations sont résumées dans la fiche d'identité du modèle (tableau : \@ref(tab:betaentity)).
+
+```{r betaentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+
+model_formula <- "$Y \\sim Beta(\\mu,\\phi)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
+
+tableau <- data.frame(
+ C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
+ C2 = c("Variable continue dans l'intervalle $]0;1[$", "Student", model_formula , "log", "$\\mu$", "$\\beta_0$, $\\beta$, et  $\\phi$", "$Variance = \\frac{\\mu \\times (1-\\mu)}{1+\\phi}$")
+)
+
+show_table(tableau, 
+    caption = "Carte d'identité du modèle Beta",
+    col.names = NULL, 
+    col.to.resize = c(2),
+    col.width = "8cm"
+)
+```
+
+#### Conditions d'application
+
+Comme pour un modèle Gamma, la seule condition d'application spécifique à un modèle avec distribution Beta est que la variance des résidus suivent la forme attendue par la distribution Beta.
+
+#### Interprétation des coefficients
+
+Puisque le modèle utilise la fonction de lien logistique, l’exponentiel des coefficients $\beta$ du model peuvent être interprété comme des rapports de cotes (détaillé dans la section sur le modèle GLM binomial). Admettons ainsi que nous ayons obtenu pour une variable indépendante $X_1$ le coefficient $\beta_1$ de 0,12. Puisque le coefficient est positif, cela signifie qu’une augmentation de $X_1$ conduit à une augmentation en moyenne de *Y* (plus exactement de son espérance). L’exponentiel de 0,12 est 1.13, ce qui dans notre cas indique qu’une augmentation d’une unité de $X_1$ multiplie par 1,13 (augmente de 13%) les chances d'une augmentation de *Y*. Pour ce type de modèle, il est particulièrement important de calculer ses prédictions afin d'en faciliter l'interprétation.
+
+#### Exemple appliqué dans R
+
+Afin de présenter le modèle GLM avec distribution Beta, nous utilisons un jeu de données que nous avons compilé pour l’Île de Montréal. Nous nous intéressons à la question des îlots de chaleur urbains au niveau des aires de diffusion (AD : découpage le plus fin offert par le recensement). Pour cela, nous avons calculé dans chaque AD le pourcentage de sa surface classifiée comme îlot de chaleur dans la carte des îlots de [chaleur/fraicheur](https://www.donneesquebec.ca/recherche/fr/dataset/ilots-de-chaleur-fraicheur-urbains-et-temperature-de-surface) réalisée par l’INSPQ et le CERFO.
+
+La question que nous nous posons est la suivante : Les populations vulnérables sur le plan socio-économique et physique sont-elles systématiquement plus exposées à la nuisance que représente les îlots de chaleur ? Cette question se rattache donc au champ de la recherche sur l’équité environnementale et plus spécifiquement sur sa dimension spatiale (à distinguer des dimensions procédurale et de reconnaissance) et plusieurs études se sont déjà penchées sur la question des îlots de chaleur dans ce contexte [@harlan2007shade; @sanchez2019cooling; @huang2011everyone]. Nous modélisons donc pour chaque AD (n = 3158) de l’Île de Montréal la proportion de sa surface couverte par des ilots de chaleur. Nos variables indépendantes sont divisées en deux catégories : variables environnementales et variables socio-économique. Les premières sont des variables de contrôle, il s’agit de la densité de végétation dans l’AD (ajouté avec une polynomiale d'ordre deux) et de l'arrondissement dans lequel il se situe. Ces deux paramètres affectent directement les chances d’observer des ilots de chaleurs, mais nous souhaitons isoler leurs effets (toutes choses étant égales par ailleurs) de ceux des variables socio-économique. Ces dernières ont pour objectif de cibler les populations vulnérables sur le plan physique (personnes agées et enfants de moins de 14 ans) ou socio-économique (minorités visibles et faible revenu). L'ensemble de ces variables sont présentées dans le tableau \@ref(tab:variablebeta). Notez que puisque le modèle avec distribution de Beta ne peut pas prendre en compte des valeurs exactes de 1 ou 0, nous les avons remplacées respectivement par 0.99 et 0.01. Cette légère modification n'altère que marginalement les données, surtout si l'on considère qu'elles sont aggrégées au niveau des AD et proviennent originalement d'imagerie satellitaire.
+
+```{r variablebeta, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
+df <- data.frame(
+  C1 = c("A65PlusPct","A014Pct","PopFRPct","PopMVPct","VegPct","Arrond"),
+  C2 = c("Population de 65 ans et plus", "Population de 14 ans et moins", "Population à faible revenu", "Minorités visibles", "Végétation", "Arrondissements"),
+  C3 = c("Variable continue", "Variable continue", "Variable continue", "Variable continue", "Variable continue", "Variable continue"),
+  C4 = c("Pourcentage de la population ayant 65 ans et plus", "Pourcentage de la population ayant 14 ans et moins", "Pourcentage de la population à faible revenu", "Pourcentage de la population faisant partie des minorités visibles", "Pourcentage de la surface de l’AD couverte par de la végétation", "Arrondissement de l'Île de Montréal"))
+
+show_table(df, 
+    caption = "Variable indépendantes utilisées dans le modèle Beta",
+    col.names = c("Nom de la variable","signification","Type de variable","Mesure"), 
+    col.to.resize = c(2,4),
+    col.width = "5cm"
+)
+```
+
+**Vérification des conditions d'application**
+
+Sans suprise, nous commençons par charger nos données et nous assurer de l'absence de multicolinéarité excessives entre nos variables indépendantes.
+
+```{r, message=FALSE, warning=FALSE}
+## chargement des donnees
+dataset <- read.csv("data/glm/data_chaleur.csv")
+
+## calcul des valeurs de vif
+vif(glm(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          poly(prt_veg, degree = 2)  + Arrond,
+        data = dataset))
+```
+
+La seule variable semblant poser un problème de multicolinéarité est la variable Arrondissement. Cependant, du fait de sa nature multinomiale, elle regroupe en réalité 32 coefficients, il faut donc utiliser notre règle habituelle de 5 sur le carré de la troisième colonne (`GVIF^(1/(2*Df))`) du tableau [@fox1992generalized]. Or `1.028856^2 = 1.058545`, ce qui est bien inférieure à notre limite. Nous n'avons donc pas de problème de multicolinéarité. Nous pouvons passer au calcul des distances de Cook. Pour ajuster notre modèle, nous utilisons le *package* **MGCV** et la fonction `gam` avec le paramètre `family = betar(link = "logit")`
+
+```{r cookdistbeta, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta", fig.align = "center", out.width = "50%"}
+# Ajustement d'une première version du modèle
+modele <- gam(hot ~
+                A65Pct + A014Pct + PopFRPct + PopMVPct +
+                poly(prt_veg, degree=2) + Arrond,
+              data = dataset, family = betar(link = "logit"))
+
+# calcul des distances de Cook
+df <- data.frame(
+  cooksd = cooks.distance(modele),
+  oid = 1:nrow(dataset)
+)
+
+# Affichage des distances de Cook
+ggplot(data = df)+
+  geom_point(aes(x = oid, y = cooksd),
+             color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
+  labs(x = "", y = "Distance de Cook")
+```
+
+Nous pouvons observer à la figure \@ref(fig:cookdistbeta) que seulement deux observations se distinguent très nettement des autres. Nous les isolons donc dans un premier temps
+
+```{r, message=FALSE, warning=FALSE}
+cas_etranges <- subset(dataset, df$cooksd >= 0.01)
+print(cas_etranges[,23:ncol(cas_etranges)])
+```
+
+Ces deux observations n'ont pas de points communs marqués, et ne semblent pas avoir de valeurs particulièrement fortes sur les différentes variables indépendantes ou la variable dépendante. Nous décidons donc de les supprimer et de recalculer les distances de Cook
+
+```{r cookdistbeta2, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta (suppression de deux observations influentes)", fig.align = "center", out.width = "50%"}
+# Suppression des deux observations très influentes
+dataset2 <- subset(dataset, df$cooksd < 0.01)
+
+modele2 <- gam(hot ~
+                A65Pct + A014Pct + PopFRPct + PopMVPct +
+                I(prt_veg**2) + prt_veg + Arrond,
+              data = dataset2, family = betar(link = "logit"), methode = "REML")
+
+# calcul des distances de Cook
+df2 <- data.frame(
+  cooksd = cooks.distance(modele2),
+  oid = 1:nrow(dataset2)
+)
+
+# Affichage des distances de Cook
+ggplot(data = df2)+
+  geom_point(aes(x = oid, y = cooksd),
+             color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
+  labs(x = "", y = "Distance de Cook")
+```
+
+Après réajustement (figure : \@ref(fig:cookdistbeta2)) nous constatons à nouveau qu'une observation est **extrèmement** éloignée des autres. Nous la retirons donc également car cette différence est si forte qu'elle risque de polluer le modèle.
+
+```{r cookdistbeta3, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta (suppression de trois observations influentes)", fig.align = "center", out.width = "50%"}
+# Suppression de l'observation très etonnante
+dataset3 <- subset(dataset2, df2$cooksd<max(df2$cooksd))
+
+# Réajustement du modèle
+modele3 <- gam(hot ~
+                A65Pct + A014Pct + PopFRPct + PopMVPct +
+                I(prt_veg**2) + prt_veg + Arrond,
+              data = dataset3, family = betar(link = "logit"), methode = "REML")
+
+# Calcul des distances de Cook
+df3 <- data.frame(
+  cooksd = cooks.distance(modele3),
+  oid = 1:nrow(dataset3)
+)
+
+# Affichage des distances de Cook
+ggplot(data = df3)+
+  geom_point(aes(x = oid, y = cooksd),
+             color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
+  labs(x = "", y = "Distance de Cook")
+```
+
+Tout semble aller pour le mieux après ce second passage (figure : \@ref(fig:cookdistbeta3)). Si nous avions continué à observer des valeurs aussi influentes, nous aurions dû commencer à sérieusement questionner nos données. La prochaine étape du diagnostic est donc l'analyse des résidus simulés.
+
+```{r residsimbeta, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle Beta", fig.align = "center", out.width = "95%"}
+
+# Extraction de phi
+modele3$family$family
+phi <- 14.612
+
+# réalisation des simulations
+nsim <- 1000
+mus <- modele3$fitted.values
+
+cols <- lapply(1:length(mus),function(i){
+  mu <- mus[[i]]
+  p <- mu * phi
+  q <- (1-mu)*phi
+  sims <- rbeta(n = nsim,shape1 = p, shape2 = q)
+  return(sims)
+})
+
+mat_sims <- do.call(rbind, cols)
+
+# calcul des résidus simulés
+sim_res <- createDHARMa(simulatedResponse = mat_sims,
+                           observedResponse = dataset3$hot,
+                           fittedPredictedResponse = modele3$fitted.values,
+                           integerResponse = F)
+
+plot(sim_res)
+```
+
+La figure \@ref(fig:residsimbeta) indique que les résidus suivent bien une distribution uniforme. Le test des valeurs aberrante est significatif au seuil 0,05 mais pas 0,01. Considérant le grand nombre de simulations et d'observation de notre jeu de données, nous décidons de ne pas supprimer d'avantage d'observations. Le panneau de droite indique une relation non-linéaire instable mais essentiellement centrée sur la ligne droite attendue. Pour plus de détail, nous calculons comparons ces résidus simulés avec chacune des variables indépendantes.
+
+```{r residsimbeta2, message=FALSE, warning=FALSE, fig.cap = "Relation entre chaque variable indépendante et les résidus simulé du modèle Beta", fig.align = "center", out.width = "95%"}
+
+# preparons un plot multiple
+par(mfrow=c(3,2))
+vars <- c("A65Pct", "A014Pct", "PopFRPct", "PopMVPct", "prt_veg")
+
+for(v in vars){
+  plotResiduals(sim_res, dataset3[[v]], main = v)
+}
+plotResiduals(sim_res, dataset3[["prt_veg"]]**2, main = "prt_veg^2")
+```
+
+La figure \@ref(fig:residsimbeta2) indique des relations marginales et négligeables entre nos variables indépendantes et nos résidus simulés. Concernant la variable Arrondissement (figure : \@ref(fig:residsimbeta3)), nous observons une situation plus particulière. Pour quelques arrondissement les résidus simulés sont nettement plus forts ou plus faibles. Notre hypothèse est que cet effet est provoqué par l'introduction de cette variable dans notre modèle comme un effet fixe alors que sa nature devrait nous inciter à l'introduire comme un effet aléatoire. Nous n'avons pas encore présenté ces concepts ici, mais nous le feront dans le chapitre REF. En attendant, nous conservons le modèle tel quel et passons à l'analyse de sa qualité d'ajustement.
+
+```{r residsimbeta3, message=FALSE, warning=FALSE, fig.cap = "Relation entre la variable Arrondissement et les résidus simulé du modèle Beta", fig.align = "center", out.width = "95%"}
+df <- data.frame(
+  resid = residuals(sim_res),
+  Arrond = dataset3$Arrond
+)
+
+ggplot(data = df) + 
+  geom_boxplot(aes(x = Arrond, y = resid))+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()
+        )+
+  labs(x = "Arrondissements", y = "Résidus simulés")
+```
+
+**Analyse de la qualité d'ajustement**
+
+Dans un premier temps, nous comparons la distribution originale des données à des simulations issues du modèle.
+
+```{r residsimbeta4, message=FALSE, warning=FALSE, fig.cap = "Comparaison entre la distribution originale et les simulations issue du modèle", fig.align = "center", out.width = "60%"}
+
+# extraction de 20 simulations
+df2 <- data.frame(mat_sims[,1:20])
+df3 <- reshape2::melt(df2)
+
+ggplot() +
+  geom_histogram(aes(x = hot, y = ..density..),
+                 data = dataset3, bins = 100, color = "black", fill = "white") +
+  geom_density(aes(x = value, y=..density.., group = variable), data = df3,
+               fill = rgb(0,0,0,0), color = rgb(0.2,0.2,0.2,0.3), size = 1)
+```
+
+Nous constatons à la figure \@ref(fig:residsimbeta4) que le modèle est parvenu à reproduire la forme générale de la distribution originale : un plus grand nombre de valeur proche de zéro, suivie d’une répartition presque homogène dans les valeurs comprise entre 0,15 et 0,8, suivie par un plus faible nombre de valeur quand y est supérieur à 0,8. Il semble en revanche manquer un certain nombre de valeurs extrèmes proches de 0 (absence d'ilot de chaleur) et proches de 1 (couverture à 100% par des ilots de chaleur).
+
+```{r, message=FALSE, warning=FALSE}
+# calcul des pseudo R2
+rsqs(loglike.full = modele3$deviance/-2,
+     loglike.null = modele3$null.deviance/-2,
+     full.deviance = modele3$deviance,
+     null.deviance = modele3$null.deviance,
+     nb.params = modele3$rank,
+     n = nrow(dataset3))
+
+# calcul du RMSE
+sqrt(mean((modele3$fitted.values - modele3$y)**2))
+```
+
+Le modèle parvient à expliquer 90% de la déviance totale et obtient des R^2^ très élevé. Il obtient cependant un RMSE de 0,10 soit une erreur quadratique moyenne de 10% dans la prédiction ce qui est tour de même important. Le modèle ne semble pas souffrir particulièrement de sur-ajustement comme les pseudo R^2^ auraient pu nous le laisser penser. 
