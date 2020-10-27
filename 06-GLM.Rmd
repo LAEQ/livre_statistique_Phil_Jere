@@ -1072,14 +1072,15 @@ Pour cet exemple, nous allons analyser un jeu de données proposé par *Inside A
 
 La distribution originale du prix des logements dans notre jeu de données est présentée à la figure \@ref(fig:histopriceairbnb).
 
-```{r histopriceairbnb, message=FALSE, warning=FALSE, fig.align="center", fig.cap= "Distribution des prix des logements Airbnb", out.width="6?5%"}
+```{r histopriceairbnb, message=FALSE, warning=FALSE, fig.align="center", fig.cap= "Distribution des prix des logements Airbnb", out.width="65%"}
 
 # Charger le jeu de données
 data_airbnb <- read.csv("data/glm/airbnb_data.csv")
 
 # Afficher la distribution du prix
 ggplot(data = data_airbnb) + 
-  geom_histogram(aes(x = price), bins = 30, color = "white", fill = "#1d3557", size = 0.02)+
+  geom_histogram(aes(x = price), bins = 30, 
+                 color = "white", fill = "#1d3557", size = 0.02)+
   labs(x="Prix (en dollars)", y="Fréquence")
 ```
 
@@ -3971,7 +3972,7 @@ ggplot(data = dfpred) +
        x = "distance à vol d'oiseau (km)")
 ```
 
-### Le modèle GLM avec une distribution de Beta
+#### Le modèle GLM avec une distribution de Beta {#sect06234}
 
 Pour rappel, la distribution de Beta est une distribution définie sur l’intervalle $]0,1[$, elle est donc particulièrement utile pour décrire des proportions, des pourcentages ou des probabilités. Dans la section \@ref(sect024316) sur les distributions, nous avions présenté la paramétrisation classique de la distribution avec les paramètres $a$ et $b$ étant tous les deux des paramètres de forme. Ces deux paramètres n’ont pas d’interprétation pratique, mais il est possible (comme pour la distribution de Gamma) de reparamétrer la distribution Beta avec un paramètre de centralité (espérance) et de dispersion.
 
@@ -4025,15 +4026,15 @@ show_table(tableau,
 )
 ```
 
-#### Conditions d'application
+##### Conditions d'application
 
 Comme pour un modèle Gamma, la seule condition d'application spécifique à un modèle avec distribution Beta est que la variance des résidus suit la forme attendue par la distribution Beta.
 
-#### Interprétation des coefficients
+##### Interprétation des coefficients
 
 Puisque le modèle utilise la fonction de lien logistique, les exponentiels des coefficients $\beta$ du modèle peuvent être interprétés comme des rapports de cotes (détaillé dans la section \@ref(sect06211) sur le modèle GLM binomial). Admettons ainsi que nous ayons obtenu pour une variable indépendante $X_1$ le coefficient $\beta_1$ de 0,12. Puisque le coefficient est positif, cela signifie qu’une augmentation de $X_1$ conduit à une augmentation en moyenne de *Y* (plus exactement de son espérance). L’exponentiel de 0,12 étant 1,13 indique qu’une augmentation d’une unité de $X_1$ multiplie par 1,13 (augmente de 13%) les chances d'une augmentation de *Y*. Pour ce type de modèle, il est particulièrement important de calculer ses prédictions afin d'en faciliter l'interprétation.
 
-#### Exemple appliqué dans R
+##### Exemple appliqué dans R
 
 Afin de présenter le modèle GLM avec une distribution Beta, nous utilisons un jeu de données que nous avons compilé pour l’île de Montréal. Nous nous intéressons à la question des îlots de chaleur urbains au niveau des aires de diffusion (AD – entités spatiales du recensement canadien comprenant de 400 à 700 habitants). Pour cela, nous avons calculé dans chaque AD le pourcentage de sa surface classifiée comme îlot de chaleur dans la carte des îlots de [chaleur/fraicheur](https://www.donneesquebec.ca/recherche/fr/dataset/ilots-de-chaleur-fraicheur-urbains-et-temperature-de-surface) réalisé par l’INSPQ et le CERFO.
 
