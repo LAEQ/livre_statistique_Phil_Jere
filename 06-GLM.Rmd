@@ -3250,7 +3250,45 @@ Les résultats de la régression linéaire multiples avaient déjà été interp
 
 #### Le modèle GLM avec une distribution de Student {#sect06232}
 
-Pour rappel, la distribution de Student ressemble à une distribution normale (section \@ref(sect024311)). Elle est symétrique autour de sa moyenne et a également une forme de cloche. Cependant, elle dispose de queues lourdes, ce qui signifie qu’elle permet de représenter des phénomènes présentant davantage de valeurs extrêmes qu’une distribution normale. Pour contrôler le poids des queues, la distribution de Student intègre un troisième paramètre : $\nu$ (nu). Lorsque $\nu$ tends vers l’infini, la distribution de Student tend vers une distribution normale.
+Pour rappel, la distribution de Student ressemble à une distribution normale (section \@ref(sect024311)). Elle est symétrique autour de sa moyenne et a également une forme de cloche. Cependant, elle dispose de queues lourdes, ce qui signifie qu’elle permet de représenter des phénomènes présentant davantage de valeurs extrêmes qu’une distribution normale. Pour contrôler le poids des queues, la distribution de Student intègre un troisième paramètre : $\nu$ (nu). Lorsque $\nu$ tends vers l’infini, la distribution de Student tend vers une distribution normale (figure : \@ref(fig:studentdistrib)).
+
+```{r studentdistrib, echo=FALSE, message=FALSE, warning=FALSE, out.width='95%', fig.cap="Effet du paramètre nu sur une distribution de Stundent"}
+
+library(LaplacesDemon)
+library(ggplot2)
+
+colors <- c("#03071e","#6a040f","#f48c06", "#0096c7")
+labels_col <- c("nu=2","nu=5","nu=30","normal")
+
+ggplot() + 
+  stat_function(aes(color = colors[[1]]), size = 1,
+        fun = dst, args = list("mu"=0,
+                               "sigma"=10,
+                                "nu"=2)) +
+  stat_function(aes(color = colors[[2]]), size = 1,
+        fun = dst, args = list("mu"=0,
+                               "sigma"=10,
+                                "nu"=5)) +
+  stat_function(aes(color = colors[[3]]), size = 1,
+        fun = dst, args = list("mu"=0,
+                               "sigma"=10,
+                                "nu"=30)) +
+  stat_function(aes(color = colors[[4]]), size = 1,
+        fun = dnorm, args = list("mean"=0,
+                               "sd"=10)) +
+  scale_color_identity(name = "Paramètres",
+        breaks = colors,
+        labels = labels_col,
+        guide = "legend") + 
+  theme(axis.title.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank()) +
+  xlim(-50,50) + 
+  ylim(0,0.05)
+
+```
 
 Comme vous pouvez le constater dans la carte d'identité au tableau \@ref(tab:studentdentity), le modèle GLM Student est très proche du modèle GLM gaussien. On modélise explicitement la moyenne de la distribution et son paramètre de dispersion (variance) est laissé fixe. Ce GLM est même souvent utilisé comme une version « robuste » du modèle gaussien du fait de sa capacité à intégrer explicitement l’effet des observations extrêmes. En effet, dans un modèle gaussien, les observations extrêmes (aussi appelées observations aberrantes) vont davantage influencer les paramètres du modèle que si une distribution de Student est utilisée.
 
