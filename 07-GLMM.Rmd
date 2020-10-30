@@ -269,9 +269,10 @@ On constate donc que nous avons un effet principal $\beta_1$ décrivant le lien 
 \end{equation}
 \normalsize
 
-Nous formulons ici un modèle dans lequel la classe modifie l'impact de la variable temps d'étude sur la variable score à l'examen. L'effet moyen de $x_1$ est capté par le coefficient $\beta_1$, les bonus ou malus ajouté à cet effet par la classe sont issues d'une distribution normale centrée sur 0 avec un écart type $sigma_{\upsilon}$. À nouveau, l'idée est que si l'on moyennait l'effet de toutes les écoles, nous obtiendrions 0. À nouveau, le fait de modéliser cet effet comme un effet aléatoire nous permet de partitionner la variance, de mutualiser l'information entre les classes et de resserer l'estimation des effets des classes.
+Nous formulons ici un modèle dans lequel la classe modifie l'impact de la variable temps d'étude sur la variable note à l'examen. L'effet moyen de $x_1$ est capté par le coefficient $\beta_1$, les bonus ou malus ajoutés à cet effet par la classe sont issues d'une distribution normale centrée sur 0 avec un écart type $sigma_{\upsilon}$. À nouveau, l'idée est que si l'on moyennait l'effet de toutes les écoles, nous obtiendrions 0. Aussi, le fait de modéliser cet effet comme un effet aléatoire nous permet de partitionner la variance, de mutualiser l'information entre les classes et de resserrer l'estimation des effets des classes.
 
-Les résultats pour ce second modèle sont présentés à la figure \@ref(fig:randomslope2), et une comparaison entre les estimations des effets fixes et des effets aléatoires est présentée à la figure \@ref(fig:randomslope3). Nous pouvons ainsi constater à nouveau l'effet de resseremment provoqué par l'effet aléatoire.
+Les résultats pour ce second modèle sont présentés à la figure \@ref(fig:randomslope2), et une comparaison entre les estimations des effets fixes et des effets aléatoires est présentée à la figure \@ref(fig:randomslope3). Nous pouvons ainsi constater à nouveau l'effet de resserrement provoqué par l'effet aléatoire.
+
 
 ```{r randomslope2, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la réussite scolaire d'élèves en interraction avec la classe (effet aléatoire)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 
@@ -311,14 +312,14 @@ rs2 <- r.squaredGLMM(model2)
 
 ```
 
-Lorsque l'on intègre des pentes aléatoires dans un modèle, on fait face au problème suivant : la variance associée aux pentes aléatoire n'est pas fixe, mais proportionnelle à la variable *X* autorisée à varier. Si l'on compare la figure \@ref(fig:randominter3) (constantes aléatoires) et la figure \@ref(fig:randomslope2) (pentes aléatoires), on constate bien que la dispersion des prédictions du modèle (représentées par les lignes) augmente dans le cas de pentes aléatoires et reste identique dans le cas des constantes aléatoires. La conséquence pratique est qu'il existe potentiellement un nombre infini de valeur possible pour l'ICC. Dans ce contexte, il est préférable de laisser de coté cet indicateur et de ne reporter que les R^2^ marginal et conditionnel. Dans notre cas, nous obtenons les valeurs `r tofr(round(rs2[[1]],3))` et `r tofr(round(rs2[[2]],3))`, ce qui confirme une fois encore que le rôle joué par la classe est loin d'être négligeable puisqu'il permet d'expliquer près de `r tofr(round(rs2[[2]],3)*100)`% supplémentaire de variance comparativement au seuls effets fixes expliquant `r tofr(round(rs2[[1]],3)*100)`% de la variance du score obtenu à l'examen.
-
+Lorsque l'on intègre des pentes aléatoires dans un modèle, on fait face au problème suivant : la variance associée aux pentes aléatoires n'est pas fixe, mais proportionnelle à la variable *X* autorisée à varier. Si l'on compare la figure \@ref(fig:randominter3) (constantes aléatoires) et la figure \@ref(fig:randomslope2) (pentes aléatoires), on constate bien que la dispersion des prédictions du modèle (représentées par les lignes) augmente dans le cas de pentes aléatoires et reste identique dans le cas des constantes aléatoires. La conséquence pratique est qu'il existe potentiellement un nombre infini de valeurs possibles pour l'ICC. Dans ce contexte, il est préférable de laisser de côté cet indicateur et de ne reporter que les R^2^ marginal et conditionnel. Dans notre cas, nous obtenons les valeurs `r tofr(round(rs2[[1]],3))` et `r tofr(round(rs2[[2]],3))`, ce qui confirme une fois encore que le rôle joué par la classe est loin d'être négligeable puisqu'il permet d'expliquer près de `r tofr(round(rs2[[2]],3)*100)`% supplémentaire de variance comparativement aux seuls effets fixes expliquant `r tofr(round(rs2[[1]],3)*100)`% de la variance du score obtenu à l'examen.
 
 ### GLMM avec constantes et pentes aléatoires
 
-Vous l'aurez certainement deviné en lisant le titre de cette section, mais il est tout à fait possible de combiner à la fois des constantes et des pentes aléatoires dans un modèle. Cela augmente bien sûr la complexité du modèle et introduit quelques subtilités comme la notion de distribution normale multivariée, mais chaque chose en son temps.
+Vous l'aurez certainement deviné en lisant le titre de cette section : il est tout à fait possible de combiner à la fois des constantes et des pentes aléatoires dans un modèle. Cela augmente bien sûr la complexité du modèle et introduit quelques subtilités comme la notion de distribution normale multivariée, mais chaque chose en son temps.
 
-Si l'on reprend notre exemple avec nos élèves et nos classes, combiner à la fois des constantes et des pentes aléatoires revient à formuler l'hypothèse que chaque classe a un effet sur la moyenne de la performance de ses élèves mais également un effet sur l'efficacté du temps de travail sur la performance. Il serait possible de créer un modèle avec uniquement des effets fixes tenant compte de ces deux aspects en ajoutant dans le modèle la variable multinomiale classe ainsi que son interraction avec la variable temps de travail. La formulation de ce modèle à effets fixes est la suivante : 
+Si l'on reprend notre exemple avec nos élèves et nos classes, combiner à la fois des constantes et des pentes aléatoires revient à formuler l'hypothèse que chaque classe a un effet sur la moyenne de la performance de ses élèves, mais également un effet sur l'efficacité du temps de travail sur la performance. Il serait possible de créer un modèle avec uniquement des effets fixes tenant compte de ces deux aspects en ajoutant dans le modèle la variable multinomiale classe ainsi que son interaction avec la variable temps de travail. La formulation de ce modèle à effets fixes est la suivante :
+
 
 \footnotesize
 \begin{equation}
@@ -377,9 +378,9 @@ Nous reformulons à présent ce modèle pour intégrer l'effet moyen de chaque c
 \end{equation}
 \normalsize
 
-Pas de panique ! Cette écriture peut être interprétée de la façon suivante : 
+Pas de panique ! Cette écriture peut être interprétée de la façon suivante.
 
-Les modèles comprends deux effets aléatoires, l'un faisant varier la constante en en fonction de l'école ($\upsilon_1$) et l'autre l'effet de l'école sur l'efficacité du temps de travail ($\upsilon_2$). Ces deux effets sont issus d'une distribution normale bivariée (une dimension par effet aléatoire). Cette distribution normale bivariée a donc deux moyennes et ces deux moyennes sont à 0 car comme nous l'avons vu dans les modèles précédents. Elle dispose également d'une variance par effet aléatoire ($\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$) et d'une covariance entre les deux effets aléatoires ($\sigma_{\upsilon_1\upsilon_2}$). Cette covariance permet de tenir compte du fait que potentiellement, les écoles avec une constante plus élevées pourraient systématique avoir un effet plus élevé ou plus faible sur l'efficacité du temps de travail. Cette formulation implique donc d'ajuster trois paramètres de variance : $\sigma_{\upsilon_1}$, $\sigma_{\upsilon_2}$ et $\sigma_{\upsilon_1\upsilon_2}$. Il peut arriver que nous ne disposions pas d'assez de données pour estimer ces trois paramètres, ou que estimons pour des raisons théorique, aucune corrélation ne soit attendue entre $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$, dans ce cas, il est possible de fixer $\sigma_{\upsilon_1\upsilon_2}$ à 0, ce qui revient à indiquer au modèle que  $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$ proviennent de deux distributions normales distinctes, nous pouvons donc écrire : 
+Les modèles comprend deux effets aléatoires, l'un faisant varier la constante en fonction de l'école ($\upsilon_1$) et l'autre l'effet de l'école sur l'efficacité du temps de travail ($\upsilon_2$). Ces deux effets sont issus d'une distribution normale bivariée (une dimension par effet aléatoire). Cette distribution normale bivariée a donc deux moyennes et ces deux moyennes sont à 0, car comme nous l'avons vu dans les modèles précédents IL MANQUE QUELQUES CHOSE A LA PHRASE. Elle dispose également d'une variance par effet aléatoire ($\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$) et d'une covariance entre les deux effets aléatoires ($\sigma_{\upsilon_1\upsilon_2}$). Cette covariance permet de tenir compte du fait que potentiellement, les écoles avec une constante plus élevée pourraient systématique avoir un effet plus élevé ou plus faible sur l'efficacité du temps de travail. Cette formulation implique donc d'ajuster trois paramètres de variance : $\sigma_{\upsilon_1}$, $\sigma_{\upsilon_2}$ et $\sigma_{\upsilon_1\upsilon_2}$. Il peut arriver que nous ne disposions pas d'assez de données pour estimer ces trois paramètres, ou qu’estimons pour des raisons théoriques, aucune corrélation ne soit attendue entre $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$, dans ce cas, il est possible de fixer $\sigma_{\upsilon_1\upsilon_2}$ à 0, ce qui revient à indiquer au modèle que  $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$ proviennent de deux distributions normales distinctes, nous pouvons donc écrire :
 
 \footnotesize
 \begin{equation}
@@ -402,7 +403,7 @@ Les modèles comprends deux effets aléatoires, l'un faisant varier la constante
 \end{equation}
 \normalsize
 
-Ce qui est indentique à : 
+Ce qui est identique à : 
 
 \footnotesize
 \begin{equation}
@@ -455,7 +456,7 @@ sigma1 <- VarCorr(model2)$group[1,1]
 sigma2 <- VarCorr(model2)$group[2,2]
 ```
 
-Nous pouvons ainsi constater que pour ce troisième modèle, l'effet de resserrement est bien plus prononcé que pour les modèles précédents (\@ref(fig:fullrandom3)). Si l'on se fie au modèle à effets fixes (figure : \@ref(fig:fullrandom1)), alors l'impact de l'école sur l'efficacité du temps de travail est très important. Le modèle à effet aléatoire en revanche, identifie que la différence de moyenne entre les écoles est importante, mais la différence en terme d'efficacité du temps de travail est beaucoup plus anecdotique.
+Nous pouvons ainsi constater que pour ce troisième modèle, l'effet de resserrement est bien plus prononcé que pour les modèles précédents (\@ref(fig:fullrandom3)). Si l'on se fie au modèle à effets fixes (figure : \@ref(fig:fullrandom1)), alors l'impact de l'école sur l'efficacité du temps de travail est très important. En revanche, le modèle à effet aléatoire identifie que la différence de moyenne entre les écoles est importante, mais la différence en termes d'efficacité du temps de travail est beaucoup plus anecdotique.
 
 ```{r fullrandom3, echo=FALSE, fig.align='center', fig.cap="Comparaison des effets fixes et aléatoires pour le modèle intégrant l'effet des classes et l'interaction entre les classes et le tempsd de travail", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
 
@@ -477,9 +478,10 @@ ggarrange(plot1,plot2,ncol = 2, nrow = 1, common.legend = T)
 rs2 <- r.squaredGLMM(model2)
 ```
 
-Notre modèle estime la valeur de $\sigma_{\upsilon_1}$ à `r tofr(round(sigma1, 3))`, celle de $\sigma_{\upsilon_2}$ à `r tofr(round(sigma2, 3))` et celle de $\sigma_{\upsilon_1\upsilon_2}$ à `r tofr(round(covmod, 3))`. La corrélation entre les deux effets est donc de `r tofr(round(covmod/(sqrt(sigma1)*sqrt(sigma2)), 3))` ce qui est relativement faible. (Pour l'anecdocte, notez que la valeur originale de corrélation entre ces deux effets était de 0,1 lorsque nous avons simulés ces données, notre modèle est a donc bien été capable de retrouver le paramètre original.). À nouveau, puisque nous avons des pentes aléatoires dans ce modèle, nous ne pouvons pas calculer l'ICC, nous pouvons cependant rapporter les R^2^ marginal et conditionnel. Leurs valeurs respectives sont `r tofr(round(r2s[[1]],3))` et `r tofr(round(r2s[[2]],3))` ce qui nous confirme une nouvelle fois que l'ajout d'effets aléatoires contribue à expliquer une partie importante de la variance de la performance scolaire.
+Notre modèle estime la valeur de $\sigma_{\upsilon_1}$ à `r tofr(round(sigma1, 3))`, celle de $\sigma_{\upsilon_2}$ à `r tofr(round(sigma2, 3))` et celle de $\sigma_{\upsilon_1\upsilon_2}$ à `r tofr(round(covmod, 3))`. La corrélation entre les deux effets est donc de `r tofr(round(covmod/(sqrt(sigma1)*sqrt(sigma2)), 3))` ce qui est relativement faible (pour l'anecdote, notez que la valeur originale de corrélation entre ces deux effets était de 0,1 lorsque nous avons simulé ces données, notre modèle est a donc bien été capable de retrouver le paramètre original). À nouveau, puisque nous avons des pentes aléatoires dans ce modèle, nous ne pouvons pas calculer l'ICC; nous pouvons cependant rapporter les R^2^ marginal et conditionnel. Leurs valeurs respectives sont `r tofr(round(r2s[[1]],3))` et `r tofr(round(r2s[[2]],3))`, ce qui nous confirme une nouvelle fois que l'ajout d'effets aléatoires contribue à expliquer une partie importante de la variance de la performance scolaire.
 
-Pour terminer cette section, comparons brièvement les trois modèles (constantes aléatoire, pentes aléatoires et constantes et pentes aléatoires) pour déterminer lequel est le mieux ajusté à nos données. Nous ajoutons également un quatrième modèle dans lequel les deux effets aléatoires sont présents mais non corrélés ($\sigma_{\upsilon_1\upsilon_2}=0$). Le tableau \@ref(tab:fullrandom4) nous permet de constater que l'ajout des constantes aléatoires joue un rôle essentiel dans le premier modèle : le R^2^ conditionnel est plus que deux fois supérieur au R^2^ marginal. Cependant, l'ajout des pentes aléatoires dans les trois autres modèles apporte finalement très peu d'information, nous laissant penser que l'effet de la classe sur le temps de travail est faible voir inexistant.
+Pour terminer cette section, comparons brièvement les trois modèles (constantes aléatoires, pentes aléatoires, constantes et pentes aléatoires) pour déterminer lequel est le mieux ajusté à nos données. Nous ajoutons également un quatrième modèle dans lequel les deux effets aléatoires sont présents, mais non corrélés ($\sigma_{\upsilon_1\upsilon_2}=0$). Le tableau \@ref(tab:fullrandom4) nous permet de constater que l'ajout des constantes aléatoires joue un rôle essentiel dans le premier modèle : le R^2^ conditionnel est plus que deux fois supérieures au R^2^ marginal. Cependant, l'ajout des pentes aléatoires dans les trois autres modèles apporte finalement très peu d'information, nous laissant penser que l'effet de la classe sur le temps de travail est faible voire inexistant.
+
 
 ```{r fullrandom4, echo=FALSE, message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
 model1 <- lmer(Y2 ~ X + (1|group), data = df3)
@@ -492,7 +494,7 @@ model4 <- lmer(Y2 ~ X + (X||group), data = df3,
 models <- list(model1,model2,model3,model4)
 
 tableau <- data.frame(
-  name = c("constante aléatoire", "pente aléatoire", "pente et constante aléatoire corrélées", "pente et constante aléatoire non-corrélées"),
+  name = c("Constantes aléatoires", "Pentes aléatoires", "Pentes et constantes aléatoires corrélées", "Pentes et constantes aléatoires non-corrélées"),
   aic = round(sapply(models, function(i){AIC(i)}),1),
   r2m = round(sapply(models, function(i){r.squaredGLMM(i)[[1]]}),2),
   r2c = round(sapply(models, function(i){r.squaredGLMM(i)[[2]]}),2)
