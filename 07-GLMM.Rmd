@@ -1,6 +1,6 @@
 # Régressions à effets mixtes (GLMM) et régression multiniveaux  {#chap07}
 
-Dans les deux chapitres précédent, nous avons consécutivement présenté la méthode de la régression linéaire simple (LM) ainsi que son extension : les modèles linéaires généralisés. Dans ce chapitre, nous poursuivons sur cette voie avec un nouveau développement : les modèles généralisés à effet mixtes et le modèles multiniveaux.
+Dans les deux chapitres précédent, nous avons consécutivement présenté la méthode de la régression linéaire simple (LM) ainsi que son extension : les modèles linéaires généralisés (GLM). Dans ce chapitre, nous poursuivons sur cette voie avec un nouveau développement : les modèles généralisés à effet mixtes et le modèles multiniveaux.
 
 ## Introduction
 
@@ -256,16 +256,76 @@ On constate donc que nous avons un effet principal $beta_1$ décrivant le lien e
 \begin{equation}
 \begin{aligned}
 &Y \sim Normal(\mu,\sigma_e)\\
-&g(\mu) = \beta_0 + \beta_1 \times x_1 + \upsilon \times x_1 \\
+&g(\mu) = \beta_0 + (\beta_1 + \upsilon) \times x_1  \\
 &\upsilon \sim Normal(0,\sigma_{\upsilon})
 &g(x) = x
 \end{aligned}
 \end{equation}
 \normalsize
 
-Dans le même esprit que pour le modèle 
+Nous formulons ici un modèle dans lequel la classe modifie l'impact de la variable temps d'étude sur la variable score à l'examen. L'effet moyen de $x_1$ est capté par le coefficient $\beta_1$, les bonus ou malus ajouté à cet effet par la classe sont issues d'une distribution normale centrée sur 0 avec un écart type $sigma_{\upsilon}$. À nouveau, l'idée est que si l'on moyennait l'effet de toutes les écoles, nous obtiendrions 0. À nouveau, le fait de modéliser cet effet comme un effet aléatoire nous permet de partitionner la variance, de mutualiser l'information entre les classes et de resserer l'estimation des effets des classes.
 
-plusieurs formes : intercept aleatoire / pente aleatoire / pente et intercept aleatoire
+Les résultats pour ce second modèle sont présentés à la figure \@ref(fig:randomslope2), et une comparaison entre les estimations des effets fixes et des effets aléatoires est présentée à la figure \@ref(fig:randomslope3). Nous pouvons ainsi constater à nouveau l'effet de resseremment provoqué par l'effet aléatoire.
+
+```{r randomslope2, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la réussite scolaire d'élèves en interraction avec la classe (effet aléatoire)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+model2 <- lmer(Y2 ~ X + (-1+X|group), data = df3)
+coeffs <- coef(model2)$group
+
+df5 <- data.frame(
+  inter = coeffs[,1],
+  slope = coeffs[,2],
+  group = rownames(coeffs)
+)
+
+ggplot(data = df3)+
+  geom_point(aes(x = X, y = Y2, color = group), alpha = 0.8, size = 1)+
+  geom_abline(data = df5, mapping = aes(intercept = inter, slope = slope, color = group),size = 1.2)+ 
+  scale_color_manual(values =colors)+
+  labs(y = "Score à l'examen (%)", x = "Temps de travail (heure)", color = "Classe") + 
+  xlim(0,max(df3$X)+1)
+```
+
+```{r randomslope3, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la réussite scolaire d'élèves en interraction avec la classe (effet aléatoire)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+df6 <- data.frame(
+  fixed = df4$slope,
+  random = df5$slope,
+  group = df4$group
+)
+
+ggplot() + 
+  geom_point(data = df4, mapping = aes(x = slope, y = group,  color = "fixed")) +
+  geom_point(data = df5, mapping = aes(x = slope, y = group, color = "random")) + 
+  geom_vline(xintercept = mean(df4$slope)) + 
+  labs(x = "effet du temps de travail", y = "classe", color = "type d'effet") + 
+  scale_color_manual(values = c("fixed" = "red", random = "blue"), labels = c("fixe", "aléatoire"))
+
+rs2 <- r.squaredGLMM(model2)
+
+```
+
+Lorsque l'on intègre des pentes aléatoires dans un modèle, on fait face au problème suivant : la variance associée aux pentes aléatoire n'est pas fixe, mais proportionnelle à la variable *X* autorisée à varier. Si l'on compare la figure \@ref(fig:randominter3) (constantes aléatoires) et la figure \@ref(fig:randomslope2) (pentes aléatoires), on constate bien que la dispersion des prédictions du modèle (représentées par les lignes) augmente dans le cas de pentes aléatoires et reste identique dans le cas des constantes aléatoires. La conséquence pratique est qu'il existe potentiellement un nombre infini de valeur possible pour l'ICC. Dans ce contexte, il est préférable de laisser de coté cet indicateur et de ne reporter que les R^2^ marginal et conditionnel. Dans notre cas, nous obtenons les valeurs `r round(rs2[[1]],3)` et `r round(rs2[[2]],3)`, ce qui confirme une fois encore que le rôle joué par la classe est loin d'être négligeable puisqu'il permet d'expliquer près de `r round(rs2[[2]],3)*100`% supplémentaire de variance comparativement au seuls effets fixes expliquant `r round(rs2[[1]],3)*100`% de la variance du score obtenu à l'examen.
+
+
+### GLMM avec constantes et pentes aléatoires
+
+Vous l'aurez certainement deviné en lisant le titre de cette section, mais il est tout à fait possible de combiner à la fois des constantes et des pentes aléatoires dans un modèle. Cela augmente bien sûr la complexité du modèle et introduit quelques subtilités comme la notion de distribution normale multivariée, mais chaque chose en son temps.
+
+Si l'on reprend notre exemple avec nos élèves et nos classes, combiner à la fois des constantes et des pentes aléatoires revient à formuler l'hypothèse que chaque classe à un effet sur la moyenne de la réussite de ses élèves mais également un effet sur l'efficacté du temps de travail sur la réussite. Il serait possible d'arriver à un résultat similaire avec uniquement des effets fixes en ajoutant dans le modèle la variable multinomiale classe ainsi que son interraction avec la variable temps de travail. La formulation de ce modèle à effets fixes est la suivante : 
+
+\footnotesize
+\begin{equation}
+\begin{aligned}
+&Y \sim Normal(\mu,\sigma)\\
+&g(\mu) = \beta_0 + \beta_1 \times x_1 + \sum^k_{j=0}{\beta_{2j} \times x_{2k} + \beta_{3j} \times x_{2k} \times x_1}\\
+&g(x) = x
+\end{aligned}
+\end{equation}
+\normalsize
+
+
+plusieurs formes : intercept aleatoire / pente aleatoire / pente et intercept aleatoire 
 
 Comparaison des formulations fixe : coefficient pour variable binaire / interaction binaire et continue / combinaison des deux
 
