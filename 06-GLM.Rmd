@@ -73,6 +73,7 @@ D'après cette formule, nous modélisons la variable *Y* avec une équation de r
 &g(\mu) = \beta_0 + \beta X\\
 &g(x) = x
 \end{aligned}
+(\#eq:glm1)
 \end{equation}
 \normalsize
 
@@ -83,6 +84,7 @@ Notez que dans la notation traditionnelle, la fonction de lien est appliquée au
 \begin{equation}
 g(\mu) = \beta_0 + \beta X \text{ <==> } \mu = g'(\beta_0 + \beta X)
 \text{ si : }g'(g(x)) = x
+(\#eq:glm2)
 \end{equation}
 \normalsize
 
@@ -106,6 +108,7 @@ Notez également que l’estimation des paramètres d’un modèle GLM (ici $\be
 &g(p) = \beta_0 + \beta X\\
 &g(x) = x
 \end{aligned}
+(\#eq:glm3)
 \end{equation}
 \normalsize
 
@@ -152,6 +155,7 @@ C’est ici qu’intervient la fonction de lien. La fonction identitaire n’est
 &S(p) = \beta_0 + \beta X\\
 &S(x) = \frac{e^{x}}{e^x+1}
 \end{aligned}
+(\#eq:glm4)
 \end{equation}
 \normalsize
 
@@ -193,6 +197,7 @@ Dans la section sur la régression linéaire simple, nous avions présenté la n
 \footnotesize
 \begin{equation}
 r_i = \frac{y_i - \mu_i}{\sigma}
+(\#eq:glm5)
 \end{equation}
 \normalsize
 
@@ -201,6 +206,7 @@ Pour un modèle GLM de Bernoulli, il s'écrit :
 \footnotesize
 \begin{equation}
 r_i = \frac{y_i - p_i}{\sqrt{p_i(1-p_i)}}
+(\#eq:glm6)
 \end{equation}
 \normalsize
 
@@ -209,6 +215,7 @@ r_i = \frac{y_i - p_i}{\sqrt{p_i(1-p_i)}}
 \footnotesize
 \begin{equation}
 d_i = -2 * log(P(y_i|M_e))
+(\#eq:glm7)
 \end{equation}
 \normalsize
 
@@ -219,6 +226,7 @@ La somme de tous ces résidus est appelée la déviance totale du modèle.
 \footnotesize
 \begin{equation}
 D(M_e) = \sum_{i=1}^n -2 * log(P(y_i|M_e))
+(\#eq:glm8)
 \end{equation}
 \normalsize
 
@@ -255,6 +263,7 @@ Rappelons que la déviance d’un modèle est une quantité représentant à que
 \footnotesize
 \begin{equation}
 \text{déviance expliquée} = \frac{D(M_n) - D(M_e)}{D(M_n)} = 1- \frac{D(M_e)}{D(M_n)}
+(\#eq:glm9)
 \end{equation}
 \normalsize
 
@@ -293,6 +302,7 @@ Probablement l’indicateur le plus répandu, sa formule est relativement simple
 \footnotesize
 \begin{equation}
 AIC = D(M_e) + 2K
+(\#eq:glm10)
 \end{equation}
 \normalsize
 
@@ -329,6 +339,7 @@ La mesure la plus couramment utilisée pour une variable continue est l’erreur
 \footnotesize
 \begin{equation}
 RMSE = \sqrt{\frac{\sum_{i=1}^n(y_i - \hat{y_i})^2}{n}}
+(\#eq:glm11)
 \end{equation}
 \normalsize
 
@@ -338,6 +349,7 @@ Il s’agit donc de la racine carrée de la moyenne des écarts au carré entre 
 \footnotesize
 \begin{equation}
 MAE = \frac{\sum_{i=1}^n|y_i - \hat{y_i|}}{n}
+(\#eq:glm12)
 \end{equation}
 \normalsize
 
@@ -392,6 +404,7 @@ Trois mesures pour chaque catégorie peuvent être utilisée pour déterminer la
 \footnotesize
 \begin{equation}
 F1 = 2 * \frac{\text{précision * rappel}}{\text{précision + rappel}}
+(\#eq:glm13)
 \end{equation}
 \normalsize
 
@@ -441,6 +454,7 @@ Tel qu'abordé dans le chapitre les régressions linéaires classiques, il est c
 \footnotesize
 \begin{equation}
 LR = 2(loglik(M_2) - loglik(M_1))
+(\#eq:glm14)
 \end{equation}
 \normalsize
 
@@ -1503,6 +1517,7 @@ Pour vérifier la présence de surdispersion, il est possible dans le cas du mod
 \footnotesize
 \begin{equation}
 \chi^2 = \sum_k{\frac{(O_k - E_k)^2}{E_k}}
+(\#eq:glm15)
 \end{equation}
 \normalsize
 
@@ -1967,6 +1982,7 @@ Puisque la distribution de Poisson n’a qu’un seul paramètre, le modèle GLM
 \footnotesize
 \begin{equation}
 \hat{\phi} = \frac{D(modele)}{N-p}
+(\#eq:glm16)
 \end{equation}
 \normalsize
 
@@ -2408,6 +2424,7 @@ Les conditions d'application d'un modèle Négatif Binomial sont presque les mê
 \footnotesize
 \begin{equation}
 variance = \mu + \mu^{\frac{2}{\theta}}
+(\#eq:glm17)
 \end{equation}
 \normalsize
 
@@ -2998,7 +3015,9 @@ Y \sim \text {Binomial}(p) \text { si } y=0 \\
 \text { logit }(p)=\beta_{a} X_{a} \\
 Y \sim \text { TrPoisson}(\lambda) \text { si } y>0 \\
 \log (\lambda)=\beta_{b} X_{b}
-\end{array}\right.\end{equation}
+\end{array}\right.
+(\#eq:glm17)
+\end{equation}
 \normalsize
 
 On constate qu’un modèle de Hurdle utilise deux distributions, la première est une distribution binomiale dont l’objectif est de prédire si les observations sont à 0 ou au-dessus de 0. La seconde est une distribution strictement positive (supérieure à 0), il peut s’agir d’une distribution tronquée de Poisson, tronquée négative binomiale, Gamma, log-normale ou autre, dépendamment du phénomène modélisé. Puisque le modèle fait appel à deux distributions, deux équations de régressions sont utilisées, l’une pour prédire *p* (la probabilité d’observer une valeur au-dessus de 0) et l'autre l’espérance (moyenne) de la seconde distribution. 
@@ -3495,6 +3514,7 @@ Si nous disposons d’une variable *Y*, suivant une distribution Gamma telle que
 &E(Y) = \alpha * b \\
 &Var(Y) = \alpha * b^2\\
 \end{aligned}
+(\#eq:glm18)
 \end{equation}
 \normalsize
 
@@ -3509,6 +3529,7 @@ Avec ces propriétés, il est possible de redéfinir la fonction de densité de 
 &\mu = \alpha \times b \text{ soit }b = \frac{\mu}{a}\\
 &Var(Y) = \alpha \times (\frac{\mu}{\alpha})^2 \text{ soit } Var(Y) = \frac{\mu^2}{\alpha}\\
 \end{aligned}
+(\#eq:glm19)
 \end{equation}
 \normalsize
 
@@ -4025,6 +4046,7 @@ Pour une distribution Beta telle définie par $Y \sim Beta(a,b)$, l'espérance d
 &E(Y) = \frac{a}{a+b} \\
 &Var(Y) = \frac{a \times b}{(a+b)^2(a+b+1)}\\
 \end{aligned}
+(\#eq:glm20)
 \end{equation}
 \normalsize
 
@@ -4037,6 +4059,7 @@ Pour reparamétrer cette distribution, on définit un nouveau paramètre $\phi$ 
 &b = \phi - a \\
 &Var(Y) = \frac{E(Y) \times (1-E(Y))}{1+\phi}
 \end{aligned}
+(\#eq:glm21)
 \end{equation}
 \normalsize
 
