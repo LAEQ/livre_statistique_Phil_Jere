@@ -1656,7 +1656,7 @@ modele2 <- vglm(Y ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
                family = multinomial(refLevel="A"), model = T)
 ```
 
-Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* **DHARMa** ne peut traiter que variable quantitative, binaire ou ordinale. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons utiliser à nouveau utiliser le *package* **DHARMa** pour analyser nos résidus.
+Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* **DHARMa** ne peut traiter que variable quantitative, binaire ou ordinale. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons utiliser à nouveau utiliser le *package* **DHARMa** pour analyser nos résidus. Veuillez noter que cette approche n'est pas forcément optimale que et cette section du livre peut être amenée à changer.
 
 La figure \@ref(fig:residusmultinom) indique que les résidus suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
 ```{r residusmultinom, message=FALSE, warning=FALSE, fig.cap = "Diagnositc général des résidus simulés pour le modèle multinomial", fig.align = "center", out.width = "75%"}
@@ -1681,7 +1681,8 @@ data_sims <- lapply(1:ncol(predicted),function(i){
   real <- ifelse(real=="A",0,1)
   # enregistrer ces différents éléments
   all_probs <- cbind(1-probs,probs)
-  return(list("real" = real, probs = all_probs))
+  sub_data <- subset(data_quest,test)
+  return(list("real" = real, "probs" = all_probs, "data" = sub_data))
 })
 
 # extraire les probabilités prédites
@@ -1748,12 +1749,18 @@ La figure \@ref(fig:residusmultinom2) permet d'affiner le diagnostic en s'assura
 
 ```{r residusmultinom2, message=FALSE, warning=FALSE, fig.cap = "Diagnositc par variable des résidus simulés pour le modèle multinomial", fig.align = "center", out.width = "95%"}
 
+# recomposer les donnees pour coller au format
+# etendu de la prediction
+
+etend_data <- do.call(rbind, lapply(data_sims, function(i){i$data}))
+
+
 par(mfrow=c(3,3))
 vars <- c("PercepOGM", "PercepRechClim", "ConnaisOGM", 
           "ConnaisRechClim", "CRT", "Parti", "Sexe")
 
 for(v in  vars){
-  plotResiduals(sim_res, data_quest[[v]], main = v)
+  plotResiduals(sim_res, etend_data[[v]], main = v)
 }
 
 ```
@@ -1776,47 +1783,104 @@ modele3 <- vglm(Y ~ PercepOGMDes + PercepRechClimDes +
 
 ```{r residusmultinom3, message=FALSE, warning=FALSE, fig.cap = "Diagnositc général des résidus simulés pour le modèle multinomial (version 3)", fig.align = "center", out.width = "75%", echo = FALSE}
 
-# extraction des prédictions (en probabilité)
-predicted <- predict(modele3,type = "response")
+# extraire les prédictions du modèle
+categories <- c("B","C","D")
+predicted <- predict(modele3, type = "link")
 
 nsim <- 1000
-# lancement des simulations pour chaque observation (chaque lignes dans predicted)
-simualtions <- lapply(1:nrow(predicted), function(i){
-  probs <- predicted[i,]
-  sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
+ilink <- function(x){exp(x)/(1+exp(x))}
+
+# boucler sur chacune des catégories en dehors de la référence
+data_sims <- lapply(1:ncol(predicted),function(i){
+  categorie <- categories[[i]]
+  # extraire les observation de la catégorie i et de la référence
+  test <- data_quest$Y %in% c("A",categorie)
+  # calculer les probabilité d'appartenance à i
+  values <- predicted[test,i]
+  probs <- ilink(values)
+  # extraire les valeurs réelle et les convertir en 0 / 1
+  real <- data_quest[test,]$Y
+  real <- ifelse(real=="A",0,1)
+  # enregistrer ces différents éléments
+  all_probs <- cbind(1-probs,probs)
+  sub_data <- subset(data_quest,test)
+  return(list("real" = real, "probs" = all_probs, "data" = sub_data))
+})
+
+# extraire les probabilités prédites
+all_probs <- do.call(rbind, lapply(data_sims, function(i){i$probs}))
+# extraire les vrais catégories
+all_real <- do.call(c, lapply(data_sims, function(i){i$real}))
+
+# effectuer les simulations
+simualtions <- lapply(1:nrow(all_probs), function(i){
+  probs <- all_probs[i,]
+  sims <- sample(c(0,1), size = nsim, replace = T, prob = probs)
   return(sims)
 })
 matsim <- do.call(rbind, simualtions)
 
-# on conserver la catégorie avec la plus haute probabilité 
-# comme catégorie prédite
-pred_cat <- colnames(predicted)[max.col(predicted)]
-
-# on convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
-
-real <- case_when(data_quest$Y == "A" ~ 1,
-                  data_quest$Y == "B" ~ 2,
-                  data_quest$Y == "C" ~ 3,
-                  data_quest$Y == "D" ~ 4)
-
-pred <- case_when(pred_cat == "A" ~ 1,
-                  pred_cat == "B" ~ 2,
-                  pred_cat == "C" ~ 3,
-                  pred_cat == "D" ~ 4)
-
-# on calcule les résidus simulés
+# calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = matsim, 
-                        observedResponse = real,
-                        fittedPredictedResponse = pred,
-                        integerResponse = T)
+                            observedResponse = all_real,
+                            fittedPredictedResponse = all_probs[,2],
+                            integerResponse = T)
+
+etend_data <- do.call(rbind, lapply(data_sims, function(i){i$data}))
 
 par(mfrow=c(3,3))
 vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
           "ConnaisRechClim", "CRT", "Parti", "Sexe")
 
 for(v in  vars){
-  plotResiduals(sim_res, data_quest[[v]], main = v)
+  plotResiduals(sim_res, etend_data[[v]], main = v)
 }
+
+```
+
+```{r eval=FALSE, include=FALSE}
+# 
+# # extraction des prédictions (en probabilité)
+# predicted <- predict(modele3,type = "response")
+# 
+# nsim <- 1000
+# # lancement des simulations pour chaque observation (chaque lignes dans predicted)
+# simualtions <- lapply(1:nrow(predicted), function(i){
+#   probs <- predicted[i,]
+#   sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
+#   return(sims)
+# })
+# matsim <- do.call(rbind, simualtions)
+# 
+# # on conserver la catégorie avec la plus haute probabilité 
+# # comme catégorie prédite
+# pred_cat <- colnames(predicted)[max.col(predicted)]
+# 
+# # on convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
+# 
+# real <- case_when(data_quest$Y == "A" ~ 1,
+#                   data_quest$Y == "B" ~ 2,
+#                   data_quest$Y == "C" ~ 3,
+#                   data_quest$Y == "D" ~ 4)
+# 
+# pred <- case_when(pred_cat == "A" ~ 1,
+#                   pred_cat == "B" ~ 2,
+#                   pred_cat == "C" ~ 3,
+#                   pred_cat == "D" ~ 4)
+# 
+# # on calcule les résidus simulés
+# sim_res <- createDHARMa(simulatedResponse = matsim, 
+#                         observedResponse = real,
+#                         fittedPredictedResponse = pred,
+#                         integerResponse = T)
+# 
+# par(mfrow=c(3,3))
+# vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
+#           "ConnaisRechClim", "CRT", "Parti", "Sexe")
+# 
+# for(v in  vars){
+#   plotResiduals(sim_res, data_quest[[v]], main = v)
+# }
 ```
 
 Profitons du fait que nous utilisons le package **VGAM** pour vérifier l'absence d'effet de hauck-Donner qui indiquerait que des variables indépendantes provoquent des séparations parfaites. 
@@ -1836,54 +1900,100 @@ modele4 <- vglm(Y ~ PercepOGMDes + PercepRechClimDes +
                family = multinomial(refLevel="A",
                                     parallel = TRUE ~1), model = T)
 test <- hdeff(modele4)
-test[test==TRUE]
+print(table(test))
 ```
 
-Nous n'avons donc plus de séparation complète, et les résidus simulés de la quatrième version du modèle sont toujours acceptables (figure \@ref(fig:residusmultinom4)). Ils notent cependant un début de surdispersion, mais le test n'est pas significatif au seuil 0,01.
+Nous n'avons donc plus de séparation complète, et les résidus simulés de la quatrième version du modèle sont toujours acceptables (figure \@ref(fig:residusmultinom4)).
 
 ```{r residusmultinom4, message=FALSE, warning=FALSE, fig.cap = "Diagnositc général des résidus simulés pour le modèle multinomial (version 4)", fig.align = "center", out.width = "75%", echo = FALSE}
-
-# Extraction des prédictions (en probabilité)
-predicted <- predict(modele4,type = "response")
+# extraire les prédictions du modèle
+categories <- c("B","C","D")
+predicted <- predict(modele4, type = "link")
 
 nsim <- 1000
-# Lancement des simulations pour chaque observation (chaque lignes dans predicted)
-simualtions <- lapply(1:nrow(predicted), function(i){
-  probs <- predicted[i,]
-  sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
+ilink <- function(x){exp(x)/(1+exp(x))}
+
+# boucler sur chacune des catégories en dehors de la référence
+data_sims <- lapply(1:ncol(predicted),function(i){
+  categorie <- categories[[i]]
+  # extraire les observation de la catégorie i et de la référence
+  test <- data_quest$Y %in% c("A",categorie)
+  # calculer les probabilité d'appartenance à i
+  values <- predicted[test,i]
+  probs <- ilink(values)
+  # extraire les valeurs réelle et les convertir en 0 / 1
+  real <- data_quest[test,]$Y
+  real <- ifelse(real=="A",0,1)
+  # enregistrer ces différents éléments
+  all_probs <- cbind(1-probs,probs)
+  sub_data <- subset(data_quest,test)
+  return(list("real" = real, "probs" = all_probs, "data" = sub_data))
+})
+
+# extraire les probabilités prédites
+all_probs <- do.call(rbind, lapply(data_sims, function(i){i$probs}))
+# extraire les vrais catégories
+all_real <- do.call(c, lapply(data_sims, function(i){i$real}))
+
+# effectuer les simulations
+simualtions <- lapply(1:nrow(all_probs), function(i){
+  probs <- all_probs[i,]
+  sims <- sample(c(0,1), size = nsim, replace = T, prob = probs)
   return(sims)
 })
 matsim <- do.call(rbind, simualtions)
 
-# On conserver la catégorie avec la plus haute probabilité 
-# comme catégorie prédite
-pred_cat <- colnames(predicted)[max.col(predicted)]
-
-# On convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
-
-real <- case_when(data_quest$Y == "A" ~ 1,
-                  data_quest$Y == "B" ~ 2,
-                  data_quest$Y == "C" ~ 3,
-                  data_quest$Y == "D" ~ 4)
-
-pred <- case_when(pred_cat == "A" ~ 1,
-                  pred_cat == "B" ~ 2,
-                  pred_cat == "C" ~ 3,
-                  pred_cat == "D" ~ 4)
-
-# On calcule les résidus simulés
+# calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = matsim, 
-                        observedResponse = real,
-                        fittedPredictedResponse = pred,
-                        integerResponse = T)
+                            observedResponse = all_real,
+                            fittedPredictedResponse = all_probs[,2],
+                            integerResponse = T)
 
-par(mfrow=c(3,3))
-vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
-          "ConnaisRechClim", "CRT", "Parti", "Sexe")
+plot(sim_res)
+```
 
-for(v in  vars){
-  plotResiduals(sim_res, data_quest[[v]], main = v)
-}
+```{r eval=FALSE, include=FALSE}
+# Extraction des prédictions (en probabilité)
+# predicted <- predict(modele4,type = "response")
+# 
+# nsim <- 1000
+# # Lancement des simulations pour chaque observation (chaque lignes dans predicted)
+# simualtions <- lapply(1:nrow(predicted), function(i){
+#   probs <- predicted[i,]
+#   sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
+#   return(sims)
+# })
+# matsim <- do.call(rbind, simualtions)
+# 
+# # On conserver la catégorie avec la plus haute probabilité 
+# # comme catégorie prédite
+# pred_cat <- colnames(predicted)[max.col(predicted)]
+# 
+# # On convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
+# 
+# real <- case_when(data_quest$Y == "A" ~ 1,
+#                   data_quest$Y == "B" ~ 2,
+#                   data_quest$Y == "C" ~ 3,
+#                   data_quest$Y == "D" ~ 4)
+# 
+# pred <- case_when(pred_cat == "A" ~ 1,
+#                   pred_cat == "B" ~ 2,
+#                   pred_cat == "C" ~ 3,
+#                   pred_cat == "D" ~ 4)
+# 
+# # On calcule les résidus simulés
+# sim_res <- createDHARMa(simulatedResponse = matsim, 
+#                         observedResponse = real,
+#                         fittedPredictedResponse = pred,
+#                         integerResponse = T)
+# 
+# par(mfrow=c(3,3))
+# vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
+#           "ConnaisRechClim", "CRT", "Parti", "Sexe")
+# 
+# for(v in  vars){
+#   plotResiduals(sim_res, data_quest[[v]], main = v)
+# }
 ```
 
 **Vérifier l'ajustement du modèle**
@@ -1909,7 +2019,6 @@ rsqs(loglike.full = logLik(modele4),
 Le modèle parvient à expliquer 17,5% de la déviance totale, il obtient un R^2^ ajusté de MacFadden de 0,15, et des R^2^ de Cox et Snell et de Nagelkerke de respectivement 0,34 et 0,37. Passons à la construction de la matrice de confusion pour analyser la capacité de prédiction du modèle.
 
 ```{r message=FALSE, warning=FALSE}
-
 preds <- predict(modele4, type = "response")
 pred_cats <- colnames(preds)[max.col(preds)]
 
