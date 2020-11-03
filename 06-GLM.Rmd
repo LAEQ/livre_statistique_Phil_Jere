@@ -1656,45 +1656,92 @@ modele2 <- vglm(Y ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
                family = multinomial(refLevel="A"), model = T)
 ```
 
+Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* **DHARMa** ne peut traiter que variable quantitative, binaire ou ordinale. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons utiliser à nouveau utiliser le *package* **DHARMa** pour analyser nos résidus.
 
-Nous pouvons à présent passer à l'analyse des résidus simulés. Le calcul de ces derniers est très similaire au cas d'un modèle logistique de cote proportionnelle présenté dans la section précédente. La figure \@ref(fig:residusmultinom) indique que les résidus suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
+La figure \@ref(fig:residusmultinom) indique que les résidus suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
+```{r residusmultinom, message=FALSE, warning=FALSE, fig.cap = "Diagnositc général des résidus simulés pour le modèle multinomial", fig.align = "center", out.width = "75%"}
 
-```{r residusmultinom, message=FALSE, warning=FALSE, fig.cap = "Diagnositc général des résidus simulés pour le modèle multinomial", fig.align = "center", out.width = "65%"}
-
-# Extraction des prédictions (en probabilité)
-predicted <- predict(modele2,type = "response")
+# extraire les prédictions du modèle
+categories <- c("B","C","D")
+predicted <- predict(modele2, type = "link")
 
 nsim <- 1000
-# Lancement des simulations pour chaque observation (chaque ligne dans predicted)
-simualtions <- lapply(1:nrow(predicted), function(i){
-  probs <- predicted[i,]
-  sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
+ilink <- function(x){exp(x)/(1+exp(x))}
+
+# boucler sur chacune des catégories en dehors de la référence
+data_sims <- lapply(1:ncol(predicted),function(i){
+  categorie <- categories[[i]]
+  # extraire les observation de la catégorie i et de la référence
+  test <- data_quest$Y %in% c("A",categorie)
+  # calculer les probabilité d'appartenance à i
+  values <- predicted[test,i]
+  probs <- ilink(values)
+  # extraire les valeurs réelle et les convertir en 0 / 1
+  real <- data_quest[test,]$Y
+  real <- ifelse(real=="A",0,1)
+  # enregistrer ces différents éléments
+  all_probs <- cbind(1-probs,probs)
+  return(list("real" = real, probs = all_probs))
+})
+
+# extraire les probabilités prédites
+all_probs <- do.call(rbind, lapply(data_sims, function(i){i$probs}))
+# extraire les vrais catégories
+all_real <- do.call(c, lapply(data_sims, function(i){i$real}))
+
+# effectuer les simulations
+simualtions <- lapply(1:nrow(all_probs), function(i){
+  probs <- all_probs[i,]
+  sims <- sample(c(0,1), size = nsim, replace = T, prob = probs)
   return(sims)
 })
 matsim <- do.call(rbind, simualtions)
 
-# On conserve la catégorie avec la plus haute probabilité 
-# comme catégorie prédite
-pred_cat <- colnames(predicted)[max.col(predicted)]
-
-# On convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
-real <- case_when(data_quest$Y == "A" ~ 1,
-                  data_quest$Y == "B" ~ 2,
-                  data_quest$Y == "C" ~ 3,
-                  data_quest$Y == "D" ~ 4)
-
-pred <- case_when(pred_cat == "A" ~ 1,
-                  pred_cat == "B" ~ 2,
-                  pred_cat == "C" ~ 3,
-                  pred_cat == "D" ~ 4)
-
-# On calcule les résidus simulés
+# calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = matsim, 
-                        observedResponse = real,
-                        fittedPredictedResponse = pred,
-                        integerResponse = T)
+                            observedResponse = all_real,
+                            fittedPredictedResponse = all_probs[,2],
+                            integerResponse = T)
 
-DHARMa::plotQQunif(sim_res)
+# afficher les résultats
+plot(sim_res)
+```
+
+```{r eval=FALSE, include=FALSE}
+# Extraction des prédictions (en probabilité)
+# predicted <- predict(modele2,type = "response")
+# 
+# nsim <- 1000
+# # Lancement des simulations pour chaque observation (chaque ligne dans predicted)
+# simualtions <- lapply(1:nrow(predicted), function(i){
+#   probs <- predicted[i,]
+#   sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
+#   return(sims)
+# })
+# matsim <- do.call(rbind, simualtions)
+# 
+# # On conserve la catégorie avec la plus haute probabilité 
+# # comme catégorie prédite
+# pred_cat <- colnames(predicted)[max.col(predicted)]
+# 
+# # On convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
+# real <- case_when(data_quest$Y == "A" ~ 1,
+#                   data_quest$Y == "B" ~ 2,
+#                   data_quest$Y == "C" ~ 3,
+#                   data_quest$Y == "D" ~ 4)
+# 
+# pred <- case_when(pred_cat == "A" ~ 1,
+#                   pred_cat == "B" ~ 2,
+#                   pred_cat == "C" ~ 3,
+#                   pred_cat == "D" ~ 4)
+# 
+# # On calcule les résidus simulés
+# sim_res <- createDHARMa(simulatedResponse = matsim, 
+#                         observedResponse = real,
+#                         fittedPredictedResponse = predicted,
+#                         integerResponse = T)
+# 
+# DHARMa::plotQQunif(sim_res)
 ```
 
 La figure \@ref(fig:residusmultinom2) permet d'affiner le diagnostic en s'assurant de l'absence de relation entre les variables indépendantes et les résidus. Il est possible de remarquer des irrégularités pour les variables de perceptions (premier et second panneaux). Dans les deux cas, la catégorie 1 (fort désaccord) se démarque nettement des autres catégories. Nous proposons donc de les recoder comme des variables binaires : en désaccord / pas en désaccord pour minimiser cet effet.
