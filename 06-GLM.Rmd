@@ -1635,7 +1635,7 @@ modele2 <- vglm(Y ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
 Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* **DHARMa** ne peut traiter que variable quantitative, binaire ou ordinale. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons utiliser à nouveau utiliser le *package* **DHARMa** pour analyser nos résidus. Veuillez noter que cette approche n'est pas forcément optimale que et cette section du livre peut être amenée à changer.
 
 La figure \@ref(fig:residusmultinom) indique que les résidus suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
-```{r residusmultinom, fig.align="center", fig.cap="Diagnostic général des résidus simulés pour le modèle multinomial", message=FALSE, warning=FALSE, out.width=}
+```{r residusmultinom, fig.align="center", fig.cap="Diagnostic général des résidus simulés pour le modèle multinomial", message=FALSE, warning=FALSE, out.width="85%"}
 
 # extraire les prédictions du modèle
 categories <- c("B","C","D")
@@ -1664,7 +1664,7 @@ data_sims <- lapply(1:ncol(predicted),function(i){
 # extraire les probabilités prédites
 all_probs <- do.call(rbind, lapply(data_sims, function(i){i$probs}))
 # extraire les vrais catégories
-all_real <- do.call(c, lapply(data_sims, function(i){i$real}))
+all_real <- unlist(lapply(data_sims, function(i){i$real}))
 
 # effectuer les simulations
 simulations <- lapply(1:nrow(all_probs), function(i){
@@ -3309,9 +3309,9 @@ ggplot() +
   geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..),
                  color = "black", fill = "white", bins = 50)+
   geom_density(data = df, aes(x = value, group = Var2), 
-               color = rgb(0.4,0.4,0.4,0.4), fill = rgb(0,0,0,0),
+               color = rgb(0.4,0.4,0.4,0.4), fill = rgb(0,0,0,0))+
   labs(x = "Pourcentage de végétation dans l'îlot (%)",
-  y = "Densité"))
+  y = "Densité")
 ```
 
 Il est également possible de vérifier si la condition d'homogénéité de la variance s'applique bien aux données.
