@@ -1171,8 +1171,8 @@ df <- read.csv("data/bivariee/hlm.csv")
 # Fonction pour calculer les autres mesures d'association
 AutresMesuresKhi2 <- function(x, y){
   testChi2 <- chisq.test(x, y) # Calcul du Chi2
-  n <- sum(testChi2$observed)  # Nombre d'observations
-  c <- ncol(testChi2$observed) # Nombre de colonnes
+  n  <- sum(testChi2$observed)  # Nombre d'observations
+  nc <- ncol(testChi2$observed) # Nombre de colonnes
   l <- nrow(testChi2$observed) # Nombre de lignes
   dl <- (c-1)*(l-1)            # Nombre de degrés de libertés
   chi2 <- testChi2$statistic   # Khi2
@@ -1196,7 +1196,7 @@ AutresMesuresKhi2 <- function(x, y){
   
   # Coefficient Phi et V de Cramer
   phi <- sqrt(chi2/n)
-  vc <- sqrt(chi2/(n*min(c-1,l-1)))
+  vc <- sqrt(chi2/(n*min(nc-1,l-1)))
   
   # Tableau pour les sorties
   dfsortie <- data.frame(

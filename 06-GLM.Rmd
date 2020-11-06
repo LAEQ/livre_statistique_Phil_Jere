@@ -3328,7 +3328,7 @@ df1 <- data.frame(
   reals = DataFinal2$VegPct
 )
 
-# Calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
+# Calcul de l'intervalle de confiance à 95% selon la distribution normale
 # et stockage dans un second dataframe
 seqa <- seq(0,100,10)
 df2 <- data.frame(
@@ -3633,12 +3633,13 @@ Le second AIC (modèle de Student) est plus élevé, indiquant que le modèle es
 
 Nous ne détaillons pas ici l'interprétation des coefficients du modèle (accessible avec la fonction `summary`) puisqu'ils s'interprètent de la même façon qu'un modèle GLM et qu'un modèle de régression linéaire multiple.
 
-#### Le modèle GLM avec distribution de Gamma {#sect06233}
+#### Le modèle GLM avec distribution Gamma {#sect06233}
 
-Pour rappel, la distribution de Gamma est strictement positive ($[0;+\infty[$), asymétrique et a une variance proportionnelle à sa moyenne (hétéroscedastique). Dans la section sur les distributions, nous avions vu que la distribution de Gamma (section \@ref(sect024315)) est formulée avec deux paramètres : sa forme ($\alpha$ ou *shape*) et son échelle ($b$ ou *scale*). Ces deux paramètres n’ont pas une interprétation très intuitive, mais il est possible avec un peu de jonglage mathématique d’arriver à une reparamétrisation intéressante. Cela est détaillé dans l'encadré ci-dessous; notez toutefois qu'il n'est pas nécessaire de maîtriser parfaitement le contenu de cet encadré pour lire la suite du contenu les modèles GLM avec une distribution de Gamma.
+Pour rappel, la distribution Gamma est strictement positive ($[0;+\infty[$), asymétrique et a une variance proportionnelle à sa moyenne (hétéroscedastique). Dans la section sur les distributions, nous avions vu que la distribution Gamma (section \@ref(sect024315)) est formulée avec deux paramètres : sa forme ($\alpha$ ou *shape*) et son échelle ($b$ ou *scale*). Ces deux paramètres n’ont pas une interprétation très intuitive, mais il est possible avec un peu de jonglage mathématique d’arriver à une reparamétrisation intéressante. Cela est détaillé dans l'encadré ci-dessous; notez toutefois qu'il n'est pas nécessaire de maîtriser parfaitement le contenu de cet encadré pour lire la suite du contenu les modèles GLM avec une distribution Gamma.
+
 
 ::: {.bloc_aller_loin data-latex=""}
-**Reparamétrisation d'une distribution de Gamma pour un GLM**
+**Reparamétrisation d'une distribution Gamma pour un GLM**
 
 Si nous disposons d’une variable *Y*, suivant une distribution Gamma telle que $Y \sim Gamma(\alpha,b)$ avec $\alpha$ le paramètre de forme et $b$ le paramètre d’échelle, alors, l'espérance et la variance de *Y* peuvent être définies comme suit : 
 
@@ -3729,7 +3730,7 @@ show_table(df,
 
 ```
 
-Les temps de trajet forment une variable strictement positive et très vraisemblablement asymétrique. En effet, nous nous attendons à observer une certaine concentration de valeurs autour d'une moyenne, et davantage de trajets avec de courtes durées que de trajets avec de longues durées. Pour nous en assurer, réalisons un histogramme de la distribution de notre variable *Y* et comparons la avec des distributions normale et de Gamma.
+Les temps de trajet forment une variable strictement positive et très vraisemblablement asymétrique. En effet, nous nous attendons à observer une certaine concentration de valeurs autour d'une moyenne, et davantage de trajets avec de courtes durées que de trajets avec de longues durées. Pour nous en assurer, réalisons un histogramme de la distribution de notre variable *Y* et comparons la avec des distributions normale et Gamma.
 
 ```{r gammadatadistrib, fig.cap = "Distribution des temps de trajets diurnes à Montréal", fig.align = "center",  message=FALSE, warning=FALSE, out.width='50%'}
 
@@ -3766,7 +3767,7 @@ ggplot(data = dataset) +
                             sd = sd(dataset$Duree)))+
   labs(x = 'Temps de déplacement (minutes)',
        y = '',
-       subtitle = "modèles de Gamma et gaussien")
+       subtitle = "modèles Gamma et gaussien")
 ```
 
 La figure \@ref(fig:gammadatadistrib) permet de constater l'asymétrie de la distribution des temps de trajets et qu'un modèle Gamma (ligne rouge) a plus de chance d'être adapté aux données qu'un modèle gaussien (ligne bleue).
@@ -3953,7 +3954,7 @@ La figure \@ref(fig:gammaresids3) indique que les résidus simulés ne suivent t
 
 D'un point de vue purement pédagogique, nous pouvons comparer graphiquement la variance observée dans les données et la variance attendue par le modèle. La figure \@ref(fig:dispgamma) montre clairement que la variance des données tend à être plus grande qu'attendue quand les temps de trajet sont courts, mais diminue trop vite quand les temps de trajet augmentent. D'autres distributions pourraient être envisagées pour ajuster notre modèle : Lognormal, Weibull, etc.
 
-```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle de Gamma", out.width = "50%"}
+```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle Gamma", out.width = "50%"}
 
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = "response")[,1]
@@ -4169,7 +4170,7 @@ ggplot(data = dfpred) +
 
 #### Le modèle GLM avec une distribution de Beta {#sect06234}
 
-Pour rappel, la distribution de Beta est une distribution définie sur l’intervalle $]0,1[$, elle est donc particulièrement utile pour décrire des proportions, des pourcentages ou des probabilités. Dans la section \@ref(sect024316) sur les distributions, nous avions présenté la paramétrisation classique de la distribution avec les paramètres $a$ et $b$ étant tous les deux des paramètres de forme. Ces deux paramètres n’ont pas d’interprétation pratique, mais il est possible (comme pour la distribution de Gamma) de reparamétrer la distribution Beta avec un paramètre de centralité (espérance) et de dispersion.
+Pour rappel, la distribution de Beta est une distribution définie sur l’intervalle $]0,1[$, elle est donc particulièrement utile pour décrire des proportions, des pourcentages ou des probabilités. Dans la section \@ref(sect024316) sur les distributions, nous avions présenté la paramétrisation classique de la distribution avec les paramètres $a$ et $b$ étant tous les deux des paramètres de forme. Ces deux paramètres n’ont pas d’interprétation pratique, mais il est possible (comme pour la distribution Gamma) de reparamétrer la distribution Beta avec un paramètre de centralité (espérance) et de dispersion.
 
 ::: {.bloc_aller_loin data-latex=""}
 **Reparamétrer la distribution Beta**
