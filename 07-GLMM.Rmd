@@ -842,12 +842,12 @@ library(performance)
 icc(modele1)
 ```
 
-Notez que cette fonction distingue un ICC ajusté et un ICC conditionnel. Le premier correspond à l'ICC que nous avons présenté jusrqu'ici et que jous avons calculé à la main. L'ICC conditionnel inclue dans son estimation la variance présente dans les effets fixes. Un fort écart entre ces deux ICC indiquerait que les effets fixes sont capables de capturer une très forte variance dans les données ce qui pourrait remettre en cause la pertinence de l'effet aléatoire. Dans notre cas, la différence entre les deux est très faible.
+Notez que cette fonction distingue un ICC ajusté et un ICC conditionnel. Le premier correspond à l'ICC que nous avons présenté jusqu'ici et que nous avons calculé à la main. L'ICC conditionnel inclue dans son estimation la variance présente dans les effets fixes. Un fort écart entre ces deux ICC indiquerait que les effets fixes sont capables de capturer une très forte variance dans les données ce qui pourrait remettre en cause la pertinence de l'effet aléatoire. Dans notre cas, la différence entre les deux est très faible.
 
 En plus du ICC, nous pouvons calculer les R^2^ marginal et conditionnel. Pour cela, nous devons faire appel au *package* **MuMIn**.
 
 ```{r message=FALSE, warning=FALSE, out.width='50%'}
-library(MuMin)
+library(MuMIn)
 r.squaredGLMM(modele1)
 ```
 
@@ -870,7 +870,7 @@ anova(modele1,model_simple)
 
 Le test indique clairement que le modèle complet est mieux ajusté. Le AIC, le BIC et la déviance sont tous grandement réduits et le test est largement significatif.
 
-Pour aller plus loin, nous pouvons utiliser une approche Bootstrap pour calculer un intervalle de confiance pour la variance de l'effet aléatoire, le ICC et le R^2^ conditionnel. Nous utilisons pour cela la fonction `bootMer`. Si vous essayez de lancer cette syntaxe, vous constaterez qu'elle prend énormément de temps, ce qui s'explique par le grand nombre de fois ou le modèle doit être réajusté. Nous vous recommandons donc de bien enregistrer vos résultats après l'exécution de la fonction.
+Pour aller plus loin, nous pouvons utiliser une approche Bootstrap pour calculer un intervalle de confiance pour la variance de l'effet aléatoire, le ICC et le R^2^ conditionnel. Nous utilisons pour cela la fonction `bootMer`. Si vous essayez de lancer cette syntaxe, vous constaterez qu'elle prend énormément de temps, ce qui s'explique par le grand nombre de fois ou le modèle doit être réajusté. Nous vous recommandons donc de bien enregistrer vos résultats après l'exécution de la fonction avec la fonction `save.` Notez que pour réduire significativement le temps de calcul, il est possible d'utiliser simultanément plusieurs coeurs de votre processeur, ce que nous faisons ici avec le *package* **snow**.
 
 ```{r message=FALSE, warning=FALSE, out.width='50%', eval=F, echo=T}
 # definition d'une fonction pour extraire les valeurs qui nous intéresse
@@ -881,11 +881,81 @@ extractor <- function(mod){
   return(c("vari"=vari,"icc"=ICC,"r2cond"=r2cond))
 }
 
-valeurs <- bootMer(modele1,FUN = extractor,nsim = 3, use.u = F, type="parametric")
+# préparation d'un environnement multiprocessing pour accéler le calcul
+library(snow)
+
+# préparation de 8 coeurs (attention si votre machine en a moins !)
+cl <- makeCluster(8)
+clusterEvalQ(cl,library("lme4"))
+valeurs <- bootMer(modele1,FUN = extractor,nsim = 1000,
+                   use.u = F, type="parametric", ncpus = 8,
+                   parallel="snow",
+                   cl = cl)
+
+# sauvegarde des résultats
+save(valeurs,file = 'data/glmm/boot_binom.rda')
 ```
+
+Nous pouvons à présenter analyser l'incertitude de ces différents paramètres. Pour cela nous devons commencer par observer graphiquement leurs distributions obtenues par bootstrap avec la figure \@ref(fig:bottdistrib).
+
+```{r bottdistrib message=FALSE, warning=FALSE, out.width='80%',echo=T, fig.cap = "Distributions obtenues par Bootstrap de la variance, l'ICC et le R^2^ conditionnel"}
+# chargement de nos valeurs préalablement enregistrées
+load('data/glmm/boot_binom.rda')
+
+# construction de trois graphiques de distributions
+df <- data.frame(valeurs$t)
+names(df) <- c("variance","icc","R2cond")
+
+breaks1 <- as.vector(quantile(df$variance, probs = c(0.001,0.15,0.5,0.85, 0.999)))
+labs1 <- round(breaks1,2)
+p1 <- ggplot(df) + 
+  geom_histogram(aes(x = variance), bins = 50, fill = "#e63946", color = "black")+
+  geom_vline(xintercept = median(df$variance),
+             color = "black", linetype="dashed", size = 1)+
+  scale_x_continuous(breaks = breaks1, labels = labs1)+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(), axis.title.y = element_blank())
+
+breaks2 <- as.vector(quantile(df$icc, probs = c(0.001,0.15,0.5,0.85, 0.999)))
+labs2 <- round(breaks2,2)
+p2 <- ggplot(df) + 
+  geom_histogram(aes(x = icc), bins = 50, fill = "#a8dadc", color = "black")+
+  geom_vline(xintercept = median(df$icc),
+             color = "black", linetype="dashed", size = 1)+
+  scale_x_continuous(breaks = breaks2, labels = labs2)+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(), axis.title.y = element_blank())
+
+
+breaks3 <- as.vector(quantile(df$R2cond, probs = c(0.001,0.15,0.5,0.85, 0.999)))
+labs3 <- round(breaks3,3)
+p3 <- ggplot(df) + 
+  geom_histogram(aes(x = R2cond), bins = 50, fill = "#1d3557", color = "black")+
+  geom_vline(xintercept = median(df$R2cond),
+             color = "black", linetype="dashed", size = 1)+
+  scale_x_continuous(breaks = breaks3, labels = labs3)+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(), axis.title.y = element_blank())
+
+ggarrange(p1,p2,p3, nrow = 2, ncol = 2)
+```
+
+Les trois distributions sont toutes suffisamment éloignées de zéros pour que l'on puisse en conclure que ces différentes valeurs sont toutes différentes de zéro. Notez également que les distributions sont relativement symétriques, indiquant que nous disposons de probablement suffisamment d'information dans nos données pour inclure notre effet aléatoires. Des distributions fortement asymétriques auraient indiqués au contraire une forte difficulté du modèle à estimer le paramètre de variance à partir des données. Dans un article, il n'est pas nécessaire de reporter ce graphiques, mais plus simplement les intervales de confiance à 95% et les médianes : 
+
+```{r}
+#intervale de confiance pour la variance
+quantile(df$variance,probs = c(0.0275,0.5,0.975))
+
+#intervale de confiance pour l'ICC
+quantile(df$icc,probs = c(0.0275,0.5,0.975))
+
+#intervale de confiance pour le R2 conditionnel
+quantile(df$R2cond,probs = c(0.0275,0.5,0.975))
+```
+
 
 #### significativité des différentes constantes
 
-Puisque nous avons conclu que l'effet aléatoire contribue significativement au modèle, nous pouvons à présente observer 
+Puisque nous avons conclu que l'effet aléatoire contribue significativement au modèle, nous pouvons à présent observer si les constantes ajustées pour chaque pays varient significativement les unes des autres. À nouveau, nous devons 
 
 ## Régressions multiniveaux {#sect074}
