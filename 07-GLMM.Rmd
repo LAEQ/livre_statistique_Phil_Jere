@@ -872,7 +872,7 @@ Le test indique clairement que le modèle complet est mieux ajusté. Le AIC, le 
 
 Pour aller plus loin, nous pouvons utiliser une approche Bootstrap pour calculer un intervalle de confiance pour la variance de l'effet aléatoire, le ICC et le R^2^ conditionnel. Nous utilisons pour cela la fonction `bootMer`. Si vous essayez de lancer cette syntaxe, vous constaterez qu'elle prend énormément de temps, ce qui s'explique par le grand nombre de fois ou le modèle doit être réajusté. Nous vous recommandons donc de bien enregistrer vos résultats après l'exécution de la fonction.
 
-```{r message=FALSE, warning=FALSE, out.width='50%'}
+```{r message=FALSE, warning=FALSE, out.width='50%', eval=F, echo=T}
 # definition d'une fonction pour extraire les valeurs qui nous intéresse
 extractor <- function(mod){
   vari <- VarCorr(mod)[[1]][[1]]
@@ -883,5 +883,9 @@ extractor <- function(mod){
 
 valeurs <- bootMer(modele1,FUN = extractor,nsim = 3, use.u = F, type="parametric")
 ```
+
+#### significativité des différentes constantes
+
+Puisque nous avons conclu que l'effet aléatoire contribue significativement au modèle, nous pouvons à présente observer 
 
 ## Régressions multiniveaux {#sect074}
