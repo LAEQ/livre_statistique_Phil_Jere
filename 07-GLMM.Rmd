@@ -61,6 +61,7 @@ Il s'agit de la forme la plus simple d'un GLMM, plus spécifiquement, elle autor
 ```{r randominter1, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 
 set.seed(11)
+library(ggplot2)
 
 ## Générer des effets aléatoires
 groups <-  c("A","B","C","D","E","F","G","H")
@@ -458,7 +459,7 @@ sigma2 <- VarCorr(model2)$group[2,2]
 Nous pouvons ainsi constater que pour ce troisième modèle, l'effet de resserrement est bien plus prononcé que pour les modèles précédents (\@ref(fig:fullrandom3)). Si l'on se fie au modèle à effets fixes (figure : \@ref(fig:fullrandom1)), alors l'impact de l'école sur l'efficacité du temps de travail est très important. En revanche, le modèle à effet aléatoire identifie que la différence de moyenne entre les écoles est importante, mais la différence en termes d'efficacité du temps de travail est beaucoup plus anecdotique.
 
 ```{r fullrandom3, echo=FALSE, fig.align='center', fig.cap="Comparaison des effets fixes et aléatoires pour le modèle intégrant l'effet des classes et l'interaction entre les classes et le tempsd de travail", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
-
+library(ggpubr)
 plot1 <- ggplot() + 
   geom_point(data = df4, mapping = aes(x = inter, y = group,  color = "fixed")) +
   geom_point(data = df5, mapping = aes(x = inter, y = group, color = "random")) + 
@@ -508,7 +509,7 @@ show_table(tableau,
 
 ### Effet aléatoire avec design croisé ou imbriqué
 
-Lorsque les données analysées avec un GLMM comportent plus de deux niveaux, il est crucial de se demander si leur structure est imbriqué (*nested*) ou croisée (*crossed*). Le cas de la structure stratifiée est certainement le plus facile à comprendre
+Lorsque les données analysées avec un GLMM comportent plus de deux niveaux, il est crucial de se demander si leur structure est imbriqué (*nested*) ou croisée (*crossed*). Le cas de la structure stratifiée est certainement le plus facile à comprendre.
 
 Si nous reprenons l'exemple de la figure \@ref(fig:glmmecoles) avec les élèves intégrés dans des classes elles-mêmes intégrées dans des écoles, nous avons une structure de données à trois niveaux : élève / classe / école. Si l'on s'intéresse aux classes, nous pouvons être certain qu'une classe spécifique ne peut être présente que dans une seule école spécifique, formant ainsi une structure imbriquée Admettons à présent que nous ne nous intéressons pas à la classe dans laquelle se situe l'élève, mais plutôt à son enseignant. Admettons également que dans notre cas d'étude, les enseignants peuvent donner des cours dans plusieurs écoles. Nous nous retrouvons dans un cas de figure où un enseignant peut se situer dans plusieurs écoles, ce qui diffère du cas précédent ou chaque classe appartient à une seule école. Dans ce second cas, on parle d'une structure croisée plutôt qu'imbriqué Si les professeurs enseignent dans toutes les écoles, il est possible de dire que le design d'étude est croisé complet ou croisé partiel si les professeurs n'enseignent que dans certaines écoles La figure \@ref(fig:crossednested) résume graphiquement ces trois situations. 
 
@@ -542,10 +543,10 @@ rescov <- function(model, data) {
   invisible(var.y)
 }
 
-# ajustement du modele
+# ajustement du modèle
 mod1 <- lmer(Thickness ~ 1 + (1|Lot/Wafer), data = Oxide)
 
-# representation de la matrice
+# représentation de la matrice
 rc1 <- rescov(mod1, Oxide)
 image(rc1)
 ```
@@ -858,7 +859,7 @@ Dans notre cas, la fonction nous renvoie  la fois les R^2^ obtenu en utilisant l
 Nous souhaitons déterminer ici si notre effet aléatoire contribue à significativement améliorer le modèle. Pour cela, nous effectuons un test de rapport de vraisemblance entre le modèle sans l'effet aléatoire (un simple GLM ici) et le modèle complet. Nous utilisons pour cela la fonction `anova` : 
 
 ```{r message=FALSE, warning=FALSE, out.width='50%'}
-# ajustement d'un modele sans l'effet aleatoire
+# ajustement d'un modèle sans l'effet aléatoire
 model_simple <- glm(y ~Sexe + Age2 + Education + StatutEmploi + Revenu +
               Residence + Duree2 + ConsEnv,
             family = binomial(link="logit"),

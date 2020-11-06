@@ -1054,24 +1054,24 @@ Concernant **la sensibilité aux valeurs extrêmes**, nous avons créé la varia
 
 
 ```{r datavar2, echo=FALSE, message=FALSE, warning=FALSE}
-a <- c(22,25,27,30,32,35,37,40)
-c <- c(22,25,27,30,32,35,37,105)
-b <- a*10
-var.a <- round(mean((a - mean(a))^2),2)
-var.b <- round(mean((b - mean(b))^2),2)
-var.c <- round(mean((c - mean(c))^2),2)
-sd.a <- round(sqrt(mean((a - mean(a))^2)),2)
-sd.b <- round(sqrt(mean((b - mean(b))^2)),2)
-sd.c <- round(sqrt(mean((c - mean(c))^2)),2)
-a <- sort(a)
-b <- sort(b)
-c <- sort(c)
-n <- length(a)
+a1 <- c(22,25,27,30,32,35,37,40)
+c1 <- c(22,25,27,30,32,35,37,105)
+b1 <- a*10
+var.a <- round(mean((a1 - mean(a1))^2),2)
+var.b <- round(mean((b1 - mean(b1))^2),2)
+var.c <- round(mean((c1 - mean(c1))^2),2)
+sd.a <- round(sqrt(mean((a1 - mean(a1))^2)),2)
+sd.b <- round(sqrt(mean((b1 - mean(b1))^2)),2)
+sd.c <- round(sqrt(mean((c1 - mean(c1))^2)),2)
+a1 <- sort(a1)
+b1 <- sort(b1)
+c1 <- sort(c1)
+n <- length(a1)
 df <- data.frame(
   id = as.character(c(1:n)),
-  A = round(a,2),
-  B = round(b,2),
-  C = round(c,2)
+  A = round(a1,2),
+  B = round(b1,2),
+  C = round(c1,2)
 )
 df[n+1,1] <- "**Statistique**"
 n <- n+1
@@ -1081,24 +1081,24 @@ df[n+3,1] <- "Intervalle interquartile"
 df[n+4,1] <- "Variance (population, $\\sigma^2$)"
 df[n+5,1] <- "Écart-type (population, $\\sigma$)"
 df[n+6,1] <- "Coefficient de variation ($\\sigma / \\mu$)"
-df[n+1,2] <- mean(a)
-df[n+2,2] <- max(a)-min(a)
-df[n+3,2] <- quantile(a, type = 1)[4]-quantile(a, type = 1)[2]
+df[n+1,2] <- mean(a1)
+df[n+2,2] <- max(a1)-min(a1)
+df[n+3,2] <- quantile(a1, type = 1)[4]-quantile(a1, type = 1)[2]
 df[n+4,2] <- round(var.a,2)
 df[n+5,2] <- round(sd.a,2)
-df[n+6,2] <- round(sd.a/mean(a),2)
-df[n+1,3] <- mean(b)
-df[n+2,3] <- max(b)-min(b)
-df[n+3,3] <- quantile(b, type = 1)[4]-quantile(b, type = 1)[2]
+df[n+6,2] <- round(sd.a/mean(a1),2)
+df[n+1,3] <- mean(b1)
+df[n+2,3] <- max(b1)-min(b1)
+df[n+3,3] <- quantile(b1, type = 1)[4]-quantile(b1, type = 1)[2]
 df[n+4,3] <- round(var.b,2)
 df[n+5,3] <- round(sd.b,2)
-df[n+6,3] <- round(sd.b/mean(b),2)
-df[n+1,4] <- round(mean(c),2)
-df[n+2,4] <- max(c)-min(c)
-df[n+3,4] <- quantile(c, type = 1)[4]-quantile(c, type = 1)[2]
+df[n+6,3] <- round(sd.b/mean(b1),2)
+df[n+1,4] <- round(mean(c1),2)
+df[n+2,4] <- max(c1)-min(c1)
+df[n+3,4] <- quantile(c1, type = 1)[4]-quantile(c1, type = 1)[2]
 df[n+4,4] <- round(var.c,2)
 df[n+5,4] <- round(sd.c,2)
-df[n+6,4] <- round(sd.c/mean(c),2)
+df[n+6,4] <- round(sd.c/mean(c1),2)
 opts <- options(knitr.kable.NA = "")
 
 show_table(df, 
@@ -1108,15 +1108,15 @@ show_table(df,
 
 
 ```{r resume, echo=FALSE, message=FALSE, warning=FALSE}
-a <- c("Moyenne", "Étendue",
+a1 <- c("Moyenne", "Étendue",
        "Intervalle interquartile",
        "Variance", "Écart-type", "Coefficient de variation")
-b <- c("X","X","X","X","X","")
-c <- c("X","X","","X","X","X")
+b1 <- c("X","X","X","X","X","")
+c1 <- c("X","X","","X","X","X")
 df <- data.frame(
-  Stat = a,
-  Unite = b,
-  Outlier = c
+  Stat = a1,
+  Unite = b1,
+  Outlier = c1
 )
 opts <- options(knitr.kable.NA = "")
 
