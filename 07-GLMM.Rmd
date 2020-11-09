@@ -509,13 +509,17 @@ show_table(tableau,
 
 ### Effet aléatoire avec design croisé ou imbriqué
 
-Lorsque les données analysées avec un GLMM comportent plus de deux niveaux, il est crucial de se demander si leur structure est imbriquée (*nested*) ou croisée (*crossed*). Le cas de la structure stratifiée est certainement le plus facile à comprendre.
+::: {.bloc_aller_loin data-latex=""}
+**Modèles à effets mixtes avec des structures croisées**
 
-Si nous reprenons l'exemple de la figure \@ref(fig:glmmecoles) avec les élèves intégrés dans des classes elles-mêmes intégrées dans des écoles, nous avons une structure de données à trois niveaux : élève / classe / école. Si l'on s'intéresse aux classes, nous pouvons être certains qu'une classe ne peut être présente que dans une seule et une seule école, formant ainsi une **structure imbriquée**. 
+Jusqu'à présent, nous avons abordé des modèles GLMM comprenant des structures imbriquées (*nested* en anglais), c'est-à-dire qu'une observation d'un niveau 1 est incluse dans un et un seul groupe du niveau 2. Comme structure imbriquée à trois niveaux, nous avons vu comme exemple des élèves intégrés dans des classes elles-mêmes intégrées dans des écoles (figure \@ref(fig:glmmecoles)) : un élève appartient à une et une seule classe qui est elle-même localisée dans une et une seule école (élève / classe / école).
+
+Notez qu'il est aussi possible d'avoir des structures des données croisées (*crossed*).
 
 Admettons à présent que nous ne nous intéressons pas à la classe dans laquelle se situe l'élève, mais plutôt à son enseignant. Admettons également que les enseignants peuvent donner des cours dans plusieurs écoles. Nous nous retrouvons dans un cas de figure où un enseignant peut se situer dans plusieurs écoles, ce qui diffère du cas précédent où chaque classe appartient à une seule école. Dans ce second cas, on parle d'une **structure croisée** plutôt qu'imbriquée.
 
 Si les professeurs enseignent dans toutes les écoles, il est possible de dire que le design d'étude est croisé complet ou croisé partiel si les professeurs n'enseignent que dans certaines écoles. La figure \@ref(fig:crossednested) résume graphiquement ces trois situations.
+
 
 ```{r crossednested, echo=FALSE, fig.align='center', fig.cap="Différentes structures de données hiérarchiques (imbriquée versus croisées)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
 knitr::include_graphics('images/glmm/glmm_croise-nested.png', dpi = NA)
@@ -523,56 +527,7 @@ knitr::include_graphics('images/glmm/glmm_croise-nested.png', dpi = NA)
 
 Il est important de bien saisir la structure de son jeu de données, car l'estimation d'un modèle avec effets imbriqués ou croisés peut donner des résultats parfois significativement différents. De plus, un modèle imbriqué est généralement moins difficile à ajuster qu'un modèle croisé. En effet, dans un modèle imbriqué, deux élèves venant de deux écoles différentes sont jugés indépendants. Dans un modèle croisé, deux élèves provenant de deux écoles différentes peuvent tout de même partager une dépendance du fait qu'ils ont pu avoir le même professeur. La structure de dépendance (et donc de la matrice de covariance des effets aléatoires) est ainsi plus complexe pour un modèle croisé.
 
-Pour illustrer graphiquement cette différence dans la prise en compte de la dépendance entre les observations, nous utilisons un exemple originalement proposé par [Josh Errickson](https://errickson.net/stats-notes/vizrandomeffects.html#nested_random_effects). Cet exemple se base sur le jeu de données `Oxide` du *package* **nlme**. Ce jeu de données mesure la variabilité de l'épaisseur de la couche d'oxyde de semiconducteurs pour lesquels nous connaissons leur lot et leur plaquette (*wafer*). L'idée étant que l'épaisseur de cette couche peut varier en fonction de la plaquette sur laquelle on la mesure et en fonction du lot dont elle provient. Puisqu'une plaquette ne peut provenir que d'un seul lot, il faudrait idéalement utiliser une structure imbriquée. Nous allons cependant créer deux modèles pour comparer l'impact de la structure imbriquée et croisée. Notez ici que ce jeu de données comprend 72 observations (mesure de l'épaisseur de la couche d'oxyde), réparties dans neuf lots avec trois plaquettes par lot. Il est possible de synthétiser l'organisation plaquette / lot avec la figure \@ref(fig:plaquette1).
-
-```{r plaquette1, echo=FALSE, fig.align='center', fig.cap="Structure imbriquée des données d'oxide de package nlme", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-knitr::include_graphics('images/glmm/plaquettes1.png', dpi = NA)
-```
-
-La figure \@ref(fig:crossednested1) présente la matrice de corrélation (de dépendance) entre les observations du jeu de données selon un modèle dans lequel les effets aléatoires sont imbriqués. Nous pouvons constater la présence d'une première diagonale noire au centre. Elle représente la corrélation entre chaque observation et elle-même et vaut donc systématiquement 1. Les neuf grands blocs représentent les neuf lots et les sous-blocs représentent les plaquettes. Nous constatons ainsi que la corrélation de deux observations au sein d'un même lot est plus faible (gris clair) que la corrélation entre deux observations au sein du même lot et de la même plaquette (gris foncé).
-
-```{r crossednested1, echo = FALSE, fig.align='center', fig.cap="Matrice complète de covariance d'un modèle avec structure imbriquée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-library(lme4)
-library(nlme)
-data(Oxide)
-
-## fonction pour visualiser les matrices de covariance
-rescov <- function(model, data) {
-  var.d <- crossprod(getME(model,"Lambdat"))
-  Zt <- getME(model,"Zt")
-  vr <- sigma(model)^2
-  var.b <- vr*(t(Zt) %*% var.d %*% Zt)
-  sI <- vr * Diagonal(nrow(data))
-  var.y <- var.b + sI
-  invisible(var.y)
-}
-
-# ajustement du modèle
-mod1 <- lmer(Thickness ~ 1 + (1|Lot/Wafer), data = Oxide)
-
-# représentation de la matrice
-rc1 <- rescov(mod1, Oxide)
-image(rc1)
-```
-
-Dans ces données, les plaquettes sont toujours numérotées de 1 à 3, quel que soit le lot de provenance. Nous pouvons donc faire croire au modèle que la plaquette 1 (et les autres également) est présente dans chacun des lots (figure \@ref(fig:plaquette1)).
-
-```{r plaquette2, echo=FALSE, fig.align='center', fig.cap="Structure imbriquée VS croisée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-knitr::include_graphics('images/glmm/plaquettes2.png', dpi = NA)
-```
-
-Avec cette représentation, nous imposons une structure croisée au modèle. La figure \@ref(fig:crossednested2) présente la matrice de corrélation obtenu pour ce second modèle.
-
-```{r crossednested2, echo = FALSE, fig.align='center', fig.cap="Matrice complète de covariance d'un modèle avec structure croisée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-mod2 <- lmer(Thickness ~ 1 + (1|Lot) + (1|Wafer), data = Oxide)
-rc2 <- rescov(mod2, Oxide)
-image(rc2)
-```
-
-Comme nous pouvons l'observer, le modèle a ajusté une corrélation plus importante pour les observations provenant d'un même lot (grands carrés gris foncé), et une corrélation plus faible pour les observations provenant d'une même plaquette. Notez au passage que ce second modèle est erroné considérant que la réelle structure de nos données est imbriquée.
-
-Notez donc que si votre modèle comprend plus de deux niveaux, vous devez vous vous demander : la structure entre mes différents niveaux est-elle imbriquée (chaque élément du niveau n se trouve dans un seul élément du groupe n+1) ou croisée (dans tous les autres cas).
-
+:::
 
 ## Conditions d'applicatoin des GLMM {#sect072}
 
