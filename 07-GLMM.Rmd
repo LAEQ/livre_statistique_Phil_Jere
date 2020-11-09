@@ -771,7 +771,7 @@ Afin de limiter les répétitions, nous ne recalculons pas ici le VIF et nous ex
 
 ### Ajustement du modèle avec uniquement une constante aléatoire
 
-Nous commençons donc par ajuster un premier modèle avec une constante aléatoire en fonction du Pays. Dans la plupart des *packages* intégrant des effets aléatoires, la syntaxe suivante est utilisée pour stipuler une constante aléatoire : `+ (1|Pays)`. Concrètement, nous tentons d'ajuster le modèle décrit pas l'équation \@ref(eq:glmmbinom1)
+Nous commençons donc par ajuster un premier modèle avec une constante aléatoire en fonction du Pays. Dans la plupart des *packages* intégrant des effets aléatoires, la syntaxe suivante est utilisée pour stipuler une constante aléatoire : `+ (1|Pays)`. Concrètement, nous tentons d'ajuster le modèle décrit par l'équation \@ref(eq:glmmbinom1)
 
 \footnotesize
 \begin{equation}
@@ -957,6 +957,141 @@ quantile(df$R2cond,probs = c(0.0275,0.5,0.975))
 
 #### significativité des différentes constantes
 
-Puisque nous avons conclu que l'effet aléatoire contribue significativement au modèle, nous pouvons à présent observer si les constantes ajustées pour chaque pays varient significativement les unes des autres. À nouveau, nous devons 
+Puisque nous avons conclu que l'effet aléatoire contribue significativement au modèle, nous pouvons à présent observer si les constantes ajustées pour chaque pays varient significativement les unes des autres. Pour rappel, les pentes et les constantes aléatoires ne sont pas directement estimées par le modèle, mais à postériori. La conséquence de cela est que nous ne disposons pas d'un moyen directe de mesurer l'incertitude de ces paramètres et donc de construire des intervalles de confiances. Une première option pour contourner ce problèmes est d'effecter des simulations à partir à partir de la distribution postérieur du modèle. Notez que cette approche s'inspire largement de l'approche statistique bayésienne. Nous utilisons ici le *package* **merTools** pour effecter 1000 simulations et obtenir une erreur standard pour chaque constante aléatoire de chaque pays.
+
+```{r randomconstantes1, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par Pays (IC par simulations)"}
+# Simulations et extraction des effets aléatoires
+library(merTools)
+simsRE <- REsim(modele1,n.sims = 1000, oddsRatio = F)
+
+# calcul des intervalles de confiance
+simsRE$lower <- simsRE$mean - 1.96 * simsRE$sd
+simsRE$upper <- simsRE$mean + 1.96 * simsRE$sd
+
+# variable binaire pour la significativité
+simsRE$sign <- case_when(
+  simsRE$lower<0 & simsRE$upper<0 ~ "inf",
+  simsRE$lower>0 & simsRE$upper>0 ~ "sup",
+  TRUE ~ "not"
+)
+
+# représentation des intervalles de confiance
+ggplot(simsRE) + 
+  geom_errorbarh(aes(xmin = lower, xmax = upper,
+                     y = reorder(groupID,mean)), size = 0.5, height = 0.5) + 
+  geom_point(aes(x = mean, y = reorder(groupID,mean),
+                 color = sign)) + 
+  scale_color_manual(values = c("inf" = "#0077b6", "sup" = "#e63946", "not"="#000000"), labels = c("sign. < 0", "non sign.", "sign. > 0")) +
+  labs(x = "Constante aléatoire", y = "Pays")
+```
+
+La figure \@ref(fig:randomconstantes1) permet de repérer en un coup d'oeil les pays pour lesquels la probabilité d'utiliser le vélo comme moyen de transport pour le trajet le plus fréquent est la plus élevée ou la plus faible. Notez cependant que les valeurs représentées sont pour l'instant des logarithme de rapport de cotes. Nous devons donc les convertir en rapport de cote avec la fonction exponentiel pour faciliter leur interprétation.
+
+```{r}
+# convertion en rapport de cote (et arrondi à trois décimales)
+mat <- round(exp(simsRE[c("mean","lower","upper")]),3)
+rownames(mat) <- simsRE$groupID
+names(mat) <- c("RC","RC.025","RC.975")
+print(mat)
+```
+
+Nous observons ainsi qu'une personne vivant en Finlande voit ses chances multipliées par 2,25 d'utiliser le vélo comme mode de transport pour son trajet le plus fréquent comparativement à la moyenne des pays européens. À l'inverse, une personne résident en France a 47% de chance de moins d'utiliser le vélo.
+
+Notez cependant que cette approche basée sur des simulations peut poser des problèmes car elle ne renvoie qu'une erreur standard pour mesurer l'incertitude de nos constantes. Dans les cas où nous ne disposons pas de beaucoup d'observation par groupe, la distribution à postériori des constantes peut être asymétrique, rendant l'estimation des intervalles de confiance par le erreurs standards inutiles. Il est possible de détecter ce cas de figure quand les médianes et les moyennes renvoyées par la fonction `simsRE` diffèrent nettement. Une alternative plus robuste est à nouveau d'estimer la variabilité des effets aléatoires par bootstrap. Cette méthode requiert bien plus de temps de calcul que la précédentes, nous vous recommandons donc de commencer par la méthode par simulation pour disposer d'un premier aperçu des résultats et ensuite la méthode bootstrap quand votre modèle est dans sa forme final.
+
+```{r, eval = FALSE, echo = TRUE}
+# créations de la fonction d'extraction
+extractor2 <- function(mod){
+  elements <- ranef(mod)$Pays
+  vec <- elements[,1]
+  names(vec) <- rownames(elements)
+  return(vec)
+}
+
+# preparation de l'operation en multiprocessing
+cl <- makeCluster(8)
+clusterEvalQ(cl,library("lme4"))
+
+# calcul des effets aléatoires en bootstrap
+valeurs <- bootMer(modele1,FUN = extractor2,nsim = 1000,
+                   use.u = F, type="parametric", ncpus = 8,
+                   parallel="snow",
+                   cl = cl)
+
+# sauvegarder des résultats !
+save(valeurs,file = 'data/glmm/boot_binom2.rda')
+```
+
+Puisque nous disposons des distributions bootsrapées des différents effets aléatoires, nous pouvons directement les représentées dans un graphique.
+
+```{r randomconstantes2, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par Pays (IC par bootstrap)"}
+
+# chargement de nos valeurs bootstrapées
+load('data/glmm/boot_binom2.rda')
+
+# représentation avec le package ggdist
+library(ggdist)
+df <- reshape2::melt(valeurs$t)
+
+ggplot(df) + 
+  stat_halfeye(aes(y = Var2, x = value))
+
+```
+
+### Ajustement du modèle avec constantes et pentes aléatoires
+
+Dans le modèle précédent, nous avons ajusté pour chaque pays une constante aléatoire afin de vérifier si la probabilité d'utiliser le vélo comme mode de transport principal changeait d'un Pays de l'Europe à l'autre. Nous souhaitons à présent tester l'hypothèse que l'impact de l'âge sur la probabilité d'utiliser le vélo varie d'un pays à l'autre. pour cela, nous allons ajuster des constantes aléatoires par Pays. Nous comparerons trois modèles, triés ici selon leur complexité (nombre de paramètre) : 
+
+* Le modèle avec uniquement des constantes aléatoires
+* Le modèle avec des des constantes et pentes aléatoires indépendantes
+* Le modèle avec des des constantes et pentes aléatoires corrélées
+
+Dans le *package* **lme4**, les syntaxes pour ajuster ces trois modèles sont les suivantes : 
+
+* constantes aléatoires : `+(1|Pays)`
+* constantes et pentes aléatoires indépendantes : `+(1 + Age||Pays)`
+* constantes et pentes aléatoires corrélées: `+(1 + Age|Pays)`
+
+Notez qu'il est aussi possible d'ajuster un modèle avec uniquement des pentes aléatoires avec la syntaxe : `+(-1 + Age|Pays)`. Le `-1` sert à explicitement retirer la constante aléatoire du modèle.
+
+Ajustons donc nos deux modèles avec pentes et constantes aléatoires.
+```{r, warning=FALSE, message=FALSE}
+
+# constantes et pentes aléatoires indépendantes
+modele2 <- glmer(y ~Sexe + Age2 + Education + StatutEmploi + Revenu +
+              Residence + Duree2 + ConsEnv + (1 + Age2||Pays),
+            family = binomial(link="logit"),
+            control = glmerControl(optimizer = "bobyqa"),
+            data = dfenquete2)
+
+# constantes et pentes aléatoires corrélées
+modele3 <- glmer(y ~Sexe + Age2 + Education + StatutEmploi + Revenu +
+              Residence + Duree2 + ConsEnv + (1 + Age2|Pays),
+            family = binomial(link="logit"),
+            control = glmerControl(optimizer = "bobyqa"),
+            data = dfenquete2)
+```
+
+Puisque les trois modèles sont imbriqués, la première étape et de vérifier si les ajouts successifs au modèle de base sont significatifs, ce que nous pouvons tester avec un rapport de vraisemblance.
+
+```{r, warning=FALSE, message=FALSE}
+anova(modele1,modele2,modele3)
+```
+
+Nous constatons ainsi que l'ajout des pentes aléatoires permet d'améliorer significativement le modèle, mais que l'ajout de la corrélation entre les pentes et les constantes aléatoires a un apport très marginal. Nous décidons tout de même de le garder dans un premier temps car ce paramètre a un intérêt théorique. Nous nous attendons à observer une relation négative entre les deux paramètres, soit que l'effet de l'âge soit réduit dans les pays ou la constante est forte.
+
+Affichons le résumé du modèle 3 : 
+
+```{r, warning=FALSE, message=FALSE}
+summary(modele3)
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+var1 <- VarCorr(modele3)[[1]][[1]]
+var2 <- VarCorr(modele3)[[1]][[4]]
+var3 <- VarCorr(modele3)[[1]][[2]]
+```
+À nouveau, nous nous intéressons ici principalement à la section `Random Effect`. Les constantes ont une variances de `r tofr(round(var1,3))` et les pentes de `r tofr(round(var2,3))`. La corrélation entre les deux effets est de `r tofr(round(var3 / (sqrt(var1)*sqrt(var2)),2))`. Elle est donc bien négative, ce qui correspond à notre hypothèse de base. Nous devons cependant encore nous assurer qu'elle est significativement différente de 0. Pour cela, nous devons calculer l'intervalle de confiance de ce paramètre.
+
 
 ## Régressions multiniveaux {#sect074}
