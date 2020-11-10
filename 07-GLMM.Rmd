@@ -380,7 +380,7 @@ Nous reformulons à présent ce modèle pour intégrer l'effet moyen de chaque c
 
 Pas de panique ! Cette écriture peut être interprétée de la façon suivante.
 
-Les modèles comprend deux effets aléatoires, l'un faisant varier la constante en fonction de l'école ($\upsilon_1$) et l'autre l'effet de l'école sur l'efficacité du temps de travail ($\upsilon_2$). Ces deux effets sont issus d'une distribution normale bivariée (une dimension par effet aléatoire). Cette distribution normale bivariée a donc deux moyennes et ces deux moyennes sont à 0, car comme nous l'avons vu dans les modèles précédents IL MANQUE QUELQUES CHOSE A LA PHRASE. Elle dispose également d'une variance par effet aléatoire ($\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$) et d'une covariance entre les deux effets aléatoires ($\sigma_{\upsilon_1\upsilon_2}$). Cette covariance permet de tenir compte du fait que potentiellement, les écoles avec une constante plus élevée pourraient systématique avoir un effet plus élevé ou plus faible sur l'efficacité du temps de travail. Cette formulation implique donc d'ajuster trois paramètres de variance : $\sigma_{\upsilon_1}$, $\sigma_{\upsilon_2}$ et $\sigma_{\upsilon_1\upsilon_2}$. Il peut arriver que nous ne disposions pas d'assez de données pour estimer ces trois paramètres, ou que nous estimons pour des raisons théoriques qu'aucune corrélation ne soit attendue entre $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$. Dans ce cas, il est possible de fixer $\sigma_{\upsilon_1\upsilon_2}$ à 0, ce qui revient à indiquer au modèle que  $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$ proviennent de deux distributions normales distinctes, nous pouvons donc écrire :
+Les modèles comprend deux effets aléatoires, l'un faisant varier la constante en fonction de la classe ($\upsilon_1$) et l'autre l'effet de la classe sur l'efficacité du temps de travail ($\upsilon_2$). Ces deux effets sont issus d'une distribution normale bivariée (une dimension par effet aléatoire). Cette distribution normale bivariée a donc deux moyennes et ces deux moyennes sont à 0 (les effets s'annulent si l'on considère ensemble toutes les classes). Elle dispose également d'une variance par effet aléatoire ($\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$) et d'une covariance entre les deux effets aléatoires ($\sigma_{\upsilon_1\upsilon_2}$). Cette covariance permet de tenir compte du fait que potentiellement, les écoles avec une constante plus élevée pourraient systématique avoir un effet plus élevé ou plus faible sur l'efficacité du temps de travail. Cette formulation implique donc d'ajuster trois paramètres de variance : $\sigma_{\upsilon_1}$, $\sigma_{\upsilon_2}$ et $\sigma_{\upsilon_1\upsilon_2}$. Il peut arriver que nous ne disposions pas d'assez de données pour estimer ces trois paramètres, ou que nous estimons pour des raisons théoriques qu'aucune corrélation ne soit attendue entre $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$. Dans ce cas, il est possible de fixer $\sigma_{\upsilon_1\upsilon_2}$ à 0, ce qui revient à indiquer au modèle que  $\sigma_{\upsilon_1}$ et $\sigma_{\upsilon_2}$ proviennent de deux distributions normales distinctes, nous pouvons donc écrire :
 
 \footnotesize
 \begin{equation}
@@ -533,7 +533,7 @@ Il est important de bien saisir la structure de son jeu de données, car l'estim
 
 Puisque les GLMM sont une extension des GLM, ils partagent l'essentiel des conditions d'application de ces derniers. Pour simplifier, si vous ajustez un modèle GLMM avec une distribution Gamma, vous devrez réaliser les mêmes tests que ceux pour un simple GLM avec distribution Gamma.
 
-Une question importante se pose souvent lorsque l'on ajuste des modèles GLMM : **combien de groupes faut-il au minimum aux différents niveaux ?** En effet, pour estimer les différentes variances, nous devons disposer de suffisamment de groupes différents. Dans le cas d'un modèle avec uniquement une constante aléatoire, il est fréquent de lire que l'on doit disposer au minimum de cinq groupes différents [@gelman2006data], en dessous de ce minimum, traiter l'effet comme aléatoire plutôt que fixe apporte très peu d'information. De plus l'estimation des variances pour chaque groupe sera très imprécise donnant potentiellement des valeurs inexactes pour le ICC et polluant l'interprétation. Avec moins de groupes, il est certainement plus judicieux d'ajuster seulement un effet fixe. Dans un modèle avec plusieurs effets aléatoires et plusieurs variances / covariances à estimer, ce nombre doit être augmenté proportionnellement, à moins que les effets aléatoires ne soient estimés indépendants les uns des autres. Notez ici que si l'enjeu du modèle était d'estimer avec une certaine précision les paramètres de variances, il faudrait compter au minimum une centaine de groupes.
+Une question importante se pose souvent lorsque l'on ajuste des modèles GLMM : **combien de groupes faut-il au minimum aux différents niveaux ?** En effet, pour estimer les différentes variances, nous devons disposer de suffisamment de groupes différents. Dans le cas d'un modèle avec uniquement une constante aléatoire, il est fréquent de lire que l'on doit disposer au minimum de cinq groupes différents [@gelman2006data], en dessous de ce minimum, traiter l'effet comme aléatoire plutôt que fixe apporte très peu d'information. De plus l'estimation des variances pour chaque niveau sera très imprécise donnant potentiellement des valeurs inexactes pour le ICC et polluant l'interprétation. Avec moins de groupes, il est certainement plus judicieux d'ajuster seulement un effet fixe. Dans un modèle avec plusieurs effets aléatoires et plusieurs variances / covariances à estimer, ce nombre doit être augmenté proportionnellement, à moins que les effets aléatoires ne soient estimés indépendants les uns des autres. Notez ici que si l'enjeu du modèle était d'estimer avec une grance précision les paramètres de variances, il faudrait compter au minimum une centaine de groupes.
 
 Puisque les GLMM font intervenir la distribution normale aux niveaux supérieurs du modèle, il est nécessaire de vérifier si les hypothèses qu'elle implique sont respectées. Il s'agit essentiellement de deux hypothèses : les effets aléatoires suivent bien une distribution normale (univariée ou multivariée), et la variance au sein des groupes est bien homogène.
 
@@ -552,7 +552,7 @@ Reprenons la formulation d'un modèle simple avec seulement deux niveaux et seul
 \end{equation}
 \normalsize
 
-Ce modèle formule l'hypothèse que la constante aléatoire $\upsilon$ provient d'une distribution normale avec une moyenne de 0 et un écart type $\sigma_{\upsilon}$. La première étape du diagnostic est donc de vérifier si les constantes aléatoires suivent bien une distribution normale, ce que l'on peut faire habituellement avec un diagramme quantile-quantile. Si nous reprenons notre exemple avec nos données de performance scolaire des sections précédentes, nous obtenons la figure \@ref(fig:diagglmm1). Puisque les points tombent bien approximativement sur la ligne rouge, nous pouvons conclure que cette condition d'application est bien respectée. Notez qu'il est également possible d'utiliser ici un des tests vus dans le chapitre \@ref(chap02) pour tester formellement la distribution des constantes aléatoires, mais nous disposons rarement de suffisamment de valeurs différentes.
+Ce modèle formule l'hypothèse que les constantes aléatoires $\upsilon$ proviennent d'une distribution normale avec une moyenne de 0 et un écart type $\sigma_{\upsilon}$. La première étape du diagnostic est donc de vérifier si les constantes aléatoires suivent bien une distribution normale, ce que l'on peut faire habituellement avec un diagramme quantile-quantile. Si nous reprenons notre exemple avec nos données de performance scolaire des sections précédentes, nous obtenons la figure \@ref(fig:diagglmm1). Puisque les points tombent bien approximativement sur la ligne rouge, nous pouvons conclure que cette condition d'application est bien respectée. Notez qu'il est également possible d'utiliser ici un des tests vus dans le chapitre \@ref(chap02) pour tester formellement la distribution des constantes aléatoires, mais nous disposons rarement de suffisamment de valeurs différentes.
 
 ```{r diagglmm1, echo = FALSE, fig.align='center', fig.cap="Distribution normale univariée des constantes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 model2 <- lmer(Y2 ~ X + (1|group), data = df3)
@@ -573,9 +573,9 @@ Si nous nous intéressons maintenant au modèle avec constantes et pentes aléat
 
 * notre modèle considère que les pentes et les constantes comme indépendantes; elles proviennent donc de deux distributions normales distinctes.
 
-Le second cas est de loin le plus simple puisqu'il nous suffit simplement de réaliser un graphique de type Quantile-Quantile pour les deux effets aléatoires séparément. Dans le premier cas, il nous adapter notre stratégie pour vérifier si les deux effets aléatoires suivent conjointement une distribution normale multivariée. Pour cela, nous devons dans un premier temps observer séparément puisque chaque variable provenant d'une distribution normale multivariée suit elle-même une distribution normale univariée  [@burdenski2000evaluating]. Nous pouvons dans un second temps observer une version tridimensionnelle du graphique Quantile-Quantile. Pour l'illustrer, nous reprenons le modèle sur la performance scolaire intégrant des pentes et des constantes aléatoires avec une covariance estimée entre les deux.
+Le second cas est de loin le plus simple puisqu'il nous suffit simplement de réaliser un graphique de type Quantile-Quantile pour les deux effets aléatoires séparément. Dans le premier cas, il nous faut adapter notre stratégie pour vérifier si les deux effets aléatoires suivent conjointement une distribution normale multivariée. Pour cela, nous devons dans un premier temps observer séparément la distribution des pentes et des constantes puisque  chaque variable provenant d'une distribution normale multivariée suit elle-même une distribution normale univariée  [@burdenski2000evaluating]. Nous pouvons dans un second temps construire un graphique nous permettant de juger si nos pentes et constantes suivent bien la distribution normale bivariée attendue par le modèle. Pour l'illustrer, nous reprenons le modèle sur la performance scolaire intégrant des pentes et des constantes aléatoires avec une covariance estimée entre les deux.
 
-La figure \@ref(fig:diagglmm2) représente donc les deux graphiques Quantile-Quantile et les deux semblent indiquer que nos effets aléatoires suivent bien une distribution normale. Quant à la la figure \@ref(fig:diagglmm3), elle la distribution normale bivariée attendue et les valeurs des effets aléatoires. Les différentes ellipses concentriques représentent les percentiles de cette distribution. Seulement 5% des points devraient se trouver dans la première ellipse et 95% des points devraient se trouver dans la quatrième ellipse. En revanche, seulement 20% des points devraient se trouver dans le dernier anneau et seulement 5% des points en dehors de cet anneau. Il faut donc tenter de distinguer si les points sont plus ou moins centrés que ce que l'on attend. Dans notre cas, ils semblent suivre un patron cohérent avec notre distribution normale bivariée. Dans le cas contraire, cela signifierait que le modèle doit être révisé.
+La figure \@ref(fig:diagglmm2) représente donc les deux graphiques Quantile-Quantile univariés. Les deux semblent indiquer que nos effets aléatoires suivent bien chacun une distribution normale. La figure \@ref(fig:diagglmm3) montre la distribution normale bivariée attendue par le modèle avec des ellipses représentant différents pourcentiles de cette distribution. Les valeurs des effets aléatoires  sont représentés par des points noirs. Seulement 5% des points noirs devraient se trouver dans la première ellipse et 95% des points devraient se trouver dans la quatrième ellipse. En revanche, seulement 20% des points devraient se trouver dans le dernier anneau et seulement 5% des points en dehors de cet anneau. Il faut donc évaluer si les points sont plus ou moins centrés que ce que l'on attend. Pour simplifier la lecture, il est possible de rajouter des points grisés en arrière plan représentant des réalisations possibles  de cette distribution normale bivariée. Les vrais points noirs devraient avoir une dispersion similaire à celle des points grisés. Dans notre cas, ils semblent suivre un patron cohérent avec notre distribution normale bivariée. Dans le cas contraire, cela signifierait que le modèle doit être révisé.
 
 ```{r diagglmm2, echo = FALSE, fig.align='center', fig.cap="Multiples distributions normales univariées des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 model2 <- lmer(Y2 ~ X + (X|group), data = df3,
@@ -599,7 +599,7 @@ ggarrange(q1,q2)
 ```
 
 
-```{r diagglmm3, echo = FALSE, fig.align='center', fig.cap="Multiple distributions normales univariées des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r diagglmm3, echo = FALSE, fig.align='center', fig.cap="Distribution normale bivariée des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 cor_mat <- VarCorr(model2)[[1]]
 
 re_effects <- data.frame(ranef(model2)$group)
@@ -615,7 +615,11 @@ els <- lapply(levels, function(i){
   return(el)
 })
 
+ref_points <- data.frame(data.frame(MASS::mvrnorm(n = 1000, mu = c(0,0), Sigma = cor_mat)))
+names(ref_points) <- c("x","y")
+
 ggplot() + 
+  geom_point(aes(x = x, y = y), data = ref_points, alpha = 0.3, size = 0.4) + 
   geom_path(data = els[[1]], aes(x = x, y = y, color = "a")) + 
   geom_path(data = els[[2]], aes(x = x, y = y, color = "b")) + 
   geom_path(data = els[[3]], aes(x = x, y = y, color = "c")) +
@@ -627,12 +631,11 @@ ggplot() +
                                 "d"="#03045e"),
                      labels = c("5%","25%","75%","95%"))
 
-
 ```
 
 ### Homogénéité des variances au sein des groupes
 
-Dans le chapitre sur les GLM \@ref(chap06) nous avons vu que chaque distribution a sa propre définition de la variance. Pour rappel, un modèle gaussien assume une variance constante, un modèle de Poisson assume une variance égale à son espérance, alors qu'un modèle Gamma assume une variance proportionnelle au carré de son espérance divisée par un paramètre de forme, etc. Nous devions donc pour chaque GLM vérifier graphiquement si la variance présente dans les données originales était proche de la variance attendue par le modèle. Dans un modèle GLMM, le même exercice doit être fait pour chaque groupe aux différents niveaux du modèle. 
+Dans le chapitre \@ref(chap06) sur les GLM  nous avons vu que chaque distribution a sa propre définition de la variance. Pour rappel, un modèle gaussien assume une variance constante, un modèle de Poisson assume une variance égale à son espérance, alors qu'un modèle Gamma assume une variance proportionnelle au carré de son espérance divisée par un paramètre de forme, etc. Nous devions donc pour chaque GLM vérifier graphiquement si la variance présente dans les données originales était proche de la variance attendue par le modèle. Dans un modèle GLMM, le même exercice doit être fait pour chaque groupe aux différents niveaux du modèle. 
 
 À titre d'exemple, dans notre exemple sur la performance scolaire, notre variable *Y* a été modélisée avec une distribution normale. Le modèle assume donc une uniformité de sa variance (homoscédasticité). La figure \@ref(fig:glmmvariance) nous montre ainsi qu'elle que soit la classe, la dispersion des points semble bien respecter la variance attendue par le modèle (représentée par les lignes noires).
 
@@ -681,7 +684,7 @@ ggplot() +
 
 ## Inférence dans les modèles GLMM
 
-Une des questions importantes que l'on se pose lorsque l'on construit un modèle est toujours : est-ce que les différents effets présents dans le modèle ont un impact significativement différent de zéro sur la variable dépendante ? Cette étape d'inférence est plus compliquée pour les modèles GLMM que dans les modèles GLM à cause de la présence d'effets aléatoires. Ces derniers brouillent le comptage du nombre de paramètres et par extension du nombre de degré de liberté des modèles. Pour un effet aléatoire, il est possible de déterminer que le nombre de degrés de liberté est de 1 puisque nous ajustons un seul paramètre supplémentaire (la variance de cet effet aléatoire). Selon un autre point de vue, il serait possible d'affirmer que le nombre de degrés de liberté est de k-1 (avec k le nombre de groupes dans cet effet aléatoire), ce que nous utilisons habituellement pour un effet fixe. L'enjeu du nombre de degrés de liberté est crucial, car il impacte directement l'estimation des valeurs de *P* pour l'ensemble des coefficients du modèle. Avec un nombre de degrés de liberté plus petit, les valeurs de *P* seront plus faibles et les effets "plus significatifs". Le sujet est d'ailleurs l'objet d'une telle controverse que les auteurs de certains *package* comme **lme4** (un des *packages* les plus utilisés pour ajuster des GLMM) ont fait le choix de ne renvoyer aucune valeur de *P* dans les résultats des modèles. L'article de @bolker2009generalized propose une explication détaillée et relativement accessible du problème (en plus d'une excellente introduction aux GLMM), en se basant sur leurs recommandations, il est possible de séparer le problème de l'inférence dans les GLMM en trois sous problèmes : 
+Une des questions importantes que l'on se pose lorsque l'on construit un modèle est toujours : est-ce que les différents effets présents dans le modèle ont un impact significativement différent de zéro sur la variable dépendante ? Cette étape d'inférence est plus compliquée pour les modèles GLMM que dans les modèles GLM à cause de la présence d'effets aléatoires. Ces derniers brouillent le comptage du nombre de paramètres et par extension du nombre de degrés de liberté des modèles. Pour un effet aléatoire, il est possible de déterminer que le nombre de degrés de liberté est de 1 puisque nous ajustons un seul paramètre supplémentaire (la variance de cet effet aléatoire). Selon un autre point de vue, il serait possible d'affirmer que le nombre de degrés de liberté est de k-1 (avec k le nombre de groupes dans cet effet aléatoire), ce que nous utilisons habituellement pour un effet fixe. La vrai valeur du nombre de degrés de liberté se situe quelque part entre ces deux extrèmes. L'enjeu du nombre de degrés de liberté est crucial, car il impacte directement l'estimation des valeurs de *P* pour l'ensemble des coefficients du modèle. Avec un nombre de degrés de liberté plus petit, les valeurs de *P* seront plus faibles et les effets "plus significatifs". Le sujet est d'ailleurs l'objet d'une telle controverse que les auteurs de certains *package* comme **lme4** (un des *packages* les plus utilisés pour ajuster des GLMM) ont fait le choix de ne renvoyer aucune valeur de *P* dans les résultats des modèles. L'article de @bolker2009generalized propose une explication détaillée et relativement accessible du problème (en plus d'une excellente introduction aux GLMM), en se basant sur leurs recommandations, il est possible de séparer le problème de l'inférence dans les GLMM en trois sous problèmes : 
 
 * Quel est le degré de significativité des effets fixes ?
 * Quel est le degré de significativité général de l'effet aléatoire dans le modèle ?
@@ -690,34 +693,29 @@ Une des questions importantes que l'on se pose lorsque l'on construit un modèle
 
 ### Inférence pour les effets fixes
 
-Trois approches peuvent être envisagées pour déterminer si un effet fixe est significatif ou non. Elles font appel à trois approches théoriques différentes (test de Wald, comparaison de modèle et bootsrapping) et peuvent donc donner des résultats différents. À titre exploratoire, il peut être intéressant de toutes les tester, mais certaines peuvent être préférées ou au contraire rejetées en fonction de votre champ de recherche.
+Trois approches peuvent être envisagées pour déterminer si un effet fixe est significatif ou non. Elles font appel à trois approches théoriques différentes (test classique, comparaison de modèles et bootstrapping) et peuvent donc donner des résultats différents. À titre exploratoire, il peut être intéressant de toutes les tester, mais certaines peuvent être préférées en fonction de votre champ de recherche.
 
-#### Tests de Wald
+#### Test classique
 
-Nous avions vu pour les modèles LM et GLM que les valeurs de *P* étaient calculées à partir de scores obtenus en divisant le coefficient par son erreur standard. Une approche similaire peut être utilisée pour les modèles GLMM, avec le test F. Cependant, la question du nombre de degrés de liberté à utiliser comme dénominateur reste. Plusieurs approches peuvent être envisagées pour déterminer ce nombre de degrés de liberté : 
-
-* Utiliser comme valeurs 1 et *k−1*, il s'agit des deux extrêmes possibles, si les coefficients sont significatifs dans les deux cas, nous pouvons rapporter que leurs effets sont significatifs.
-* Estimer le nombre de degrés de liberté avec la méthode de Kenward-Roger et ensuite calculer les tests *F*. Cependant, cette méthode n'est valide que si le modèle GLMM a une distribution gaussienne.
-* Estimer le nombre de degrés de liberté avec la méthode de Satterthwaite et ensuite calculer les tests *F*.
-
+Nous avions vu pour les modèles LM et GLM que les valeurs de *P* étaient calculées à partir de scores obtenus en divisant le coefficient par son erreur standard. Une approche similaire peut être utilisée pour les modèles GLMM. Cependant, la question du nombre de degrés de liberté à utiliser comme dénominateur reste un problème. L'approche la plus flexible est certainement l'approximation par la méthode Satterthwaite proposant une estimation de ce nombre de degré de liberté et par extension des valeurs de *P*.
 
 #### Rapports de vraisemblance
 
-Si le modèle comprend suffisamment d'observations (par suffisamment comprenez au moins une centaine d'observations par paramètre), il est également possible d'utiliser une série de tests de rapport de vraisemblance pour vérifier si l'apport de chaque variable indépendante contribue à améliorer significativement le modèle.
+Si le modèle comprend suffisamment d'observations (par suffisamment comprenez au moins une centaine d'observations par paramètre), il est également possible d'utiliser une série de tests de rapport de vraisemblance pour vérifier si l'apport de chaque variable indépendante contribue à améliorer significativement le modèle. Cette approche correspond à une analyse de type trois comme nous l'avions mentionné dans la section \@ref(sect06214) pour le modèle logistique multinomial.
 
 #### Bootstrapping
 
-L'approche par *Bootstrapping* (*parametric-bootstrap* ou *semi-parametric-bootstrap*) permet de calculer pour les différents paramètres d'un modèle un intervalle de confiance. L'idée étant de réajuster un grand nombre de fois le modèle sur des sous-échantillons des données pour saisir la variabilité des différents paramètres du modèle. Si les intervalles de confiance ainsi construits ne comprennent pas zéro, il est possible de dire que cet effet est significatif. À nouveau, cette méthode n'est valide que si le jeu de données comporte suffisamment d'observations. L'intérêt de cette approche est qu'elle ne postule pas d'hypothèse sur la distribution des paramètres qui ont la fâcheuse tendance à ne pas suivre une distribution normale dans le cas des GLMM.
+L'approche par *Bootstrapping* (*parametric-bootstrap* ou *semi-parametric-bootstrap*) permet de calculer pour les différents paramètres d'un modèle un intervalle de confiance. L'idée étant de réajuster un grand nombre de fois le modèle sur des sous-échantillons des données pour saisir la variabilité des différents paramètres du modèle. Si les intervalles de confiance ainsi construits ne comprennent pas zéro, il est possible de dire que cet effet est significatif. À nouveau, cette méthode n'est valide que si le jeu de données comporte suffisamment d'observations. L'intérêt de cette approche est qu'elle ne postule pas d'hypothèse sur la distribution des paramètres qui ont la fâcheuse tendance à ne pas suivre une distribution normale dans le cas des GLMM. Elle est d'ailleurs considérée comme la plus robuste bien que coûteuse en termes de temps de calcul.
 
 ### Inférence pour les effets aléatoires, impact global
 
 Pour déterminer si un effet aléatoire a un impact significatif dans un modèle, il est recommandé d'utiliser un test de rapport de vraisemblance entre un modèle sans l'effet aléatoire et un modèle avec l'effet aléatoire. L'analyse des différences entre les valeurs de déviance, AIC et BIC peut également aider à déterminer si l'ajout de l'effet aléatoire est justifié. Il est également possible de considérer les valeurs du ICC et du R^2^ conditionnel. Notez ici que si vous avez une très bonne raison théorique d'ajouter l'effet aléatoire dans votre modèle et suffisamment d'observations / groupes pour l'ajuster, il peut être pertinent de laisser l'effet aléatoire dans le modèle même si tous les indicateurs mentionnés précédemment indiquent qu'il contribue faiblement au modèle. Le retirer risquerait en effet de donner l'impression que les autres paramètres du modèle sont plus significatifs qu'ils ne le sont en réalité.
 
-Notez que l'approche par Bootstraping décrite pour les effets fixes peut aussi être utilisées ici pour obtenir un intervalle de confiance pour l'ICC et pour le R^2^ conditionnel. 
+Notez que l'approche par Bootstrapping décrite pour les effets fixes peut aussi être utilisées ici pour obtenir un intervalle de confiance pour l'ICC, le R^2^ conditionnel et les différents paramètres de variance et co-variance. 
 
 ### Inférence pour les effets aléatoires, constantes et pentes
 
-Pour rappel, dans l'approche fréquentiste présentée ici, les valeurs des constantes et des pentes aléatoires ne sont pas à proprement parler des paramètres du modèle : elles sont estimées a posteriori (BLUP). Pour déterminer si ces constantes et pentes sont significativement différentes de zéro et significativement différentes les unes des autres, il est possible de calculer les intervalles de confiance de chacune d'entre elles par Bootstrap ou par profilage. Si la constante du groupe *j* a zéro dans son intervalle de confiance, on peut alors déclarer que le groupe *j* en question ne semble pas varier du reste de la population en termes de moyenne. Si la pente *l* du groupe *j* a zéro dans son intervalle de confiance, on peut alors déclarer que le groupe *j* en question ne semble pas varier du reste de la population pour l'effet *l*.
+Pour rappel, dans l'approche fréquentiste présentée ici, les valeurs des constantes et des pentes aléatoires ne sont pas à proprement parler des paramètres du modèle : elles sont estimées à posteriori (BLUP). Pour déterminer si ces constantes et pentes sont significativement différentes de zéro et significativement différentes les unes des autres, il est possible de calculer les intervalles de confiance de chacune d'entre elles par Bootstrap, par profilage ou par simulation à partir du modèle. Si la constante du groupe *j* a zéro dans son intervalle de confiance, on peut alors déclarer que le groupe *j* en question ne semble pas varier du reste de la population en termes de moyenne. Si la pente *l* du groupe *j* a zéro dans son intervalle de confiance, on peut alors déclarer que le groupe *j* en question ne semble pas varier du reste de la population pour l'effet *l*. Notez que la méthode par simulation est bien plus rapide que les deux autres, mais que l'approche par bootstrap reste la plus fiable.
 
 ## conclusion sur les GLMM
 
@@ -742,7 +740,7 @@ Nous commençons donc par ajuster un premier modèle avec une constante aléatoi
 &Y \sim Binomial(p)\\
 &g(p) = \beta_0 + \beta_1 x_1 + \upsilon \\
 &\upsilon \sim Normal(0, \sigma_{\upsilon})) \\
-&g(x) = log(\frac{x}{1-x}
+&g(x) = log(\frac{x}{1-x})
 \end{aligned}
 (\#eq:glmmbinom1)
 \end{equation}
@@ -977,7 +975,7 @@ clusterEvalQ(cl,library("lme4"))
 
 # calcul des effets aléatoires en bootstrap
 valeurs <- bootMer(modele1,FUN = extractor2,nsim = 1000,
-                   use.u = F, type="parametric", ncpus = 8,
+                   use.u = T, type="parametric", ncpus = 8,
                    parallel="snow",
                    cl = cl)
 
@@ -985,19 +983,36 @@ valeurs <- bootMer(modele1,FUN = extractor2,nsim = 1000,
 save(valeurs,file = 'data/glmm/boot_binom2.rda')
 ```
 
-Puisque nous disposons des distributions bootsrapées des différents effets aléatoires, nous pouvons directement les représentées dans un graphique.
+Puisque nous disposons des distributions bootstrapées des différents effets aléatoires, nous pouvons directement les représentées dans un graphique avec la figure \@ref(fig:randomconstantes2). Les résultats sont très similaires à ceux de la figure \@ref(fig:randomconstantes1), ce qui s'explique par le grand nombre d'observation et de groupes. Avec moins d'observations, il est recommandé de privilégier l'approche par bootstrap.
 
-```{r randomconstantes2, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par Pays (IC par bootstrap)"}
+```{r randomconstantes2, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par Pays (IC par bootstrap)", fig.align="center"}
 
 # chargement de nos valeurs bootstrapées
 load('data/glmm/boot_binom2.rda')
 
-# représentation avec le package ggdist
-library(ggdist)
-df <- reshape2::melt(valeurs$t)
+# conversion des bootstraps en intervals de confiance
+q025 <- function(x){return(quantile(x,probs = 0.025))}
+q975 <- function(x){return(quantile(x,probs = 0.975))}
 
-ggplot(df) + 
-  stat_halfeye(aes(y = Var2, x = value))
+df <- reshape2::melt(valeurs$t)
+df_med <- df %>% group_by(Var2) %>% summarise(
+  med = median(value),
+  lower = q025(value),
+  upper = q975(value))
+
+# ajout d'une variable pour la couleur si significatif
+df_med$sign <- case_when(
+  df_med$lower<0 & df_med$upper<0 ~ "inf",
+  df_med$lower>0 & df_med$upper>0 ~ "sup",
+  TRUE ~ "not"
+)
+
+# Affichage des résultats
+ggplot(df_med) + 
+  geom_errorbar(aes(xmin = lower, xmax = upper, y = reorder(Var2,med)), width = 0.5) +
+  geom_point(aes(x = med, y = reorder(Var2,med), color = sign)) + 
+  scale_color_manual(values = c("inf" = "#0077b6", "sup" = "#e63946", "not"="#000000"), labels = c("sign. < 0", "non sign.", "sign. > 0")) +
+  labs(x = "Constante aléatoire", y = "Pays")
 
 ```
 
@@ -1021,27 +1036,29 @@ Ajustons donc nos deux modèles avec pentes et constantes aléatoires.
 ```{r, warning=FALSE, message=FALSE}
 
 # constantes et pentes aléatoires indépendantes
-modele2 <- glmer(y ~Sexe + Age2 + Education + StatutEmploi + Revenu +
+modele2 <- glmer(y ~ Sexe + Age2 + Education + StatutEmploi + Revenu +
               Residence + Duree2 + ConsEnv + (1 + Age2||Pays),
             family = binomial(link="logit"),
             control = glmerControl(optimizer = "bobyqa"),
             data = dfenquete2)
 
 # constantes et pentes aléatoires corrélées
-modele3 <- glmer(y ~Sexe + Age2 + Education + StatutEmploi + Revenu +
+modele3 <- glmer(y ~ Sexe + Age2 + Education + StatutEmploi + Revenu +
               Residence + Duree2 + ConsEnv + (1 + Age2|Pays),
             family = binomial(link="logit"),
             control = glmerControl(optimizer = "bobyqa"),
             data = dfenquete2)
 ```
 
-Puisque les trois modèles sont imbriqués, la première étape et de vérifier si les ajouts successifs au modèle de base sont significatifs, ce que nous pouvons tester avec un rapport de vraisemblance.
+#### Significativité de l'effet aléatoire
+
+Puisque les trois modèles sont imbriqués, la première étape est de vérifier si les ajouts successifs au modèle de base sont significatifs, ce que nous pouvons tester avec un rapport de vraisemblance.
 
 ```{r, warning=FALSE, message=FALSE}
 anova(modele1,modele2,modele3)
 ```
 
-Nous constatons ainsi que l'ajout des pentes aléatoires permet d'améliorer significativement le modèle, mais que l'ajout de la corrélation entre les pentes et les constantes aléatoires a un apport très marginal. Nous décidons tout de même de le garder dans un premier temps car ce paramètre a un intérêt théorique. Nous nous attendons à observer une relation négative entre les deux paramètres, soit que l'effet de l'âge soit réduit dans les pays ou la constante est forte.
+Nous constatons ainsi que l'ajout des pentes aléatoires permet d'améliorer significativement le modèle, mais que l'ajout de la corrélation entre les pentes et les constantes aléatoires a un apport très marginal. Nous décidons tout de même de le garder dans un premier temps car ce paramètre a un intérêt théorique. 
 
 Affichons le résumé du modèle 3 : 
 
@@ -1054,7 +1071,243 @@ var1 <- VarCorr(modele3)[[1]][[1]]
 var2 <- VarCorr(modele3)[[1]][[4]]
 var3 <- VarCorr(modele3)[[1]][[2]]
 ```
-À nouveau, nous nous intéressons ici principalement à la section `Random Effect`. Les constantes ont une variances de `r tofr(round(var1,3))` et les pentes de `r tofr(round(var2,3))`. La corrélation entre les deux effets est de `r tofr(round(var3 / (sqrt(var1)*sqrt(var2)),2))`. Elle est donc bien négative, ce qui correspond à notre hypothèse de base. Nous devons cependant encore nous assurer qu'elle est significativement différente de 0. Pour cela, nous devons calculer l'intervalle de confiance de ce paramètre.
+À nouveau, nous nous intéressons ici principalement à la section `Random Effect`, puisque les effets fixes s'interprètent exactement comme dans les modèles présentés dans le chapitre \@ref(chap06). Les constantes ont une variances de `r tofr(round(var1,3))` et les pentes de `r tofr(round(var2,3))`. La corrélation entre les deux effets est de `r tofr(round(var3 / (sqrt(var1)*sqrt(var2)),2))`. Cette corrélation est négative et relativement faible, ce qui signifie que les Pays dans lesquels la constante est forte, tendent à avoir des coefficients pour l'âge plus petits et donc une réduction accrue de la probabilité d'utiliser le vélo avec l'âge. Nous devons cependant encore nous assurer qu'elle est significativement différente de 0. Pour cela, nous devons calculer l'intervalle de confiance des trois paramètres de variance du modèle. Nous utilisons à nouveau une approche par bootstrap et nous enregistrons les résultats.
 
+```{r, warning=FALSE, message=FALSE, eval=FALSE, echo=TRUE}
+# fonction d'extraction des trois paramètres de variance
+extractor3 <- function(mod){
+  vari1 <- VarCorr(mod)[[1]][[1]]
+  vari2 <- VarCorr(mod)[[1]][[4]]
+  covari <- VarCorr(mod)[[1]][[2]]
+  return(c("vari1"=vari1,"vari2"=vari2,"covari"=covari))
+}
+
+# lancement du bootstrap
+valeurs <- bootMer(modele3,FUN = extractor3,nsim = 1000,
+                   use.u = F, type="parametric", ncpus = 8,
+                   parallel="snow",
+                   cl = cl,
+                   .progress="txt",PBarg=list(style=3))
+
+# enregistrement des résultats
+save(valeurs,file = 'data/glmm/boot_binom3.rda')
+```
+
+À partir des valeurs bootstrapées, nous pouvons représenter les distributions de ces trois paramètres (variance des constantes, variance des pentes et corrélation entre les deux)
+```{r, warning=FALSE, message=FALSE, eval=TRUE, echo=TRUE, fig.cap="Incertitude autours des paramètres de variance obtenue par bootstrap", fig.align="center", out.width = "95%"}
+# chargement des résultats
+load('data/glmm/boot_binom3.rda')
+
+# conversion des valeurs de covariance en corrélation
+df <- data.frame(
+  corr_values = valeurs$t[,3] / (sqrt(valeurs$t[,1]) * sqrt(valeurs$t[,2])),
+  vari_const = valeurs$t[,1],
+  vari_pente = valeurs$t[,2]
+  )
+
+
+# histogramme pour la variance des constantes
+breaks1 <- quantile(df$vari_const,probs=c(0.025,0.5,0.975,0.999))
+label1 <- round(breaks1,3)
+
+p1 <- ggplot(df) + 
+  geom_histogram(aes(x = vari_const), color = "black", fill = "white", bins = 30) + 
+  geom_vline(xintercept = median(df$vari_const), color = "red", size = 1, linetype="dashed") + 
+  geom_vline(xintercept = quantile(df$vari_const, probs = 0.025), color = "blue", size = 0.5, linetype="dashed") + 
+  geom_vline(xintercept = quantile(df$vari_const, probs = 0.975), color = "blue", size = 0.5, linetype="dashed") + 
+  labs(x = "Variance des constantes", y="")+ 
+  scale_x_continuous(breaks = breaks1, labels = label1)
+
+# histogramme pour la variance des pentes
+breaks2 <- quantile(df$vari_pente,probs=c(0.025,0.5,0.975,0.999))
+label2 <- round(breaks2,3)
+
+p2 <- ggplot(df) + 
+  geom_histogram(aes(x = vari_pente), color = "black", fill = "white", bins = 30) + 
+  geom_vline(xintercept = median(df$vari_pente), color = "red", size = 1, linetype="dashed") + 
+  geom_vline(xintercept = quantile(df$vari_pente, probs = 0.025), color = "blue", size = 0.5, linetype="dashed") + 
+  geom_vline(xintercept = quantile(df$vari_pente, probs = 0.975), color = "blue", size = 0.5, linetype="dashed") + 
+  labs(x = "Variance des pentes", y="")+
+  scale_x_continuous(breaks = breaks2, labels = label2)
+
+# histogramme pour la correlation
+breaks3 <- c(-1,-0.5,0,0.5,1,median(df$corr_values))
+label3 <- round(breaks3,3)
+
+p3 <- ggplot(df) + 
+  geom_histogram(aes(x = corr_values), color = "black", fill = "white", bins = 30) + 
+  geom_vline(xintercept = median(df$corr_values), color = "red", size = 1, linetype="dashed") + 
+  geom_vline(xintercept = quantile(df$corr_values, probs = 0.025), color = "blue", size = 0.5, linetype="dashed") + 
+  geom_vline(xintercept = quantile(df$corr_values, probs = 0.975), color = "blue", size = 0.5, linetype="dashed") + 
+  labs(x = "Corrélation pentes/constantes", y="") + 
+  scale_x_continuous(breaks = breaks3, labels = label3)
+
+ggarrange(p1,p2, p3, ncol = 2, nrow = 2)
+```
+
+Nous constatons ainsi que la variance des constantes aléatoire est significativement différentes de zéro (cette valeur ne se trouve pas dans l'intervalle de confiance à 95% représenté par les bordures bleues) et à une médiance de `tofr(round(df$vari_const,3))`. Pour les pentes, zéro est également à la limite de l'intervalle de confiance et la distribution asymétrique et étalée nous indique que ce paramètre est fortement incertain dans le modèle. Enfin, la corrélation entre les pentes et les constante est de loin le paramètre le plus incertain et son intervalle de confiance est franchement à cheval sur zéro, ce qui devrait nous amener à privilégier un modèle sans ce paramètre.
+
+Pour terminer, nous pouvons calculer les R^2^ marginal et conditionnel du modèle afin de mieux cerner le rôle joué par les effets fixes et les effets aléatoires.
+```{r, warning=FALSE, message=FALSE}
+r.squaredGLMM(modele3)
+```
+Les valeurs des R^2^ marginal et conditionnel du modèle sont similaires à ceux que nous avions obtenus avec seulement des constantes aléatoires dans la section précédente, signalant l'apport relativement faible des pentes aléatoires
+
+#### Analyse des effets aléatoires
+
+Pour analyser facilement les constantes et pentes aléatoires de chaque pays, nous pouvons représenter graphiquement leurs intervalles de confiances construits à partir des simulations tirées de la distribution à postériori du modèle.
+
+```{r randomconstantes2b, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par Pays (IC par simulations)"}
+# Simulations et extraction des effets aléatoires
+library(merTools)
+simsRE <- REsim(modele3,n.sims = 1000, oddsRatio = F)
+
+# calcul des intervalles de confiance
+simsRE$lower <- simsRE$mean - 1.96 * simsRE$sd
+simsRE$upper <- simsRE$mean + 1.96 * simsRE$sd
+
+# variable binaire pour la significativité
+simsRE$sign <- case_when(
+  simsRE$lower<0 & simsRE$upper<0 ~ "inf",
+  simsRE$lower>0 & simsRE$upper>0 ~ "sup",
+  TRUE ~ "not"
+)
+
+df1 <- subset(simsRE, grepl("Intercept",simsRE$term,fixed = T))
+df2 <- subset(simsRE, grepl("Age2",simsRE$term,fixed = T))
+
+# représentation des intervalles de confiance
+
+p1 <- ggplot(df1) + 
+  geom_errorbarh(aes(xmin = lower, xmax = upper,
+                     y = reorder(groupID,mean)), size = 0.5, height = 0.5) + 
+  geom_point(aes(x = mean, y = reorder(groupID,mean),
+                 color = sign)) + 
+  scale_color_manual(values = c("inf" = "#0077b6", "sup" = "#e63946", "not"="#000000"), labels = c("sign. < 0", "non sign.", "sign. > 0")) +
+  labs(x = "Constante aléatoire", y = "Pays")
+
+p2 <- ggplot(df2) + 
+  geom_errorbarh(aes(xmin = lower, xmax = upper,
+                     y = reorder(groupID,mean)), size = 0.5, height = 0.5) + 
+  geom_point(aes(x = mean, y = reorder(groupID,mean),
+                 color = sign)) + 
+  scale_color_manual(values = c("inf" = "#0077b6", "sup" = "#e63946", "not"="#000000"), labels = c("sign. < 0", "non sign.", "sign. > 0")) +
+  labs(x = "Pente aléatoire (âge)", y = "Pays")
+
+ggarrange(p1,p2, common.legend = T, nrow = 1, ncol = 2)
+```
+
+La figure \@ref(fig:randomconstantes2b) nous permet ainsi de constater que l'effet des pays sur les pentes est presque toujours non significatif sauf pour le Danemark. Son effet négatif (`r tofr(round(ranef(modele3)$Pays[rownames(ranef(modele3)$Pays)=="Denmark",2],3))`) indique un renforcement de l'effet général lui même négatif (`r tofr(round(fixef(modele3)[[3]],3))`). Une interprétation possible est qu'au Danemark l'utilisation du vélo est plus proportionnellement plus utilisé par les jeunes que dans le reste des pays de l'UE.
+
+Pour l'interprétation finale, il est nécessaire d'afficher les valeurs exactes de ces différents paramètres et dans notre cas de les convertir en rapport de cote avec la fonction exponentielle. Pour les pentes aléatoires, il peut être plus facile d'interpréter la somme de l'effet fixe et de l'effet aléatoire.
+
+```{r}
+# extraction des effets aléatoires obtenus par simulation
+mat <- simsRE[c("mean","lower","upper")]
+mat$Pays <- simsRE$groupID
+mat$effet <- simsRE$term
+
+# séparation des pentes et des constantes
+df1 <- subset(mat, grepl("Intercept",mat$effet, fixed = TRUE))
+df2 <- subset(mat, grepl("Age2",mat$effet, fixed = TRUE))
+
+# conversion en rapport de cotes pour les pentes (+ effet fixe)
+df2$RC <- round(exp(df2$mean + fixef(modele3)[[3]]),3)
+df2$RC025 <- round(exp(df2$lower + fixef(modele3)[[3]]),3)
+df2$RC975 <- round(exp(df2$upper + fixef(modele3)[[3]]),3)
+print(head(df2[c("Pays","RC","RC025","RC975")],10))
+```
+
+Nous constatons ainsi qu'au Danemark, les chances pour un individu d'utiliser le vélo sont réduites de 20% à chaque augmentation de l'âge d'un écart type, contre seulement 1,5% en Autriche. Notons ici qu'un écart type de la variable Age est de 11 ans.
+
+```{r}
+# conversion en rapport de cotes pour les constantes
+df1$RC <- round(exp(df1$mean),3)
+df1$RC025 <- round(exp(df1$lower),3)
+df1$RC975 <- round(exp(df1$upper),3)
+print(head(df1[c("Pays","RC","RC025","RC975")],10))
+```
+
+En revanche, les chances pour un individu d'utiliser le vélo comme mode de transport pour son trajet le plus fréquent sont 4 fois supérieures à la moyenne européenne, contre seulement 1,3 fois en Autriche.
+
+Notez à nouveau que les intervalles de confiances pour ces pentes et ces constantes pourraient être estimés plus fiablement par bootstrap.
+
+#### Diagnostic des effets aléatoires
+
+Pour rappel, dans un modèle GLMM, les effets aléatoires sont modélisés comme provenant de distribution aléatoires. Nous devons donc vérifier qu'ils respectent cette condition d'application. La figure \@ref(fig:diagbinomglmm1) (graphique quantile-quantile) nous permet de constater que les constantes suivent bien une distribution normale, ce qui ne semble pas vraiment être le cas pour les pentes. Consiédrant que leurs effets sont petits, il pourrait être plus pertinent ici de les retirer du modèle.
+
+```{r diagbinomglmm1, echo = FALSE, fig.align='center', fig.cap="Distribution normale univariée des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
+
+df <- data.frame(ranef(modele3)$Pays)
+names(df) <- c('constante',"pente")
+
+p1 <- qplot(sample = df$constante)+
+  geom_qq_line(line.p = c(0.25, 0.75),
+               color = "red", size=0.8, linetype="dashed")+
+  labs(title="Diagramme quantile-quantile",
+     x="Valeurs théoriques",
+     y = "Constantes aléatoires")
+
+p2 <- qplot(sample = df$pente)+
+  geom_qq_line(line.p = c(0.25, 0.75),
+               color = "red", size=0.8, linetype="dashed")+
+  labs(title="Diagramme quantile-quantile",
+     x="Valeurs théoriques",
+     y = "Pentes aléatoires")
+
+ggarrange(p1,p2, common.legend = T, nrow = 1, ncol = 2)
+```
+
+Considérant que ce modèle inclue une corrélation entre les constantes et les pentes aléatoires, il est également nécessaire de vérifier si elles suivent conjointement une distribution normale bivariée. La figure \@ref(fig:diagbinomglmm2) semble indiquer 
+
+```{r diagbinomglmm2, echo = TRUE, fig.align='center', fig.cap="Distribution normale bivariée des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+cor_mat <- VarCorr(modele3)[[1]]
+
+re_effects <- data.frame(ranef(modele3)$Pays)
+names(re_effects) <- c("constante","pente")
+
+library(ellipse)
+
+levels <- c(0.05,0.25,0.75,0.95)
+
+els <- lapply(levels, function(i){
+  el <- data.frame(ellipse(cor_mat,center = c(0,0), level = i))
+  names(el) <- c("x","y")
+  return(el)
+})
+
+ref_points <- data.frame(data.frame(MASS::mvrnorm(n = 1000, mu = c(0,0), Sigma = cor_mat)))
+names(ref_points) <- c("x","y")
+
+ggplot() + 
+  geom_point(aes(x = x, y = y), data = ref_points, alpha = 0.3, size = 0.4) + 
+  geom_path(data = els[[1]], aes(x = x, y = y, color = "a")) + 
+  geom_path(data = els[[2]], aes(x = x, y = y, color = "b")) + 
+  geom_path(data = els[[3]], aes(x = x, y = y, color = "c")) +
+  geom_path(data = els[[4]], aes(x = x, y = y, color = "d")) + 
+  geom_point(data = re_effects, aes(x = constante, y = pente))+
+  scale_color_manual(values = c("a"="#90e0ef",
+                                "b"="#00b4d8",
+                                "c"="#0077b6",
+                                "d"="#03045e"),
+                     labels = c("5%","25%","75%","95%"))+
+  labs(x = "Constantes", y = "Pentes")
+```
+
+#### Inférence pour les effets fixes
+
+Nous avions mentionné dans les sections précédentes que le calcul de valeurs de *P* pour les effets fixes fait l'objet de controverse dans les modèles GLMM. La méthode offrant le meilleur compromis entre rapidité de calcul et fiabilité est la méthode Satterthwaite implémantée dans le *package* **lmerTest**. Pour l'utiliser, il suffit simplement de charger le *package* **lmerTest** après **lme4**, ce qui modifiera la fonction `summary` pour qu'elle utilise directement cette approche.
+
+```{r diagbinomglmm3, message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+library(lmerTest)
+round(summary(modele3)$coefficients,3)
+```
+
+Les deux autres options envisageables sont : 
+
+* Effectuer une analyse de type 3
+* Calculer les intervalles de confiance par bootstrap
+
+Cependant elles requierent beaucoup plus de temps de calcul et ne sont donc pas présentées ici.
 
 ## Régressions multiniveaux {#sect074}
