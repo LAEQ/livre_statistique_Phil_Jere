@@ -97,15 +97,12 @@ Notez également que l’estimation des paramètres d’un modèle GLM (ici $\be
 Toutefois, le résultat n’est pas entièrement satisfaisant. En effet, *p* est une probabilité et, par nature, ce paramètre devrait être compris entre 0 et 1 (entre 0 et 100% de « chances de décès », ni plus ni moins). L’équation de régression que nous utilisons actuellement peut produire des résultats compris en $+\infty$ et $-\infty$ pour *p* puisque rien ne contraint la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ à être comprise entre 0 et 1. Il est possible de visualiser le problème soulevé par cette situation avec les figures suivantes. Admettons que nous ayons observé une variable *Y* binaire et que nous savons qu’elle est influencée par une variable *X* qui, plus elle augmente, plus la chance que *Y* soit 1 augmente (figure \@ref(fig:linearbinom)).
 
 ```{r linearbinom, echo=FALSE, fig.align='center', fig.cap="Exemple de données issues d'une distribution de Bernoulli", message=FALSE, warning=FALSE, out.width='70%'}
-
 x1 <- rnorm(150)
 z <- 1 + rnorm(150,mean = 2, sd = 0.5)*x1
 pr <- 1/(1+exp(-z))
 y <- ifelse(pr > 0.5,1,0)
-
 df <- data.frame(x1 = x1, 
                  y = y)
-
 ggplot(data = df)+
   geom_point(aes(x = x1, y = y), size = 0.5) + 
   labs(x = "X", y = "Y") + 
@@ -115,13 +112,11 @@ ggplot(data = df)+
 Si l’on utilise l’équation de régression actuelle, cela revient à trouver la droite la mieux ajustée passant dans ce nuage de points (figure \@ref(fig:linearbinom2)).
 
 ```{r linearbinom2, echo=FALSE, fig.align='center', fig.cap="Ajustement d'une droite de régression aux données issues d'une distribution de Bernoulli", message=FALSE, warning=FALSE, out.width='70%'}
-
 ggplot(data = df)+
   geom_point(aes(x = x1, y = y), size = 0.5) + 
   geom_smooth(aes(x = x1, y = y),method='lm', formula= y~x,se = F) +
   labs(x = "X", y = "Y") + 
   ylim(c(-0.25,1.25))
-
 ```
 
 Ce modèle semble bien cerner l’influence positive de *X* sur *Y*, mais la droite est au final très éloignée de chaque point, indiquant un faible ajustement du modèle. De plus, la droite prédit des probabilités négatives lorsque *X* est inférieur à −2,5 et des probabilités supérieures à 1 quand *X* est supérieur à 1. Elle est donc loin de bien représenter les données.
@@ -142,7 +137,6 @@ C’est ici qu’intervient la fonction de lien. La fonction identitaire n’est
 La fonction logistique prend la forme d’un *S*. Plus la valeur entrée dans la fonction est grande, plus le résultat produit par la fonction est proche de 1 et inversement. Si l’on reprend l’exemple précédent, on obtient le modèle à la figure \@ref(fig:linearbinom3).
 
 ```{r linearbinom3, echo=FALSE, fig.align='center', fig.cap="Utilisation de la fonction de lien logistique", message=FALSE, warning=FALSE, out.width='70%'}
-
 ggplot(data = df)+
   geom_point(aes(x = x1, y = y), size = 0.5) + 
   geom_smooth(aes(x = x1, y = y),method='lm', formula= y~x,se = F) +
@@ -151,7 +145,6 @@ ggplot(data = df)+
               se = F, color = "red") + 
   labs(x = "X", y = "Y") + 
   ylim(c(-0.25,1.25))
-
 ```
 
 Une fois cette fonction insérée dans le modèle, on constate qu’une augmentation de la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ conduit à une augmentation de la probabilité *p* et inversement, et que cet impact est non linéaire. Nous avons donc maintenant un GLM permettant de prédire la probabilité d’un décès lors d’un accident en combinant une distribution et une fonction de lien adéquates.
@@ -253,7 +246,6 @@ Il s’agit donc d’un simple calcul de pourcentage entre la déviance maximale
 Le $R^2$ est une mesure d’ajustement représentant la part de la variance expliquée dans un modèle linéaire classique. Cette mesure n’est pas directement transposable au cas des GLM puisqu’ils peuvent être appliqués à des variables non continues et anormalement distribuées. Toutefois, il existe des mesures semblables appelées pseudo $R^2$, remplissant un rôle similaire. Notez cependant qu’ils ne peuvent pas être interprétés comme le $R^2$ classique (d'une régression linéaire multiple) : **ils ne représentent pas la part de la variance expliquée**. Ils sont compris dans l’intervalle 0 et 1; plus leurs valeurs s’approchent de 1, plus l’ajustement est élevé.
 
 ```{r tablepseudor2, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 df <- data.frame(
   Nom = c("McFadden", "McFadden ajusté", "Efron", "Cox & Snell", "Nagelkerke"),
   formule = c("$1-\\frac{loglike(M_e)}{loglike(M_n)}$", 
@@ -263,13 +255,11 @@ df <- data.frame(
               "$\\frac{1-e^{-\\frac{2}{n}({loglike(M_e) - loglike(M_n))}}}{1-e^{\\frac{2*loglike(M_n)}{n}}}$"),
   Commentaire = c("Le rapport des loglikelihood, très proche de la déviance expliquée", "Version ajustée du R^2^ de McFadden tenant compte du nombre de paramètres (K) dans le modèle", "Rapport entre la somme des résidus classiques au carré (numérateur) et de la somme des écarts au carré à la moyenne (dénominateur). Notez que pour un GLM gaussien, ce pseudo R^2^ est identique au R^2^ classique", "Transformation de la déviance afin de la mettre sur une échelle de 0 à 1 (mais ne pouvant atteindre exactement 1)", "Ajustement du R^2^ de Cox et Snell pour que l’échelle de valeurs possibles puisse comporter 1 (attention car les valeurs de ce R^2^ tendent à être toujours plus fortes que les autres)")
 )
-
 show_table(df, 
       col.names = c("Nom","Formule", "Commentaire"),
       caption = 'Principaux pseudo $R^2$', 
       col.to.resize = 3,
       col.width = "8cm")
-
 ```
 
 En dehors du pseudo R^2^ de McFadden ajusté, aucune de ces mesures ne tient compte de la complexité du modèle. Il est cependant intéressant de les reporter, car des valeurs très faibles indiquent vraisemblablement un modèle avec une moindre capacité informative. À l’inverse, des valeurs trop fortes pourraient également indiquer un problème de surajustement (**voir de nouveau l'encadré sur le principe de parcimonie**, section \@ref(sect0532)).
@@ -339,19 +329,16 @@ Ces deux mesures peuvent être utilisées pour comparer la capacité de prédict
 Lorsque l’on modélise une variable qualitative, une erreur revient à prédire la mauvaise catégorie pour une observation. Il est ainsi possible de compter, pour un modèle, le nombre de bonnes et de mauvaises prédictions et d’organiser cette information dans une **matrice de confusion**. Cette dernière prend la forme suivante pour un modèle binaire : 
 
 ```{r confusmat1, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 df <- data.frame(
   C1 = c("A","B", "Total (%)"),
   C2 = c("15","5", "20 (46,6)"),
   C3 = c("3","20", "23 (53,5)"),
   C4 = c("18 (41,9)","25 (51,1)", "43 (81,4)")
 )
-
 show_table(df, 
     caption = 'Exemple de matrice de confusion',
     col.names = c("Valeur prédite / Valeur réelle","A", "B", "Total (%)")
 )
-
 ```
 En colonne du tableau \@ref(tab:confusmat1), nous avons les catégories observées et en ligne, les catégories prédites. La diagonale représente les prédictions correctes. Dans le cas présent, le modèle a bien catégorisé 35 (15 + 20) observations sur 43, soit une précision totale de 81,4%; huit sont mal classifiées (18,6%); cinq avec la modalité A ont été catégorisées comme des B, soit 20% des A, et seuls trois B ont été catégorisées comme des A (13%).
 
@@ -366,8 +353,6 @@ df <- data.frame(
   C5 = c("5", "12","8","14","39 (30,5)"),
   C6 = c("24 (18,7)", "39 (30,4)", "45 (35,2)", "20 (15,6)", "128")
 )
-
-
 show_table(df, 
     caption = 'Exemple de matrice de confusion multinomiale',
     col.names = c("Valeur prédite / Valeur réelle","A", "B","C", "D", "Total (%)")
@@ -399,7 +384,6 @@ indicators <- data.frame(
   C3 = c("31,3", "25,6", "27,8", "35,0", "30,0", "", ""),
   C4 = c("42,3", "36,0", "40,7" ,"35,4" ,"38,2","","")
 )
-
 show_table(indicators, 
     caption = 'Indicateurs de qualité de prédiction',
     col.names = c("", "précision", "rappel", "F1")
@@ -418,7 +402,6 @@ indicators <- data.frame(
  K = c("< 0", "0 - 0,20", "0,21 - 0,40", "0,41 - 0,60", "0,61 - 0,80", "0,81 - 1"),
  Inter = c("Désaccord", "Accord très faible", "Accord faible", "Accord modéré", "Accord fort", "Accord presque parfait")
 )
-
 show_table(indicators, 
     caption = 'Inteprétation des valeurs du coefficient de Kappa',
     col.names = c("K","Interprétation")
@@ -457,14 +440,11 @@ Le modèle logistique binomial est une généralisation du modèle de Bernoulli 
 Spécifiquement, on tente de prédire le paramètre *p* de la distribution binomiale à l’aide de notre équation de régression et la fonction logistique comme fonction de lien.
 
 ```{r binomidentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable binaire (0 ou 1) ou comptage de réussite à une expérience (ex : 3 réussites sur 5 expériences)", "Binomiale", model_formula , "logistique", "p", "$\\beta_0$, $\\beta$", "Non-séparation complète, Absence de surdispersion ou sousdispersion")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle logistique binomial",
     col.names = NULL, 
@@ -525,7 +505,6 @@ tableau <- data.frame(
  C3 = c("Variable multinomiale", "Variable binaire", "Variable continue", "Variable multinomiale", "Variable binaire", "Variable multinomiale", "Variable multinomiale", "Variable continue", "Variable ordinale"),
  C4 = c("Le nom d’un des 26 pays membres de l’UE", "Homme ou Femme", "L’âge en nombre d’années variant de 16 à 84 ans dans le jeu de données", "Premier cycle, secondaire inférieur (classes supérieures de l’école élémentaire), secondaire,  troisième cycle", "Employé ou non", "Très faible revenu, faible revenu, revenu moyen, revenu élevé, revenu très élevé, sans reponse", "Zone rurale, petite ou moyenne ville (moins de 250 000 habitants), grande ville (entre 250 000 et 1 million d’habitants) , aire métropolitaine (plus d’un million d’habitants)", "Nombre de minutes", "Échelle de likerte et 1 à 10")
 )
-
 show_table(tableau, 
     caption = "Variables indépendantes utilisées pour prédire le mode de transport le plus utilisé",
     col.names = c("Nom de la variable","signification","Type de variable","Mesure"), 
@@ -540,13 +519,10 @@ La première étape de la vérification des conditions d'application est de calc
 
 ```{r message=FALSE, warning=FALSE, out.width='50%'}
 library(car)
-
 # Chargement des données
 dfenquete <- read.csv("data/glm/enquete_transport_UE.csv")
 dfenquete$Pays <- relevel(as.factor(dfenquete$Pays), ref = "Germany")
-
 # Vérification du VIF
-
 model1 <- glm(y ~
               Pays + Sexe + Age + Education + StatutEmploi + Revenu +
               Residence + Duree + ConsEnv,
@@ -564,14 +540,12 @@ cookd <- data.frame(
   dist = cooks.distance(model1),
   oid = 1:nrow(dfenquete)
 )
-
 ggplot(cookd) + 
   geom_point(aes(x = oid, y = dist ), color = rgb(0.1,0.1,0.1,0.4), size = 1)+
   geom_hline(yintercept = 0.002, color = "red")+
   labs(x = "observations", y = "distance de Cook") + 
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
-
 ```
 
 Le calcul de la distance de Cook révèle un ensemble d'observations se démarquant nettement des autres (délimitées dans le graphique par la ligne rouge). Nous les isolons dans un premier temps pour les analyser.
@@ -579,10 +553,8 @@ Le calcul de la distance de Cook révèle un ensemble d'observations se démarqu
 ```{r message=FALSE, warning=FALSE, out.width='80%'}
 # Isoler les observations avec de très fortes valeurs de Cook
 # valeur seuil choisie : 0,002
-
 cas_etranges <- subset(dfenquete, cookd$dist>=0.002)
 cat(nrow(cas_etranges),'observations se démarquant dans le modèle')
-
 print(cas_etranges)
 ```
 
@@ -592,20 +564,17 @@ print(cas_etranges)
 # Retirer les observations aberrantes
 dfenquete2 <- subset(dfenquete, (dfenquete$Pays %in% c("Malta", "Cyprus")) == F & 
                   dfenquete$Duree < 400)
-
 # Réajuster le modèle
 model2 <- glm(y ~
               Pays + Sexe + Age + Education + StatutEmploi + Revenu +
               Residence + Duree + ConsEnv,
             family = binomial(link="logit"),
             data = dfenquete2)
-
 # Recalculer la distance de Cook
 cookd <- data.frame(
   dist = cooks.distance(model2),
   oid = 1:nrow(dfenquete2)
 )
-
 ggplot(cookd) + 
   geom_point(aes(x = oid, y = dist ), color = rgb(0.1,0.1,0.1,0.4), size = 1)+
   labs(x = "observations", y = "distance de Cook") + 
@@ -618,30 +587,24 @@ Après avoir retiré ces valeurs aberrantes, nous n'observons plus de nouveaux c
 La prochaine étape de vérification des conditions d'application est l'analyse des résidus simulés. Nous commençons donc par calculer ces résidus et afficher leur histogramme.
 
 ```{r figresidsimbinomHistoUnif, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distribution des résidus simulé pour le modèle binomial", fig.align="center"}
-
 library(DHARMa)
-
 #Extraire les probabilités prédites par le modèle
 probs <- predict(model2, type = "response")
-
 #Calculer 1000 simulations a partir du modele ajuste
 sims <- lapply(1:length(probs), function(i){
   p <- probs[[i]]
   vals <- rbinom(n = 1000, size = 1,prob = p)
 })
 matsim <- do.call(rbind,sims)
-
 #utiliser le package DHARMa pour calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = matsim, 
                             observedResponse = dfenquete2$y,
                             fittedPredictedResponse = probs,
                             integerResponse = T)
-
 ggplot()+
   geom_histogram(aes(x = residuals(sim_res)),
                  bins = 30, fill = "white", color = rgb(0.3,0.3,0.3))+
   labs(x="résidus simulés", y="fréquence")
-
 ```
 
 L'histogramme indique clairement que les résidus simulés suivent une distribution uniforme (figure \@ref(fig:figresidsimbinomHistoUnif)). Il est possible d'aller plus loin dans le diagnostic en utilisant la fonction `plot` sur l'objet `sim_res`. La partie de droite de la figure ainsi obtenue (figure \@ref(fig:figresidsimbinom)) est un diagramme de quantiles-quantiles (ou Q-Q plot). Les points du graphique sont supposés suivre une ligne droite matérialisée par la ligne rouge. Une déviation de cette ligne indique un éloignement des résidus de leur distribution attendue. Trois tests sont également réalisés par la fonction.
@@ -665,11 +628,9 @@ Pour calculer les différents R<sup>2</sup> d'un modèle GLM, nous proposons la 
 rsqs <- function(loglike.full, loglike.null,full.deviance, null.deviance, nb.params, n){
   #calcul de la déviance expliquée
   explained_dev <- 1-(full.deviance / null.deviance)
-
   K <- nb.params
   #R2 de McFadden ajusté
   r2_faddenadj <- 1- (loglike.full - K) / loglike.null
-
   Lm <- loglike.full
   Ln <- loglike.null
   #R2 de Cox and Snell
@@ -689,12 +650,10 @@ rsqs <- function(loglike.full, loglike.null,full.deviance, null.deviance, nb.par
 Nous pourrons l'utiliser pour l'ensemble des modèles GLM de la section. Dans le cas du modèle binomial, nous obtenons : 
 
 ```{r message=FALSE, warning=FALSE, out.width='100%'}
-
 #Ajuster un modele null avec seulement une constante
 model2.null <- glm(y ~1,
             family = binomial(link="logit"),
             data = dfenquete2)
-
 #Calculer les R2
 rsqs(loglike.full = as.numeric(logLik(model2)), # loglikelihood du modèle complet
      loglike.null = as.numeric(logLik(model2.null)), # loglikelihood du modèle nul
@@ -710,36 +669,27 @@ La déviance expliquée par le modèle est de 8,8%, les pseudos R^2^ de McFadden
 Pour vérifier la qualité de prédiction du modèle, nous devons comparer les catégories prédites et les catégories réelles de notre variable dépendante et construire une matrice de confusion. Cependant, un modèle GLM binomiale prédit **la probabilité d’appartenance au groupe 1** (ici les personnes utilisant le vélo pour effectuer leur déplacement le plus fréquent). Pour convertir ces probabilités prédites en catégories prédites, il faut choisir une probabilité seuil au-delà de laquelle on considère que la valeur attendue est 1 (cycliste) plutôt que 0 (autre). Un exemple naïf serait de prendre le seuil 0,5, ce qui signifierait que si le modèle prédit qu’une observation a au moins 50% de chance d’être un cycliste, alors nous l’attribuons à cette catégorie. Cependant, cette méthode est rarement optimale; il est donc plus judicieux de le fixer en trouvant le point d’équilibre entre la sensibilité (proportion de 1 correctement identifiés) et la spécificité (proportion de 0 correctement identifiés). Ce point d’équilibre est identifiable graphiquement en calculant la spécificité et la sensibilité de la prédiction selon toutes les valeurs possibles du seuil.
 
 ```{r equlibresensispeci, message=FALSE, warning=FALSE, out.width='100%', fig.cap="Point d'équilibre entre sensibilité et spécificité", fig.align="center"}
-
 library(ROCR)
-
 #Obtention des prédictions du modèle
 prob <- predict(model2, type = "response")
-
 #calcul de la sensibilité et de la spécificité (package ROCR)
 predictions <- prediction(prob, dfenquete2$y)
-
 sens <- data.frame(x=unlist(performance(predictions, "sens")@x.values),
                    y=unlist(performance(predictions, "sens")@y.values))
 spec <- data.frame(x=unlist(performance(predictions, "spec")@x.values),
                    y=unlist(performance(predictions, "spec")@y.values))
-
 # trouver numériquement la valeur seuil (minimiser la différence absolue
 # entre sensibilité et spécificité)
 real <- dfenquete2$y
-
 find_cutoff <- function(seuil){
   pred <- ifelse(prob>seuil,1,0)
   sensi <- sum(real==1 & pred==1) / sum(real==1)
   spec <- sum(real==0 & pred==0) / sum(real==0)
   return(abs(sensi-spec))
 }
-
 prob_seuil <- optimize(find_cutoff,interval = c(0,1), maximum = F)$minimum
-
 cat("Le seuil de probabilité à retenir équilibrant",
   "la sensibilité et la spécificité est de",prob_seuil)
-
 # affichage du graphique
 ggplot() +
   geom_line(data = sens, mapping = aes(x = x, y = y)) +
@@ -749,19 +699,15 @@ ggplot() +
   geom_vline(xintercept = prob_seuil, color = "black", linetype = "dashed") + 
   annotate(geom = "text", x = prob_seuil, y = 0.01, label = round(prob_seuil,3))+
   theme(axis.title.y.right = element_text(colour = "red"), legend.position="none")
-
 ```
 
 On constate avec la figure \@ref(fig:equlibresensispeci) que si la valeur du seuil est 0 %, alors la prédiction a une sensibilité parfaite (le modèle prédit toujours 1, donc tous les 1 sont détectés); à l’inverse, si le seuil choisi est 100% alors la prédiction à une spécificité parfaite (le modèle prédit toujours 0, donc tous les 0 sont détectés). Dans notre cas, la valeur d’équilibre est d'environ 0,148, donc si le modèle prédit une probabilité au moins égale à 14,8% qu’un individu utilise le vélo pour son déplacement le plus fréquent, nous l’attribuerons à cette catégorie. Avec ce seuil, nous pouvons convertir les probabilités prédites en classes prédites et construire notre matrice de confusion.
 
 ```{r message=FALSE, warning=FALSE, out.width='60%'}
-
 library(caret) # pour la matrice de confusion
-
 #calcul des catégories prédites
 ypred <- ifelse(predict(model2,type="response")>0.148,1,0)
 info <- confusionMatrix(as.factor(dfenquete2$y), as.factor(ypred))
-
 # affichage des valeurs brutes de la matrice de confusion
 print(info)
 ```
@@ -776,7 +722,6 @@ cs <- colSums(mat)
 cp <- round(colSums(mat) / sum(mat) * 100,1)
 mat2 <- cbind(mat,rs,rp)
 mat3 <- rbind(mat2,c(cs,sum(mat),NA),c(cp,NA,NA))
-
 mat4 <- cbind(c("0 (prédit)", "1 (prédit)", "Total", "%"), mat3)
 show_table(mat4,
       col.names = c("","0 (réel)", "1 (réel)", "Total", "%"),
@@ -789,16 +734,13 @@ D’après ces indicateurs, nous constatons que le modèle a une capacité de pr
 precision <- diag(mat) / rowSums(mat)
 rappel <- diag(mat) / colSums(mat)
 F1 <- 2*((precision*rappel)/(precision + rappel))
-
 macro_scores <- c(weighted.mean(precision,colSums(mat)),
                   weighted.mean(rappel,colSums(mat)),
                   weighted.mean(F1,colSums(mat)))
-
 final_table <- rbind(cbind(precision,rappel,F1),c(NA,NA,NA,NA),macro_scores)
 final_table <- rbind(final_table, c(info[[3]][[2]],NA,NA), c(info[[3]][[6]],NA,NA))
 rnames <- c(rownames(mat),"","macro","Kappa","Valeur de p  (précision > NIR)")
 final_table <- cbind(rnames,round(final_table,2))
-
 show_table(final_table,
       col.names = c("","Précision", "Rappel", "F1"),
       caption = "Matrice de confusion pour le modèle binomial")
@@ -810,10 +752,8 @@ L'interprétation des résultats d'un modèle binomial passe par la lecture des 
 
 ```{r  message=FALSE, warning=FALSE}
 library(sandwich) #pour calculer les erreurs standards robustes
-
 covModel2 <- vcovHC(model2, type = "HC0") # méthode HC0, basée sur les résidus
 stdErrRobuste <- sqrt(diag(covModel2)) # extraire la diagonale
-
 #extraction des coefficients
 coeffs <- model2$coefficients
 #recalcul des scores Z
@@ -832,7 +772,6 @@ starsp <- case_when(pvalRobuste <=  0.001  ~ "***",
                     pvalRobuste >  0.05 & pvalRobuste <= 0.1 ~ ".",
                     TRUE ~ ""
                     )
-
 #compilation des résultats dans un tableau
 tableau_binom <- data.frame(
   coefficients = coeffs,
@@ -849,11 +788,9 @@ tableau_binom <- data.frame(
 Considérant que la variable *Pays* a 24 modalités, il est plus judicieux de présenter ces rapports de cote sous forme d’un graphique. Nous avons choisi l’Allemagne comme catégorie de référence puisqu’elle fait partie des pays avec une importante part modale pour le vélo sans constituer un cas extrême comme le Danemark.
 
 ```{r figpaysbinom, message=FALSE, warning=FALSE, fig.align="center", fig.cap= "Rapports de cote pour les différents pays de l'UE"}
-
 #isoler les ligne du tableau récapitualtif pour les pays
 paysdf <- subset(tableau_binom, grepl("Pays",row.names(tableau_binom), fixed = T))
 paysdf$Pays <- gsub("Pays","",row.names(paysdf),fixed=T)
-
 ggplot(data = paysdf) +
   geom_vline(xintercept = 1, color = "red")+ #afficher la valeur de référence
   geom_errorbarh(aes(xmin = rap.cote.2.5, xmax = rap.cote.97.5, 
@@ -870,11 +807,8 @@ Dans la figure \@ref(fig:figpaysbinom), la barre horizontale pour chaque pays re
 Pour le reste des coefficients et rapport de cote, nous les rapportons dans le tableau \@ref(tab:tablcoeffbinom)).
 
 ```{r tablcoeffbinom, echo=FALSE, fig.align="center",  warning=FALSE,  message=FALSE}
-
 tableau_comp <- build_table(model2, confid = T, sign = T, coef_digits = 3, std_digits = 3, z_digits = 3, p_digits = 3, OR_digits = 3, robust_se = "HC0")
-
 ok_tableau <- tableau_comp[c(1,29:54),c(1,2,3,4,5,6,9,10)]
-
 show_table(ok_tableau,
       col.names = c("Variable","Coefficient", "Rapport de cote", "Err.std","Val.z", "P","RC 2,5%", "RC 97,5%"),
       caption = "Résultats du modèle binomial")
@@ -888,11 +822,9 @@ Comparativement à ceux vivant dans une aire métropolitaine, les personnes viva
 * En métropole, le système de transport en commun est davantage développé et entre donc en concurrence avec les modes de transport actifs.
 
 ```{r figvillebinom, message=FALSE, warning=FALSE, fig.align="center", fig.cap= "Rapports de cote pour les différents lieux de résidence", out.width="85%"}
-
 #isoler les lignes du tableau récapitualtif pour les lieux de résidence
 residdf <- subset(tableau_binom, grepl("Residence",row.names(tableau_binom), fixed = T))
 residdf$resid <- gsub("Residence","",row.names(residdf),fixed=T)
-
 ggplot(data = residdf) +
   geom_vline(xintercept = 1, color = "red")+ #afficher la valeur de référence
   geom_errorbarh(aes(xmin = rap.cote.2.5, xmax = rap.cote.97.5, y = resid), height = 0)+
@@ -923,7 +855,6 @@ Il y aurait donc 19,4% de chances pour que cette personne soit un cycliste. Cett
 Soit une réduction de 2 points de pourcentages. Il est également possible de représenter cette évolution sur un graphique pour montrer l’effet sur l’étendue des valeurs possibles. Sur ces graphiques des effets marginaux, il est essentiel de représenter notre incertitude quant à notre prédiction. En temps normal, la fonction `predict` calcule directement l'erreur standard de la prédiction et cette dernière peut être utilisée pour calculer l'intervalle de confiance de la prédiction. Cependant, nous voulons ici utiliser nos erreurs standards robustes. Nous devons donc procéder par simulation pour déterminer l'intervalle de confiance à 95% de nos prédictions. Cette opération nécessite de réaliser plusieurs opérations manuellement dans R.
 
 ```{r figagebinom, message=FALSE, warning=FALSE, fig.align="center", fig.cap= "Impact de l'âge sur la probabilité d'utiliser le vélo comme moyen de déplacement pour son trajet le plus fréquent", out.width="85%"}
-
 # créer un jeu de données fictif pour la prédiction
 mat <- model.matrix(model2$terms, model2$model)
 age2seq <- seq(20,80)
@@ -939,14 +870,11 @@ mat2[,"Educationsecondaire"] <- 1
 mat2[,"Sexehomme"] <- 1
 mat2[,"Revenumoyen"] <- 1
 mat2[,"Revenufaible"] <- 0
-
 # Calculer la prédiction comme un log de rapport de cote (avec les erreurs standards)
 # en multipliant les coefficient par les valeurs des données fictives
 coeffs <- model2$coefficients
 pred <- coeffs %*% t(mat2)
-
 # Simulation de prédictions (toujours en log de rapport de cote)
-
 # Étape 1 : simuler 1000 valeurs pour chaque coefficient
 sim_coeffs <- lapply(1:length(coeffs), function(i){
   coef <- coeffs[[i]]
@@ -955,21 +883,17 @@ sim_coeffs <- lapply(1:length(coeffs), function(i){
   return(vals)
 })
 mat_sim_coeffs <- do.call(rbind,sim_coeffs)
-
 # Étape 2 : effectuer les prédictions à partir des coefficients simulés
 sim_preds <- lapply(1:ncol(mat_sim_coeffs),function(i){
   temp_coefs <- mat_sim_coeffs[,i]
   temp_pred <- as.vector(temp_coefs %*% t(mat2))
   return(temp_pred)
 })
-
 mat_sim_preds <- do.call(cbind,sim_preds)
-
 # Étape 3 : extraire les intervalles de confiances pour les simulations
 intervals <- apply(mat_sim_preds,MARGIN = 1, FUN = function(vec){
   return(quantile(vec,probs = c(0.05, 0.95)))
 })
-
 # Étape 4 : récupérer tous ces éléments dans un dataframe
 df <- data.frame(
   Age = seq(20,80),
@@ -977,15 +901,12 @@ df <- data.frame(
   lower = as.vector(intervals[1,]),
   upper = as.vector(intervals[2,])
 )
-
 # Étape 5 : appliquer l'inverse de la fonction de lien pour
 # obtenir les prédictions en termes de probabilité
 ilink <- family(model2)$linkinv
-
 df$prob_pred <- ilink(df$pred)
 df$prob_lower <- ilink(df$lower)
 df$prob_upper <- ilink(df$upper)
-
 # Étape 6 : représenter le tout sur un graphique
 ggplot(df) + 
   geom_ribbon(aes(x = Age, ymax = prob_upper, ymin = prob_lower), 
@@ -993,7 +914,6 @@ ggplot(df) +
   geom_path(aes(x = Age, y = prob_pred), color = "blue", size = 1) +
   geom_hline(yintercept = 0.15, linetype = "dashed", size = 0.7) + 
   labs(x = "Âge", y = "Probabilité prédite (intervale de confiance 5% - 95%)")
-
 ```
 
 La figure \@ref(fig:figagebinom) permet de bien constater la diminution de la probabilité d’utiliser le vélo pour son trajet le plus fréquent avec l’âge, mais cette réduction est relativement ténue. Dans le cas utilisé en exemple, l’individu ne serait plus classé cycliste qu’après 67 ans.
@@ -1003,14 +923,11 @@ La figure \@ref(fig:figagebinom) permet de bien constater la diminution de la pr
 Le modèle GLM probit binomial est pour ainsi dire le frère du modèle logistique binomial. La seule différence entre les deux réside dans l'utilisation de deux fonctions de lien différentes probit et logistique. La fonction de lien probit (Φ) correspond à la fonction cumulative de la distribution normale et a également une forme de *S*. Cette version du modèle est plus souvent utilisée par les économistes. Le principal changement réside dans l’interprétation des coefficients $\beta_0$ et $\beta$. Du fait de la transformation probit, ces derniers indiquent le changement en termes de scores Z de la probabilité modélisée. Vous conviendrez qu’il ne s’agit pas d’une échelle très intuitive, la plupart du temps, seuls la significativité et le signe (positif ou négatif) des coefficients sont interprétés.
 
 ```{r probitdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p) = \\beta_0 + \\beta X$ \\newline $g(x) = \\Phi^-1(x)$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable binaire (0 ou 1) ou comptage de réussite à une expérience (ex : 3 réussites sur 5 expériences)", "Binomiale", model_formula , "probit", "p", "$\\beta_0$, $\\beta$", "Non-séparation complète, Absence de surdispersion ou sousdispersion")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle probit binomial",
     col.names = NULL, 
@@ -1024,14 +941,11 @@ show_table(tableau,
 Le modèle logistique des cotes proportionnelles (aussi appelé modèle logistique cumulatif) est utilisé pour modéliser une variable qualitative ordinale. Un exemple classique de ce type de variable est une échelle de satisfaction (très insatisfait, insatisfait, mitigé, satisfait, très satisfait) qui peut être recodée avec des valeurs numériques (0, 1, 2, 3, 4; ces échelons étant notés *j*). Il n’existe pas à proprement parler de distribution pour représenter ces données, mais avec une petite astuce, il est possible de simplement utiliser la distribution binomiale. Cette astuce consiste à poser l’hypothèse de la proportionnalité des cotes, supposant que le passage de la catégorie 0 à la catégorie 1 est proportionnel au passage de la catégorie 1 à la catégorie 2 et ainsi de suite. Si cette hypothèse est respectée, alors les coefficients du modèle pourront autant décrire le passage de la catégorie *satisfait* à celle *très satisfait* que le passage de *insatisfait* à *mitigé*. Si cette hypothèse n’est pas respectée, il faudrait des coefficients différents pour représenter les passages d’une catégorie à l’autre (ce qui est le cas pour le modèle multinomial présenté juste après).
 
 ```{r cumuldentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p \\leq j) = \\beta_0j + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable qualitative ordinale avec *j* catégories", "Binomiale", model_formula , "logistique", "p", "$\\beta$ et *j*-1 constantes $\\beta_0$", "Non-séparation complète, Absence de surdispersion ou sous-dispersion, Proportionnalité des cotes")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle logistique des cotes proportionnelles",
     col.names = NULL, 
@@ -1063,10 +977,8 @@ Pour cet exemple, nous allons analyser un jeu de données proposé par *Inside A
 La distribution originale du prix des logements dans notre jeu de données est présentée à la figure \@ref(fig:histopriceairbnb).
 
 ```{r histopriceairbnb, message=FALSE, warning=FALSE, fig.align="center", fig.cap= "Distribution des prix des logements Airbnb", out.width="65%"}
-
 # Charger le jeu de données
 data_airbnb <- read.csv("data/glm/airbnb_data.csv")
-
 # Afficher la distribution du prix
 ggplot(data = data_airbnb) + 
   geom_histogram(aes(x = price), bins = 30, 
@@ -1095,14 +1007,12 @@ df <- data.frame(
   C3 = c("Variable de comptage", "Variable binaire", "Variable binaire", "Variable binaire", "Variable binaire", "Variable continue", "Variable binaire", "Variable continue", "Variable ordinale", "Variable de comptage"),
   C4 = c("Nombre de lits dans le logement", "Oui ou Non", "Privé ou partagé", "Oui ou Non", "Oui ou Non", "Pourcentage de surface végétale dans un rayon de 500m autour du logement", "Présence d’une station de métro dans un rayon de 500 mètres autour du logement", "Pourcentage de surface dédiée au commerce (mode d’occupation du sol) dans un rayon d'un kilomètre autour du logement", "Note obtenu par le logement sur une échelle allant de 1 (très mauvais) à 5 (parfait)", "Nombre total de logements détenus par l’hôte sur Airbnb")
 )
-
 show_table(df, 
     caption = "Variables indépendantes utilisées pour prédire la catégorie de prix de logements Airbnb",
     col.names = c("Nom de la variable","Description","Type de variable","Mesure"), 
     col.to.resize = c(2,4),
     col.width = "5cm"
 )
-
 ```
 
 **Vérification des conditions d'application**
@@ -1122,7 +1032,6 @@ Toutes les valeurs de VIF sont inférieures à 2, indiquant une absence de multi
 
 ```{r message=FALSE, warning=FALSE}
 library(VGAM)
-
 modele <- vglm(fac_price_cat ~ beds +
                 Garden_or_backyard + Free_street_parking + 
                 prt_veg_500m + has_metro_500m + commercial_1km +
@@ -1136,39 +1045,32 @@ modele <- vglm(fac_price_cat ~ beds +
 Notez que puisque la variable *Y* a trois catégories différentes et que nous modélisons la probabilité de passer à une catégorie supérieure, chaque observation a alors deux (3-1) valeurs de résidus différentes. Par conséquent, nous calculons deux distances de Cook différentes que nous devons analyser conjointement. Malheureusement, la fonction `cook.distance` ne fonctionne pas avec les objets `vglm`, nous devons donc les calculer manuellement.
 
 ```{r message=FALSE, warning=FALSE, fig.align="center", fig.cap = "Distances de Cook pour le modèle logistique des cotes proportionnelles", out.width = "80%"}
-
 # Extraction des résidus
 res <- residuals(modele, type = "pearson")
 # Extraction de la hat matrix (nécessaire pour calculer la distance de Cook)
 hat <- hatvaluesvlm(modele)
-
 # Calcul des distances de Cook
 cooks <- lapply(1:ncol(res),function(i){
   r <- res[,i]
   h <- hat[,i]
   cook <- (r/(1 - h))^2 * h/(1 * modele@rank)
 })
-
 # Structuration dans un dataframe
 matcook <- data.frame(do.call(cbind, cooks))
 names(matcook) <- c("dist1","dist2")
 matcook$oid <- 1:nrow(matcook)
-
 # Afficher les distances de Cook
 plot1 <- ggplot(data = matcook) + 
   geom_point(aes(x = oid, y = dist1), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
   labs(x = "", y = "", subtitle = "distance de Cook P(Y>=2)")+
   theme(axis.ticks.x = element_blank(),
         axis.text.x = element_blank())
-
 plot2 <- ggplot(data = matcook) + 
   geom_point(aes(x = oid, y = dist2), size = 0.2, color = rgb(0.1,0.1,0.1,0.4)) + 
   labs(x = "", y = "", subtitle = "distance de Cook P(Y>=3)")+
   theme(axis.ticks.x = element_blank(),
         axis.text.x = element_blank())
-
 ggarrange(plot1, plot2, ncol = 2, nrow = 1)
-
 ```
 
 Les distances de Cook nous permettent d'identifier quelques observations potentiellement trop influentes, mais elles semblent être différentes d'un graphique à l'autre. Nous décidons donc de ne pas retirer d'observations à ce stade et de passer à l'analyse des résidus simulés. Pour effectuer des simulations à partir de ce modèle, nous nous basons sur les probabilités d'appartenance prédites par le modèle.
@@ -1184,17 +1086,14 @@ On constate ainsi que pour la première observation, la probabilité prédite d'
 ```{r message=FALSE, warning=FALSE}
 # Nous effectuerons 1000 simulations
 nsim <- 1000
-
 # Lancement des simulations pour chaque observation (lignes dans predicted)
 simulations <- lapply(1:nrow(predicted), function(i){
   probs <- predicted[i,]
   sims <- sample(c(1,2,3), size = nsim, replace = T, prob = probs)
   return(sims)
 })
-
 # Combiner les prédictions dans un tableau
 matsim <- do.call(rbind, simulations)
-
 # Observons si nos simulations sont proches de ce que nous attendions
 table(matsim[1,])
 ```
@@ -1202,16 +1101,13 @@ table(matsim[1,])
 À partir de ces simulations de prédiction, nous pouvons réaliser un diagnostic des résidus simulés grâce au *package* **DHARMa**.
 
 ```{r diagressimcumul, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle des cotes proportionnelles", out.width="65%", fig.align = "center"}
-
 # Extraction de la prédiction moyenne du modèle
 pred_cat <- unique(data_airbnb$fac_price_cat)[max.col(predicted)]
-
 # Préparer les données avec le package DHARMa
 sim_res <- createDHARMa(simulatedResponse = matsim, 
                             observedResponse = as.numeric(data_airbnb$fac_price_cat),
                             fittedPredictedResponse = as.numeric(pred_cat),
                             integerResponse = T)
-
 # Afficher le graphique de diagnostic général
 plot(sim_res)
 ```
@@ -1219,14 +1115,12 @@ plot(sim_res)
 La figure \@ref(fig:diagressimcumul) nous indique que les résidus simulés suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable. Pour affiner notre diagnostic, nous vérifions également si aucune relation ne semble exister entre chaque variable indépendante et les résidus. 
 
 ```{r diagressimcumul2, message=FALSE, warning=FALSE, fig.cap = "Diagnostic variable par variable des résidus simulés du modèle des cotes proportionnelles", out.width="95%", fig.align = "center"}
-
 # préparons un plot multiple
 par(mfrow=c(3,4))
 vars <- c("beds","Garden_or_backyard", "Host_greets_you",
           "Free_street_parking", "prt_veg_500m", 
           "has_metro_500m", "commercial_1km","private",
           "cat_review","host_total_listings_count")
-
 for(v in  vars){
   plotResiduals(sim_res, data_airbnb[[v]], main = v)
 }
@@ -1235,9 +1129,7 @@ for(v in  vars){
 La figure \@ref(fig:diagressimcumul2) indique qu'aucune relation marquée n'existe entre nos variables indépendante et nos résidus simulés, sauf pour la variable nombre de lits. En effet, nous pouvons constater que les résidus ont tendance à être toujours plus faible quand le nombre de lit augmente. Cet effet est sûrement lié au fait qu'au-delà de cinq lits, le logement en question est vraisemblablement un dortoir. Il pourrait être judicieux de retirer ces observations de l'analyse, considérant qu'elles sont peu nombreuses et constituent une forme de logement particulière.
 
 ```{r message=FALSE, warning=FALSE}
-
 data_airbnb2 <- subset(data_airbnb, data_airbnb$beds <=5)
-
 modele2 <- vglm(fac_price_cat ~ beds  + 
                 Garden_or_backyard + Free_street_parking + 
                 prt_veg_500m + has_metro_500m + commercial_1km +
@@ -1254,32 +1146,26 @@ Nous pouvons ensuite recalculer les résidus simulés pour observer si cette ten
 # Nous effectuerons 1000 simulations
 nsim <- 1000
 predicted <- predict(modele2, type = "response")
-
 # Lancement des simulations pour chaque observation (lignes dans predicted)
 simulations <- lapply(1:nrow(predicted), function(i){
   probs <- predicted[i,]
   sims <- sample(c(1,2,3), size = nsim, replace = T, prob = probs)
   return(sims)
 })
-
 # Combiner les prédictions dans un tableau
 matsim <- do.call(rbind, simulations)
-
 # Extraction de la prédiction moyenne du modèle
 pred_cat <- unique(data_airbnb2$fac_price_cat)[max.col(predicted)]
-
 # Préparer les donnees avec le package DHARMa
 sim_res <- createDHARMa(simulatedResponse = matsim, 
                             observedResponse = as.numeric(data_airbnb2$fac_price_cat),
                             fittedPredictedResponse = as.numeric(pred_cat),
                             integerResponse = T)
-
 par(mfrow=c(3,4))
 vars <- c("beds","Garden_or_backyard", "Host_greets_you",
           "Free_street_parking", "prt_veg_500m", 
           "has_metro_500m", "commercial_1km","private",
           "cat_review","host_total_listings_count")
-
 for(v in  vars){
   plotResiduals(sim_res, data_airbnb2[[v]], main = v)
 }
@@ -1328,13 +1214,11 @@ modele3 <- vglm(fac_price_cat ~ beds +
 Maintenant que toutes les conditions d'application ont été passée en revue, nous pouvons passer à la vérification de l'ajustement du modèle
 
 ```{r message=FALSE, warning=FALSE}
-
 modelenull <- vglm(fac_price_cat ~ 1,
                 family = cumulative(link="logitlink",
                                     parallel = TRUE,
                                     reverse = TRUE),
                 data = data_airbnb2, model = T)
-
 rsqs(loglike.full = logLik(modele3),
      loglike.null = logLik(modelenull),
      full.deviance = deviance(modele3),
@@ -1347,19 +1231,14 @@ rsqs(loglike.full = logLik(modele3),
 Le modèle final parvient à expliquer 21% de la déviance originale, il obtient un R^2^ ajusté de McFadden de 0,21, et des R^2^ de Cox et Snell et Nagelkerke de respetivement 0,36 et 0,41. Construisons à présent la matrice de confusion de la prédiction du modèle (nous utilisons ici la fonction `nice_confusion_matrix` également disponible dans le code source de ce livre).
 
 ```{r message=FALSE, warning=FALSE}
-
 preds_probs <- fitted(modele3)
 pred_cat <- c(1,2,3)[max.col(preds_probs)]
-
 library(caret)
 matrices <- nice_confusion_matrix(data_airbnb2$fac_price_cat,pred_cat)
-
 # Afficher la matrice de confusion
 print(matrices$confusion_matrix)
-
 # Afficher les indicateurs de qualité de prédiction
 print(matrices$indicators)
-
 ```
 Le modèle a une précision totale de 61% (61% des observations ont été correctement prédites). La catégorie 1 a de loin la meilleure précision (72%) et la 3 a la pire (48%), ce qui indique qu’il manque vraisemblablement des variables indépendantes contribuant à prédire les prix des logements les plus chers. Le coefficient de Kappa indique un niveau d’accord entre modéré et faible, mais le modèle parvient à une prédiction significativement supérieure au seuil de non-information. Si l'ajustement du modèle est imparfait, il est suffisamment fiable pour nous donner des renseignements pertinents sur le phénomène étudié.
 
@@ -1380,14 +1259,11 @@ Pour faciliter la lecture des résultats, nous proposons le tableau \@ref(tab:Ta
 
 ```{r TabFinalOrdinale, message=FALSE, warning=FALSE, echo=FALSE}
 tableau <- build_table(modele3, confid = T, sign = T, coef_digits = 2, std_digits = 3, z_digits = 2, p_digits = 3, OR_digits = 2)
-
 tab <- tableau[,c(1,2,3,6,9,10,11)]
-
 show_table(tab,
            col.names = c("Variable", "Coefficient", "RC", "P", "RC 2,5%", "RC 97,5%", "sign."),
            caption = "Coefficients du modèle logistique des cotes proportionnelles",
            )
-
 ```
 
 Sans surprise, chaque lit supplémentaire contribue à augmenter les chances que le logement soit dans une catégorie de prix supérieure (multiplication par deux à chaque lit supplémentaire). En revanche, la présence d’un stationnement gratuit, d'un jardin et l’accueil en personne par l’hôte n’ont pas d’impacts significatifs. Comme l'indiquaient les articles mentionnés en début de section, les revues positives augmentent la probabilité d'appartenir à une catégorie supérieure de prix. Pour chaque point supplémentaire sur l'échelle de 1 à 5 augmente la probabilité d'appartenir à une catégorie de prix supérieure de 22,2$. Il est intéressant de noter que le fait de disposer du logement entier plutôt que d'une simple chambre augmente davantage les chances de passer du groupe de prix 1 à 2 (multiplication par 2,45) que du groupe 2 à 3 (multiplication par 1,58). Il semblerait également que si l’hôte possède plusieurs logements, la probabilité d’avoir une classe de prix supérieure diminue légèrement. Cependant l’effet est trop petit pour pouvoir se livrer à des interprétations.
@@ -1395,7 +1271,6 @@ Sans surprise, chaque lit supplémentaire contribue à augmenter les chances que
 Les variables environnementales ont peu d’impact : le pourcentage de surface commerciale dans un rayon d’un kilomètre et la présence d’une station de métro ne sont pas significatifs. En revanche, une augmentation de la surface végétale dans un rayon de 500 mètres tend à réduire la probabilité d’appartenir à une classe supérieure. Notre hypothèse concernant ce résultat est que cette variable représente un effet associé à la position des Airbnb, les plus centraux ayant tendance à être plus chers, mais avec un environnement moins vert et inversement. Pour l’illustrer, prédisons les probabilités d’appartenance aux différents niveaux de prix d’un logement avec les caractéristiques suivantes : entièrement privé, 2 lits, un jardin, une place de stationnement gratuite, l’hôte ne dispose que d’un logement sur Airbnb et accueille les arrivants en personne, 10% de surface commerciale dans un rayon d'un kilomètre, noté 2 comme catégorie de revue, absence de métro dans un rayon de 500 mètres.
 
 ```{r predpricecatveg, message=FALSE, warning=FALSE, out.width = "90%", fig.align = "center", fig.cap = "Prédiction de la probabilité d'appartenance aux trois catégories de prix en fonction de la densité de végétation"}
-
 # Créer un jeu de données pour effectuer des prédictions
 df <- data.frame(
   prt_veg_500m = seq(5,90),
@@ -1409,28 +1284,21 @@ df <- data.frame(
   cat_review = 2,
   host_total_listings_count = 1
 )
-
 # Effectuer les prédictions (dans l'échelle log)
 preds <- predict(modele3, newdata = df, type = "link", se.fit=T)
-
 # Définir l'inverse de la fonction de lien
 ilink <- function(x){exp(x)/(1+exp(x))}
-
 # Calculer les probabilités et leurs intervalles de confiance
 df[["P[Y>=2]"]] <- ilink(preds$fitted.values[,1])
 df[["P[Y>=2] 2,5"]] <- ilink(preds$fitted.values[,1] - 1.96 * preds$se.fit[,1])
 df[["P[Y>=2] 97,5"]] <- ilink(preds$fitted.values[,1] + 1.96 * preds$se.fit[,1])
-
 df[["P[Y>=3]"]] <- ilink(preds$fitted.values[,2])
 df[["P[Y>=3] 2,5"]] <- ilink(preds$fitted.values[,2] - 1.96 * preds$se.fit[,2])
 df[["P[Y>=3] 97,5"]] <- ilink(preds$fitted.values[,2] + 1.96 * preds$se.fit[,2])
-
 df[["P[Y=1]"]] = 1-df[["P[Y>=2]"]]
 df[["P[Y=1] 2,5" ]] = 1-df[["P[Y>=2] 2,5"]]
 df[["P[Y=1] 97,5"]] = 1-df[["P[Y>=2] 97,5"]]
-
 # Afficher les résultats
-
 ggplot(data = df) + 
   geom_ribbon(aes(x = prt_veg_500m, 
                          ymin = `P[Y>=2] 2,5`,
@@ -1453,7 +1321,6 @@ ggplot(data = df) +
        y = "Probabilité",
        subtitle = "Y1 : moins de 50$; Y2 : 50 à 99$; Y3 : 100 à 249$")
   
-
 ```
 
 On constate sur la figure \@ref(fig:predpricecatveg) que les probabilités d’appartenir aux niveaux 2 et 3 diminuent à mesure qu’augmente le pourcentage de végétation. La probabilité d’appartenir à la classe 2 et plus (en rouge), passe de plus de 95% en cas d’absence de végétation, à environ 75% avec 80% de végétation dans un rayon de 500m. Comme vous pouvez le constater, la probabilité $P[Y=1]$ est la symétrie de $P[Y>=2]$ puisque $P[Y=1]$ + $P[Y>=2]$ = 1.
@@ -1466,14 +1333,11 @@ L’idée derrière un modèle multinomial est de choisir une catégorie de réf
 Considérant cette tendance à la multiplication des coefficients, il est fréquent de recourir à une méthode appelée *Analyse de type 3* pour limiter au maximum le nombre de variables indépendantes (VI) dans le modèle. L'idée de cette méthode est de recalculer plusieurs versions du modèle dans lesquelles une variable indépendante est retirée, puis de réaliser un test de rapport de vraisemblance en comparant ce nouveau modèle (complet moins une VI) au modèle complet (toutes les VI) pour vérifier si la variable en question améliore significativement le modèle. Il est alors possible de retirer toutes les variables dont l'apport est négligeable si elles étaient également peu intéressantes du point de vue théorique.
 
 ```{r multinomdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p = k\\text{ avec }ref = a) = \\beta_{0k} + \\beta X_{k}$ \\newline $g(x) = \\frac{log(x)}{1-x}$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable qualitative multinomiale avec *K* catégories", "Binomiale", model_formula , "logistique", "p", "$\\beta_{0k}$, $\\beta$k pour $k \\in [2,...,K]$", "Non-séparation complète, Absence de surdispersion ou sousdispersion, ’Indépendance des alternatives non pertinentes")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle probit binomial",
     col.names = NULL, 
@@ -1534,14 +1398,12 @@ df <- data.frame(
   C3 = c("Variable ordinale", "Variable ordinale", "Variable ordinale", "Variable ordinale", "Variable ordinale", "Variable multinomiale", "Variable binaire", "Variable continue", "Variable ordinale"),
   C4 = c("Échelle de Likert  de 1 (fortement en désaccord) à 5 (fortement en accord)", "Échelle de Likert  de 1 (fortement en désaccord) à 5 (fortement en accord)", "Nombre de réponses juste sur trois questions portant sur les OGM", "Nombre de réponses juste sur trois questions portant sur le réchauffement climatique", "Nombre de réponses juste sur trois questions pièges", "Républicain, Démocrate et autre", "Femme ou Homme", "Âge du répondant", "Échelle de 1 (moins de 20 000$) à 8 (140 000$ et plus)")
 )
-
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle logistique multinomial",
     col.names = c("Nom de la variable","signification","Type de variable","Mesure"), 
     col.to.resize = c(2,4),
     col.width = "5cm"
 )
-
 ```
 
 **Vérification des conditions d'application**
@@ -1550,11 +1412,9 @@ Avant d'ajuster le modèle, nous commençons par vérifier l'absence de multicol
 
 ```{r vifmultinom, message=FALSE, warning=FALSE}
 data_quest <- read.csv("data/glm/enquete_PublicOpinion_vs_Science.csv")
-
 # choix des valeurs de références dans les facteurs
 data_quest$Parti <- relevel(as.factor(data_quest$Parti), ref = "Democrate")
 data_quest$Sexe <- relevel(as.factor(data_quest$Sexe), ref = "homme")
-
 vif(glm(SCIGM ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
           CRT + Parti + AGE + Sexe + Revenu, data = data_quest))
 ```
@@ -1568,16 +1428,12 @@ modele <- vglm(Y ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
                  CRT + Parti + AGE + Sexe + Revenu,
                data = data_quest, 
                family = multinomial(refLevel="A"), model = T)
-
 # calcul du Chi2 de Pearson
 pred <- predict(modele, type= "response")
 cat_predict <- colnames(pred)[max.col(pred)]
-
 freq_real <- table(data_quest$Y)
 freq_pred <- table(cat_predict)
-
 chi2 <- sum(((freq_real - freq_pred)**2) / freq_pred)
-
 N <- nrow(data_quest)
 p <- modele@rank
 r <- length(freq_real)
@@ -1588,15 +1444,12 @@ print(ratio)
 La troisième étape de la vérification des conditions d'application est l'analyse des distances de Cook. À nouveau, puisque le modèle évalue la probabilité d'appartenir à *K*-1 catégorie, nous pouvons calculer *K*-1 résidus par observation et par extension *K*-1 distances de Cook. Aucune observation ne semble se détacher nettement dans la figure \@ref(fig:cookmultinom). Nous décidons donc pour le moment de conserver toutes les observations.
 
 ```{r cookmultinom, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle logistique multinomial", fig.align = "center", out.width = "95%"}
-
 # Extraction des résidus
 res <- residuals(modele, type = "pearson")
 # Extraction de la hat matrix (nécessaire pour calculer la distance de Cook)
 hat <- hatvaluesvlm(modele)
-
 # Calcul des distances de Cook
 vals <- c("A","B","C","D")
-
 cooks <- lapply(1:ncol(res),function(i){
   r <- res[,i]
   h <- hat[,i]
@@ -1612,9 +1465,7 @@ cooks <- lapply(1:ncol(res),function(i){
           axis.text.x = element_blank())
   return(plot)
 })
-
 ggarrange(plotlist = cooks, ncol = 2, nrow = 2)
-
 ```
 
 Avant de passer à l'analyse de résidus simulés, il est pertinent de réaliser une analyse de type 3 afin de retirer les variables indépendantes dont l'apport au modèle est négligeable. La fonction `AnalyseType3` (disponible dans le code source de ce livre) permet d'effectuer cette opération automatiquement pour un objet de type `vglm`.
@@ -1636,14 +1487,11 @@ Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème
 
 La figure \@ref(fig:residusmultinom) indique que les résidus suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
 ```{r residusmultinom, fig.align="center", fig.cap="Diagnostic général des résidus simulés pour le modèle multinomial", message=FALSE, warning=FALSE, out.width="85%"}
-
 # extraire les prédictions du modèle
 categories <- c("B","C","D")
 predicted <- predict(modele2, type = "link")
-
 nsim <- 1000
 ilink <- function(x){exp(x)/(1+exp(x))}
-
 # boucler sur chacune des catégories en dehors de la référence
 data_sims <- lapply(1:ncol(predicted),function(i){
   categorie <- categories[[i]]
@@ -1660,12 +1508,10 @@ data_sims <- lapply(1:ncol(predicted),function(i){
   sub_data <- subset(data_quest,test)
   return(list("real" = real, "probs" = all_probs, "data" = sub_data))
 })
-
 # extraire les probabilités prédites
 all_probs <- do.call(rbind, lapply(data_sims, function(i){i$probs}))
 # extraire les vrais catégories
 all_real <- unlist(lapply(data_sims, function(i){i$real}))
-
 # effectuer les simulations
 simulations <- lapply(1:nrow(all_probs), function(i){
   probs <- all_probs[i,]
@@ -1673,13 +1519,11 @@ simulations <- lapply(1:nrow(all_probs), function(i){
   return(sims)
 })
 matsim <- do.call(rbind, simulations)
-
 # calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = matsim, 
                             observedResponse = all_real,
                             fittedPredictedResponse = all_probs[,2],
                             integerResponse = T)
-
 # afficher les résultats
 plot(sim_res)
 ```
@@ -1724,21 +1568,15 @@ plot(sim_res)
 La figure \@ref(fig:residusmultinom2) permet d'affiner le diagnostic en s'assurant de l'absence de relation entre les variables indépendantes et les résidus. Il est possible de remarquer des irrégularités pour les variables de perceptions (premier et second panneaux). Dans les deux cas, la catégorie 1 (fort désaccord) se démarque nettement des autres catégories. Nous proposons donc de les recoder comme des variables binaires : en désaccord / pas en désaccord pour minimiser cet effet.
 
 ```{r residusmultinom2, message=FALSE, warning=FALSE, fig.cap = "Diagnostic par variable des résidus simulés pour le modèle multinomial", fig.align = "center", out.width = "95%"}
-
 # recomposer les donnees pour coller au format
 # etendu de la prediction
-
 etend_data <- do.call(rbind, lapply(data_sims, function(i){i$data}))
-
-
 par(mfrow=c(3,3))
 vars <- c("PercepOGM", "PercepRechClim", "ConnaisOGM", 
           "ConnaisRechClim", "CRT", "Parti", "Sexe")
-
 for(v in  vars){
   plotResiduals(sim_res, etend_data[[v]], main = v)
 }
-
 ```
 
 Nous réajustons donc le modèle et recalculons nos résidus ajustés (masqué ici pour alléger le document). La figure \@ref(fig:residusmultinom3) nous confirme que le problème a été corrigé.
@@ -1747,7 +1585,6 @@ Nous réajustons donc le modèle et recalculons nos résidus ajustés (masqué i
 # Convertir les variables ordinales et variables binaires
 data_quest$PercepOGMDes <- ifelse(data_quest$PercepOGM %in% c(1,2), 1,0)
 data_quest$PercepRechClimDes <- ifelse(data_quest$PercepRechClim %in% c(1,2), 1,0)
-
 # Réajuster le modèle
 modele3 <- vglm(Y ~ PercepOGMDes + PercepRechClimDes + 
                   ConnaisOGM + ConnaisRechClim + 
@@ -1758,14 +1595,11 @@ modele3 <- vglm(Y ~ PercepOGMDes + PercepRechClimDes +
 
 
 ```{r residusmultinom3, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés pour le modèle multinomial (version 3)", fig.align = "center", out.width = "75%", echo = FALSE}
-
 # extraire les prédictions du modèle
 categories <- c("B","C","D")
 predicted <- predict(modele3, type = "link")
-
 nsim <- 1000
 ilink <- function(x){exp(x)/(1+exp(x))}
-
 # boucler sur chacune des catégories en dehors de la référence
 data_sims <- lapply(1:ncol(predicted),function(i){
   categorie <- categories[[i]]
@@ -1782,12 +1616,10 @@ data_sims <- lapply(1:ncol(predicted),function(i){
   sub_data <- subset(data_quest,test)
   return(list("real" = real, "probs" = all_probs, "data" = sub_data))
 })
-
 # extraire les probabilités prédites
 all_probs <- do.call(rbind, lapply(data_sims, function(i){i$probs}))
 # extraire les vrais catégories
 all_real <- do.call(c, lapply(data_sims, function(i){i$real}))
-
 # effectuer les simulations
 simulations <- lapply(1:nrow(all_probs), function(i){
   probs <- all_probs[i,]
@@ -1795,23 +1627,18 @@ simulations <- lapply(1:nrow(all_probs), function(i){
   return(sims)
 })
 matsim <- do.call(rbind, simulations)
-
 # calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = matsim, 
                             observedResponse = all_real,
                             fittedPredictedResponse = all_probs[,2],
                             integerResponse = T)
-
 etend_data <- do.call(rbind, lapply(data_sims, function(i){i$data}))
-
 par(mfrow=c(3,3))
 vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
           "ConnaisRechClim", "CRT", "Parti", "Sexe")
-
 for(v in  vars){
   plotResiduals(sim_res, etend_data[[v]], main = v)
 }
-
 ```
 
 ```{r eval=FALSE, include=FALSE}
@@ -1885,10 +1712,8 @@ Nous n'avons donc plus de séparation complète, et les résidus simulés de la 
 # extraire les prédictions du modèle
 categories <- c("B","C","D")
 predicted <- predict(modele4, type = "link")
-
 nsim <- 1000
 ilink <- function(x){exp(x)/(1+exp(x))}
-
 # boucler sur chacune des catégories en dehors de la référence
 data_sims <- lapply(1:ncol(predicted),function(i){
   categorie <- categories[[i]]
@@ -1905,12 +1730,10 @@ data_sims <- lapply(1:ncol(predicted),function(i){
   sub_data <- subset(data_quest,test)
   return(list("real" = real, "probs" = all_probs, "data" = sub_data))
 })
-
 # extraire les probabilités prédites
 all_probs <- do.call(rbind, lapply(data_sims, function(i){i$probs}))
 # extraire les vrais catégories
 all_real <- do.call(c, lapply(data_sims, function(i){i$real}))
-
 # effectuer les simulations
 simulations <- lapply(1:nrow(all_probs), function(i){
   probs <- all_probs[i,]
@@ -1918,13 +1741,11 @@ simulations <- lapply(1:nrow(all_probs), function(i){
   return(sims)
 })
 matsim <- do.call(rbind, simulations)
-
 # calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = matsim, 
                             observedResponse = all_real,
                             fittedPredictedResponse = all_probs[,2],
                             integerResponse = T)
-
 plot(sim_res)
 ```
 
@@ -1982,7 +1803,6 @@ modelenull <- vglm(Y ~ 1 ,
                    family = multinomial(refLevel="A",
                                         parallel = TRUE ~ 1 + CRT)
                    , model = T)
-
 rsqs(loglike.full = logLik(modele4),
      loglike.null = logLik(modelenull),
      full.deviance = deviance(modele4),
@@ -1997,14 +1817,10 @@ Le modèle parvient à expliquer 17,5% de la déviance totale, il obtient un R^2
 ```{r message=FALSE, warning=FALSE}
 preds <- predict(modele4, type = "response")
 pred_cats <- colnames(preds)[max.col(preds)]
-
 real <- data_quest$Y
-
 matrices <- nice_confusion_matrix(real, pred_cats)
-
 # Afficher la matrice de confusion
 print(matrices$confusion_matrix)
-
 # Afficher les indicateurs de qualité de prédiction
 print(matrices$indicators)
 ```
@@ -2016,7 +1832,6 @@ Puisque nous disposons de quatre catégories dans notre variable *Y*, nous obten
 
 ```{r  message=FALSE, warning=FALSE, echo = FALSE}
 tables <- build_table(modele4,confid = T, sign = T, coef_digits = 2, std_digits = 2, z_digits = 2, p_digits = 3, OR_digits = 3)
-
 tab1 <- tables[[1]][,c(1,2,3,6,9,10,11)]
 tab2 <- tables[[2]][,c(1,2,3,6,9,10,11)]
 tab3 <- tables[[3]][,c(1,2,3,6,9,10,11)]
@@ -2065,14 +1880,11 @@ Dans cette section, nous présentons les principaux modèles utilisés pour mod�
 Le modèle GLM de base pour modéliser une variable de comptage est le modèle de Poisson. Pour rappel, la distribution de Poisson a un seul paramètre, soit $\lambda$. Il représente le nombre moyen d'évènements observés sur l’intervalle de temps retenu, ainsi que la variance de la distribution. En conséquence, $\lambda$ doit être un nombre strictement positif; autrement dit, on ne peut pas observer un nombre négatif d'évènements. Il est donc nécessaire d’utiliser une fonction de lien pour contraindre l’équation de régression sur l’intervalle $]0 ,+\infty]$. La fonction la plus utilisée est le logarithme naturel (log) dont la réciproque est la fonction exponentielle (exp).
 
 ```{r poissondentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Poisson(\\lambda)$ \\newline $g(\\lambda) = \\beta_0 + \\beta X$ \\newline $g(x) =log(x)$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable de comptage", "Poisson", model_formula , "log", "$\\lambda$", "$\\beta_0$, $\\beta$", "Absence d’excès de zéros, absence de surdispersion ou de sousdispersion")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle de Poisson",
     col.names = NULL, 
@@ -2133,37 +1945,30 @@ df <- data.frame(
   C3 = c("Variable binaire", " Variable binaire", " Variable binaire", " Variable binaire", " Variable binaire", " Variable continue", " Variable continue", " Variable continue", " Variable continue", " Variable binaire", " Variable continue", " Variable binaire"),
   C4 = c("0 = absence; 1 = présence", " 0 = absence; 1 = présence", " 0 = absence; 1 = présence", " 0 = absence; 1 = présence", " 0 = absence; 1 = présence", " Logarithme du nombre d’emploi. Utilisation du logarithme car la variable est fortement asymétrique", " Habitants par hectare", " Mesure de 0 à 1; 0 = spécialisation parfaite; 1 = diversité parfaite ", " Nombre d’intersection par km2 ", " 0 = absence; 1 = présence", " Exprimée en mètres", " 0 = absence; 1 = présence")
 )
-
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle de Poisson",
     col.names = c("Nom de la variable","signification","Type de variable","Mesure"), 
     col.to.resize = c(2,4),
     col.width = "5cm"
 )
-
 ```
 
 La distribution originale de la variable est décrite à la figure \@ref(fig:distripoissmod). Les barres grises représentent la distribution du nombre d'accidents et les barres rouges une distribution de Poisson ajustée sans prédicteur (modèle nul). Ce premier graphique peut laisser penser qu’un modèle de Poisson ne sera pas nécessairement le plus adapté considérant le grand nombre d’intersections pour lesquelles nous n’avons aucun accident. Cependant, rappelons que la variable *Y* n'a pas besoin de suivre une distribution de Poisson. Dans un modèle GLM, l'hypothèse que nous formulons est que la variable dépendante (*Y*) **conditionnée par les variables indépendantes (*X*)** suit une certaine distribution (ici de Poisson).
 
 ```{r distripoissmod, fig.cap = "Distribution originale du nombre d'accidents par intersection", fig.align = "center", message=FALSE, warning=FALSE, out.width='65%'}
-
 # Chargement des données
 data_accidents <- read.csv("data/glm/accident_pietons.csv")
-
 # Ajustement d'une distribution de Poisson sans prédicteur
 library(fitdistrplus)
 model_poisson <- fitdist(data_accidents$Nbr_acci,distr = "pois")
-
 # Création d'un graphique pour comparer les deux distributions
 dfpoisson <- data.frame(x=c(0:19),
                         y=dpois(0:19, model_poisson$estimate)
 )
-
 counts <- data.frame(table(data_accidents$Nbr_acci))
 names(counts) <- c("nb_accident",'frequence')
 counts$nb_accident <- as.numeric(as.character(counts$nb_accident))
 counts$prop <- counts$frequence / sum(counts$frequence)
-
 ggplot() + 
   geom_bar(aes(x=nb_accident, weight = prop, fill = "real"), width = 0.6, data = counts)+
   geom_bar(aes(x=x, weight = y, fill = "adj"), width = 0.15, data = dfpoisson)+
@@ -2192,21 +1997,18 @@ vif(glm(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + Terreplein + Apaisement +
 Toutes les valeurs de VIF sont inférieures à 5, notons tout de même que le logarithme de l'emploi et la longueur d'artère dans un rayon d'un kilomètre ont des valeurs de VIF proches de 5. La seconde étape du diagnostic consiste à calculer et visualiser les distances de Cook.
 
 ```{r poisscookdist, fig.cap = "Distances de Cook pour le modèle de Poisson", fig.align = "center", message=FALSE, warning=FALSE, out.width='60%'}
-
 # Ajustement d'une première version du modèle
 modele <- glm(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + Terreplein + Apaisement +
                 LogEmploi + Densite_pop + Entropie + DensiteInter +
                 Long_arterePS + Artere + NB_voies5,
               family = poisson(link="log"),
               data = data_accidents)
-
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, alpha = 0.5)+
   labs(x = "",
@@ -2224,21 +2026,18 @@ Les deux premiers cas sont des intersections avec de nombreux accidents (respect
 
 ```{r poisscookdist2, fig.cap = "Distances de Cook pour le modèle de Poisson après avoir retiré les valeurs aberrentes", fig.align = "center", message=FALSE, warning=FALSE, out.width='60%'}
 data2 <- subset(data_accidents, cooksd<0.1)
-
 # Ajustement d'une première version du modèle
 modele <- glm(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + Terreplein + Apaisement +
                 LogEmploi + Densite_pop + Entropie + DensiteInter +
                 Long_arterePS + Artere + NB_voies5,
               family = poisson(link="log"),
               data = data2)
-
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, alpha = 0.5)+
   labs(x = "",
@@ -2265,16 +2064,13 @@ Contrairement à la forme classique d’un modèle de poisson pour laquelle la d
 Il est également possible d'illuster cet écart à l'aide d'un graphique représentant les valeurs réelles, les valeurs prédites, ainsi que la variance (sous forme de barres d'erreurs) attendue par le modèle (figure \@ref(fig:surdisppoiss)). Nous constatons ainsi que les valeurs réelles ont largement tendance à dépasser la variance attendue par le modèle, surtout pour les valeurs les plus faibles de la distribution.
 
 ```{r surdisppoiss, message=FALSE, warning=FALSE, fig.aling = "center", fig.cap="Représentation de la surdispersion des données dans le modèle de Poisson", out.width='65%'}
-
 # Extraction des prédictions du modèle
 lambdas <- predict(modele, type = "response")
-
 # Création d'un dataframe pour contenir la prédiction et les vraies valeurs
 df1 <- data.frame(
   lambdas = lambdas,
   reals = data2$Nbr_acci
 )
-
 # Calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
 # et stockage dans un second dataframe
 seqa <- seq(0,round(max(lambdas)),1)
@@ -2283,7 +2079,6 @@ df2 <- data.frame(
   lower = qpois(p = 0.025, lambda = seqa),
   upper = qpois(p = 0.975, lambda = seqa)
 )
-
 # Affichage des valeurs réelles et prédites (en rouge)
 # et de leur variance selon le modèle (en noir)
 ggplot() + 
@@ -2295,7 +2090,6 @@ ggplot() +
              color ="red", size = 0.5) + 
   labs(x = 'valeurs prédites',
        y = "valeurs réelles")
-
 ```
 
 Pour tenir compte de cette particularité des données, nous modifions légèrement le modèle pour utiliser une distribution de quasi-Poisson, intégrant spécifiquement un paramètre de dispersion. Cet ajustement ne modifie pas l'estimation des coefficients du modèle, mais modifie le calcul des erreurs standards et par extension les valeurs de *p* pour les rendre moins sensibles au problème de surdispersion. Une autre approche aurait été de calculer une version robuste des erreurs standards avec le *package* **sandwich** comme nous l'avons fait dans la section \@ref(sect06211) sur le modèle binomial. Après réajustement du modèle, le nouveau paramètre de dispersion estimé est de 1,92.
@@ -2318,15 +2112,12 @@ modele2 <- glm(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + Terreplein + Apais
 Nous pouvons à présent comparer la distribution originale des données et les simulations issues du modèle. Notez que contrairement à la distribution de Poisson simple, il n'existe pas dans R de fonction pour simuler des valeurs issues d'une distribution de quasi-Poisson. Il est cependant possible d'exploiter sa proximité théorique avec la distribution négative binomiale pour définir notre propre fonction de simulation. La figure \@ref(fig:comppoissdistr) permet de comparer la distribution originale (en gris) et l'intervalle de confiance à 95% des simulations (en rouge). Nous remarquons que le modèle semble capturer efficacement la forme générale de la distribution originale. À titre de comparaison, nous pouvons effectuer le même exercice avec la distribution de Poisson classique (le code n'est pas montré pour éviter les répétitions). La figure \@ref(fig:comppoissdistr2) montre qu'un simple modèle de Poisson est très éloigné de la distribution originale de *Y*.
 
 ```{r comppoissdistr, message=FALSE, warning=FALSE, fig.align ="center", fig.cap="Comparaison de la distribution originale et des simulations pour le modèle de quasi-Poisson", out.width = "65%"}
-
 # Définition d'une fonction pour simuler des données quasi-Poisson
 rqpois <- function(n, lambda, disp) {
   rnbinom(n = n, mu = lambda, size = lambda/(disp-1))
 }
-
 # Extraction des valeurs prédites par le modèle
 preds <- predict(modele2, type="response")
-
 # Génération de 1000 simulations pour chaque prédiction
 disp <- summary(modele2)$dispersion
 nsim <- 1000
@@ -2336,16 +2127,13 @@ cols <- lapply(1:length(preds),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # Préparation des données pour le graphique (valeurs réelles)
 counts <- data.frame(table(data2$Nbr_acci))
 names(counts) <- c("nb_accident",'frequence')
 counts$nb_accident <- as.numeric(as.character(counts$nb_accident))
 counts$prop <- counts$frequence / sum(counts$frequence)
-
 # Préparation des données pour le graphique (valeurs simulées)
 df1 <- data.frame(count = 0:25)
-
 count_sims <- lapply(1:nsim, function(i){
   sim <- mat_sims[,i]
   cnt <- data.frame(table(sim))
@@ -2353,16 +2141,13 @@ count_sims <- lapply(1:nsim, function(i){
   df2$Freq <- ifelse(is.na(df2$Freq),0,df2$Freq)
   return(df2$Freq)
 })
-
 count_sims <- do.call(cbind,count_sims)
-
 df_sims <- data.frame(
   val = 0:25,
   med = apply(count_sims, MARGIN = 1, median),
   lower = apply(count_sims, MARGIN = 1, quantile, probs = 0.025),
   upper = apply(count_sims, MARGIN = 1, quantile, probs = 0.975)
 )
-
 ggplot() + 
   geom_bar(aes(x=nb_accident, weight = frequence), width = 0.6, data = counts)+
   geom_errorbar(aes(x = val, ymin = lower, ymax = upper),
@@ -2376,10 +2161,8 @@ ggplot() +
 ```
 
 ```{r comppoissdistr2, message=FALSE, warning=FALSE, fig.align ="center", fig.cap="Comparaison de la distribution originale et des simulations pour le modèle de Poisson", echo=FALSE, out.width = "65%"}
-
 # extraction des valeurs prédites par le modèle
 preds <- predict(modele2, type="response")
-
 # génération de 1000 simulations pour chaque prédiction
 disp <- 1.918757 # trouvable dans le summary(modele2)
 nsim <- 1000
@@ -2389,16 +2172,13 @@ cols <- lapply(1:length(preds),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # préparation des données pour le graphique (valeurs réelles)
 counts <- data.frame(table(data2$Nbr_acci))
 names(counts) <- c("nb_accident",'frequence')
 counts$nb_accident <- as.numeric(as.character(counts$nb_accident))
 counts$prop <- counts$frequence / sum(counts$frequence)
-
 # préparation des données pour le graphique (valeurs simulées)
 df1 <- data.frame(count = 0:25)
-
 count_sims <- lapply(1:nsim, function(i){
   sim <- mat_sims[,i]
   cnt <- data.frame(table(sim))
@@ -2406,16 +2186,13 @@ count_sims <- lapply(1:nsim, function(i){
   df2$Freq <- ifelse(is.na(df2$Freq),0,df2$Freq)
   return(df2$Freq)
 })
-
 count_sims <- do.call(cbind,count_sims)
-
 df_sims <- data.frame(
   val = 0:25,
   med = apply(count_sims, MARGIN = 1, median),
   lower = apply(count_sims, MARGIN = 1, quantile, probs = 0.025),
   upper = apply(count_sims, MARGIN = 1, quantile, probs = 0.975)
 )
-
 ggplot() + 
   geom_bar(aes(x=nb_accident, weight = frequence), width = 0.6, data = counts)+
   geom_errorbar(aes(x = val, ymin = lower, ymax = upper),
@@ -2431,7 +2208,6 @@ ggplot() +
 La prochaine étape du diagnostic est l'analyse des résidus simulés. La figure \@ref(fig:simrespoiss) indique que les résidus du modèle suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
 
 ```{r simrespoiss, message=FALSE, warning=FALSE, fig.align ="center", fig.cap="Analyse globale des résidus simulés pour le modèle de quasi-Poisson", out.width = "75%"}
-
 # Génération de 1000 simulations pour chaque prédiction
 disp <- 1.918757 # trouvable dans le summary(modele2)
 nsim <- 1000
@@ -2441,7 +2217,6 @@ cols <- lapply(1:length(preds),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = data2$Nbr_acci,
                             fittedPredictedResponse = modele2$fitted.values,
@@ -2456,7 +2231,6 @@ par(mfrow=c(3,4))
 vars <- c("Feux_auto", "Feux_piet", "Pass_piet", "Terreplein", "Apaisement",
                 "LogEmploi", "Densite_pop", "Entropie", "DensiteInter",
                 "Long_arterePS", "Artere", "NB_voies5")
-
 for(v in  vars){
   plotResiduals(sim_res, data2[[v]], main = v)
 }
@@ -2470,18 +2244,15 @@ Maintenant que l'ensemble des diagnostics a été effectué, nous pouvons passer
 Pour le calcul des pseudo R^2^, notez qu'il n'existe pas à proprement parler de *loglikelihood* pour les quasi-distributions. Pour contourner ce problème, il est possible d'utiliser le *loglikelihood* d'un simple modèle de Poisson (puisque les coefficients ne changent pas), mais il est important de garder à l'esprit que ces pseudo R^2^ seront d'autant plus faibles que la surdispersion originale était forte.
 
 ```{r message=FALSE, warning=FALSE}
-
 modelnull <- glm(Nbr_acci ~ 1,
               family = poisson(link="log"),
               data = data2)
-
 rsqs(loglike.full = logLik(modele),
      loglike.null = logLik(modelnull),
      full.deviance = deviance(modele),
      null.deviance = deviance(modelnull),
      nb.params = modele$rank,
      n = nrow(data2))
-
 ```
 
 Le modèle parvient ainsi à expliquer 48% de la déviance totale, il obtient un R^2^ ajusté de McFadden de 0,33 et un R^2^ de Cox et Snell de 0,78.
@@ -2489,7 +2260,6 @@ Le modèle parvient ainsi à expliquer 48% de la déviance totale, il obtient un
 ```{r message=FALSE, warning=FALSE}
 # calcul du RMSE
 sqrt(mean((predict(modele2, type = "response") - data2$Nbr_acci)**2))
-
 # nombre moyen d'accidents
 mean(data2$Nbr_acci)
 ```
@@ -2501,25 +2271,20 @@ L’erreur quadratique moyenne du modèle est de 1,86, ce que signifie qu’en m
 L'ensemble des coefficients du modèle sont accessibles via la fonction `summary`. Puisque la fonction de lien du modèle est la fonction *log*, il est pertinent de convertir les coefficients avec la fonction `exp` afin de pouvoir les interpréter sur l'échelle originale (nombre d'accidents) plutôt que l'échelle logarithmique (`log(nombre d'accidents)`). N'oubliez pas que ces effets sont multiplicatifs une fois transformés avec la fonction `exp`. Nous pouvons également utiliser les erreurs standards pour calculer des intervalles de confiance à 95% des exponentiels des coefficients. Le tableau \@ref(tab:coeffpoiss) présente l'ensemble des informations pertinentes pour l'interprétation des résultats.
 
 ```{r message=FALSE, warning=FALSE}
-
 # Calcul des coefficients en exponentiel et des intervalles de confiance
 tableau <- summary(modele2)$coefficients
-
 coeffs <- tableau[,1]
 err.std <- tableau[,2]
 expcoeff <- exp(coeffs)
 exp2.5 <- exp(coeffs - 1.96*err.std)
 exp975 <- exp(coeffs - 1.96*err.std)
 pvals <- tableau[,4]
-
 tableauComplet <- cbind(coeffs,err.std,expcoeff,exp2.5,exp975,pvals)
 # print(tableauComplet)
 ```
 
 ```{r coeffpoiss, message=FALSE, warning=FALSE, echo=FALSE}
 tableau <- build_table(modele2, confid = T, sign = T, coef_digits = 2, std_digits = 2)
-
-
 show_table(tableau[,c(1,2,3,6,9,10,11)], 
       col.names = c("Variable","Coeff.", "exp(Coeff.)", "Val.p", "IC 2,5% exp(Coeff.)", "IC 97,5% exp(Coeff.)", "Sign."),
       caption = 'Résultats du modèle de quasi-Poisson')
@@ -2533,14 +2298,11 @@ Concernant les variables décrivant l’environnement à proximité des intersec
 Dans le cas où une variable de comptage serait marquée par une sur ou sous-dispersion, la distribution de Poisson n’est pas en mesure de capturer efficacement sa variance. Pour contourner ce problème, il est possible d’utiliser la distribution négative binomiale plutôt que la distribution de Poisson. Cette distribution peut être décrite comme une généralisation de la distribution de Poisson : elle inclut un second paramètre $\theta$ contrôlant la dispersion. L’intérêt premier de ce changement de distribution est que l’interprétation des paramètres est la même pour les deux modèles, tout en contrôlant directement l'effet d'une potentielle surdispersion.
 
 ```{r nbdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim NB(\\mu,\\theta)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) =log(x)$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable de comptage", "Négative binomiale", model_formula , "log", "$\\mu$", "$\\beta_0$, $\\beta$ et $\\theta$", "Absence d’excès de zéros, respect du lien variance-moyenne")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle négatif binomial",
     col.names = NULL, 
@@ -2572,10 +2334,8 @@ Nous avions vu précédemment que nos variables indépendantes n'étaient pas ma
 
 ```{r cookdistnb, fig.cap = "Distances de Cook pour le modèle négatif binomial", fig.align = "center", message=FALSE, warning=FALSE, out.width='75%'}
 library(mgcv)
-
 # chargement des données
 data_accidents <- read.csv("data/glm/accident_pietons.csv")
-
 # ajustement d'une première version du modèle
 modelnb <- gam(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + 
                  Terreplein + Apaisement +
@@ -2583,15 +2343,12 @@ modelnb <- gam(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                 Long_arterePS + Artere + NB_voies5,
               family = nb(link="log"),
               data = data_accidents)
-
 # calcul et affichage des distances de Cook
 cooksd <- cooks.distance(modelnb)
-
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4)) +
   labs(x = "", y = "distance de Cook")+
@@ -2610,7 +2367,6 @@ Il s'agit à nouveau des quatre observations avec un grand nombre d'accidents. N
 
 ```{r cookdistnb2, fig.cap = "Distances de Cook pour le modèle négatif binomial (après avoir retiré quatre observations fortement influentes)", fig.align = "center", message=FALSE, warning=FALSE, out.width='75%'}
 data2 <- subset(data_accidents, cooksd < 0.03)
-
 # Ajustement d'une première version du modèle
 modelnb <- gam(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + 
                  Terreplein + Apaisement +
@@ -2618,15 +2374,12 @@ modelnb <- gam(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                 Long_arterePS + Artere + NB_voies5,
               family = nb(link="log"),
               data = data2)
-
 # Calcul et affichage des distances de Cook
 cooksd <- cooks.distance(modelnb)
-
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4)) +
   labs(x = "", y = "distance de Cook")+
@@ -2642,7 +2395,6 @@ theta <- modelnb$family$getTheta(T)
 nsim <- 1000
 # extraction des valeurs prédites par le modèle
 mus <- predict(modelnb, type = "response")
-
 # calcul des simulations
 cols <- lapply(1:length(mus),function(i){
   mu <- mus[[i]]
@@ -2650,7 +2402,6 @@ cols <- lapply(1:length(mus),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # calcul des résidus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = data2$Nbr_acci,
@@ -2663,10 +2414,8 @@ plot(sim_res)
 La figure \@ref(fig:diagresnb) présentant le diagnostic des résidus simulés montre que ces derniers suivent bien une distribution uniforme, aucun problème de dispersion ni de valeurs aberrantes. La figure \@ref(fig:compnbdistr2) permet de comparer la distribution originale de la variable *Y* et les simulations issues du modèle (intervalles de confiance représentés en bleu). On constate que le modèle parvient bien à reproduire la distribution originale, et ce même pour les valeurs les plus à droite de la distribution.
 
 ```{r compnbdistr2, message=FALSE, warning=FALSE, fig.align ="center", fig.cap="Comparaison de la distribution originale et des simulations pour le modèle négatif binomial", out.width = "65%"}
-
 # Extraction des valeurs prédites par le modèle
 mus <- predict(modelnb, type="response")
-
 # Génération de 1000 simulations pour chaque prédiction
 theta <- modelnb$family$getTheta(T)
 nsim <- 1000
@@ -2676,16 +2425,13 @@ cols <- lapply(1:length(mus),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # Préparation des données pour le graphique (valeurs réelles)
 counts <- data.frame(table(data2$Nbr_acci))
 names(counts) <- c("nb_accident",'frequence')
 counts$nb_accident <- as.numeric(as.character(counts$nb_accident))
 counts$prop <- counts$frequence / sum(counts$frequence)
-
 # Préparation des données pour le graphique (valeurs simulées)
 df1 <- data.frame(count = 0:25)
-
 count_sims <- lapply(1:nsim, function(i){
   sim <- mat_sims[,i]
   cnt <- data.frame(table(sim))
@@ -2693,16 +2439,13 @@ count_sims <- lapply(1:nsim, function(i){
   df2$Freq <- ifelse(is.na(df2$Freq),0,df2$Freq)
   return(df2$Freq)
 })
-
 count_sims <- do.call(cbind,count_sims)
-
 df_sims <- data.frame(
   val = 0:25,
   med = apply(count_sims, MARGIN = 1, median),
   lower = apply(count_sims, MARGIN = 1, quantile, probs = 0.025),
   upper = apply(count_sims, MARGIN = 1, quantile, probs = 0.975)
 )
-
 # Affichage du graphique
 ggplot() + 
   geom_bar(aes(x=nb_accident, weight = frequence), width = 0.6, data = counts)+
@@ -2719,16 +2462,13 @@ ggplot() +
 À titre de comparaison, nous pouvons à nouveau réaliser le graphique permettant de visualiser si la variance attendue par le modèle est proche de celle effectivement observée dans les données. Nous avions constaté avec ce graphique lorsque nous ajustions un modèle de Poisson que la variance des données était trop grande comparativement à celle attendue par le modèle (figure \@ref:surdisppoiss)).
 
 ```{r surdispnb, message=FALSE, warning=FALSE, fig.aling = "center", fig.cap="Représentation de la sur-dispersion des données dans le modèle de Poisson"}
-
 # Extraction des prédictions du modèle
 mus <- predict(modelnb, type = "response")
-
 # Création d'un dataframe pour contenir la prédiction et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = data2$Nbr_acci
 )
-
 # Calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
 # et stockage dans un second dataframe
 seqa <- seq(0,round(max(mus)),1)
@@ -2737,7 +2477,6 @@ df2 <- data.frame(
   lower = qnbinom(p = 0.025, mu = seqa, size = theta),
   upper = qnbinom(p = 0.975, mu = seqa, size = theta)
 )
-
 # Affichage des valeurs réelles et prédites (en rouge)
 # et de leur variance selon le modèle (en noir)
 ggplot() + 
@@ -2763,7 +2502,6 @@ rsqs(loglike.full = logLik(modelnb),
      null.deviance = modelnb$null.deviance,
      nb.params = modelnb$rank,
      n = nrow(data2))
-
 # calcul du RMSE
 sqrt(mean((predict(modelnb, type = "response") - data2$Nbr_acci)**2))
 ```
@@ -2776,7 +2514,6 @@ Il est possible d'accéder à l'ensemble des coefficients du modèle via la fonc
 
 ```{r coeffsnb, message=FALSE, warning=FALSE, echo=FALSE}
 tableau <- build_table(modelnb, confid = T, sign = T, coef_digits = 2, std_digits = 2)
-
 show_table(tableau[,c(1,2,3,6,9,10,11)], 
       col.names = c("Variable","Coeff.", "exp(Coeff.)", "Val.p", "IC 2,5% exp(Coeff.)", "IC 97,5% exp(Coeff.)", "Sign."),
       caption = 'Résultats du modèle négatif binomial')
@@ -2787,14 +2524,11 @@ show_table(tableau[,c(1,2,3,6,9,10,11)],
 Dans le cas où la variable *Y* comprendrait significativement plus de zéros que ce que suppose une distribution de Poisson, il est possible d’utiliser la distribution de Poisson avec excès de zéros. Pour rappel, cette distribution ajoute un paramètre *p* contrôlant pour la proportion de zéros dans la distribution. Du point de vue conceptuel, cela revient à formuler l’hypothèse suivante : dans les données que l’on a observées, deux processus distincts sont à l’œuvre. Le premier est issu d’une distribution de Poisson et le second produit des zéros qui s’ajoutent aux données. Les zéros produits par la distribution de Poisson sont appelés les **vrais zéros**, alors que ceux produits par le second phénomène sont appelés les **faux zéros**.
 
 ```{r poisszidentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim ZIP(\\mu,\\theta)$ \\newline $g(\\lambda) = \\beta_0 + \\beta X$ \\newline $g(x) =log(x)$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable de comptage", "Poisson avec excès de zéros", model_formula , "log", "$\\lambda$", "$\\beta_0$, $\\beta$ et *p*", "Absence de surdispersion")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle de Poisson avec excès fixe de zéros",
     col.names = NULL, 
@@ -2816,25 +2550,20 @@ La variable de comptage des accidents des piétons que nous avons utilisée dans
 
 ```{r message=FALSE, warning=FALSE}
 library(gamlss)
-
 modelzi <- gamlss(formula = Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                     Terreplein + Apaisement + LogEmploi + Densite_pop + 
                     Entropie + DensiteInter + Long_arterePS + Artere + NB_voies5,
                   sigma.formula = ~1,
                family = ZIP(mu.link = "log", sigma.link="logit"),
                data = data_accidents)
-
 modelnull <- glm(formula = Nbr_acci ~ 1,
                family = poisson(link="log"),
                data = data_accidents)
-
 # Constante pour p
 coeff_p <- modelzi$sigma.coefficients
 cat("Coefficient pour p =", round(coeff_p,4))
-
 # Calcul de la déviance expliquée
 1 - deviance(modelzi) / deviance(modelnull)
-
 # Calcul de la probabilité de base p d'être un faux 0
 # en appliquant l'inverse de la fonction logistique
 exp(-coeff_p) / (1+exp(-coeff_p))
@@ -2847,14 +2576,11 @@ Nous constatons immédiatement que le modèle avec excès fixe de zéros est peu
 Nous avons vu dans le modèle précédent que l’excès de zéro était conceptualisé comme la combinaison de deux phénomènes, l’un issu d’une distribution de Poisson que l’on souhaite modéliser, et le second générant des zéros supplémentaires. Il est possible d’aller plus loin que de simplement contrôler la proportion de zéro supplémentaire en modélisant explicitement ce second processus en ajoutant une deuxième équation au modèle. Cette deuxième équation a pour enjeu de modéliser *p* (la proportion de 0) à l’aide de variables indépendantes, ces dernières pouvant se retrouver dans les deux parties du modèle. **Pour résumer, un modèle de Poisson avec excès ajusté de zéro revient à combiner un modèle logistique binomial avec un modèle de Poisson**. La partie binaire du modèle s’occupe des faux zéros, et la partie Poisson du reste des données. L’idée étant que pour chaque observation, le modèle évalue sa probabilité d’être un faux zéro (partie binomiale), avant d’évaluer son impact dans le modèle de Poisson.
 
 ```{r poisszadentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim ZIP(\\mu,\\theta)$ \\newline $g(\\lambda) = \\beta_0 + \\beta X$ \\newline $s(p) = \\alpha_0 + \\alpha_X$ \\newline $g(x) =log(x)$ \\newline $s(x) = log(\\frac{x}{1-x})$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable de comptage", "Poisson avec excès de zéros", model_formula , "log et logistique", "$\\lambda$ et *p*", "$\\beta_0$, $\\beta$,  $\\alpha_0$ et $\\alpha$", "Absence de surdispersion")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle de Poisson avec excès ajusté de zéros",
     col.names = NULL, 
@@ -2883,17 +2609,12 @@ modelza <- gamlss(formula = Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                   sigma.formula = ~1 + Feux_auto + Feux_piet + Densite_pop + NB_voies5,
                family = ZIP(mu.link = "log", sigma.link="logit"),
                data = data_accidents)
-
 # Extraire la prédiction des valeurs lambda
 lambdas <- predict(modelza, type = "response", what = "mu")
-
 # Extraire la prédiction des valeurs p
 ps <- predict(modelza, type = "response", what = "sigma")
-
 # Calculer la combinaison de ces deux éléments
-
 preds <- lambdas * ps
-
 # Effectuer les 1000 simulations
 nsim <- 1000
 cols <- lapply(1:length(lambdas),function(i){
@@ -2903,7 +2624,6 @@ cols <- lapply(1:length(lambdas),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # Calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = data_accidents$Nbr_acci,
@@ -2926,7 +2646,6 @@ Nous retirons des données six observations pouvant avoir une certaine influence
 
 ```{r diagzip2, fig.cap="Diagnostic général des résidus simulés du modèle de Poisson avec excès de zéros ajusté (sans valeurs aberrantes)", fig.align='center', out.width = '95%',message=FALSE, warning=FALSE}
 data2 <- subset(data_accidents, isOutlier==FALSE)
-
 # Ajuster une première version du modèle
 modelza <- gamlss(formula = Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                     Terreplein + Apaisement + LogEmploi + Densite_pop + 
@@ -2934,16 +2653,12 @@ modelza <- gamlss(formula = Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                   sigma.formula = ~1 + Feux_auto + Feux_piet + Densite_pop + NB_voies5,
                family = ZIP(mu.link = "log", sigma.link="logit"),
                data = data2)
-
 # Extraire la prédiction des valeurs lambda
 lambdas <- predict(modelza, type = "response", what = "mu")
-
 # Extraire la prédiction des valeurs p
 ps <- predict(modelza, type = "response", what = "sigma")
-
 # Calculer la combinaison de ces deux éléments
 preds <- lambdas * ps
-
 # Effectuer les 1000 simulations
 nsim <- 1000
 cols <- lapply(1:length(lambdas),function(i){
@@ -2953,7 +2668,6 @@ cols <- lapply(1:length(lambdas),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # Calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = data2$Nbr_acci,
@@ -2965,13 +2679,10 @@ plot(sim_res)
 Nous pouvons une fois encore comparer des simulations issues du modèle et la distribution originale de la variable *Y*. La figure \@ref(fig:compzipdistr) montre clairement que les simulations du modèle (en bleu) sont très éloignées dans la distribution originale (en gris), ce qui remet directement en question la pertinence de ce modèle.
 
 ```{r compzipdistr, message=FALSE, warning=FALSE, fig.align ="center", fig.cap="Comparaison de la distribution originale et des simulations pour le modèle de Poisson avec excès de zéros ajusté", out.width = "65%"}
-
 # extraire la prédiction des valeurs lambda
 lambdas <- predict(modelza, type = "response", what = "mu")
-
 # extraire la prédiction des valeurs p
 ps <- predict(modelza, type = "response", what = "sigma")
-
 # génération de 1000 simulations pour chaque prédiction
 nsim <- 1000
 cols <- lapply(1:length(lambdas),function(i){
@@ -2981,16 +2692,13 @@ cols <- lapply(1:length(lambdas),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # préparation des données pour le graphique (valeurs réelles)
 counts <- data.frame(table(data2$Nbr_acci))
 names(counts) <- c("nb_accident",'frequence')
 counts$nb_accident <- as.numeric(as.character(counts$nb_accident))
 counts$prop <- counts$frequence / sum(counts$frequence)
-
 # préparation des données pour le graphique (valeurs simulées)
 df1 <- data.frame(count = 0:25)
-
 count_sims <- lapply(1:nsim, function(i){
   sim <- mat_sims[,i]
   cnt <- data.frame(table(sim))
@@ -2998,16 +2706,13 @@ count_sims <- lapply(1:nsim, function(i){
   df2$Freq <- ifelse(is.na(df2$Freq),0,df2$Freq)
   return(df2$Freq)
 })
-
 count_sims <- do.call(cbind,count_sims)
-
 df_sims <- data.frame(
   val = 0:25,
   med = apply(count_sims, MARGIN = 1, median),
   lower = apply(count_sims, MARGIN = 1, quantile, probs = 0.025),
   upper = apply(count_sims, MARGIN = 1, quantile, probs = 0.975)
 )
-
 # affichage du graphique
 ggplot() + 
   geom_bar(aes(x=nb_accident, weight = frequence), width = 0.6, data = counts)+
@@ -3027,7 +2732,6 @@ ggplot() +
 modelenull <- glm(Nbr_acci ~ 1,
                family = poisson(link="log"),
                data = data2)
-
 # calcul des R2
 rsqs(loglike.full = logLik(modelza),
      loglike.null = logLik(modelenull),
@@ -3036,7 +2740,6 @@ rsqs(loglike.full = logLik(modelza),
      nb.params = modelza$sigma.df + modelza$mu.df,
      n = nrow(data2)
      )
-
 # calcul du RMSE
 sqrt(mean((preds - data2$Nbr_acci)**2))
 ```
@@ -3050,27 +2753,22 @@ L'ensemble des coefficients du modèle sont accessibles avec la fonction `summar
 ```{r message=FALSE, warning=FALSE}
 # Extraction des résultats
 base_table <- summary(modelza)
-
 # Multiplication par 1000 des coefficients de population
 # (effet pour 1000 habitants)
 base_table[8,1] <- 1000 * base_table[8,1]
 base_table[8,2] <- 1000 * base_table[8,2]
 base_table[17,1] <- 1000 * base_table[17,1]
 base_table[17,2] <- 1000 * base_table[17,2]
-
 # Multiplication par 1000 des coefficients de longueur artère
 # (effet pour 1 km)
 base_table[11,1] <- 1000 * base_table[11,1]
 base_table[11,2] <- 1000 * base_table[11,2]
-
 # Calcul des exponentiels des prédicteurs
 # et des intervalles de confiance
 expcoeff <- exp(base_table[,1])
 expcoeff2.5 <- exp(base_table[,1] - 1.96 * base_table[,2])
 expcoeff97.5 <- exp(base_table[,1] + 1.96 * base_table[,2])
-
 base_table <- cbind(base_table, expcoeff, expcoeff2.5,expcoeff97.5)
-
 # Calculer une colonne indiquant le niveau de significativité
 sign <- case_when(
   base_table[,4] < 0.001 ~ "***",
@@ -3079,27 +2777,20 @@ sign <- case_when(
   base_table[,4]  >= 0.05 &  base_table[,4]<0.1 ~ ".",
   TRUE ~ ""
 )
-
 # Arrondir à trois décimales
 base_table <- round(base_table,3)
-
 # Enlever les colonnes de valeurs de t et d'erreur standard
 base_table <- base_table[,c(1,4,5,6,7)]
 base_table <- cbind(base_table, sign)
-
 # Remplacer les 0 dans la colonne pval
 base_table[,2] <- ifelse(base_table[,2]=="0","<0.001",base_table[,2])
-
 # Séparer le tout en deux tableaux
 part_poiss <- base_table[1:13,]
 part_logit <- base_table[14:18,]
-
 # Mettre les bons noms de colonnes
 colnames(part_poiss) <- c("Coeff.","Val.p","Exp(Coeff.)",
                           "IC 2,5% exp(Coeff.)","IC 97,5% exp(Coeff.)", "Sign.")
-
 colnames(part_logit) <- c("Coeff.","Val.p","RC","IC 2,5% RC","IC 97,5% RC", "Sign.")
-
 ```
 
 Nous rapportons les résultats de ce modèle de Poisson avec excès de zéro ajusté dans les tableaux \@ref(tab:zapoisstab1) et \@ref(tab:zapoisstab2).
@@ -3111,7 +2802,6 @@ show_table(part_poiss,
     caption = "Résultats de la partie Poisson du modèle de Poisson avec excès de zéros ajusté",
     col.names = c('Variable',"Coeff.","Val.p","Exp(Coeff.)","IC 2,5% exp(Coeff.)","IC 97,5% exp(Coeff.)", "Sign.")
 )
-
 ```
 
 ```{r zapoisstab2, message=FALSE, warning=FALSE, echo = FALSE}
@@ -3121,7 +2811,6 @@ show_table(part_logit,
     caption = "Résultats de la partie logistique du modèle de Poisson avec excès de zéros ajusté",
     col.names = c('Variable',"Coeff.","Val.p","RC","IC 2,5% RC","IC 97,5% RC", "Sign.")
 )
-
 ```
 
 Nous observons ainsi que la présence d’un feu de circulation divise les chances de ne pas observer d'accident à une intersection par 5. La densité de population a également un effet positif sur la probabilité d’observer des accidents à une intersection. Pour chaque tranche de 1000 habitants supplémentaire à proximité de l'intersection, les chances de ne pas observer d'accident sont réduites de 11%.
@@ -3168,14 +2857,11 @@ Comme nous avons pu le voir dans la section \@ref(sect024), il existe un grand n
 Comme nous l'avons vu en introduction, il s'agit du GLM le plus simple puisqu'il correspond à la transposition de la régression linéaire classique (des moindres carrés) dans la forme des modèles généralisés.
 
 ```{r gaussiandentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Normal(\\mu,\\sigma)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = x$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Normale", model_formula , "identitaire", "$\\mu$", "$\\beta_0$, $\\beta$ et $\\sigma$", "Homoscédasticité")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle gaussien",
     col.names = NULL, 
@@ -3207,7 +2893,6 @@ La première étape de la vérification des conditions d'application est bien s�
 ```{r message=FALSE, warning=FALSE}
 # Chargement des données
 load("data/lm/DataVegetation.RData")
-
 # Calcul du VIF
 library(car)
 vif(glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
@@ -3220,20 +2905,16 @@ Puisque l'ensemble des valeurs de VIF sont inférieures à deux, nos données ne
 # Ajustement du modèle
 modele <- glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
-
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
-
 # Affichage des valeurs
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df) + 
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
-
 ```
 
 La figure \@ref(fig:gausscook) indique clairement que quatre observations sont très influentes dans le modèle. 
@@ -3247,40 +2928,31 @@ print(cas_etranges)
 Il s'agit de quatre îlots dans Montréal avec des logements très anciens : plus de 200 ans, alors que la moyenne est de 52 ans pour le reste de la zone d'étude. Le fait que nous ayons dans le modèle une polynomiale d'ordre 2 pour cette variable intensifie l'impact de ces valeurs extrêmes. Par conséquent, nous décidons de simplement les supprimer. Nous verrons plus tard qu'une alternative envisageable est de changer la distribution du modèle pour une distribution de Student (plus robuste aux valeurs extrêmes).
 
 ```{r gausscook2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distances de Cook pour le modèle gaussien après suppression des observations influentes", out.width = "50%"}
-
 # Retirer les cas étranges
 DataFinal2 <- subset(DataFinal, cooksd < 0.03)
-
 # Ajustement du modèle
 modele <- glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2, 
               family = gaussian())
-
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
-
 # Affichage des valeurs de Cook
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df) + 
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
-
 ```
 
 Une fois ces observations retirées, les nouvelles distances de Cook (figure \@ref(fig:gausscook2)) ne révèlent plus d'observations fortement influentes. Nous pouvons passer à l'analyse des résidus simulés. La figure \@ref(fig:gaussresid) démontre que la ditribution des résidus est significativement différente d'une distribution uniforme, que des valeurs aberrantes sont encore présentes et qu'il existe un lien entre résidus et prédiction dans le modèle.
 
 ```{r gaussresid, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Diagnostic général des résidus simulés pour le modèle gaussien", out.width = "95%"}
-
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = 'response')
 modsigma <- sigma(modele)
-
 # Extraction de l'écart type du modèle
-
 # Génération de 1000 simulations pour chaque prédiction
 nsim <- 1000
 cols <- lapply(1:length(mus),function(i){
@@ -3289,22 +2961,18 @@ cols <- lapply(1:length(mus),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # Calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = DataFinal2$VegPct,
                             fittedPredictedResponse = mus,
                             integerResponse = F)
 plot(sim_res)
-
 ```
 
 Pour mieux cerner ce problème, nous pouvons dans un premier temps comparer la distribution originale des données et les simulations issues du modèle. La figure \@ref(fig:gausssim) montre clairement que la distribution normale est mal ajustée aux données. Ces dernières sont légèrement asymétriques et ne peuvent pas être inférieures à zéro, ce que la distribution normale ne parvient pas à reproduire.
 
 ```{r gausssim, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Comparaison de la distribution originale de la variable et des simulations issues du modèle", out.width = "75%"}
-
 df <- reshape2::melt(mat_sims[,1:30])
-
 ggplot() + 
   geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..),
                  color = "black", fill = "white", bins = 50)+
@@ -3317,17 +2985,14 @@ ggplot() +
 Il est également possible de vérifier si la condition d'homogénéité de la variance s'applique bien aux données.
 
 ```{r gausssim2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Comparaison de la distribution originale de la variable et des simulations issues du modèle", out.width = "75%"}
-
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = "response")
 sigma_model <- sigma(modele)
-
 # Création d'un dataframe pour contenir les prédictions et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = DataFinal2$VegPct
 )
-
 # Calcul de l'intervalle de confiance à 95% selon la distribution normale
 # et stockage dans un second dataframe
 seqa <- seq(0,100,10)
@@ -3336,7 +3001,6 @@ df2 <- data.frame(
   lower = qnorm(p = 0.025, mean = seqa, sd = sigma_model),
   upper = qnorm(p = 0.975, mean = seqa, sd = sigma_model)
 )
-
 # Affichage des valeurs réelles et prédites (en rouge)
 # et de leur variance selon le modèle (en noir)
 ggplot() + 
@@ -3348,7 +3012,6 @@ ggplot() +
                 width = 0.2, color = rgb(0.4,0.4,0.4)) + 
   labs(x = 'valeurs prédites',
        y = "valeurs réelles")
-
 ```
 
 À nouveau, on constate que le modèle s'attendrait à trouver des valeurs négatives pour la concentration de végétation, ce qui n'est pas possible dans notre cas. En revanche, il semblerait que la variance soit bien homogène puisque la dispersion des observations semble à peu près suivre la dispersion attendue par le modèle (en noir).
@@ -3362,7 +3025,6 @@ Malgré ces différents constats indiquant clairement qu'un modèle gaussien est
 modelenull <- glm(VegPct ~ 1,
                   data = DataFinal2, 
                   family = gaussian())
-
 # Calcul des pseudo R2
 rsqs(loglike.full = logLik(modele),
      loglike.null = logLik(modelenull),
@@ -3378,7 +3040,6 @@ Le modèle parvient à expliquer 47% de la déviance totale, mais obtient un R^2
 ```{r warning = FALSE, message=FALSE}
 # calcul du RMSE
 sqrt(mean((predict(modele, type = "response") - DataFinal2$VegPct)**2))
-
 ```
 
 L'erreur quadratique moyenne et de 13,5 points de pourcentage, ce qui indique que le modèle a une assez faible capacité prédictive.
@@ -3390,12 +3051,10 @@ L'ensemble des coefficients du modèle sont accessibles via la fonction `summary
 ```{r tableaugauss, warning = FALSE, message=FALSE, echo = FALSE}
 # Afficher le tableau
 tab <- build_table(modele, coef_digits = 3, p_digits = 3)
-
 show_table(tab, 
     caption = "Résultats du modèle gaussien",
     col.names = c('Variable',"Coeff.","Err.std","Val.z", "val.p","IC coeff 2,5%", "IC coeff 97,5%", "Sign.")
 )
-
 ```
 
 Les résultats de la régression linéaire multiples avaient déjà été interprétés dans la section \@ref(sect05512), nous ne commenterons pas ici les résultats du modèle GLM gaussien qui sont très semblables.
@@ -3406,13 +3065,10 @@ Les résultats de la régression linéaire multiples avaient déjà été interp
 Pour rappel, la distribution de Student ressemble à une distribution normale (section \@ref(sect024311)). Elle est symétrique autour de sa moyenne et a également une forme de cloche. Cependant, elle dispose de queues lourdes, ce qui signifie qu’elle permet de représenter des phénomènes présentant davantage de valeurs extrêmes qu’une distribution normale. Pour contrôler le poids des queues, la distribution de Student intègre un troisième paramètre : $\nu$ (nu). Lorsque $\nu$ tends vers l’infini, la distribution de Student tend vers une distribution normale (figure : \@ref(fig:studentdistrib)).
 
 ```{r studentdistrib, echo=FALSE, message=FALSE, warning=FALSE, out.width='95%', fig.cap="Effet du paramètre nu sur une distribution de Stundent"}
-
 library(LaplacesDemon)
 library(ggplot2)
-
 colors <- c("#03071e","#6a040f","#f48c06", "#0096c7")
 labels_col <- c("nu=2","nu=5","nu=30","normal")
-
 ggplot() + 
   stat_function(aes(color = colors[[1]]), size = 1,
         fun = dst, args = list("mu"=0,
@@ -3440,20 +3096,16 @@ ggplot() +
         panel.grid = element_blank()) +
   xlim(-50,50) + 
   ylim(0,0.05)
-
 ```
 
 Comme vous pouvez le constater dans la carte d'identité au tableau \@ref(tab:studentdentity), le modèle GLM Student est très proche du modèle GLM gaussien. On modélise explicitement la moyenne de la distribution et son paramètre de dispersion (variance) est laissé fixe. Ce GLM est même souvent utilisé comme une version « robuste » du modèle gaussien du fait de sa capacité à intégrer explicitement l’effet des observations extrêmes. En effet, dans un modèle gaussien, les observations extrêmes (aussi appelées observations aberrantes) vont davantage influencer les paramètres du modèle que si une distribution de Student était utilisée.
 
 ```{r studentdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Student(\\mu,\\sigma,\\nu)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = x$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable continue dans l'intervalle $]-\\infty ; + \\infty[$", "Student", model_formula , "identitaire", "$\\mu$", "$\\beta_0$, $\\beta$,  $\\sigma$ et $\\nu$", "Homoscédasticité")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle de Student",
     col.names = NULL, 
@@ -3478,25 +3130,20 @@ Nous proposons ici de simplement réajuster le modèle gaussien présenté dans 
 ```{r stucookdist, fig.align = "center", out.width = "50%", fig.cap = "Distances de Cook pour un modèle GLM avec une distribution de Student", message=FALSE, warning=FALSE}
 # Chargement des données
 load("data/lm/DataVegetation.RData")
-
 # Ajustement du modèle
 modele <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal,
               family = scat)
-
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
-
 # Affichage des valeurs
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df) + 
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
-
 ```
 
 Nous retrouvons les quatre observations avec des distances de Cook très fortes que nous avions identifiées dans le modèle gaussien. Nous décidons donc de les enlever pour les mêmes raisons que précédemment.
@@ -3504,41 +3151,32 @@ Nous retrouvons les quatre observations avec des distances de Cook très fortes 
 ```{r stucookdist2, fig.align = "center", out.width = "50%", fig.cap = "Distances de Cook pour un modèle GLM avec une distribution de Student, après suppression des valeurs fortement influentes", message=FALSE, warning=FALSE}
 # Chargement des données
 DataFinal2 <- subset(DataFinal, cooksd<0.1)
-
 # Ajustement du modèle
 modele <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2,
               family = scat)
-
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
-
 # Affichage des valeurs
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 ggplot(data = df) + 
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
-
 ```
 
 Nous pouvons à présent vérifier si les résidus simulés se comportent tel qu'attendu.
 
 ```{r studentresid, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Diagnostic général des résidus simulés pour le GLM avec distribution de Student", out.width = "95%"}
-
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = 'response')
-
 # Affichage des paramètres nu et sigma
 modele$family$family
 sigma_model <- 11.281
 nu_model <- 6.333
-
 library(LaplacesDemon) # pour simuler des données d'une distribution de Student
-
 # Génération de 1000 simulations pour chaque prédiction
 nsim <- 1000
 cols <- lapply(1:length(mus),function(i){
@@ -3547,7 +3185,6 @@ cols <- lapply(1:length(mus),function(i){
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # Calculer les résidus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = DataFinal2$VegPct,
@@ -3565,17 +3202,13 @@ ggplot()+
 Pour cet exercice, il est intéressant de comparer les formes des simulations issues du modèle gaussien et du modèle de Student pour bien distinguer la différence entre les deux.
 
 ```{r studentresid3, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Simulations issues des modèles gaussien et Student, comparées aux données originales", echo = F, out.width = "95%"}
-
 # formattage des simulations Students
 df1 <- reshape2::melt(mat_sims[,1:20])
-
 # simulation pour un modèle gaussien
 modeleGau <- glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2)
-
 sigma2 <- sigma(modeleGau)
 mus <- predict(modeleGau, type = 'response')
-
 nsim <- 1000
 cols <- lapply(1:length(mus),function(i){
   mu <- mus[[i]]
@@ -3583,9 +3216,7 @@ cols <- lapply(1:length(mus),function(i){
   return(sims)
 })
 mat_sims2 <- do.call(rbind, cols)
-
 df2 <- reshape2::melt(mat_sims2[,1:20])
-
 P1 <- ggplot()+
   geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..), color = 'white', bins = 50) + 
   geom_density(data = df1, aes(x = value, group = Var2), color = rgb(0.9,0.22,0.27,0.4)) + 
@@ -3596,8 +3227,6 @@ P1 <- ggplot()+
   ylim(0,0.023) +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank())
-
-
 P2 <- ggplot()+
   geom_histogram(data = DataFinal2, mapping = aes(x = VegPct, y = ..density..), color = 'white', bins = 50) + 
   geom_density(data = df2, aes(x = value, group = Var2), color = rgb(0.11,0.21,0.34,0.4)) + 
@@ -3610,7 +3239,6 @@ P2 <- ggplot()+
         axis.ticks.y = element_blank())
   
 ggarrange(P1,P2, ncol = 2, nrow = 1)
-
 ```
 
 Nous constatons ainsi que la différence entre les deux modèles est ici très mince, voire inexistante. Le seul élément que l'on peut noter est que le modèle de Student à une courbe (une queue de distribution) moins aplatie vers la droite. Cela lui permettrait de mieux tenir de compte de cas extrêmes avec de fortes densités de végétation (ce qui concerne donc très peu d'observations puisque cette variable a un maximum de 100).
@@ -3618,12 +3246,10 @@ Nous constatons ainsi que la différence entre les deux modèles est ici très m
 Pour déterminer si le modèle de Student est plus pertinent à retenir que le modèle gaussien, nous pouvons ajuster un second modèle de Student pour lequel nous forçons artificiellement $\nu$ à être très élevé. Pour rappel, quand $\nu$ tend vers l'infini, la distribution de Student tend vers une distribution normale. Nous forçons ici $\nu$ à être supérieur à 100 pour créer un second modèle de Student se comportant quasiment comme un modèle gaussien et calculons les AIC des deux modèles.
 
 ```{r message=FALSE, warning=FALSE}
-
 # Calcul d'un modèle de Student identitique à un modèle gaussien
 modele2 <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                    Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2,
                family = scat(min.df = 100))
-
 # Calcul des deux AIC
 AIC(modele)
 AIC(modele2)
@@ -3676,14 +3302,11 @@ Dans ce contexte, $\mu$ doit être strictement positif : la valeur attendue moye
 Pour résumer, nous nous retrouvons donc avec un modèle qui prédit sur une échelle logarithmique la moyenne d’une distribution Gamma. Notez qu’il existe d’autres façons de spécifier un modèle GLM avec une distribution Gamma, mais celle-ci est la plus intuitive.
 
 ```{r gammadentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Gamma(\\mu,\\alpha)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = log(x)$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable continue dans l'intervalle $]0 ; + \\infty[$", "Gamma", model_formula , "log", "$\\mu$", "$\\beta_0$, $\\beta$, et  $\\alpha$", "$Variance = \\frac{\\mu^2}{\\alpha}$")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle Gamma",
     col.names = NULL, 
@@ -3720,23 +3343,19 @@ df <- data.frame(
   C3 = c("Variable catégorielle", "Variable catégorielle", "Variable catégorielle", "Variable catégorielle", "Variable continue", "Variable binaire", "Variable binaire"),
   C4 = c("Transport collectif ; piéton ; vélo et véhicule individuel", "Travail ; loisir ; magasinage et éducation", "De 07h à 21h", "Nom de l’arrondissement dont part le trajet", "Logarithme de la distance à vol d’oiseau en km entre le point de départ et d’arrivée", "Oui ou non", "Semaine ou fin de semaine")
 )
-
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle Gamma",
     col.names = c("Nom de la variable","Signification","Type de variable","Mesure"), 
     col.to.resize = c(2,4),
     col.width = "5cm"
 )
-
 ```
 
 Les temps de trajet forment une variable strictement positive et très vraisemblablement asymétrique. En effet, nous nous attendons à observer une certaine concentration de valeurs autour d'une moyenne, et davantage de trajets avec de courtes durées que de trajets avec de longues durées. Pour nous en assurer, réalisons un histogramme de la distribution de notre variable *Y* et comparons la avec des distributions normale et Gamma.
 
 ```{r gammadatadistrib, fig.cap = "Distribution des temps de trajets diurnes à Montréal", fig.align = "center",  message=FALSE, warning=FALSE, out.width='50%'}
-
 # Chargement des données
 dataset <- read.csv("data/glm/DureeTrajets.csv", stringsAsFactors = F)
-
 arrondMTL <- c("Mercier-Hochelaga-Maisonneuve", "Villeray-Saint-Michel-Parc-Extension", 
                "Ville-Marie", "Verdun", "Saint-Leonard", "Saint-Laurent", 
                "Rosemont-La Petite-Patrie", "Riviere-des-Prairies-Pointe-aux-Trembles", 
@@ -3744,20 +3363,15 @@ arrondMTL <- c("Mercier-Hochelaga-Maisonneuve", "Villeray-Saint-Michel-Parc-Exte
                "Le Plateau-Mont-Royal", "Lachine" , "Ahuntsic-Cartierville",
                "Anjou" ,"Cote-des-Neiges-Notre-Dame-de-Grace", "LaSalle"  
 )
-
 dataset <- subset(dataset,dataset$ArrondDep %in% arrondMTL)
-
 # Définissons 7H du matin comme la référence pour la variable Heure de départ
-
 dataset$HeureDep <- relevel(
   factor(dataset$HeureDep, levels = as.character(7:21)),
   ref = "7")
-
 # Comparaison de la distribution originale avec une distribution 
 # normale et une distribution Gamma
 library(fitdistrplus)
 model_gamma <- fitdist(dataset$Duree, distr = "gamma")
-
 ggplot(data = dataset) + 
   geom_histogram(aes(x=Duree, y = ..density..), bins = 40, color = "white")+
   stat_function(fun = dgamma, color = 'red', size = 0.8, 
@@ -3792,20 +3406,16 @@ modele <- vglm(Duree ~ Mode + Motif + HeureDep + LogDist +
                  ArrondDep+ MemeArrond + Semaine,
                data = dataset,
                family=gamma2(lmu = "loglink"))
-
 # Calcul des distances de Cook
 hats <- hatvaluesvlm(modele)[,1]
 res <- residuals(modele,type = "pearson")[,1]
 disp <- modele@coefficients[[2]]**-1
 nbparams <- modele@rank
-
 cooksd <- (res/(1 - hats))^2 * hats/(disp * nbparams)
-
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 # Représentation des distances de Cook
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4,0.4)) + 
@@ -3817,7 +3427,6 @@ Puisque nous disposons d'un (très) grand nombre d'observations, nous pouvons no
 ```{r message=FALSE, warning=FALSE}
 # Retirer les valeurs influentes
 dataset2 <- subset(dataset, cooksd<0.003)
-
 # Calcul du modèle avec VGAM
 modele <- vglm(Duree ~ Mode + Motif + HeureDep + LogDist +
                  ArrondDep+ MemeArrond + Semaine,
@@ -3828,20 +3437,16 @@ modele <- vglm(Duree ~ Mode + Motif + HeureDep + LogDist +
 Nous constatons ainsi à la figure \@ref(fig:cookdistgamma2) que dans la nouvelle version du modèle, aucune valeur particulièrement influente ne semble être présente.
 
 ```{r cookdistgamma2, message=FALSE, warning=FALSE, out.width='50%', fig.cap = "Distances de Cook pour le modèle Gamma (sans les observations fortement influentes)", fig.align = "center", echo = FALSE}
-
 # Calcul des distances de Cook
 hats <- hatvaluesvlm(modele)[,1]
 res <- residuals(modele,type = "pearson")[,1]
 disp <- modele@coefficients[[2]]**-1
 nbparams <- modele@rank
-
 cooksd <- (res/(1 - hats))^2 * hats/(disp * nbparams)
-
 df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
-
 # Représentation des distances de Cook
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4,0.4)) +
@@ -3849,26 +3454,20 @@ ggplot(data = df)+
 ```
 
 ```{r simdistribgamma, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Comparaison de la distribution originale et de simulations issues du modèle Gamma", fig.align = "center", echo = TRUE}
-
 # Extraction des prédictions du modèle (mu)
 mus <- modele@fitted.values
 # Extration du paramètre de forme
 shape <- exp(modele@coefficients[[2]])
-
 # Calcul des simulations
 nsim <- 1000
-
 cols <- lapply(1:length(mus),function(i){
   mu <- mus[[i]]
   sims <- rgamma(n = nsim,shape = shape, scale = mu/shape)
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
-
 # Représentation graphique de 20 simulations
 df2 <- reshape2::melt(mat_sims[,0:20])
-
 ggplot() + 
   geom_histogram(aes(x = Duree, y = ..density..),
                  data = dataset, bins = 100, color = "black", fill = "white") + 
@@ -3876,18 +3475,15 @@ ggplot() +
                fill = rgb(0,0,0,0), color = rgb(0.9,0.22,0.27,0.4), size = 1)+
   xlim(0,200)+
   labs(X="durée (minutes)", y="densité")
-
 ```
 Avant de calculer les résidus simulés, nous comparons la distribution originale des données et des simulations issues du modèle. La figure \@ref(fig:simdistribgamma) permet de constater que le modèle semble bien capturer l’essentiel de la forme de la variable *Y* originale. Nous notons un léger décalage entre la pointe des deux distributions, laissant penser que les valeurs prédites par le modèle tendent à être légèrement plus grandes que les valeurs réelles. Pour mieux appréhender ce constat, nous passons à l'analyse des résidus simulés.
 
 ```{r gammaresids, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Distribution des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
-
 # DHarma tests
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = dataset2$Duree,
                             fittedPredictedResponse = modele@fitted.values[,1],
                             integerResponse = F)
-
 ggplot() + 
   geom_histogram(aes(x = residuals(sim_res)), bins = 100, color = "white") + 
   labs(x = "résidus simulés",
@@ -3903,50 +3499,41 @@ plot(sim_res)
 La figure \@ref(fig:gammaresids2) indique que le modèle souffre à la fois d'un problème de dispersion (la relation espérance-variance n'est donc pas respectée) et est affecté par des valeurs aberrantes. Considérant que nous avons encore un très grand nombre d'observations, nous faisons le choix de retirer celles pour lesquelles la méthode des résidus simulés estime qu'elles sont des valeurs aberrantes dans au moins 1% des simulations, soit environ 620 observations.
 
 ```{r gammaresids3, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma (après suppression d'environ 620 valeurs aberrantes)", fig.align = "center", echo = TRUE}
-
 # Sélection des valeurs aberrantes au seuil 0.01
 sim_outliers <- outliers(sim_res, 
                          lowerQuantile = 0.01,
                          upperQuantile = 0.99, 
                          return = "logical")
 table(sim_outliers)
-
 # Retirer ces observations des données
 dataset3 <- subset(dataset2, sim_outliers==FALSE)
-
 # Réajuster le modèle
 modele <- vglm(Duree ~ Mode + Motif + HeureDep + 
                  LogDist + ArrondDep + MemeArrond + Semaine,
                data = dataset3,
                model = T,
                family=gamma2)
-
 modele2 <- vglm(Duree ~ Mode + Motif + HeureDep + ArrondDep + MemeArrond + Semaine,
                data = dataset3,
                model = T,
                family=gamma2)
-
 # Extraction des prédictions du modèle (mu)
 mus <- modele@fitted.values
 # extration du paramètre de forme
 shape <- exp(modele@coefficients[[2]])
-
 # Calcul des simulations
 nsim <- 1000
-
 cols <- lapply(1:length(mus),function(i){
   mu <- mus[[i]]
   sims <- rgamma(n = nsim,shape = shape, scale = mu/shape)
   return(sims)
 })
 mat_sims <- do.call(rbind, cols)
-
 # Calcul des résidus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims, 
                             observedResponse = dataset3$Duree,
                             fittedPredictedResponse = modele@fitted.values[,1],
                             integerResponse = F)
-
 plot(sim_res)
 ```
 
@@ -3955,28 +3542,22 @@ La figure \@ref(fig:gammaresids3) indique que les résidus simulés ne suivent t
 D'un point de vue purement pédagogique, nous pouvons comparer graphiquement la variance observée dans les données et la variance attendue par le modèle. La figure \@ref(fig:dispgamma) montre clairement que la variance des données tend à être plus grande qu'attendue quand les temps de trajet sont courts, mais diminue trop vite quand les temps de trajet augmentent. D'autres distributions pourraient être envisagées pour ajuster notre modèle : Lognormal, Weibull, etc.
 
 ```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle Gamma", out.width = "50%"}
-
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = "response")[,1]
-
 # Création d'un dataframe pour contenir la prédiction et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = dataset3$Duree
 )
-
 # Calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
 # et stockage dans un second dataframe
 seqa <- seq(10,120,10)
-
 shape <- exp(modele@coefficients[[2]])
-
 df2 <- data.frame(
   mus = seqa,
   lower = qgamma(p = 0.025, shape = shape, scale = seqa/shape),
   upper = qgamma(p = 0.975, shape = shape, scale = seqa/shape)
 )
-
 # Affichage des valeurs réelles et prédites (en rouge)
 # et de leur variance selon le modèle (en noir)
 ggplot() + 
@@ -3998,7 +3579,6 @@ modele.null <- vglm(Duree ~1,
                data = dataset3,
                model = T,
                family=gamma2)
-
 # calcul des pseudos R2
 rsqs(loglike.full = logLik(modele),
      loglike.null = logLik(modele.null),
@@ -4007,7 +3587,6 @@ rsqs(loglike.full = logLik(modele),
      nb.params = modele2@rank,
      n = nrow(dataset3)
      )
-
 # calcul du RMSE
 preds <- predict(modele, type="response")[,1]
 sqrt(mean((preds - dataset3$Duree)**2))
@@ -4022,19 +3601,16 @@ Puisque nos trajets peuvent provenir de nombreux arrondissements, nous proposons
 
 
 ```{r arrondgamma, warning = FALSE, message=FALSE, fig.cap = "Effet de l'arrondissement de départ sur les temps de trajet à Montréal", fig.align = "center", out.width = "100%"}
-
 # Extraction des coefficient du modèle
 coeffs <- modele@coefficients
 # Calcul des interval de confiance des coefficients
 conf <- confint(modele)
 # Passage en exponentiel
 df <- exp(cbind(coeffs, conf))
-
 # Extraction des coefficients pour les arrondissements
 dfArrond <- data.frame(df[grepl("ArrondDep",row.names(df), fixed = T),])
 names(dfArrond) <- c("coeff", "lower","upper")
 dfArrond$Arrondissement <- gsub("ArrondDep","",rownames(dfArrond),fixed = T)
-
 # Graphique des exponentiels des coefficients
 P1 <- ggplot(data = dfArrond) + 
   geom_vline(xintercept = 1, color = "red")+
@@ -4048,7 +3624,6 @@ P1 <- ggplot(data = dfArrond) +
        y = "",
        subtitle = "Exponentiels des coefficients du modèle")+
   xlim(c(0.75,1.46))
-
 # Création d'un dataframe fictif pour les effets marginaux
 dfpred <- expand.grid(
   LogDist = mean(dataset3$LogDist),
@@ -4059,30 +3634,24 @@ dfpred <- expand.grid(
   Mode = 'pieton','velo','transport collectif',
   Semaine = 'lundi au vendredi'
 )
-
 # Utiliser le modèle pour effectuer des prédictions (échelle log)
 lin_pred <- predict(modele,dfpred, se = T)
 mu_lin_pred <- lin_pred$fitted.values[,1]
 se_lin_pred <- lin_pred$se.fit[,1]
-
 dfpred2 <- data.frame(
   pred = exp(mu_lin_pred),
   lower = exp(mu_lin_pred- 1.96*se_lin_pred),
   upper = exp(mu_lin_pred+ 1.96*se_lin_pred)
 )
-
 dfpred2 <- cbind(dfpred2, dfpred)
-
 # Réaliser le graphique des effets marginaux
 P2 <- ggplot(data = dfpred2) + 
   geom_col(aes(x = pred, y = ArrondDep)) + 
   geom_errorbarh(aes(xmin = lower, xmax = upper, y = ArrondDep)) + 
   labs(x = "Temps de déplacement prédit", y="",
        subtitle = "Prédiction du modèle")
-
 ggarrange(P1,P2, ncol = 1, nrow = 2)
   
-
 ```
 
 La figure \@ref(fig:arrondgamma) permet de constater que les arrondissements Ville-Marie et Plateau-Mont-Royal se distinguent avec des trajets plus courts (environ 20% plus courts en moyenne que les trajets partant d'Ahuntsic-Cartierville). À l'inverse, Lachine est de loin l'arrondissement avec les trajets les plus longs (25% plus long en moyenne que les trajets partant d'Ahuntsic-Cartierville).
@@ -4090,16 +3659,13 @@ La figure \@ref(fig:arrondgamma) permet de constater que les arrondissements Vil
 Nous appliquons la même méthode de visualisation à la variable Heure de départ des trajets.
 
 ```{r heuresgamma, warning = FALSE, message=FALSE, fig.cap = "Effet l'heure de départ sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%"}
-
 # Extraction des valeurs pour les heures de départ
 dfHeures <- data.frame(df[grepl("HeureDep",row.names(df), fixed = T),])
 names(dfHeures) <- c("coeff", "lower","upper")
 dfHeures$Heure <- gsub("HeureDep","",rownames(dfHeures),fixed = T)
-
 # rajouter des 0 et des h pour de jolies légendes
 dfHeures$Heure <- ifelse(str_length(dfHeures$Heure)==1,
                          paste("0",dfHeures$Heure,"h",sep=""),paste(dfHeures$Heure,"h",sep=""))
-
 # afficher le graphique
 ggplot(data = dfHeures) + 
   geom_hline(yintercept = 1, color = "red")+
@@ -4118,19 +3684,15 @@ Les déplacements ayant comme motif le magasinage et le travail ont tendance à 
 
 ```{r coeffsgamma, warning = FALSE, message=FALSE, echo = F}
 tableau <- build_table(modele, coef_digits = 3, OR_digits = 3)
-
 tableau_ok <- tableau[c(1:11,28,48:nrow(tableau)),]
 tableau_ok <- tableau_ok[,c(1,2,3,6,7,8,9)]
-
 show_table(tableau_ok, 
     caption = "Résultats pour le modèle GLM Gamma",
     col.names = c('Variable',"Coeff.","Exp(Coeff.)","Val.p","IC 2,5% exp(Coeff.)","IC 97,5% exp(Coeff.)", "Sign.")
 )
-
 ```
 
 ```{r distancegamma, warning = FALSE, message=FALSE, fig.cap = "Effet de la distance à vol d'oiseau sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%"}
-
 # Création d'un dataframe fictif pour la prédiction
 dfpred <- expand.grid(
   Dist = seq(1,40, 0.5),
@@ -4141,24 +3703,19 @@ dfpred <- expand.grid(
   Mode = c('pieton','velo','transport collectif'),
   Semaine = 'lundi au vendredi'
 )
-
 # Mise en log de la variable de distance
 dfpred$LogDist <- log(dfpred$Dist)
-
 # Calcul des prédictions et de leur erreur standard (échelle log)
 lin_pred <- predict(modele,dfpred, se = T)
-
 # Calcul des intervales de confiance et mise en exponentielle des prédictions
 dfpred$pred <- exp(lin_pred$fitted.values[,1])
 dfpred$lower <- exp(lin_pred$fitted.values[,1] -1.96*lin_pred$se.fit[,1])
 dfpred$upper <- exp(lin_pred$fitted.values[,1] +1.96*lin_pred$se.fit[,1])
-
 # Ajoutons les accents pour le graphiques
 dfpred$Mode <- as.character(dfpred$Mode)
 dfpred$Mode2 <- case_when(dfpred$Mode == "pieton" ~ "piéton",
                          dfpred$Mode == "velo" ~ "vélo",
                          TRUE ~ dfpred$Mode)
-
 # Affichage des résultats
 ggplot(data = dfpred) + 
   geom_path(aes(x = Dist, y = lower, color = Mode2), linetype = "dashed")+
@@ -4208,14 +3765,11 @@ Puisqu'une distribution Beta est définie dans l'intervalle $]0,1[$, son espéra
 Pour résumer, nous nous retrouvons donc avec un modèle qui prédit la moyenne d’une distribution de Beta avec une fonction de lien logistique. La variance de cette distribution est fonction de cette moyenne et d'un second paramètre $\phi$. Ces informations sont résumées dans la fiche d'identité du modèle (tableau \@ref(tab:betaentity)).
 
 ```{r betaentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
-
 model_formula <- "$Y \\sim Beta(\\mu,\\phi)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
-
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
  C2 = c("Variable continue dans l'intervalle $]0,1[$", "Student", model_formula , "log", "$\\mu$", "$\\beta_0$, $\\beta$, et  $\\phi$", "$Variance = \\frac{\\mu \\times (1-\\mu)}{1+\\phi}$")
 )
-
 show_table(tableau, 
     caption = "Carte d'identité du modèle Beta",
     col.names = NULL, 
@@ -4244,7 +3798,6 @@ df <- data.frame(
   C2 = c("Population de 65 ans et plus", "Population de 14 ans et moins", "Population à faible revenu", "Minorités visibles", "Végétation", "Arrondissements"),
   C3 = c("Variable continue", "Variable continue", "Variable continue", "Variable continue", "Variable continue", "Variable continue"),
   C4 = c("Pourcentage de la population ayant 65 ans et plus", "Pourcentage de la population ayant 14 ans et moins", "Pourcentage de la population à faible revenu", "Pourcentage de la population faisant partie des minorités visibles", "Pourcentage de la surface de l’AD couverte par de la végétation", "Arrondissement de l'Île de Montréal"))
-
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle Beta",
     col.names = c("Nom de la variable","Signification","Type de variable","Mesure"), 
@@ -4260,7 +3813,6 @@ Sans surprise, nous commençons par charger nos données et nous assurer de l'ab
 ```{r message=FALSE, warning=FALSE}
 ## Chargement des données
 dataset <- read.csv("data/glm/data_chaleur.csv",fileEncoding = "utf8")
-
 ## Calcul des valeurs de vif
 vif(glm(hot ~
           A65Pct + A014Pct + PopFRPct + PopMVPct +
@@ -4276,13 +3828,11 @@ modele <- gam(hot ~
                 A65Pct + A014Pct + PopFRPct + PopMVPct +
                 poly(prt_veg, degree=2) + Arrond,
               data = dataset, family = betar(link = "logit"))
-
 # calcul des distances de Cook
 df <- data.frame(
   cooksd = cooks.distance(modele),
   oid = 1:nrow(dataset)
 )
-
 # Affichage des distances de Cook
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cooksd),
@@ -4302,18 +3852,15 @@ Ces deux observations n'ont pas de points communs marqués, et ne semblent pas a
 ```{r cookdistbeta2, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta (suppression de deux observations influentes)", fig.align = "center", out.width = "50%"}
 # Suppression des deux observations très influentes
 dataset2 <- subset(dataset, df$cooksd < 0.01)
-
 modele2 <- gam(hot ~
                 A65Pct + A014Pct + PopFRPct + PopMVPct +
                 I(prt_veg**2) + prt_veg + Arrond,
               data = dataset2, family = betar(link = "logit"), methode = "REML")
-
 # calcul des distances de Cook
 df2 <- data.frame(
   cooksd = cooks.distance(modele2),
   oid = 1:nrow(dataset2)
 )
-
 # Affichage des distances de Cook
 ggplot(data = df2)+
   geom_point(aes(x = oid, y = cooksd),
@@ -4326,19 +3873,16 @@ Après réajustement (figure \@ref(fig:cookdistbeta2)) nous constatons à nouvea
 ```{r cookdistbeta3, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta (suppression de trois observations influentes)", fig.align = "center", out.width = "50%"}
 # Suppression de l'observation très étonnante
 dataset3 <- subset(dataset2, df2$cooksd<max(df2$cooksd))
-
 # Réajustement du modèle
 modele3 <- gam(hot ~
                 A65Pct + A014Pct + PopFRPct + PopMVPct +
                 I(prt_veg**2) + prt_veg + Arrond,
               data = dataset3, family = betar(link = "logit"), methode = "REML")
-
 # Calcul des distances de Cook
 df3 <- data.frame(
   cooksd = cooks.distance(modele3),
   oid = 1:nrow(dataset3)
 )
-
 # Affichage des distances de Cook
 ggplot(data = df3)+
   geom_point(aes(x = oid, y = cooksd),
@@ -4349,15 +3893,12 @@ ggplot(data = df3)+
 Tout semble aller pour le mieux après ce second passage (figure \@ref(fig:cookdistbeta3)). Si nous avions continué à observer des valeurs aussi influentes, nous aurions dû commencer à sérieusement questionner nos données ou notre modèle. La prochaine étape du diagnostic est donc l'analyse des résidus simulés.
 
 ```{r residsimbeta, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle Beta", fig.align = "center", out.width = "95%"}
-
 # Extraction de phi
 modele3$family$family
 phi <- 14.612
-
 # Réalisation des simulations
 nsim <- 1000
 mus <- modele3$fitted.values
-
 cols <- lapply(1:length(mus),function(i){
   mu <- mus[[i]]
   p <- mu * phi
@@ -4365,26 +3906,21 @@ cols <- lapply(1:length(mus),function(i){
   sims <- rbeta(n = nsim,shape1 = p, shape2 = q)
   return(sims)
 })
-
 mat_sims <- do.call(rbind, cols)
-
 # Calcul des résidus simulés
 sim_res <- createDHARMa(simulatedResponse = mat_sims,
                            observedResponse = dataset3$hot,
                            fittedPredictedResponse = modele3$fitted.values,
                            integerResponse = F)
-
 plot(sim_res)
 ```
 
 La figure \@ref(fig:residsimbeta) indique que les résidus suivent bien une distribution uniforme. Le test des valeurs aberrantes n'est pas significatif au seuil 0,01 (nous retenons ce seuil considérant le grand nombre de simulations et d'observation de notre jeu de données), nous décidons de ne pas supprimer davantage d'observations. Le panneau de droite indique une relation non linéaire instable, mais essentiellement centrée sur la ligne droite attendue. Pour plus de détail, nous calculons ces résidus simulés avec chacune des variables indépendantes.
 
 ```{r residsimbeta2, message=FALSE, warning=FALSE, fig.cap = "Relation entre chaque variable indépendante et les résidus simulés du modèle Beta", fig.align = "center", out.width = "95%"}
-
 # Préparons un plot multiple
 par(mfrow=c(3,2))
 vars <- c("A65Pct", "A014Pct", "PopFRPct", "PopMVPct", "prt_veg")
-
 for(v in vars){
   plotResiduals(sim_res, dataset3[[v]], main = v)
 }
@@ -4398,7 +3934,6 @@ df <- data.frame(
   resid = residuals(sim_res),
   Arrond = dataset3$Arrond
 )
-
 ggplot(data = df) + 
   geom_boxplot(aes(x = Arrond, y = resid))+
   theme(axis.text.x = element_blank(),
@@ -4412,11 +3947,9 @@ ggplot(data = df) +
 Dans un premier temps, nous comparons la distribution originale des données à des simulations issues du modèle.
 
 ```{r residsimbeta4, message=FALSE, warning=FALSE, fig.cap = "Comparaison entre la distribution originale et les simulations issue du modèle", fig.align = "center", out.width = "60%"}
-
 # Extraction de 20 simulations
 df2 <- data.frame(mat_sims[,1:20])
 df3 <- reshape2::melt(df2)
-
 ggplot() +
   geom_histogram(aes(x = hot, y = ..density..),
                  data = dataset3, bins = 100, color = "black", fill = "white") +
@@ -4434,7 +3967,6 @@ rsqs(loglike.full = modele3$deviance/-2,
      null.deviance = modele3$null.deviance,
      nb.params = modele3$rank,
      n = nrow(dataset3))
-
 # Calcul du RMSE
 sqrt(mean((modele3$fitted.values - modele3$y)**2))
 ```
@@ -4443,14 +3975,11 @@ Le modèle parvient à expliquer 90% de la déviance totale et obtient des pseud
 L'ensemble des coefficients du modèle sont accessibles via la fonction `summary`. Pour rappel, il est nécessaire de les convertir avec la fonction exponentielle pour pouvoir les interpréter en termes de rapport de cote. À nouveau, nous proposons de construire dans un premier temps une figure pour observer l'effet des arrondissements.
 
 ```{r betaArrond, message=FALSE, warning=FALSE, fig.cap = "Rapports de cote pour les arrondissements dans le modèle Beta", fig.align = "center", out.width = "95%"}
-
 # Identifier les coefficients pour les arrondissements
 test <- grepl("Arrond",names(modele3$coefficients), fixed = T)
-
 # Extraire les coefficients et les erreurs standards
 coeffs <- modele3$coefficients[test]
 err.std <- summary(modele3)$se[test]
-
 # Créer un dataframe avec les rapports de cote et les intervalles de confiance
 df <- data.frame(
   Arrond = gsub("Arrond","",names(coeffs), fixed = T),
@@ -4460,11 +3989,9 @@ df <- data.frame(
   lowerRC = exp(coeffs-1.96*err.std),
   upperRC = exp(coeffs+1.96*err.std)
 )
-
 # Retrouver l'arrondissement de référence
 allArrond <- unique(dataset3$Arrond)
 refArrond <- setdiff(allArrond, df$Arrond)
-
 # Créer le graphique
 ggplot(data = df) + 
   geom_errorbarh(aes(xmin = lowerRC, xmax = upperRC, y = reorder(Arrond,RC)))+
@@ -4482,10 +4009,8 @@ Nous notons ainsi que le seul groupe associé avec une augmentation significativ
 
 ```{r coeffsbeta, warning = FALSE, message=FALSE, echo = F}
 tableau <- build_table(modele3, coef_digits = 3, OR_digits = 3)
-
 tableau_ok <- tableau[c(1:6),]
 tableau_ok <- tableau_ok[,c(1,2,3,6,9,10,11)]
-
 show_table(tableau_ok, 
     caption = "Résultats pour le modèle GLM Beta",
     col.names = c('Variable',"Coeff.","RC","Val.p","IC 2,5% RC","IC 97,5% RC", "Sign.")
@@ -4493,7 +4018,6 @@ show_table(tableau_ok,
 ```
 
 ```{r betaFR, message=FALSE, warning=FALSE, fig.cap = "Effets marginaux des variable pourcentage de personnes à faible revenu et densité de végétation", fig.align = "center", out.width = "95%"}
-
 # Créer un dataframe pour la prédiction
 df <- expand.grid(
   A65Pct = mean(dataset3$A65Pct),
@@ -4505,13 +4029,11 @@ df <- expand.grid(
 )
 # Effectuer les prédiction sur l'échelle log
 pred <- predict(modele3, df, se=T, type = "link")
-
 # Calculer les prédictions et leurs intervales de confiance
 ilink <- modele3$family$linkinv
 df$pred <- ilink(pred$fit)
 df$lower <- ilink(pred$fit - 1.96* pred$se.fit)
 df$upper <- ilink(pred$fit + 1.96* pred$se.fit)
-
 # Afficher le résultat
 P1 <- ggplot(data = df)+
   geom_path(aes(x = PopFRPct, y = pred, color = Arrond), size =1) + 
@@ -4521,7 +4043,6 @@ P1 <- ggplot(data = df)+
        y = "Surface de l'AD couverte par des îlots de chaleur (%)",
        color = 'Arrondissement')+
   ylim(0,1)
-
 # Pour la végétation
 df2 <- expand.grid(
   A65Pct = mean(dataset3$A65Pct),
@@ -4531,15 +4052,12 @@ df2 <- expand.grid(
   prt_veg = seq(0,95,1),
   Arrond = c("Verdun",'Ahuntsic-Cartierville','Dollard-des-Ormeaux')
 )
-
 # Effectuer les prédiction sur l'échelle log
 pred2 <- predict(modele3, df2, se=T, type = "link")
-
 # Calculer les prédictions et leurs intervales de confiance
 df2$pred <- ilink(pred2$fit)
 df2$lower <- ilink(pred2$fit - 1.96* pred2$se.fit)
 df2$upper <- ilink(pred2$fit + 1.96* pred2$se.fit)
-
 # Afficher le résultat
 P2 <- ggplot(data = df2)+
   geom_path(aes(x = prt_veg, y = pred, color = Arrond), size =1) + 
@@ -4547,11 +4065,9 @@ P2 <- ggplot(data = df2)+
   geom_path(aes(x = prt_veg, y = upper, color = Arrond), linetype="dashed")+
   labs(x = "Pourcentage de couverture végétale", y = '', color = 'Arrondissement')+
   ylim(0,1)
-
 ggarrange(P1,P2, common.legend = T)
 ```
 
 ## 	Conclusion sur les modèles linéaires généralisés
 
 Comme vous avez dû le remarquer, les modèles linéaires généralisés constituent un monde à part entière et tout un livre pourrait être rédigé à leur sujet. Leur grande flexibilité les rend extrêmement utiles dans de nombreux contextes, mais complique leur mise en œuvre, chaque modèle ayant ses propres spécificités théoriques. Ils partagent cependant tous une base commune : le choix d’une distribution et d’une fonction de lien, l’ensemble de leurs spécificités découle directement de ces deux choix.
-

@@ -59,10 +59,8 @@ Un GLMM est donc un modèle GLM introduisant à la fois des effets fixes et des 
 Il s'agit de la forme la plus simple d'un GLMM, plus spécifiquement, elle autorise le modèle à avoir une constante différente pour chaque catégorie d'une variable multinomiale. En d'autres termes, nous tentons d'ajouter dans le modèle l'idée que chaque classe a une moyenne différente en termes de performance à l'examen de mathématique. Il est possible assez facilement de visualiser ce que cela signifie avec un exemple graphique. Admettons que nous modélisons le score obtenu par des élèves de secondaire à l'examen ministériel de mathématique à partir d'une autre variable continue représentant le temps de travail moyen par semaine en dehors des heures de classe et d'une variable catégorielle représentant dans quelle classe se trouve chaque élève. Notez qu'il ne s'agit pas ici de vraies données, mais de simples simulations utilisées à titre d'illustration. Si nous ne tenons pas compte des classes nous pouvons ajuster une simple régression linéaire entre nos deux variables continues comme le propose la figure \@ref(fig:randominter1).
 
 ```{r randominter1, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-
 set.seed(11)
 library(ggplot2)
-
 ## Générer des effets aléatoires
 groups <-  c("A","B","C","D","E","F","G","H")
 sig2 <- matrix(c(12, 0.1,
@@ -71,21 +69,17 @@ sig2 <- matrix(c(12, 0.1,
 mu2 <- c(inter = 0, coeff = 0)
 df2 <- data.frame(data.frame(MASS::mvrnorm(n = length(groups), mu = mu2, Sigma = sig2)))
 df2$name <- groups
-
 colors <- hcl.colors(length(groups), palette = "Dynamic")
 names(colors) <- groups
-
 ## Générer des données
 n <- 300
 df <- data.frame(
   X = rnorm(n,8,2),
   group = sample(df2$name,size = n, replace = T)
 )
-
 df3 <- merge(df,df2, by.x="group",by.y="name")
 df3$Y <- 65 + df3$X*(1.5+df3$coeff) + df3$inter + rnorm(n = n, mean = 0, sd = 8)
 df3$Y2 <- ifelse(df3$Y>=100, 100, df3$Y)
-
 ## Afficher le tout !
 ggplot(data = df3)+
   geom_point(aes(x = X, y = Y2, color = group), size = 1) + 
@@ -97,18 +91,15 @@ ggplot(data = df3)+
 On constate que notre modèle semble bien identifier la relation positive entre le temps de travail et le niveau de performance, mais la droite de régression est très éloignée de chaque point, nous avons donc énormément d'erreurs de prédiction et donc des résidus importants. Jusqu'ici nous avons vu que nous pouvions ajouter un prédicteur et intégrer l'effet des classes comme un effet fixe.
 
 ```{r randominter2, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves en tenant compte de l'effet de leur classe (effet fixe)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-
 model <- lm(Y2 ~ X + group, data = df3)
 b1 <- model$coefficients[[2]]
 diffs <- c(0,model$coefficients[c(3:length(model$coefficients))])
 diffs <- diffs + model$coefficients[[1]]
-
 df4 <- data.frame(
   inter = diffs,
   slope = b1,
   group = names(colors)
 )
-
 ggplot(data = df3)+
   geom_point(aes(x = X, y = Y2, color = group), alpha = 0.8, size = 1)+
   geom_abline(data = df4, mapping = aes(intercept = inter, slope = slope, color = group),size = 1.2)+ 
@@ -151,16 +142,13 @@ Selon cette formulation, les constantes propres à chaque classe sont issues d'u
 
 ```{r randominter3, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves en tenant compte de l'effet de leur classe (effet aléatoire)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(lme4)
-
 model2 <- lmer(Y2 ~ X + (1|group), data = df3)
-
 coeffs <- coef(model2)$group
 df5 <- data.frame(
   inter = coeffs[,1],
   slope = coeffs[,2],
   group = rownames(coeffs)
 )
-
 ggplot(data = df3)+
   geom_point(aes(x = X, y = Y2, color = group), alpha = 0.8, size = 1)+
   geom_abline(data = df5, mapping = aes(intercept = inter, slope = slope, color = group),size = 1.2)+ 
@@ -176,22 +164,18 @@ Le premier intérêt d'utiliser un effet aléatoire réside dans sa méthode d'e
 
 ```{r randominter5, echo=FALSE, fig.align='center', fig.cap="Comparaison des effets des classes pour le modèle à effets fixes versus le modèle effets aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(MuMIn)
-
 r2s <- r.squaredGLMM(model2)
-
 df6 <- data.frame(
   fixed = df4$inter,
   random = df5$inter,
   group = df4$group
 )
-
 ggplot() + 
   geom_point(data = df4, mapping = aes(x = inter, y = group,  color = "fixed")) +
   geom_point(data = df5, mapping = aes(x = inter, y = group, color = "random")) + 
   geom_vline(xintercept = mean(df4$inter)) + 
   labs(x = "effet de la classe", y = "classe", color = "type d'effet") + 
   scale_color_manual(values = c("fixed" = "red", random = "blue"), labels = c("fixe", "aléatoire"))
-
 sigma_u <- as.data.frame(VarCorr(model2))$sdcor[[1]]
 sigma_e <- as.data.frame(VarCorr(model2))$sdcor[[2]]
 ```
@@ -221,19 +205,16 @@ En plus de l'ICC, il est également possible de calculer les **R^2^ marginal et 
 Dans cette seconde version du GLMM, nous n'envisageons plus de faire varier une constante en fonction des classes, mais un coefficient en fonction des classes. Admettons ici que nous voulions tester si l'effet du temps de travail ($x_1$) sur la performance scolaire (*Y*) n'est pas constant partout et que dans certaines classes, le temps de travail par semaine et dehors de l'école est plus efficace que d'autres. L'idée sous-jacente est que nous n'observons pas de différence en termes de moyenne entre deux classes, mais en termes d'effet pour notre variable $x_1$. À nouveau, nous pourrions nous contenter d'effet un fixe pour intégrer cette idée dans notre modèle. Pour cela, nous avons simplement à ajouter une interaction entre notre variable quantitative temps de travail et notre variable qualitative classe. Nous obtenons le résultat décrit par la figure \@ref(fig:randomslope). Notez ici que la constante est bien la même pour chaque classe (l'ensemble des lignes s'intersecte à 0 sur l'axe des x), et que seule la pente change.
 
 ```{r randomslope, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves en interraction avec la classe (effet fixe)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-
 model <- lm(Y2 ~ X + X:group, data = df3)
 inter <- model$coefficients[[1]]
 b1 <- model$coefficients[[2]]
 diffs <- c(0,model$coefficients[c(3:length(model$coefficients))])
 diffs <- b1 + diffs
-
 df4 <- data.frame(
   inter = inter,
   slope = diffs,
   group = names(colors)
 )
-
 ggplot(data = df3)+
   geom_point(aes(x = X, y = Y2, color = group), alpha = 0.8, size = 1)+
   geom_abline(data = df4, mapping = aes(intercept = inter, slope = slope, color = group),size = 1.2)+ 
@@ -275,16 +256,13 @@ Les résultats pour ce second modèle sont présentés à la figure \@ref(fig:ra
 
 
 ```{r randomslope2, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la réussite scolaire d'élèves en interraction avec la classe (effet aléatoire)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-
 model2 <- lmer(Y2 ~ X + (-1+X|group), data = df3)
 coeffs <- coef(model2)$group
-
 df5 <- data.frame(
   inter = coeffs[,1],
   slope = coeffs[,2],
   group = rownames(coeffs)
 )
-
 ggplot(data = df3)+
   geom_point(aes(x = X, y = Y2, color = group), alpha = 0.8, size = 1)+
   geom_abline(data = df5, mapping = aes(intercept = inter, slope = slope, color = group),size = 1.2)+ 
@@ -294,22 +272,18 @@ ggplot(data = df3)+
 ```
 
 ```{r randomslope3, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la réussite scolaire d'élèves en interraction avec la classe (effet aléatoire)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-
 df6 <- data.frame(
   fixed = df4$slope,
   random = df5$slope,
   group = df4$group
 )
-
 ggplot() + 
   geom_point(data = df4, mapping = aes(x = slope, y = group,  color = "fixed")) +
   geom_point(data = df5, mapping = aes(x = slope, y = group, color = "random")) + 
   geom_vline(xintercept = mean(df4$slope)) + 
   labs(x = "effet du temps de travail", y = "classe", color = "type d'effet") + 
   scale_color_manual(values = c("fixed" = "red", random = "blue"), labels = c("fixe", "aléatoire"))
-
 rs2 <- r.squaredGLMM(model2)
-
 ```
 
 Lorsque l'on intègre des pentes aléatoires dans un modèle, on fait face au problème suivant : la variance associée aux pentes aléatoires n'est pas fixe, mais proportionnelle à la variable *X* autorisée à varier. Si l'on compare la figure \@ref(fig:randominter3) (constantes aléatoires) et la figure \@ref(fig:randomslope2) (pentes aléatoires), on constate bien que la dispersion des prédictions du modèle (représentées par les lignes) augmente dans le cas de pentes aléatoires et reste identique dans le cas des constantes aléatoires. La conséquence pratique est qu'il existe potentiellement un nombre infini de valeurs possibles pour l'ICC. Dans ce contexte, il est préférable de laisser de côté cet indicateur et de ne reporter que les R^2^ marginal et conditionnel. Dans notre cas, nous obtenons les valeurs `r tofr(round(rs2[[1]],3))` et `r tofr(round(rs2[[2]],3))`, ce qui confirme une fois encore que le rôle joué par la classe est loin d'être négligeable puisqu'il permet d'expliquer près de `r tofr(round(rs2[[2]],3)*100)`% supplémentaire de variance comparativement aux seuls effets fixes expliquant `r tofr(round(rs2[[1]],3)*100)`% de la variance du score obtenu à l'examen.
@@ -335,19 +309,16 @@ Si l'on reprend notre exemple avec nos élèves et nos classes, combiner à la f
 Nous pouvons représenter les résultats de ce modèle avec la figure \@ref(fig:fullrandom1).
 
 ```{r fullrandom1, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves en tenant compte de l'effet de leur classe et de l'impact de la classe sur l'efficacité du temps de travail (effet fixe)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-
 model <- lm(Y2 ~ X*group, data = df3)
 b1 <- model$coefficients[[2]]
 inter <- model$coefficients[[1]]
 inters <- c(0,model$coefficients[3:(2+length(colors)-1)])
 coeffs <- c(0,model$coefficients[(2+length(colors)):length(model$coefficients)])
-
 df4 <- data.frame(
   inter = inters + inter,
   slope = b1 + coeffs,
   group = names(colors)
 )
-
 ggplot(data = df3)+
   geom_point(aes(x = X, y = Y2, color = group), alpha = 0.8, size = 1)+
   geom_abline(data = df4, mapping = aes(intercept = inter, slope = slope, color = group),size = 1.2)+ 
@@ -432,25 +403,20 @@ Si cette corrélation est positive, cela signifierait dans notre cas que dans le
 Pour cet exemple, nous conservons la première formulation afin de montrer comment interpréter $\sigma_{\upsilon_1\upsilon_2}$, mais nous ne disposons probablement pas de suffisamment de classes différentes pour estimer correctement ces trois paramètres. Les résultats de ce modèle sont représentés à la figure \@ref(fig:fullrandom2).
 
 ```{r fullrandom2, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves en tenant compte de l'effet de leur classe et de l'impact de la classe sur l'efficacité du temps de travail (effet fixe)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
-
 df3$x <- scale(df3$X,center = T, scale = T)
-
 model2 <- lmer(Y2 ~ X + (X|group), data = df3,
               control = lmerControl(optimizer = "bobyqa"))
 coeffs <- coef(model2)$group
-
 df5 <- data.frame(
   inter = coeffs[,1],
   slope = coeffs[,2],
   group = rownames(coeffs)
 )
-
 ggplot(data = df3)+
   geom_point(aes(x = X, y = Y2, color = group), alpha = 0.8, size = 1)+
   geom_abline(data = df5, mapping = aes(intercept = inter, slope = slope, color = group),size = 1.2)+ 
   scale_color_manual(values =colors)+
   labs(y = "Note à l'examen (%)", x = "Temps de travail (heures)", color = "Classe")
-
 covmod <- VarCorr(model2)$group[1,2]
 sigma1 <- VarCorr(model2)$group[1,1]
 sigma2 <- VarCorr(model2)$group[2,2]
@@ -466,14 +432,12 @@ plot1 <- ggplot() +
   geom_vline(xintercept = mean(df4$inter)) + 
   labs(x = "constante", y = "classe", color = "type d'effet") + 
   scale_color_manual(values = c("fixed" = "red", random = "blue"), labels = c("fixe", "aléatoire"))
-
 plot2 <- ggplot() + 
   geom_point(data = df4, mapping = aes(x = slope, y = group,  color = "fixed")) +
   geom_point(data = df5, mapping = aes(x = slope, y = group, color = "random")) + 
   geom_vline(xintercept = mean(df4$slope)) + 
   labs(x = "pente", y = "classe", color = "type d'effet") + 
   scale_color_manual(values = c("fixed" = "red", random = "blue"), labels = c("fixe", "aléatoire"))
-
 ggarrange(plot1,plot2,ncol = 2, nrow = 1, common.legend = T)
 rs2 <- r.squaredGLMM(model2)
 ```
@@ -490,21 +454,17 @@ model3 <- lmer(Y2 ~ X + (X|group), data = df3,
               control = lmerControl(optimizer = "bobyqa"))
 model4 <- lmer(Y2 ~ X + (X||group), data = df3,
               control = lmerControl(optimizer = "bobyqa"))
-
 models <- list(model1,model2,model3,model4)
-
 tableau <- data.frame(
   name = c("Constantes aléatoires", "Pentes aléatoires", "Pentes et constantes aléatoires corrélées", "Pentes et constantes aléatoires non-corrélées"),
   aic = round(sapply(models, function(i){AIC(i)}),1),
   r2m = round(sapply(models, function(i){r.squaredGLMM(i)[[1]]}),2),
   r2c = round(sapply(models, function(i){r.squaredGLMM(i)[[2]]}),2)
 )
-
 show_table(tableau,
           caption = 'Comparaison des trois modèles à effets aléatoires',
           col.names=c("modèle","AIC","R^2^ marginal","R^2^ conditionnel"),
           align= c("l","r", "r", "r"))
-
 ```
 
 ### Effet aléatoire avec design croisé ou imbriqué
@@ -556,7 +516,6 @@ Ce modèle formule l'hypothèse que les constantes aléatoires $\upsilon$ provie
 
 ```{r diagglmm1, echo = FALSE, fig.align='center', fig.cap="Distribution normale univariée des constantes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 model2 <- lmer(Y2 ~ X + (1|group), data = df3)
-
 qplot(sample = ranef(model2)$group[,1])+
   geom_qq_line(line.p = c(0.25, 0.75),
                color = "red", size=0.8, linetype="dashed")+
@@ -580,44 +539,34 @@ La figure \@ref(fig:diagglmm2) représente donc les deux graphiques Quantile-Qua
 ```{r diagglmm2, echo = FALSE, fig.align='center', fig.cap="Multiples distributions normales univariées des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 model2 <- lmer(Y2 ~ X + (X|group), data = df3,
               control = lmerControl(optimizer = "bobyqa"))
-
 re_effects <- ranef(model2)$group
-
 q1 <- qplot(sample = re_effects[,1])+
   geom_qq_line(line.p = c(0.25, 0.75),
                color = "red", size=0.8, linetype="dashed")+
   labs(x="Valeurs théoriques",
      y = "Constantes aléatoires")
-
 q2 <- qplot(sample = re_effects[,2])+
   geom_qq_line(line.p = c(0.25, 0.75),
                color = "red", size=0.8, linetype="dashed")+
   labs(x="Valeurs théoriques",
      y = "Pentes aléatoires")
-
 ggarrange(q1,q2)
 ```
 
 
 ```{r diagglmm3, echo = FALSE, fig.align='center', fig.cap="Distribution normale bivariée des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 cor_mat <- VarCorr(model2)[[1]]
-
 re_effects <- data.frame(ranef(model2)$group)
 names(re_effects) <- c("constante","pente")
-
 library(ellipse)
-
 levels <- c(0.05,0.25,0.75,0.95)
-
 els <- lapply(levels, function(i){
   el <- data.frame(ellipse(cor_mat,center = c(0,0), level = i))
   names(el) <- c("x","y")
   return(el)
 })
-
 ref_points <- data.frame(data.frame(MASS::mvrnorm(n = 1000, mu = c(0,0), Sigma = cor_mat)))
 names(ref_points) <- c("x","y")
-
 ggplot() + 
   geom_point(aes(x = x, y = y), data = ref_points, alpha = 0.3, size = 0.4) + 
   geom_path(data = els[[1]], aes(x = x, y = y, color = "a")) + 
@@ -630,7 +579,6 @@ ggplot() +
                                 "c"="#0077b6",
                                 "d"="#03045e"),
                      labels = c("5%","25%","75%","95%"))
-
 ```
 
 ### Homogénéité des variances au sein des groupes
@@ -642,22 +590,17 @@ Dans le chapitre \@ref(chap06) sur les GLM  nous avons vu que chaque distributio
 
 ```{r glmmvariance, echo=FALSE, fig.align='center', fig.cap="Homogénéité de la variance pour les différents groupes d'un modèle GLMM Gaussien", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='95%'}
 library(lme4)
-
 model2 <- lmer(Y2 ~ X + (1|group), data = df3)
-
 # Extraction des prédictions du modèle
 mus <- predict(model2, type = "response")
 sigma_model <- sigma(model2)
-
 # Création d'un dataframe pour contenir les prédictions et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = df3$Y2,
   group = df3$group
 )
-
 df1$group <- as.factor(df1$group)
-
 # Calcul de l'intervalle de confiance à 95% selon la distribution normale
 # et stockage dans un second dataframe
 seqa <- seq(70,95,5)
@@ -666,7 +609,6 @@ df2 <- data.frame(
   lower = qnorm(p = 0.025, mean = seqa, sd = sigma_model),
   upper = qnorm(p = 0.975, mean = seqa, sd = sigma_model)
 )
-
 # Affichage des valeurs réelles et prédites (en rouge)
 # et de leur variance selon le modèle (en noir)
 ggplot() + 
@@ -679,7 +621,6 @@ ggplot() +
   labs(x = 'valeurs prédites',
        y = "valeurs réelles") + 
   facet_wrap(vars(group), ncol=3)
-
 ```
 
 ## Inférence dans les modèles GLMM
@@ -752,18 +693,14 @@ Il s'agit simplement d'un modèle logistique binomial dans lequel nous avons raj
 # Chargement des données
 dfenquete <- read.csv("data/glm/enquete_transport_UE.csv")
 dfenquete$Pays <- relevel(as.factor(dfenquete$Pays), ref = "Germany")
-
 # Retirer les observations aberrantes
 dfenquete2 <- subset(dfenquete, (dfenquete$Pays %in% c("Malta", "Cyprus")) == F & 
                   dfenquete$Duree < 400)
-
 # Ajustement du modèle
 library(lme4)
-
 # necessité ici de centrer réduire ces variables pour permettre au modèle de converger
 dfenquete2$Age2 <- scale(dfenquete2$Age,center = T, scale = T)
 dfenquete2$Duree2 <- scale(dfenquete2$Duree,center = T, scale = T)
-
 modele1 <- glmer(y ~Sexe + Age2 + Education + StatutEmploi + Revenu +
               Residence + Duree2 + ConsEnv + (1|Pays),
             family = binomial(link="logit"),
@@ -790,7 +727,6 @@ Comme vous pouvez le constater, la section `Random Effects` ne comprend qu'un se
 ```{r message=FALSE, warning=FALSE, out.width='50%'}
 # extraction de la variance des Pays
 var_pays <- VarCorr(modele1)[[1]][[1]]
-
 # calcul de l'ICC
 var_pays / (((pi**2)/3) + var_pays)
 ```
@@ -799,7 +735,6 @@ Nous pouvons parvenir au même résultat en utilisant la fonction `icc` du *pack
 
 ```{r message=FALSE, warning=FALSE, out.width='50%'}
 library(performance)
-
 # calcul de l'ICC
 icc(modele1)
 ```
@@ -825,7 +760,6 @@ model_simple <- glm(y ~Sexe + Age2 + Education + StatutEmploi + Revenu +
               Residence + Duree2 + ConsEnv,
             family = binomial(link="logit"),
             data = dfenquete2)
-
 # comparaison des deux modèles
 anova(modele1,model_simple)
 ```
@@ -842,10 +776,8 @@ extractor <- function(mod){
   r2cond <- performance::r2(mod)[[1]]
   return(c("vari"=vari,"icc"=ICC,"r2cond"=r2cond))
 }
-
 # préparation d'un environnement multiprocessing pour accéler le calcul
 library(snow)
-
 # préparation de 8 coeurs (attention si votre machine en a moins !)
 cl <- makeCluster(8)
 clusterEvalQ(cl,library("lme4"))
@@ -853,7 +785,6 @@ valeurs <- bootMer(modele1,FUN = extractor,nsim = 1000,
                    use.u = F, type="parametric", ncpus = 8,
                    parallel="snow",
                    cl = cl)
-
 # sauvegarde des résultats
 save(valeurs,file = 'data/glmm/boot_binom.rda')
 ```
@@ -863,11 +794,9 @@ Nous pouvons à présenter analyser l'incertitude de ces différents paramètres
 ```{r bottdistrib, message=FALSE, warning=FALSE, out.width='80%',echo=T, fig.cap = "Distributions obtenues par Bootstrap de la variance, l'ICC et le R^2^ conditionnel"}
 # chargement de nos valeurs préalablement enregistrées
 load('data/glmm/boot_binom.rda')
-
 # construction de trois graphiques de distributions
 df <- data.frame(valeurs$t)
 names(df) <- c("variance","icc","R2cond")
-
 breaks1 <- as.vector(quantile(df$variance, probs = c(0.001,0.15,0.5,0.85, 0.999)))
 labs1 <- round(breaks1,2)
 p1 <- ggplot(df) + 
@@ -877,7 +806,6 @@ p1 <- ggplot(df) +
   scale_x_continuous(breaks = breaks1, labels = labs1)+
   theme(axis.ticks.y = element_blank(),
         axis.text.y = element_blank(), axis.title.y = element_blank())
-
 breaks2 <- as.vector(quantile(df$icc, probs = c(0.001,0.15,0.5,0.85, 0.999)))
 labs2 <- round(breaks2,2)
 p2 <- ggplot(df) + 
@@ -887,8 +815,6 @@ p2 <- ggplot(df) +
   scale_x_continuous(breaks = breaks2, labels = labs2)+
   theme(axis.ticks.y = element_blank(),
         axis.text.y = element_blank(), axis.title.y = element_blank())
-
-
 breaks3 <- as.vector(quantile(df$R2cond, probs = c(0.001,0.15,0.5,0.85, 0.999)))
 labs3 <- round(breaks3,3)
 p3 <- ggplot(df) + 
@@ -898,7 +824,6 @@ p3 <- ggplot(df) +
   scale_x_continuous(breaks = breaks3, labels = labs3)+
   theme(axis.ticks.y = element_blank(),
         axis.text.y = element_blank(), axis.title.y = element_blank())
-
 ggarrange(p1,p2,p3, nrow = 2, ncol = 2)
 ```
 
@@ -907,10 +832,8 @@ Les trois distributions sont toutes suffisamment éloignées de zéros pour que 
 ```{r}
 #intervale de confiance pour la variance
 quantile(df$variance,probs = c(0.0275,0.5,0.975))
-
 #intervale de confiance pour l'ICC
 quantile(df$icc,probs = c(0.0275,0.5,0.975))
-
 #intervale de confiance pour le R2 conditionnel
 quantile(df$R2cond,probs = c(0.0275,0.5,0.975))
 ```
@@ -924,18 +847,15 @@ Puisque nous avons conclu que l'effet aléatoire contribue significativement au 
 # Simulations et extraction des effets aléatoires
 library(merTools)
 simsRE <- REsim(modele1,n.sims = 1000, oddsRatio = F)
-
 # calcul des intervalles de confiance
 simsRE$lower <- simsRE$mean - 1.96 * simsRE$sd
 simsRE$upper <- simsRE$mean + 1.96 * simsRE$sd
-
 # variable binaire pour la significativité
 simsRE$sign <- case_when(
   simsRE$lower<0 & simsRE$upper<0 ~ "inf",
   simsRE$lower>0 & simsRE$upper>0 ~ "sup",
   TRUE ~ "not"
 )
-
 # représentation des intervalles de confiance
 ggplot(simsRE) + 
   geom_errorbarh(aes(xmin = lower, xmax = upper,
@@ -968,17 +888,14 @@ extractor2 <- function(mod){
   names(vec) <- rownames(elements)
   return(vec)
 }
-
 # preparation de l'operation en multiprocessing
 cl <- makeCluster(8)
 clusterEvalQ(cl,library("lme4"))
-
 # calcul des effets aléatoires en bootstrap
 valeurs <- bootMer(modele1,FUN = extractor2,nsim = 1000,
                    use.u = T, type="parametric", ncpus = 8,
                    parallel="snow",
                    cl = cl)
-
 # sauvegarder des résultats !
 save(valeurs,file = 'data/glmm/boot_binom2.rda')
 ```
@@ -986,34 +903,28 @@ save(valeurs,file = 'data/glmm/boot_binom2.rda')
 Puisque nous disposons des distributions bootstrapées des différents effets aléatoires, nous pouvons directement les représentées dans un graphique avec la figure \@ref(fig:randomconstantes2). Les résultats sont très similaires à ceux de la figure \@ref(fig:randomconstantes1), ce qui s'explique par le grand nombre d'observation et de groupes. Avec moins d'observations, il est recommandé de privilégier l'approche par bootstrap.
 
 ```{r randomconstantes2, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par Pays (IC par bootstrap)", fig.align="center"}
-
 # chargement de nos valeurs bootstrapées
 load('data/glmm/boot_binom2.rda')
-
 # conversion des bootstraps en intervals de confiance
 q025 <- function(x){return(quantile(x,probs = 0.025))}
 q975 <- function(x){return(quantile(x,probs = 0.975))}
-
 df <- reshape2::melt(valeurs$t)
 df_med <- df %>% group_by(Var2) %>% summarise(
   med = median(value),
   lower = q025(value),
   upper = q975(value))
-
 # ajout d'une variable pour la couleur si significatif
 df_med$sign <- case_when(
   df_med$lower<0 & df_med$upper<0 ~ "inf",
   df_med$lower>0 & df_med$upper>0 ~ "sup",
   TRUE ~ "not"
 )
-
 # Affichage des résultats
 ggplot(df_med) + 
   geom_errorbar(aes(xmin = lower, xmax = upper, y = reorder(Var2,med)), width = 0.5) +
   geom_point(aes(x = med, y = reorder(Var2,med), color = sign)) + 
   scale_color_manual(values = c("inf" = "#0077b6", "sup" = "#e63946", "not"="#000000"), labels = c("sign. < 0", "non sign.", "sign. > 0")) +
   labs(x = "Constante aléatoire", y = "Pays")
-
 ```
 
 ### Ajustement du modèle avec constantes et pentes aléatoires
@@ -1034,14 +945,12 @@ Notez qu'il est aussi possible d'ajuster un modèle avec uniquement des pentes a
 
 Ajustons donc nos deux modèles avec pentes et constantes aléatoires.
 ```{r, warning=FALSE, message=FALSE}
-
 # constantes et pentes aléatoires indépendantes
 modele2 <- glmer(y ~ Sexe + Age2 + Education + StatutEmploi + Revenu +
               Residence + Duree2 + ConsEnv + (1 + Age2||Pays),
             family = binomial(link="logit"),
             control = glmerControl(optimizer = "bobyqa"),
             data = dfenquete2)
-
 # constantes et pentes aléatoires corrélées
 modele3 <- glmer(y ~ Sexe + Age2 + Education + StatutEmploi + Revenu +
               Residence + Duree2 + ConsEnv + (1 + Age2|Pays),
@@ -1081,14 +990,12 @@ extractor3 <- function(mod){
   covari <- VarCorr(mod)[[1]][[2]]
   return(c("vari1"=vari1,"vari2"=vari2,"covari"=covari))
 }
-
 # lancement du bootstrap
 valeurs <- bootMer(modele3,FUN = extractor3,nsim = 1000,
                    use.u = F, type="parametric", ncpus = 8,
                    parallel="snow",
                    cl = cl,
                    .progress="txt",PBarg=list(style=3))
-
 # enregistrement des résultats
 save(valeurs,file = 'data/glmm/boot_binom3.rda')
 ```
@@ -1097,19 +1004,15 @@ save(valeurs,file = 'data/glmm/boot_binom3.rda')
 ```{r, warning=FALSE, message=FALSE, eval=TRUE, echo=TRUE, fig.cap="Incertitude autours des paramètres de variance obtenue par bootstrap", fig.align="center", out.width = "95%"}
 # chargement des résultats
 load('data/glmm/boot_binom3.rda')
-
 # conversion des valeurs de covariance en corrélation
 df <- data.frame(
   corr_values = valeurs$t[,3] / (sqrt(valeurs$t[,1]) * sqrt(valeurs$t[,2])),
   vari_const = valeurs$t[,1],
   vari_pente = valeurs$t[,2]
   )
-
-
 # histogramme pour la variance des constantes
 breaks1 <- quantile(df$vari_const,probs=c(0.025,0.5,0.975,0.999))
 label1 <- round(breaks1,3)
-
 p1 <- ggplot(df) + 
   geom_histogram(aes(x = vari_const), color = "black", fill = "white", bins = 30) + 
   geom_vline(xintercept = median(df$vari_const), color = "red", size = 1, linetype="dashed") + 
@@ -1117,11 +1020,9 @@ p1 <- ggplot(df) +
   geom_vline(xintercept = quantile(df$vari_const, probs = 0.975), color = "blue", size = 0.5, linetype="dashed") + 
   labs(x = "Variance des constantes", y="")+ 
   scale_x_continuous(breaks = breaks1, labels = label1)
-
 # histogramme pour la variance des pentes
 breaks2 <- quantile(df$vari_pente,probs=c(0.025,0.5,0.975,0.999))
 label2 <- round(breaks2,3)
-
 p2 <- ggplot(df) + 
   geom_histogram(aes(x = vari_pente), color = "black", fill = "white", bins = 30) + 
   geom_vline(xintercept = median(df$vari_pente), color = "red", size = 1, linetype="dashed") + 
@@ -1129,11 +1030,9 @@ p2 <- ggplot(df) +
   geom_vline(xintercept = quantile(df$vari_pente, probs = 0.975), color = "blue", size = 0.5, linetype="dashed") + 
   labs(x = "Variance des pentes", y="")+
   scale_x_continuous(breaks = breaks2, labels = label2)
-
 # histogramme pour la correlation
 breaks3 <- c(-1,-0.5,0,0.5,1,median(df$corr_values))
 label3 <- round(breaks3,3)
-
 p3 <- ggplot(df) + 
   geom_histogram(aes(x = corr_values), color = "black", fill = "white", bins = 30) + 
   geom_vline(xintercept = median(df$corr_values), color = "red", size = 1, linetype="dashed") + 
@@ -1141,7 +1040,6 @@ p3 <- ggplot(df) +
   geom_vline(xintercept = quantile(df$corr_values, probs = 0.975), color = "blue", size = 0.5, linetype="dashed") + 
   labs(x = "Corrélation pentes/constantes", y="") + 
   scale_x_continuous(breaks = breaks3, labels = label3)
-
 ggarrange(p1,p2, p3, ncol = 2, nrow = 2)
 ```
 
@@ -1161,23 +1059,18 @@ Pour analyser facilement les constantes et pentes aléatoires de chaque pays, no
 # Simulations et extraction des effets aléatoires
 library(merTools)
 simsRE <- REsim(modele3,n.sims = 1000, oddsRatio = F)
-
 # calcul des intervalles de confiance
 simsRE$lower <- simsRE$mean - 1.96 * simsRE$sd
 simsRE$upper <- simsRE$mean + 1.96 * simsRE$sd
-
 # variable binaire pour la significativité
 simsRE$sign <- case_when(
   simsRE$lower<0 & simsRE$upper<0 ~ "inf",
   simsRE$lower>0 & simsRE$upper>0 ~ "sup",
   TRUE ~ "not"
 )
-
 df1 <- subset(simsRE, grepl("Intercept",simsRE$term,fixed = T))
 df2 <- subset(simsRE, grepl("Age2",simsRE$term,fixed = T))
-
 # représentation des intervalles de confiance
-
 p1 <- ggplot(df1) + 
   geom_errorbarh(aes(xmin = lower, xmax = upper,
                      y = reorder(groupID,mean)), size = 0.5, height = 0.5) + 
@@ -1185,7 +1078,6 @@ p1 <- ggplot(df1) +
                  color = sign)) + 
   scale_color_manual(values = c("inf" = "#0077b6", "sup" = "#e63946", "not"="#000000"), labels = c("sign. < 0", "non sign.", "sign. > 0")) +
   labs(x = "Constante aléatoire", y = "Pays")
-
 p2 <- ggplot(df2) + 
   geom_errorbarh(aes(xmin = lower, xmax = upper,
                      y = reorder(groupID,mean)), size = 0.5, height = 0.5) + 
@@ -1193,7 +1085,6 @@ p2 <- ggplot(df2) +
                  color = sign)) + 
   scale_color_manual(values = c("inf" = "#0077b6", "sup" = "#e63946", "not"="#000000"), labels = c("sign. < 0", "non sign.", "sign. > 0")) +
   labs(x = "Pente aléatoire (âge)", y = "Pays")
-
 ggarrange(p1,p2, common.legend = T, nrow = 1, ncol = 2)
 ```
 
@@ -1206,11 +1097,9 @@ Pour l'interprétation finale, il est nécessaire d'afficher les valeurs exactes
 mat <- simsRE[c("mean","lower","upper")]
 mat$Pays <- simsRE$groupID
 mat$effet <- simsRE$term
-
 # séparation des pentes et des constantes
 df1 <- subset(mat, grepl("Intercept",mat$effet, fixed = TRUE))
 df2 <- subset(mat, grepl("Age2",mat$effet, fixed = TRUE))
-
 # conversion en rapport de cotes pour les pentes (+ effet fixe)
 df2$RC <- round(exp(df2$mean + fixef(modele3)[[3]]),3)
 df2$RC025 <- round(exp(df2$lower + fixef(modele3)[[3]]),3)
@@ -1237,24 +1126,20 @@ Notez à nouveau que les intervalles de confiances pour ces pentes et ces consta
 Pour rappel, dans un modèle GLMM, les effets aléatoires sont modélisés comme provenant de distribution aléatoires. Nous devons donc vérifier qu'ils respectent cette condition d'application. La figure \@ref(fig:diagbinomglmm1) (graphique quantile-quantile) nous permet de constater que les constantes suivent bien une distribution normale, ce qui ne semble pas vraiment être le cas pour les pentes. Consiédrant que leurs effets sont petits, il pourrait être plus pertinent ici de les retirer du modèle.
 
 ```{r diagbinomglmm1, echo = FALSE, fig.align='center', fig.cap="Distribution normale univariée des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
-
 df <- data.frame(ranef(modele3)$Pays)
 names(df) <- c('constante',"pente")
-
 p1 <- qplot(sample = df$constante)+
   geom_qq_line(line.p = c(0.25, 0.75),
                color = "red", size=0.8, linetype="dashed")+
   labs(title="Diagramme quantile-quantile",
      x="Valeurs théoriques",
      y = "Constantes aléatoires")
-
 p2 <- qplot(sample = df$pente)+
   geom_qq_line(line.p = c(0.25, 0.75),
                color = "red", size=0.8, linetype="dashed")+
   labs(title="Diagramme quantile-quantile",
      x="Valeurs théoriques",
      y = "Pentes aléatoires")
-
 ggarrange(p1,p2, common.legend = T, nrow = 1, ncol = 2)
 ```
 
@@ -1262,23 +1147,17 @@ Considérant que ce modèle inclue une corrélation entre les constantes et les 
 
 ```{r diagbinomglmm2, echo = TRUE, fig.align='center', fig.cap="Distribution normale bivariée des constantes et pentes aléatoires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 cor_mat <- VarCorr(modele3)[[1]]
-
 re_effects <- data.frame(ranef(modele3)$Pays)
 names(re_effects) <- c("constante","pente")
-
 library(ellipse)
-
 levels <- c(0.05,0.25,0.75,0.95)
-
 els <- lapply(levels, function(i){
   el <- data.frame(ellipse(cor_mat,center = c(0,0), level = i))
   names(el) <- c("x","y")
   return(el)
 })
-
 ref_points <- data.frame(data.frame(MASS::mvrnorm(n = 1000, mu = c(0,0), Sigma = cor_mat)))
 names(ref_points) <- c("x","y")
-
 ggplot() + 
   geom_point(aes(x = x, y = y), data = ref_points, alpha = 0.3, size = 0.4) + 
   geom_path(data = els[[1]], aes(x = x, y = y, color = "a")) + 
