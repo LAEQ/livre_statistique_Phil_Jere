@@ -46,7 +46,7 @@ Dans les champs de la santé des populations et des études urbaines, les modèl
 
 Atkinson et Kintrea [-@atkinson2001disentangling, p. 2278] définissent les « effets de milieu comme le changement net dans les potentialités de l’existence (*life chances*) attribuable au fait de vivre dans un quartier (ou une zone) plutôt qu'un autre  » (traduction libre). Les effets de milieu peuvent être positifs ou négatifs et peuvent concernant aussi bien les enfants que les adultes.
 
-Les analyses multiniveaux sont particulièrement adaptées à l'évaluation des effets de milieu. En effet, plusieurs phénomènes – état de santé, comportement ou choix individuels – peuvent être en effet influencés à la fois par des caractéristiques individuelles (âge, sexe, niveau de revenu, niveau d'éducation, etc.) et par des caractéristiques contextuelles (caractéristiques du quartier).
+Les analyses multiniveaux sont particulièrement adaptées à l'évaluation des effets de milieu. En effet, plusieurs phénomènes - état de santé, comportement ou choix individuels - peuvent être en effet influencés à la fois par des caractéristiques individuelles (âge, sexe, niveau de revenu, niveau d'éducation, etc.) et par des caractéristiques contextuelles (caractéristiques du quartier).
 
 Avec un modèle multiniveau, une fois contrôlées les caractéristiques individuelles (variables indépendantes mesurées au niveau 1), il est alors possible d'évaluer l'effet des caractéristiques du quartier (variables indépendantes mesurées au niveau 2) sur un phénomène $y_{ij}$ mesuré pour un individu *i* résidant dans un quartier *j*.
 :::
@@ -54,13 +54,12 @@ Avec un modèle multiniveau, une fois contrôlées les caractéristiques individ
 ## Les différents types de modèles multiniveaux {#sect082}
 
 ### Description du jeu de données utilisé {#sect0821} 
+
 Dans le cadre de cette section, nous présenterons uniquement les modèles à deux niveaux, soit pour modéliser un phénomène $y_{ij}$. Pour ce faire, nous utilisons des données tirées d'une étude de Pham et al. [-@apparicio2017disentangling]. Dans cet article, les auteurs souhaitent évaluer les effets des caractéristiques de la forme urbaine et des caractéristiques socioéconomiques sur la couverture des arbres de rues, et ce, à partir d'un modèle multiniveau. Ils disposent ainsi d'une structure hiérarchique des données avec deux niveaux : les tronçons de rues (niveau 1, *n*=10814) inclus dans un et un seul secteur de recensement (niveau 2, *n*=312). La variable dépendante ($y_{ij}$) est le pourcentage de la superficie du tronçon de rue qui est couverte par des arbres, calculé à partir d'images satellites à haute résolution (Quickbird, 60 cm, septembre 2008). L'ensemble des variables utilisées pour les modèles sont reportées au tableau \@ref(tab:datamulti).
 
-Sept variables indépendantes relatives à la forme urbaine sont mesurées au niveau des tronçons de rues, soit la largeur et la longueur de la rue, l'âge médian des bâtiments (introduit également au carré pour vérifier l'existence d'un effet curviliénaire; voir section \@ref(05511)), les pourcentages de bâtiments résidentiels, de duplex et de triplex, le nombre de bâtiments et finalement la distance moyenne entre le bâtiment et la rue. Les variables indépendantes au niveau des 312 secteurs de recensement (niveau 2) sont extraites du recensement canadien de 2006 (tableau \@ref(tab:datamulti)).
+Sept variables indépendantes relatives à la forme urbaine sont mesurées au niveau des tronçons de rues, soit la largeur et la longueur de la rue, l'âge médian des bâtiments (introduit également au carré pour vérifier l'existence d'un effet curviliénaire; voir section \@ref(05511)), les pourcentages de bâtiments résidentiels, de duplex et de triplex, le nombre de bâtiments et finalement la distance moyenne entre le bâtiment et la rue. Les variables indépendantes au niveau des 312 secteurs de recensement (niveau 2) sont extraites du recensement canadien de 2006 (tableau \@ref(tab:titimulti)).
 
-
-```{r datamulti, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
-# chargement du jeu de données
+```{r titimulti, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 load("data/multiniveau/dataArbres.RData")
 
 vars <- c("PCTArb","Width","Length","AgeMed","ResiPCT","DuTriPct","NoLog","Setback",
@@ -70,7 +69,7 @@ vars <- c("PCTArb","Width","Length","AgeMed","ResiPCT","DuTriPct","NoLog","Setba
 intitule <- c("Arbres sur le tronçon de rue (%)","Largeur des rues","Longueur de rues","Age médian des bâtiments",
               "Bâtiments résidentiels (%)","Duplex ou triplex (%)", "Nombre de bâtiments", "Distance entre le bâtiment et la rue",
               
-              "Valeur moyenne des logements (milliers de $)","Diplômés universitaires (%)","Personnes à faible revenu (%)","Immigrants récents (%)",
+              "Valeur moyenne des logements (milliers de dollars)","Diplômés universitaires (%)","Personnes à faible revenu (%)","Immigrants récents (%)",
               "Ménages avec enfants (%)","Langue marternelle française (%)")
 type1 <- c("VD","VI","VI","VI","VI","VI","VI","VI","VI","VI","VI","VI","VI","VI")
 type2 <- c("1","1","1","1","1","1","1","1","2","2","2","2","2","2")
@@ -83,14 +82,14 @@ stats <- cbind(vars, intitule, type1, type2, stats)
 
 show_table(stats,
            digits = 1,
-            caption = 'Statistiques descriptives pour les variables des modèles multiniveaux',
-           col.names=c("Nom","Intitulé","Type", "Niveau", "Moy.", "E.-T."),
+          caption = 'Statistiques descriptives pour les variables des modèles multiniveaux',
+           col.names=c("Nom","Intitulé","Type", "Niveau", "Moy.", "Écart type"),
            align= c("l","l","c", "c", "r", "r")
            )
 
 ```
 
-### Démarche classique pour les modèles multiniveaux {#sect0822} 
+## Démarche classique pour les modèles multiniveaux {#sect0822} 
 
 La démarche habituelle en analyses multiniveaux est de réaliser plusieurs modèles, allant du plus simple au plus complexe. Cette stratégie permet habituellement de bien cerner la répartition de la variance entre les différents niveaux et l'apport des variables explicatives introduites aux différents niveaux. De la sorte, cinq types de modèles peuvent être construits :
 
@@ -167,7 +166,7 @@ TableauModele1[nlignes+6,2] <- round(AIC(Modele1),3)
 TableauModele1[nlignes+7,2] <- round(r.squaredGLMM(Modele1)[1],3)
 TableauModele1[nlignes+8,2] <- round(r.squaredGLMM(Modele1)[2],3)
 
-show_table(TableauModele1,
+show_table(TableauModele1[,c(1,2,3,5)],
            digits = 3,
            caption = "Résultats du modèle vide (modèle 1)",
            col.names=c("Paramètre","Coefficient","Erreur-type", "Valeur de T"),
@@ -244,7 +243,7 @@ TableauModele2[nlignes+6,2] <- round(AIC(Modele2),3)
 TableauModele2[nlignes+7,2] <- round(r.squaredGLMM(Modele2)[1],3)
 TableauModele2[nlignes+8,2] <- round(r.squaredGLMM(Modele2)[2],3)
 
-show_table(TableauModele2,
+show_table(TableauModele2[,c(1,2,3,5)],
            digits = 3,
            caption = 'Résultats du modèle avec les variables indépendantes au niveau 1 (modèle 2)',
            col.names=c("Paramètre","Coefficient","Erreur-type", "Valeur de T"),
@@ -326,7 +325,7 @@ TableauModele2[nlignes+6,2] <- round(AIC(Modele2),3)
 TableauModele2[nlignes+7,2] <- round(r.squaredGLMM(Modele2)[1],3)
 TableauModele2[nlignes+8,2] <- round(r.squaredGLMM(Modele2)[2],3)
 
-show_table(TableauModele2,
+show_table(TableauModele2[,c(1,2,3,5)],
            digits = 3,
            caption = 'Résultats du modèle avec les variables indépendantes centrées au niveau 1 (modèle 2)',
            col.names=c("Paramètre","Coefficient","Erreur-type", "Valeur de T"),
@@ -404,7 +403,7 @@ TableauModele3[nlignes+6,2] <- round(AIC(Modele3),3)
 TableauModele3[nlignes+7,2] <- round(r.squaredGLMM(Modele3)[1],3)
 TableauModele3[nlignes+8,2] <- round(r.squaredGLMM(Modele3)[2],3)
 
-show_table(TableauModele3,
+show_table(TableauModele3[,c(1,2,3,5)],
            digits = 3,
            caption = 'Résultats du modèle avec les variables indépendantes aux niveaux 1 et 2 (modèle 3)',
            col.names=c("Paramètre","Coefficient","Erreur-type", "Valeur de T"),
@@ -487,7 +486,7 @@ TableauModele4[nlignes+6,2] <- round(AIC(Modele4),3)
 TableauModele4[nlignes+7,2] <- round(r.squaredGLMM(Modele4)[1],3)
 TableauModele4[nlignes+8,2] <- round(r.squaredGLMM(Modele4)[2],3)
 
-show_table(TableauModele4,
+show_table(TableauModele4[,c(1,2,3,5)],
            digits = 3,
            caption = "Résultats du modèle avec une variable d'interaction entre les deux niveaux 1 et 2 (modèle 4)",
            col.names=c("Paramètre","Coefficient","Erreur-type", "Valeur de T"),
@@ -711,6 +710,4 @@ Il est également judicieux de vérifier si un modèle est significativement dif
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 anova(Modele1, Modele2, Modele3, Modele4)
 ```
-
-
 
