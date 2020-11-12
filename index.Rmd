@@ -159,6 +159,7 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       if(is.na(col.names)==F){
         #col.names <- gsub("\\(\\%\\)","(\\\\%)",col.names)
         col.names <- gsub("\\%","\\\\%",col.names)
+        col.names <- gsub("\\^([^\"]*?)\\^","\\\\textasciicircum{\\1}",col.names,fixed = F)
       }
     }
 

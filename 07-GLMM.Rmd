@@ -463,7 +463,7 @@ tableau <- data.frame(
 )
 show_table(tableau,
           caption = 'Comparaison des trois modèles à effets aléatoires',
-          col.names=c("modèle","AIC","R^2^ marginal","R^2^ conditionnel"),
+          col.names=c("modèle","AIC","R2 marginal","R2 conditionnel"),
           align= c("l","r", "r", "r"))
 ```
 
@@ -479,7 +479,7 @@ Admettons à présent que nous ne nous intéressons pas à la classe dans laquel
 Si les professeurs enseignent dans toutes les écoles, il est possible de dire que le design d'étude est croisé complet ou croisé partiel si les professeurs n'enseignent que dans certaines écoles. La figure \@ref(fig:crossednested) résume graphiquement ces trois situations.
 
 
-```{r crossednested, echo=FALSE, fig.align='center', fig.cap="Différentes structures de données hiérarchiques (imbriquée versus croisées)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
+```{r crossednested, echo=FALSE, fig.align='center', fig.cap="Différentes structures de données hiérarchiques (imbriquée versus croisées)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%', fig.pos = "H", out.extra = "",auto_pdf = TRUE}
 knitr::include_graphics('images/glmm/glmm_croise-nested.png', dpi = NA)
 ```
 
@@ -787,7 +787,7 @@ save(valeurs,file = 'data/glmm/boot_binom.rda')
 
 Nous pouvons à présent analyser l'incertitude de ces différents paramètres. Pour cela nous devons commencer par observer graphiquement leurs distributions obtenues par *bootstrap* avec la figure \@ref(fig:bottdistrib).
 
-```{r bottdistrib, message=FALSE, warning=FALSE, out.width='80%',echo=T, fig.cap = "Distributions obtenues par bootstrap de la variance, l'ICC et le R^2^ conditionnel"}
+```{r bottdistrib, message=FALSE, warning=FALSE, out.width='80%',echo=T, fig.cap = "Distributions obtenues par bootstrap de la variance, l'ICC et le $R^2$ conditionnel"}
 # chargement de nos valeurs préalablement enregistrées
 load('data/glmm/boot_binom.rda')
 # construction de trois graphiques de distribution
@@ -1045,7 +1045,7 @@ p3 <- ggplot(df) +
 ggarrange(p1,p2, p3, ncol = 2, nrow = 2)
 ```
 
-Nous constatons ainsi que la variance des constantes aléatoire est significativement différente de zéro (cette valeur n'est pas dans l'intervalle de confiance à 95% représenté par les lignes verticales bleues) et à une médiane de `r tofr(round(df$vari_const,3))` (ligne verticale rouge). Pour les pentes, zéro est également à la limite de l'intervalle de confiance et la distribution asymétrique et étalée nous indique que ce paramètre est fortement incertain dans le modèle. Enfin, la corrélation entre les pentes et les constantes est de loin le paramètre le plus incertain et son intervalle de confiance est franchement à cheval sur zéro, ce qui devrait nous amener à privilégier un modèle sans ce paramètre.
+Nous constatons ainsi que la variance des constantes aléatoire est significativement différente de zéro (cette valeur n'est pas dans l'intervalle de confiance à 95% représenté par les lignes verticales bleues) et à une médiane de `r tofr(round(mediane(df$vari_const),3))` (ligne verticale rouge). Pour les pentes, zéro est également à la limite de l'intervalle de confiance et la distribution asymétrique et étalée nous indique que ce paramètre est fortement incertain dans le modèle. Enfin, la corrélation entre les pentes et les constantes est de loin le paramètre le plus incertain et son intervalle de confiance est franchement à cheval sur zéro, ce qui devrait nous amener à privilégier un modèle sans ce paramètre.
 
 Pour terminer, nous pouvons calculer les R^2^ marginal et conditionnel du modèle afin de mieux cerner le rôle joué par les effets fixes et les effets aléatoires.
 
