@@ -257,7 +257,7 @@ ggplot() +
 
 La fonction de base triangulaire est intéressante pour présenter la logique qui sous tend les *splines*, mais elle est rarement utilisée en pratique. On lui préfère généralement d'autre formes donnant des résultats plus lisses comme les B-spline quadratique, B-spline cubiques, M-spline, Duchon spline etc.
 
-```{r figgam10, echo=FALSE, fig.align='center', fig.cap="Comparaison de différentes bases", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r figgam11, echo=FALSE, fig.align='center', fig.cap="Comparaison de différentes bases", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(mgcv)
 library(splines2)
 
@@ -357,9 +357,9 @@ Les approches que nous venons de décrire sont regroupées sous l'appelation de 
 
 Nous avons pu voir dans les exemples précédents que la construction d'une *spline* nécessite d'effectuer deux choix importants : le nombre de noeuds et leur localisation. Un trop grand nombre de noeuds conduit à un sur-ajustement du modèle alors qu'un trop faible nombre de noeuds conduit à un sous-ajustement. Lorsque ces choix sont effectués par l'utilisateur et que les bases sont ajoutées manuellement dans le modèle tel que décrit précédemment, on parle de **splines de régression** (ou **regression spline**).
 
-Une approche a été proposée pour faciliter le choix du nombre de noeuds il s'agit de **splines de lissage**  (ou **smoothing spline**). L'idée derrière cette approche est de d'introduire dans le modèle une pénalisation associée avec le nombre de noeud (ou degré de liberté) de la spline, dans une perspective de parsimonie : chaque noeud supplémentaire doit suffisamment contribuer au modèle pour être conservé. Le détail mathématique de cette pénalisation est complexe, mais ce qu'il faut retenir c'est qu'il dépend d'un paramètre appelé $\lambda$. Plus $\lambda$ tend vers 0, plus la pénalisation est faible et plus la spline de lissage devient une simple spline de régression. A l'inverse, plus $\lambda$ est grand, plus la pénalité est importante, à tel point que la spline peut se résumer à une simple ligne droite. Nous l'illustrons à la figure figure \@ref(fig:figgam11) pour laquelle nous contruisons des splines avec 20 noeuds et nous modifions la force du paramètre de pénalité.
+Une approche a été proposée pour faciliter le choix du nombre de noeuds il s'agit de **splines de lissage**  (ou **smoothing spline**). L'idée derrière cette approche est de d'introduire dans le modèle une pénalisation associée avec le nombre de noeud (ou degré de liberté) de la spline, dans une perspective de parsimonie : chaque noeud supplémentaire doit suffisamment contribuer au modèle pour être conservé. Le détail mathématique de cette pénalisation est complexe, mais ce qu'il faut retenir c'est qu'il dépend d'un paramètre appelé $\lambda$. Plus $\lambda$ tend vers 0, plus la pénalisation est faible et plus la spline de lissage devient une simple spline de régression. A l'inverse, plus $\lambda$ est grand, plus la pénalité est importante, à tel point que la spline peut se résumer à une simple ligne droite. Nous l'illustrons à la figure figure \@ref(fig:figgam12) pour laquelle nous contruisons des splines avec 20 noeuds et nous modifions la force du paramètre de pénalité.
 
-```{r figgam11, echo=FALSE, fig.align='center', fig.cap="Pénalisation des splines", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r figgam12, echo=FALSE, fig.align='center', fig.cap="Pénalisation des splines", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 
 ## model1 : regression spline sans penalite
 mod1 <- gam(y~ s(x2, k = 20, fx = T), data = dataset)
@@ -416,7 +416,7 @@ Une spline cyclique est une extension d'une spline classique dont les bases aux 
 
 Prenons un exemple concret. Si l'on tentait de modéliser la concentration de dioxyde d'azote (NO2) à Paris, mesuré par un ensemble de stations fixes, on pourrait s'attendre à ce que le NO2 suive chaque jour un certains patron. Typiquement, à proximité d'axes routiers majeurs, on s'attendrait à observer des pics suivant les flux pendulaires.
 
-```{r figgam12, echo=FALSE, fig.align='center', fig.cap="Spline cyclique pour modéliser la concentration de NO2", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r figgam13, echo=FALSE, fig.align='center', fig.cap="Spline cyclique pour modéliser la concentration de NO2", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 
 dataset <- read.csv('data/gam/NO2_airparif.csv', sep=';')
 dataset <- dataset[2:nrow(dataset),]
@@ -454,7 +454,7 @@ On retrouve bien sur ce graphique les deux pics attendus correspondant aux heure
 
 Comme nous l'avons vu dans les chapitres précédents, il arrive régulièrement que les observations que nous analysons appartiennent à des groupes. Dans ce cas de figure, on peut être amené à se demander si la relation décrite par une spline est identique pour chacun des groupes d'observations. On va alors ajuster une spline différente par groupe. Dans l'exemple précédent, chaque mesure de NO2 a été prise par une station de mesure spécifique. Compte tenu du fait que l'environnement autours de chaque station est particulier, on pourrait s'attendre à ce que les valeurs de NO2 ne présente pas exactement les même patrons journalier pour chaque station.
 
-```{r figgam13, echo=FALSE, fig.align='center', fig.cap="Spline cyclique variant par groupe", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r figgam14, echo=FALSE, fig.align='center', fig.cap="Spline cyclique variant par groupe", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 
 model <- gam(no2 ~ s(heure, bs = "cp",by = variable), data = df, family = gaussian)
 preds <- expand.grid(
@@ -489,14 +489,14 @@ Comme nous pouvons le voir ici, pour l'essentiel, le NO2 suit le même partern p
 
 Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante, cependant il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non-linéaires entre les variables indépendantes combinées dans une même spline. Prenons un exemple concret, dans la section sur le modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des ilôts de chaleur. Parmis nos variables indépendantes, nous avions notamment la distance au centre ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables influent conjoitement et de façon non-linéaire la surface d'ilôt de chaleur dans chaque AD. Pour représenter la *spline* bivariée, on utilise alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
 
-```{r figgam14, echo=FALSE, fig.align='center', fig.cap="Spline d'interaction bivariée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r figgam15, echo=FALSE, fig.align='center', fig.cap="Spline d'interaction bivariée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 dataset <- read.csv("data/glm/data_chaleur.csv")
 dataset$prt_hot01 <- dataset$prt_hot/100
 model <- gam(prt_hot01 ~ te(prt_veg,dist_cntr), data = dataset, family = betar)
 vis.gam(model, plot.type = 'contour',type = 'response', main = '', xlab = 'pourcentage de la surface végétalisée', ylab = 'distance au centre ville', too.far = 0.1,n.grid = 150)
 ```
 
-La *spline* bivariée représentée à la figure \@ref(fig:figgam14) indique que les AD avec la plus grande densité de surface couverte par des ilôts de chaleurs sont situés à moins de 25km du centre ville, au delà de cette distance cette densité chute en dessous de 10%. En revanche, a proximité directe du centre ville  (moins de 1km), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marqués par un fort pourcentage de surface couverte par des ilôts de chaleurs.
+La *spline* bivariée représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande densité de surface couverte par des ilôts de chaleurs sont situés à moins de 25km du centre ville, au delà de cette distance cette densité chute en dessous de 10%. En revanche, a proximité directe du centre ville  (moins de 1km), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marqués par un fort pourcentage de surface couverte par des ilôts de chaleurs.
 
 Les *splines* bivariées sont également régulièrement utilisées pour capturer un potentiel patern spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observations, il est possible d'ajuster une *spline* bivariées sur ces coordonnées qui capturera 
 
@@ -511,7 +511,7 @@ library(mgcv)
 dataset <- read.csv("data/gam/data_chaleur.csv",fileEncoding = "utf8")
 
 ## ajustement du modele de base
-refmodel1 <- gam(hot ~
+refmodel <- gam(hot ~
           A65Pct + A014Pct + PopFRPct + PopMVPct +
           poly(prt_veg, degree = 2)  + Arrond,
         data = dataset, family = betar(link = "logit"))
@@ -557,7 +557,7 @@ AIC(refmodel, model0, model1)
 
 On constate que le AIC du second modèle est plus petit, indiquant un meilleur ajustement du modèle avec une *spline* de régression. Notons cependant que la différence avec la *spline* de lissage est anecdotique (2 points de AIC) et que nous connaissions à priori le bon nombre de noeuds à utiliser. Pour des relations plus complexes, les *splines* de lissage ont tendance à nettement mieux performer. Voyons à présenter comme représenter ces trois termes non-linéaires.
 
-```{r message=FALSE, warning=FALSE, figgam15, fig.align='center', fig.cap="Comparaison d'une spline et d'une polynomiale", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r message=FALSE, warning=FALSE, figgam16, fig.align='center', fig.cap="Comparaison d'une spline et d'une polynomiale", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 ## création d'un dataframe de prédiction dans lequel seule
 ## la variable prt_veg varie.
 
@@ -657,7 +657,7 @@ On peut constater que la situation s'améliore encore pour le modèle. Pour dét
 
 Nous allons pour cela calculer la valeur prédite par la *spline* pour chaque localisation dans notre terrain d'étude en le découpant en pixels de 100m par 100m. Pour cette prédiction, nous allons maintenir toutes les autres variables à leur moyenne afin de ne voir que l'effet de la *spline* spatiale.
 
-```{r message=FALSE, warning=FALSE, figgam16, fig.align='center', fig.cap="Comparaison de deux splines spatiales", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%'}
+```{r message=FALSE, warning=FALSE, figgam17, fig.align='center', fig.cap="Comparaison de deux splines spatiales", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%'}
 library(viridis)
 library(metR) # pour placer des étiquettes sur les isolignes
 
@@ -717,7 +717,11 @@ Nous constatons ainsi que les deux *splines* spatiales sont très similaires et 
 
 ### GAMM {#sect0921}
 
-Il est bien sûr possible de combiner les modèles généralisés additifs (GAM) avec les modèles à effet mixtes (GLMM) vus dans les sections précédentes. Nous obtenons ainsi des modèles généralisés additifs à effets mixtes : GAMM. Il est possible de définir de tels modèles assez facilement dans **mgcv**. Pour définit un intercept aléatoire, il suffit d'utiliser la notation `s(var, bs = 're')` avec `var` une variable multinomiale. Reprenons l'exemple précédent mais définissons cette-fois les arrondissements comme un intercept aléatoire.
+Il est bien sûr possible de combiner les modèles généralisés additifs (GAM) avec les modèles à effet mixtes (GLMM) vus dans les sections précédentes. Nous obtenons ainsi des modèles généralisés additifs à effets mixtes : GAMM. Il est possible de définir de tels modèles assez facilement dans **mgcv**. 
+
+#### GAMM et intercepts aléatoires
+
+Pour définit un intercept aléatoire, il suffit d'utiliser la notation `s(var, bs = 're')` avec `var` une variable multinomiale. Reprenons l'exemple précédent mais définissons cette-fois les arrondissements comme un intercept aléatoire.
 
 ```{r message=FALSE, warning=FALSE}
 dataset$Arrond <- as.factor(dataset$Arrond)
@@ -748,5 +752,139 @@ ggplot(df) +
   geom_vline(xintercept = 0, color = "red") + 
   labs(y = "Arrondissement", x = "intercept aléatoire")
 ```
+On peut ainsi constater que pour une partie des arrondissements, la densité d'îlot de chaleur est systèmatiquement supérieure à la moyenne régionale représentée ici par la ligne rouge (0 = effet moyen pour tous les arrondissements). À ce stade, on souhaiterait compléter ce graphique en rajoutant le niveau d'incertitude associé à chaque intercept. Pour cela, nous allons utiliser la fonction `extract_random_effects` du package **mixedup**. Notez que ce package n'est actuellement pas disponible sur CRAN et doit être téléchargé sur github avec la commande : 
 
-### GAMMAR {#sect0922}
+```{r message=FALSE, warning=FALSE}
+remotes::install_github('m-clark/mixedup')
+```
+
+On peut ensuite procéder à l'extraction des effets aléatoires et les représenter à nouveau.
+
+```{r message=FALSE, warning=FALSE}
+library(mixedup)
+df <- extract_random_effects(model4, re = "Arrond")
+
+ggplot(df) + 
+  geom_errorbarh(aes(xmin = lower_2.5, xmax = upper_97.5, y = reorder(group, value))) +
+  geom_point(aes(x = value, y = reorder(group, value))) + 
+  geom_vline(xintercept = 0, color = "red") + 
+  labs(y = "Arrondissement", x = "intercept aléatoire")
+```
+
+Ce qui nous permet de distinguer quels écarts sont significativement différents de 0. Puisque nous utilisons ici la distribution *beta* et une fonction de lien logistique, nous devons utiliser des prédictions pour simplifier l'interprétation des coefficients. Nous allons ici fixer toutes les variables à leur moyenne sauf l'arrondissement et calculer les prédictions dans l'échelle originale (0 à 1).
+
+```{r message=FALSE, warning=FALSE}
+dfpred <- data.frame(
+  A65Pct = mean(dataset$A65Pct),
+  A014Pct = mean(dataset$A014Pct),
+  PopFRPct = mean(dataset$PopFRPct),
+  PopMVPct = mean(dataset$PopMVPct),
+  prt_veg = mean(dataset$prt_veg),
+  Arrond = as.character(unique(dataset$Arrond))
+)
+
+# calculer les prédictions pour le prédicteur linéaire
+dfpred$preds <- predict(model4, newdata = dfpred, type = "link")
+
+# calculer l'intervale de confiance en utilisant les valeurs
+# extraites avec extract_random_effects
+dfpred <- dfpred[order(dfpred$Arrond),]
+values <- values[order(values$group),]
+
+dfpred$lower <- dfpred$preds - 1.96*values$se
+dfpred$upper <- dfpred$preds + 1.96*values$se
+
+# il nous reste juste à reconvertir le tout dans l'unité d'origine
+# en utilisant l'inverse de la fonction logistique
+inv.logit <- function(x){exp(x)/(1+exp(x))}
+
+dfpred$lower <- inv.logit(dfpred$lower)
+dfpred$upper <- inv.logit(dfpred$upper)
+dfpred$preds <- inv.logit(dfpred$preds)
+
+ggplot(dfpred) + 
+  geom_errorbarh(aes(xmin = lower, xmax = upper, y = reorder(Arrond, preds))) +
+  geom_point(aes(x = preds, y = reorder(Arrond, preds))) + 
+  geom_vline(xintercept = mean(dfpred$preds), color = "red") + 
+  labs(y = "Arrondissement", x = "intercept aléatoire")
+
+```
+
+On constante ainsi que, pour une hypothétique aire de diffusion moyenne, la différence de densité d'îlot de chaleur peut être de 0,32 (32% de la surface de l'AD) entre les arrondissements Verdun et Dollards-des-Ormeaux.
+
+#### GAMM et coefficients aléatoires
+
+En plus des intercepts aléatoires, il est aussi possible de définir des coefficients aléatoires. Reprenons notre exemple et tentons de faire varier l'effet de la variable `PopFRPct` en fonction de l'arrondissement.
+
+```{r message=FALSE, warning=FALSE}
+model5 <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          s(prt_veg)  + s(Arrond, bs = "re") + 
+          s(PopFRPct, Arrond, bs = "re"),
+        data = dataset, family = betar(link = "logit"))
+```
+
+Notez ici une distinction importante ! Le modèle n'assume aucune corrélation entre les coefficients aléatoires pour la variable `PopFRPct` et pour l'intercept aléatoire. Il est assumé que ces deux effets proviennent de deux distributions normales distinctes. En d'autres terme, le modèle ne dispose pas des paramètres nécessaires pour vérifier si les arrondissements avec les intercepts les plus forts (avec des densités supérieures d'îlot de chaleur) sont aussi des arrondissements dans lesquels l'effet de la variable `PopFRPct` est plus prononcé (et vice-versa). Pour plus d'information sur cette distinction, référez-vous à la section \@ref(sect0724).
+
+```{r message=FALSE, warning=FALSE}
+AIC(model4, model5)
+```
+
+On observe que notre dernier modèle à un plus petit *AIC* et serait donc mieux ajusté que notre modèle avec seulement un intercept aléatoire. Nous pouvons donc extraire les coefficients aléatoires et les représenter.
+
+```{r message=FALSE, warning=FALSE}
+df <- extract_random_effects(model5)
+df <- subset(df, df$effect == 'PopFRPct')
+
+ggplot(df) + 
+  geom_errorbarh(aes(xmin = lower_2.5, xmax = upper_97.5, y = reorder(group, value))) +
+  geom_point(aes(x = value, y = reorder(group, value))) + 
+  geom_vline(xintercept = 0, color = "red") + 
+  labs(y = "Arrondissement", x = "coefficient aléatoire")
+```
+
+On constate notamment que seuls trois arrondissements ont des coefficients aléatoires significativement différents de 0. Ainsi, à Anjou et sur le Plateau-Mont-Royal, les coefficients aléatoires sont respectivement de `r df[df$group == "Anjou",]$value[[1]]` et `r df[df$group == "Le Plateau-Mont-Royal",]$value[[1]]`, et viennent donc se retrancher à la valeur moyenne régionnale de `r round(model5$coefficients[[4]],4)` qui atteint alors presque 0. Du point de vue de l'interprétation, on peut en conclure que le groupe de minorités visibles ne subis pas de sur-exposition aux îlots de chaleurs à l'échelle des AD dans ces arrondissements.
+
+En revanche, dans l'arrondissement Mercier-Hochelaga-Maisonneuve, la situation est à l'inverse plus systématiquement en défaveur des populations à faible revenu, avec une taille d'effet prêt de deux fois supérieure à la moyenne régionale.
+
+::: {.bloc_aller_loin data-latex=""}
+**Des effets aléatoires plus complexes dans les GAMM**
+
+Il est possibe de spécifier des GAMM avec des effets aléatoire plus complexes autorisant par exemple des corrélations entre les différents effets / niveaux. Il faut pour cela utiliser la fonction `gamm` de **mgcv** ou la fonction `gamm4` du package **gamm4**. La première offre plus de flexibilité, mais la seconde est plus facile à utiliser et doit être privilégiée quand un modèle comporte un très grand nombre de groupes dans un effet aléatoire, ou lorsque la distribution du modèle n'est pas gaussienne. `gamm` peut ajuster des modèles non-gaussiens, mais elle utilise une approche appelée *PQL* connue pour être moins stable et moins précise. 
+
+Cependant, dans l'exemple que nous avons donné dans cette section, nous utilisons un modèle GAMM avec une distribution *beta*, ce qui n'est actuellement pas supporté par les fonctions `gamm` et `gamm4`. Pour un modèle GAMM plus complexe utilisant une distribution beta, il serait nécessaire d'utiliser le *package* **gamlss**, mais ce dernier utilise aussi une approche de type PQL. Nous montrons tout de même ici comment ajuter un modèle qui incluerait une corrélation entre les deux effets aléatoires de l'exemple précédent. Notez ici que le terme `re` apparaissant dans la formule permet de spécifier un effet aléatoire en utilisant la syntaxe du *package* **nlme**. Plus spécifiquement, **gamlss** fait un pont avec **nlme** et utilise son algorithme d'ajustement au sein de ces propres routines. De même, le terme `pb` permet de spécifier une *spline* de lissage dans le même esprit que **mgcv**. Il est également possible d'utiliser le terme `ga` faisant le lien avec **mgcv** et de profiter de sa flexibilité dans **gamlss**.
+
+```{r message=FALSE, warning=FALSE}
+library(gamlss)
+library(gamlss.add)
+
+model6 <- gamlss(hot ~
+          pb(prt_veg) + 
+          re(fixed = ~ A65Pct + A014Pct + PopFRPct + PopMVPct, 
+             random = ~(1 + PopFRPct)|Arrond),
+        data = dataset, family = BE(mu.link = "logit"))
+```
+On peut ensuite accéder à la partie du modèle qui nous intéresse : celle concernant les effets aléatoires.
+
+```{r message=FALSE, warning=FALSE}
+randomPart <- model6$mu.coefSmo[[2]]
+print(randomPart)
+```
+si l'on observe la la partie dédiée aux effets aléatoire de ce résumé, on peut constater que la corrélation entre les intercepts aléatoires et les coefficients aléatoires est de -0,65. Du point de vue de l'interprétation, cela signifie que dans les arrondissements où les intercepts sont forts (plus grande densité d'îlot de chaleur), l'effet de la variable  `PopFRPct` tend à être plus faible. En d'autres termes, dans les arrondissements avec beaucoup d'ilôts de chaleur, la population semble plus équitablement exposée. On peut le représenter avec un graphique affichant ces effets aléatoires.
+
+```{r corr_random, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%', fig.pos = "H", out.extra = "",auto_pdf = TRUE}
+
+df <- ranef(randomPart)
+df$arrond <- rownames(df)
+names(df) <- c('Intercept', 'PopFRPct', 'Arrondissement')
+
+ggplot(df) + 
+  geom_hline(yintercept = 0, color = "red") +
+  geom_vline(xintercept = 0, color = "red") +
+  geom_point(aes(x = Intercept, y = PopFRPct))
+
+```
+
+La relation négative entre les deux effets aléatoires est très nette sure la figure \@ref(fig:corr_random).
+
+:::
