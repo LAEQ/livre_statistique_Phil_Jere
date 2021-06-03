@@ -754,7 +754,7 @@ ggplot(df) +
 ```
 On peut ainsi constater que pour une partie des arrondissements, la densité d'îlot de chaleur est systèmatiquement supérieure à la moyenne régionale représentée ici par la ligne rouge (0 = effet moyen pour tous les arrondissements). À ce stade, on souhaiterait compléter ce graphique en rajoutant le niveau d'incertitude associé à chaque intercept. Pour cela, nous allons utiliser la fonction `extract_random_effects` du package **mixedup**. Notez que ce package n'est actuellement pas disponible sur CRAN et doit être téléchargé sur github avec la commande : 
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, eval = FALSE}
 remotes::install_github('m-clark/mixedup')
 ```
 
@@ -762,9 +762,9 @@ On peut ensuite procéder à l'extraction des effets aléatoires et les représe
 
 ```{r message=FALSE, warning=FALSE}
 library(mixedup)
-df <- extract_random_effects(model4, re = "Arrond")
+df_re <- extract_random_effects(model4, re = "Arrond")
 
-ggplot(df) + 
+ggplot(df_re) + 
   geom_errorbarh(aes(xmin = lower_2.5, xmax = upper_97.5, y = reorder(group, value))) +
   geom_point(aes(x = value, y = reorder(group, value))) + 
   geom_vline(xintercept = 0, color = "red") + 
@@ -789,10 +789,10 @@ dfpred$preds <- predict(model4, newdata = dfpred, type = "link")
 # calculer l'intervale de confiance en utilisant les valeurs
 # extraites avec extract_random_effects
 dfpred <- dfpred[order(dfpred$Arrond),]
-values <- values[order(values$group),]
+df_re <- df_re[order(df_re$group),]
 
-dfpred$lower <- dfpred$preds - 1.96*values$se
-dfpred$upper <- dfpred$preds + 1.96*values$se
+dfpred$lower <- dfpred$preds - 1.96*df_re$se
+dfpred$upper <- dfpred$preds + 1.96*df_re$se
 
 # il nous reste juste à reconvertir le tout dans l'unité d'origine
 # en utilisant l'inverse de la fonction logistique
@@ -833,10 +833,10 @@ AIC(model4, model5)
 On observe que notre dernier modèle à un plus petit *AIC* et serait donc mieux ajusté que notre modèle avec seulement un intercept aléatoire. Nous pouvons donc extraire les coefficients aléatoires et les représenter.
 
 ```{r message=FALSE, warning=FALSE}
-df <- extract_random_effects(model5)
-df <- subset(df, df$effect == 'PopFRPct')
+df_re <- extract_random_effects(model5)
+df_re <- subset(df_re, df_re$effect == 'PopFRPct')
 
-ggplot(df) + 
+ggplot(df_re) + 
   geom_errorbarh(aes(xmin = lower_2.5, xmax = upper_97.5, y = reorder(group, value))) +
   geom_point(aes(x = value, y = reorder(group, value))) + 
   geom_vline(xintercept = 0, color = "red") + 
@@ -885,6 +885,6 @@ ggplot(df) +
 
 ```
 
-La relation négative entre les deux effets aléatoires est très nette sure la figure \@ref(fig:corr_random).
+La relation négative entre les deux effets aléatoires est très nette sur la figure \@ref(fig:corr_random).
 
 :::
