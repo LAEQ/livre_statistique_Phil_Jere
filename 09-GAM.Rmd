@@ -1,8 +1,890 @@
 # Modèles généralisés additifs  {#chap09}
 
-## Principes de base des GAM {#sect091}
+Dans les précédents chapitres, nous avons eu l'occasion d'explorer les modèles de régressions linéaires, puis les modèles généralisés et enfin les modèles généralisés à effets mixtes. Dans ce chapitre, nous abordons une nouvelle extension dans le monde des régressions : Les modèles généralisés additifs (ou *Generalized additive model* : GAM). Cette extension a pour but de permettre de modéliser des relations non linéaires entre les variables indépendantes et la variable dépendante.
 
-## Extensions des GAM {#sect092}
+## Introduction {#sect091}
+
+Pour rappel, la formule décrivant un modèle linéaire généralisé (GLM) assumant une distribution normale et une fonction de lien identitaire est la suivante : 
+
+\footnotesize
+\begin{equation}
+\begin{aligned}
+&Y \sim Normal(\mu,\sigma)\\
+&g(\mu) = \beta_0 + \beta X\\
+&g(x) = x
+\end{aligned}
+(\#eq:glm1)
+\end{equation}
+\normalsize
+
+Les coefficients \beta permettent de quantifier l'effet des variables indépendantes (*X*) sur la moyenne (l'espérance) (\mu) de la variable dépendante (*Y*). Un coefficient négatif indique que si la variable X augmente, alors la variable Y tend à diminuer et inversement si le coefficient est positif. L'inconvéniant de cette formulation est que le modèle est seulement capable de capter des relations linéaires entre ces variables, or il existe de nombreuses situations dans lesquelles une variables indépendante aura un lien non-linéaire avec une variable dépendante. Présentons quelques exemples : 
+
+* Si nous mesurons le niveau de bruit émis par une source sonore (variable dépendante) en plusieurs endroits et que nous tentons de prédire l'intensité sonore en fonction de la distance à la source (variable indépendante), nous ne pouvons nous attendre à observer une relation linéaire entre les deux. En effet, le son est une énergie se dispersant selon une sphère dans l'espace et son intensité est inversement proportionnel au carré de la distance avec la source sonore.
+* La concentration de la pollution atmosphérique en ville suit généralement des patrons temporels et spatiaux influencés directement par la météorologie et les activités humaines. Ces patrons ne peuvent pas être simplement décrits par un modèle linéaire.
+* Donner un autre exemple ?
+
+```{r figgam1, echo=FALSE, fig.align='center', fig.cap="Patron journalier du NO2 et de l'O3 à Paris", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
+library(dplyr)
+knitr::include_graphics('images/gam/no2_03_patterns.PNG', dpi = NA)
+```
+
+### Non linéarité fonctionnelle
+
+Il existe de nombreuses façon d'introduire des relations non-linéaires dans un modèle. La première et la plus simple à mettre en oeuvre est de transformer la variable indépendante à l'aide d'une fonction inverse, exponentielle, logaritmique ou autre.
+
+Prenons un premier exemple (figure \@ref(fig:figgam2)) univarié avec une variable Y que nous tentons de prédire avec une variable X.
+
+```{r figgam2, echo=FALSE, fig.align='center', fig.cap="Relation non linéaire exponentielle", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
+library(ggplot2)
+library(ggpubr)
+library(boot)
+
+df <- data.frame(
+  x1 = rnorm(1000,0,1),
+  x2 = rnorm(1000,10,5),
+  x3 = rnorm(1000,0,3),
+  x4 = abs(rnorm(1000,0,5))
+)
+
+df$y1 <- exp(df$x1) + rnorm(1000,0,2)
+df$y2 <- -log(df$x2 + rnorm(1000,0,1))
+df$y3 <- inv.logit(df$x3) + rnorm(1000,0,0.3)
+df$y4 <- sqrt(df$x4) + rnorm(1000,0,0.2)
+
+
+ggplot(df)+
+  geom_point(aes(x = x1, y = y1), size = 0.5) + 
+  labs(x = "x", y = "y")  + 
+  geom_smooth(aes(x = x1, y = y1),method = "lm",
+              se=FALSE, color="blue", formula = y ~ x)+ 
+  geom_smooth(aes(x = x1, y = y1),method = "lm",
+              se=FALSE, color="red", formula = y ~ exp(x))
+
+```
+
+Si nous ajustons une droite de régression à ces données (en bleu), nous constatons que l'augmentation de X est associée avec une augmentation de Y. Cependant, la droite de régression est très éloignée des données et ne capte qu'une petite partie de la relation. Si l'on regarde attentivement, on peut constater que l'effet de X sur Y augmente de plus en plus rapidement à mesure que X augmente. Cette forme est caractéristique d'une relation exponentielle. Nous pouvons donc transformer la variable X avec la fonction exponentielle pour obtenir un meilleur ajustement (en rouge).
+
+La figure suivante illustre trois autres cas avec les fonctions logarithmique, logistique inverse et racine carrée.
+
+```{r figgam3, echo=FALSE, fig.align='center', fig.cap="Autres Relations non linéaires", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
+
+P1 <- ggplot(df)+
+  geom_point(aes(x = x2, y = y2), size = 0.5) + 
+  labs(x = "x", y = "y", subtitle = "fonction logarithmique")  + 
+  geom_smooth(aes(x = x2, y = y2),method = "lm",
+              se=FALSE, color="blue", formula = y ~ x)+ 
+  geom_smooth(aes(x = x2, y = y2),method = "lm",
+              se=FALSE, color="red", formula = y ~ log(x)) + 
+  ylim(-3,2.5) + xlim(0,20)
+
+P2 <- ggplot(df)+
+  geom_point(aes(x = x3, y = y3), size = 0.5) + 
+  labs(x = "x", y = "y", subtitle = "fonction logistique inverse")  + 
+  geom_smooth(aes(x = x3, y = y3),method = "lm",
+              se=FALSE, color="blue", formula = y ~ x)+ 
+  geom_smooth(aes(x = x3, y = y3),method = "lm",
+              se=FALSE, color="red", formula = y ~ inv.logit(x))
+
+P3 <- ggplot(df)+
+  geom_point(aes(x = x4, y = y4), size = 0.5) + 
+  labs(x = "x", y = "y", subtitle = "fonction racine carrée")  + 
+  geom_smooth(aes(x = x4, y = y4),method = "lm",
+              se=FALSE, color="blue", formula = y ~ x)+ 
+  geom_smooth(aes(x = x4, y = y4),method = "lm",
+              se=FALSE, color="red", formula = y ~ sqrt(x))
+
+ggarrange(P1,P2,P3, ncol = 2, nrow = 2)
+
+```
+
+Cette approche peut donner des résultats intéressants si vous disposez d'une bonne justification théorique sur la forme attendue de la relation entre X et Y. Il existe également de nombreux cas de figure dans lesquels aucune fonction ne donne de résultats pertinents. Prenons ici un nouveau cas avec la figure \@ref(fig:figgam4)).
+
+```{r figgam4, echo=FALSE, fig.align='center', fig.cap="Relation non linéaire plus complexe", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+library(mgcv)
+dataset <- gamSim(eg=1,n=400,dist="normal",scale=1,verbose=F)
+
+ggplot(dataset) + 
+  geom_point(aes(y = y, x = x2), size = 1) + 
+  geom_smooth(aes(x = x2, y = y, color = "lineaire"),method = "lm",
+              se=FALSE, formula = y ~ x, size = 1.3) + 
+  geom_smooth(aes(x = x2, y = y, color = "logarithme"),method = "lm",
+              se=FALSE, formula = y ~ log(x), size = 1.3) +
+  geom_smooth(aes(x = x2, y = y, color = "racine carrée"),method = "lm",
+              se=FALSE, formula = y ~ sqrt(x), size = 1.3) + 
+  scale_color_manual(values = c("lineaire" = "#0077b6",
+                                "logarithme" = "#e63946",
+                                "racine carrée" = "#2a9d8f"))+
+  labs(colour = 'forme fonctionelle')
+
+```
+
+Nous constatons facilement qu'aucune des fonctions proposées n'est capable de capter la relation entre nos variables X et Y. Cette dernière est complexe et nous devons utiliser une autre stratégie pour la modéliser. 
+
+### Non linéarité avec des polynomiales
+
+Nous avions vu dans le premier chapitre sur la régression simple (REF) qu'il est possible d'utiliser des polynomiales. Pour rappel, il s'agit simplement d'ajouter à un modèle la variable X à différents exposants. Chaque exposant supplémentaire (chaque degré supplémentaire) permet au modèle d'ajuster une relation plus complexe. Rien de tel qu'un graphique (figure : \@ref(fig:figgam5)) pour l'illustrer.
+
+```{r figgam5, echo=FALSE, fig.align='center', fig.cap="Visualisation de plusieurs polynomiales", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+p1 <- ggplot(dataset) + 
+  geom_point(aes(y = y, x = x2), size = 1) + 
+  geom_smooth(aes(x = x2, y = y), color = "blue" ,method = "lm",
+              se=FALSE, formula = y ~ x + I(x**2), size = 1.3) + 
+  labs(subtitle = "polynomiale de degré 2", x = "x", y = "y")
+  
+p2 <- ggplot(dataset) + 
+  geom_point(aes(y = y, x = x2), size = 1) + 
+  geom_smooth(aes(x = x2, y = y), color = "blue" ,method = "lm",
+              se=FALSE, formula = y ~ x + I(x**2) + I(x**3), size = 1.3) + 
+  labs(subtitle = "polynomiale de degré 3", x = "x", y = "y")
+
+p3 <- ggplot(dataset) + 
+  geom_point(aes(y = y, x = x2), size = 1) + 
+  geom_smooth(aes(x = x2, y = y), color = "blue" ,method = "lm",
+              se=FALSE, formula = y ~ x + I(x**2) + I(x**3) + I(x**4), size = 1.3) + 
+  labs(subtitle = "polynomiale de degré 4", x = "x", y = "y")
+
+p4 <- ggplot(dataset) + 
+  geom_point(aes(y = y, x = x2), size = 1) + 
+  geom_smooth(aes(x = x2, y = y), color = "blue" ,method = "lm",
+              se=FALSE, formula = y ~ x + I(x**2) + I(x**3) + I(x**4)+ I(x**5), size = 1.3) + 
+  labs(subtitle = "polynomiale de degré 5", x = "x", y = "y")
+
+ggarrange(p1,p2,p3,p4, ncol = 2, nrow = 2)
+```
+
+L'enjeu est de sélectionner le bon nombre de degrés de la polynomiale pour le modèle. Chaque degré supplémentaire constitue une nouvelle variable dans le modèle et donc un paramètre supplémentaire. Un trop faible nombre de degrés produit des courbes trop simplistes alors qu'un nombre trop élevé conduit à un surajustement (*overfitting* en anglais) du modèle. La figure \@ref(fig:figgam6) illustre ces deux extrèmes.
+
+```{r figgam6, echo=FALSE, fig.align='center', fig.cap="Sur et sous-ajustement d'une polynomiale", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+ggplot(dataset) + 
+  geom_point(aes(y = y, x = x2), size = 1) + 
+  geom_smooth(aes(x = x2, y = y), color = "blue" ,method = "lm",
+              se=FALSE, formula = y ~ x + I(x**2), size = 1.3) +
+  geom_smooth(aes(x = x2, y = y), color = "red" ,method = "lm",
+              se=FALSE, formula = y ~ x + poly(x,degree = 12), size = 1.3) + 
+  labs(subtitle = "polynomiales de degrés 2 et 12", x = "x", y = "y")
+```
+
+Un des problèmes inhérents à l'approche des polynomiales est la difficulté d'interprétation. En effet, les coefficients ne sont pas directement interprétables et seule la figure représentant les prédictions du modèle permet de se faire une idée de l'impact de la variable X sur la variable Y.
+
+### Non linéarité par segments
+
+Un compromis intéressant offrant une interprétation simple et une relation potentiellement complexe est de découper la variable X en segments et d'ajuster un coefficient différent pour chaque segment. On obtient ainsi une ligne brisée et des coefficients faciles à interpréter. 
+```{r figgam7, echo=FALSE, fig.align='center', fig.cap="Régression par segment", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+library(segmented)
+
+model <- lm(y ~ x2, data = dataset)
+o <- segmented(model, seg.Z = ~x2, psi = list(x2 = c(0.25,0.5)),
+  control = seg.control(display = FALSE)
+)
+dataset$fit <- broken.line(o)$fit
+
+ggplot(dataset) + 
+  geom_point(aes(y = y, x = x2), size = 1) + 
+  geom_line(aes(x = x2, y = fit), color = 'blue', size = 1)
+```
+L'enjeu est alors de choisir le nombre de découpages, ainsi que la localisation des points de rupture. L'inconvéniant de cette approche est que dans la réalité, très peu de phénomènes sont marqués par des ruptures nettes.
+
+Dans notre exemple, nous avons divisé notre variable X en trois segments, $k_1$, $k_2$ et $k_3$, définis respectivement sur [0;0.22], [0.22;0.41] et [0.41;1].  Concrètement, cela revient à diviser la variable X en trois nouvelles variables $X_{k1}$, $X_{k2}$, et $X_{k3}$. Les valeurs de $X_{k}$ sont égales à X si X se trouve dans l'interval propre à *k*, et 0 autrement. Ici, nous obtenons trois coefficients : 
+
+* le premier est positif, une augmentation de X sur le premier segment est associée à une augmentation de Y
+* le second est négatif, une augmentation de X sur le second segment est associée à une diminution de Y
+* le troisième est aussi négatif, une augmentation de X sur le troisième segment est associée à une diminution de Y, mais moins forte que sur le second segment.
+
+
+### Non linéarité avec des splines
+
+La dernière approche et probablement la plus flexible est d'utiliser ce que l'on appelle une *spline* pour capter des relations non-linéaire. Une spline est une fonction créant des variables supplémentaires à partir d'une variable X et d'une fonction de base. Ces variables supplémentaires appelées bases (*basis* en anglais) sont ajoutées au modèle, et la sommation de leurs valeurs multipliées par leurs coefficients permet de capter les relations non linéaires entre une variable dépendante et une variables indépendante. Le nombre de base, ainsi que leur localisation (plus souvent appelé noeuds) permettent de contrôler la complexité de la fonction non linéaire.
+
+Prenons un premier exemple simple avec une fonction de base triangulaire (*tent basis* en anglais). Nous allons créer ici une spline avec 7 noeuds équitablement répartis sur notre variable X et représenter les septs fonctions de bases qui en résultent.
+
+```{r figgam8, echo=FALSE, fig.align='center', fig.cap="Bases de la spline triangulaire", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+library(splines)
+
+basis <- bs(dataset$x2, df = 7, degre = 1)
+df <- data.frame(basis * 3)
+df$X <- dataset$x2
+df <- reshape2::melt(df, id.vars = "X")
+
+ggplot() + 
+  geom_point(aes(y = y, x = x2), size = 1, data = dataset) + 
+  geom_line(aes(x = X, y = value, color = variable), size = 1, data = df) + theme(legend.position = "none") 
+```
+Chaque sommet d'un triangle correspond à un noeud, et chaque triangle correspond à une base.
+
+En ajoutant ces bases dans notre modèle de régression, nous pouvons ajuster un coefficient pour chacune. Nous pouvons le représenter ici en multipliant ces bases par les coefficients obtenus avec une simple régression linéaire.
+
+```{r figgam9, echo=FALSE, fig.align='center', fig.cap="Spline triangulaire multipliée par ces coefficients", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+basis <- bs(dataset$x2, df = 7, degre = 1)
+model <- lm(y ~ basis, data = dataset)
+coefs <- coefficients(model)[2:length(coefficients(model))]
+
+prodbase <- sweep(basis, MARGIN = 2, coefs, `*`)
+
+df <- data.frame(prodbase)
+df$X <- dataset$x2
+df <- reshape2::melt(df, id.vars = "X")
+
+ggplot() + 
+  geom_point(aes(y = y, x = x2), size = 1, data = dataset) + 
+  geom_line(aes(x = X, y = value, color = variable), size = 1, data = df) + theme(legend.position = "none") 
+```
+
+On remarque ainsi que les bases correspondant à des valeurs plus fortes de Y ont reçu des coefficients plus grands. Pour reconstituer la fonction non-linéaire entre X et Y, il suffit d'additionner ces bases multipliées par leurs coefficients.
+
+```{r figgam10, echo=FALSE, fig.align='center', fig.cap="Spline triangulaire", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+basis <- bs(dataset$x2, df = 7, degre = 1)
+model <- lm(y ~ basis, data = dataset)
+coefs <- coefficients(model)[2:length(coefficients(model))]
+
+prodbase <- sweep(basis, MARGIN = 2, coefs, `*`)
+total <- rowSums(prodbase) + coefficients(model)[1]
+
+df <- data.frame(prodbase)
+df$X <- dataset$x2
+df <- reshape2::melt(df, id.vars = "X")
+df$total <- total
+
+ggplot() + 
+  geom_point(aes(y = y, x = x2), size = 1, data = dataset) + 
+  geom_line(aes(x = X, y = value, group = variable), color = "grey", linetype="dashed", size = 1, data = df) +
+  geom_line(aes(x = X, y = total), color = "blue", size = 1, data = df)+
+  theme(legend.position = "none") 
+```
+
+La fonction de base triangulaire est intéressante pour présenter la logique qui sous tend les *splines*, mais elle est rarement utilisée en pratique. On lui préfère généralement d'autre formes donnant des résultats plus lisses comme les B-spline quadratique, B-spline cubiques, M-spline, Duchon spline etc.
+
+```{r figgam11, echo=FALSE, fig.align='center', fig.cap="Comparaison de différentes bases", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+library(mgcv)
+library(splines2)
+
+## squared spline
+basis <- bSpline(dataset$x2, df = 7, degre = 2)
+model <- lm(y ~ basis, data = dataset)
+coefs <- coefficients(model)[2:length(coefficients(model))]
+
+prodbase <- sweep(basis, MARGIN = 2, coefs, `*`)
+total <- rowSums(prodbase) + coefficients(model)[1]
+
+df <- data.frame(prodbase)
+df$X <- dataset$x2
+df <- reshape2::melt(df, id.vars = "X")
+df$total <- total
+
+P1 <- ggplot() + 
+  geom_point(aes(y = y, x = x2), size = 1, data = dataset) + 
+  geom_line(aes(x = X, y = value, group = variable), color = "grey", linetype="dashed", size = 1, data = df) +
+  geom_line(aes(x = X, y = total), color = "blue", size = 1, data = df)+
+  theme(legend.position = "none") + 
+  labs(subtitle = "B-spline quadratique")+ 
+  ylim(0,20)
+
+
+## cubic spline
+basis <- bSpline(dataset$x2, df = 7, degre = 3)
+model <- lm(y ~ basis, data = dataset)
+coefs <- coefficients(model)[2:length(coefficients(model))]
+
+prodbase <- sweep(basis, MARGIN = 2, coefs, `*`)
+total <- rowSums(prodbase) + coefficients(model)[1]
+
+df <- data.frame(prodbase)
+df$X <- dataset$x2
+df <- reshape2::melt(df, id.vars = "X")
+df$total <- total
+
+P2 <- ggplot() + 
+  geom_point(aes(y = y, x = x2), size = 1, data = dataset) + 
+  geom_line(aes(x = X, y = value, group = variable), color = "grey", linetype="dashed", size = 1, data = df) +
+  geom_line(aes(x = X, y = total), color = "blue", size = 1, data = df)+
+  theme(legend.position = "none") + 
+  labs(subtitle = "B-spline cubique")+ 
+  ylim(0,20)
+
+## M-spline
+basis <- mSpline(dataset$x2, df = 7, degre = 2)
+model <- lm(y ~ basis, data = dataset)
+coefs <- coefficients(model)[2:length(coefficients(model))]
+
+prodbase <- sweep(basis, MARGIN = 2, coefs, `*`)
+total <- rowSums(prodbase) + coefficients(model)[1]
+
+df <- data.frame(prodbase)
+df$X <- dataset$x2
+df <- reshape2::melt(df, id.vars = "X")
+df$total <- total
+
+P3 <- ggplot() + 
+  geom_point(aes(y = y, x = x2), size = 1, data = dataset) + 
+  geom_line(aes(x = X, y = value, group = variable), color = "grey", linetype="dashed", size = 1, data = df) +
+  geom_line(aes(x = X, y = total), color = "blue", size = 1, data = df)+
+  theme(legend.position = "none") + 
+  labs(subtitle = "M-spline")+ 
+  ylim(0,20)
+
+
+## Duchon spline
+smoother <- smoothCon(s(x2, bs="ds", k = 7), data = dataset, absorb.cons = T)
+basis <- smoother[[1]]$X
+model <- lm(y ~ basis, data = dataset)
+coefs <- coefficients(model)[2:length(coefficients(model))]
+
+prodbase <- sweep(basis, MARGIN = 2, coefs, `*`)
+total <- rowSums(prodbase) + coefficients(model)[1]
+
+df <- data.frame(prodbase)
+df$X <- dataset$x2
+df <- reshape2::melt(df, id.vars = "X")
+df$total <- total
+
+P4 <- ggplot() + 
+  geom_point(aes(y = y, x = x2), size = 1, data = dataset) + 
+  geom_line(aes(x = X, y = value, group = variable), color = "grey", linetype="dashed", size = 1, data = df) +
+  geom_line(aes(x = X, y = total), color = "blue", size = 1, data = df)+
+  theme(legend.position = "none") + 
+  labs(subtitle = "Duchon-spline") + 
+  ylim(0,20)
+
+ggarrange(P1,P2,P3,P4, ncol = 2, nrow = 2)
+```
+
+Les approches que nous venons de décrire sont regroupées sous l'appelation de modèles additifs. Dans les prochaines sous-sections, nous nous concentrons davantage sur les splines du fait de leur plus grande flexibilité.
+
+## Spline de régression et spline de lissage
+
+Nous avons pu voir dans les exemples précédents que la construction d'une *spline* nécessite d'effectuer deux choix importants : le nombre de noeuds et leur localisation. Un trop grand nombre de noeuds conduit à un sur-ajustement du modèle alors qu'un trop faible nombre de noeuds conduit à un sous-ajustement. Lorsque ces choix sont effectués par l'utilisateur et que les bases sont ajoutées manuellement dans le modèle tel que décrit précédemment, on parle de **splines de régression** (ou **regression spline**).
+
+Une approche a été proposée pour faciliter le choix du nombre de noeuds il s'agit de **splines de lissage**  (ou **smoothing spline**). L'idée derrière cette approche est de d'introduire dans le modèle une pénalisation associée avec le nombre de noeud (ou degré de liberté) de la spline, dans une perspective de parsimonie : chaque noeud supplémentaire doit suffisamment contribuer au modèle pour être conservé. Le détail mathématique de cette pénalisation est complexe, mais ce qu'il faut retenir c'est qu'il dépend d'un paramètre appelé $\lambda$. Plus $\lambda$ tend vers 0, plus la pénalisation est faible et plus la spline de lissage devient une simple spline de régression. A l'inverse, plus $\lambda$ est grand, plus la pénalité est importante, à tel point que la spline peut se résumer à une simple ligne droite. Nous l'illustrons à la figure figure \@ref(fig:figgam12) pour laquelle nous contruisons des splines avec 20 noeuds et nous modifions la force du paramètre de pénalité.
+
+```{r figgam12, echo=FALSE, fig.align='center', fig.cap="Pénalisation des splines", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+## model1 : regression spline sans penalite
+mod1 <- gam(y~ s(x2, k = 20, fx = T), data = dataset)
+
+## model2 : regression spline avec penalite = 3
+mod2 <- gam(y~ s(x2, k = 20, sp = 0.5), data = dataset)
+
+## model3 : regression spline avec penalite = 10
+mod3 <- gam(y~ s(x2, k = 20, sp = 3), data = dataset)
+
+## model3 : regression spline avec penalite = 100
+mod4 <- gam(y~ s(x2, k = 20, sp = 100), data = dataset)
+
+df <- data.frame(
+  y = dataset$y,
+  x = dataset$x2,
+  pred1 = predict(mod1),
+  pred2 = predict(mod2),
+  pred3 = predict(mod3),
+  pred4 = predict(mod4)
+)
+
+ggplot(df) + 
+  geom_point(aes(x = x, y = y),size = 1) +
+  geom_line(aes(x = x, y = pred1, color = 'spline de régression'), size = 1.1) +
+  geom_line(aes(x = x, y = pred2, color = 'lambda = 0.5'), size = 1.1) +
+  geom_line(aes(x = x, y = pred3, color = 'lambda = 3'), size = 1.1)+
+  geom_line(aes(x = x, y = pred4, color = 'lambda = 100'), size = 1.1) + 
+  labs(colour = 'pénalisation')
+
+```
+
+On constate bien évidemment qu'avec la spline de régression (non pénalisée), 20 noeuds conduisent à un fort sur-ajustement du modèle. En revanche, les splines de lissage (pénalisées) sont plus résistante à ce problème de sur-ajustement et tendent au contraire à sous-ajuster le modèle quand $\lambda$ est trop grand.
+
+Avec les splines de lissage l'enjeu est donc de sélectionner une bonne valeur pour $\lambda$. Le plus souvent, les *packages* R **estiment eux-même** ce paramètre à partir des données utilisées dans le modèle. Mais gardez en mémoire que vous pouvez modifier ce paramètre. Mentionnons également au passage que les splines de lissage peuvent être réécrites dans un modèle pour être intégrées comme des effets aléatoires. Dans ce contexte, $\lambda$ est remplacé par un simple paramètre de variance est est donc directement estimé dans le modèle [@wood2004stable].
+
+## Interpréter une spline
+
+L'interprétation d'une spline se fait de façon graphique. En effet, pusiqu'elle est composée d'un ensemble de coefficients appliqués à des bases, il est difficile d'interprétrer ces derniers. On préfère alors représenter la spline à l'aide d'un graphique représenté son *effet marginal*. Ce graphique est construit de la façon suivante : 
+
+1. Créer un jeu de donnée fictif dans lequel l'ensemble des variables indépendantes sont fixées à leurs moyennes respectives, sauf la variable pour laquelle on souhaite représenter la spline. Pour cette dernière, un ensemble de valeur allant de son minimum à son maximum est défini.
+2. Utiliser le modèle pour prédire les valeurs attendues de la variable dépendante pour chacune des observations fictives ainsi créée.
+3. Afficher les prédictions obtenues dans un graphique.
+
+Notez ici qu'un graphique des effets marginaux se base sur les prédictions du modèle. Si un modèle est mal ajusté, les prédictions ne seront pas fiable et il sera inutile d'interpréter la *spline* en résultant.
+
+## Plus loin avec les splines
+
+Jusqu'ici nous avons seulement présenté le cas le plus simple pour lequel une *spline* est construite à partir d'une seule variable dépendante continue, mais elles peuvent être utilisées dans de nombreux autres contextes et ont une incroyable flexibilité. Nous détaillons ici trois exemples fréquents : les splines cycliques, les splines variant par groupe et les splines multivariées.
+
+### Splines cycliques
+
+Une spline cyclique est une extension d'une spline classique dont les bases aux extrémités sont spécifiées de tel sorte que la valeur au départ de la spline soit la même que celle à la fin de la spline. Ceci permet à la spline de former une boucle ce qui est particulièrement intéressant pour des variables dont le 0 et la valeur maximum correspondent en réalité à la même valeur. L'exemple le plus parlant est certainement le cas d'une variable représentant la mesure d'un angle en degré. La valeur 0 et la valeur 360 peuvent indiquer la même valeur et les valeurs 350 et 10 sont toutes les deux à une distance de seulement 10 degrés de 0. Un autre exemple possible serait de considérer l'heure comme une variable continue. Dans ce cas, 24h et 00h signifient la même chose.
+
+Prenons un exemple concret. Si l'on tentait de modéliser la concentration de dioxyde d'azote (NO2) à Paris, mesuré par un ensemble de stations fixes, on pourrait s'attendre à ce que le NO2 suive chaque jour un certains patron. Typiquement, à proximité d'axes routiers majeurs, on s'attendrait à observer des pics suivant les flux pendulaires.
+
+```{r figgam13, echo=FALSE, fig.align='center', fig.cap="Spline cyclique pour modéliser la concentration de NO2", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+dataset <- read.csv('data/gam/NO2_airparif.csv', sep=';')
+dataset <- dataset[2:nrow(dataset),]
+df <- reshape2::melt(dataset, id.vars = c("heure","date"))
+df$no2 <- ifelse(df$value == "n/d", NA, as.numeric(df$value))
+
+model <- gam(no2 ~ s(heure, bs = "cp"), data = df, family = tw)
+preds <- data.frame(
+  heure = 1:24
+)
+modout <- predict(model, newdata = preds, type="link",se.fit = T)
+preds$yhat <- exp(modout$fit)
+preds$lower <- exp(modout$fit - 1.96*modout$se.fit)
+preds$upper <- exp(modout$fit + 1.96*modout$se.fit)
+
+subpts <- df[sample(1:nrow(df),size = 1000,replace = F),]
+subpts$heure2 <- subpts$heure + runif(nrow(subpts),min = -0.5, max = +0.5)
+
+cent_line <- preds$yhat[[1]]
+
+ggplot() + 
+  geom_point(mapping = aes(x = heure2, y = no2), size = 0.5, data = subpts, alpha = 0.5) +
+  geom_ribbon(mapping = aes(x = heure, ymax = upper, ymin = lower), fill = "grey", alpha = 0.4, data = preds) +
+  geom_line(mapping = aes(x = heure, y = yhat), color = "blue", size =1.1, data = preds) + 
+  geom_hline(yintercept = cent_line, color = "red", linetype="dashed") +
+  labs(x = "moment de la journée", y = 'concentration de NO2') + 
+  scale_x_continuous(breaks = seq(4,20,4), labels = paste(seq(4,20,4),'h',sep='')) + 
+  xlim(1,24)
+
+```
+On retrouve bien sur ce graphique les deux pics attendus correspondant aux heures de pointes et, tel qu'indiqué par la ligne rouge, la valeure prédite par la spline à 24h et à 0h est identique.
+
+
+### Splines par groupe
+
+Comme nous l'avons vu dans les chapitres précédents, il arrive régulièrement que les observations que nous analysons appartiennent à des groupes. Dans ce cas de figure, on peut être amené à se demander si la relation décrite par une spline est identique pour chacun des groupes d'observations. On va alors ajuster une spline différente par groupe. Dans l'exemple précédent, chaque mesure de NO2 a été prise par une station de mesure spécifique. Compte tenu du fait que l'environnement autours de chaque station est particulier, on pourrait s'attendre à ce que les valeurs de NO2 ne présente pas exactement les même patrons journalier pour chaque station.
+
+```{r figgam14, echo=FALSE, fig.align='center', fig.cap="Spline cyclique variant par groupe", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+
+model <- gam(no2 ~ s(heure, bs = "cp",by = variable), data = df, family = gaussian)
+preds <- expand.grid(
+  heure = 1:24,
+  variable = unique(df$variable)
+)
+
+modout <- predict(model, newdata = preds, type="link",se.fit = T)
+preds$yhat <- modout$fit
+preds$lower <- modout$fit - 1.96*modout$se.fit
+preds$upper <-modout$fit + 1.96*modout$se.fit
+
+subpts <- df[sample(1:nrow(df),size = 1000,replace = F),]
+subpts$heure2 <- subpts$heure + runif(nrow(subpts),min = -0.5, max = +0.5)
+
+cent_line <- preds$yhat[[1]]
+
+ggplot() + 
+  geom_point(mapping = aes(x = heure2, y = no2), size = 0.5, data = subpts, alpha = 0.5) +
+  geom_ribbon(mapping = aes(x = heure, ymax = upper, ymin = lower, group = variable), fill = "grey", alpha = 0.4, data = preds) +
+  geom_line(mapping = aes(x = heure, y = yhat, color = variable), size =0.7, data = preds) + 
+  labs(x = "moment de la journée", y = 'concentration de NO2', color = 'station de mesure') + 
+  scale_x_continuous(breaks = seq(4,20,4), labels = paste(seq(4,20,4),'h',sep='')) + 
+  xlim(1,24) + 
+  theme(legend.position = 'NONE')
+
+```
+
+Comme nous pouvons le voir ici, pour l'essentiel, le NO2 suit le même partern pour l'ensemble des station à l'exception de trois d'entres-elles. Il s'agit en réalité de stations situés dans des secteurs ruraux et donc moins impactés par le trafic routier.
+
+### Splines bivariées
+
+Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante, cependant il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non-linéaires entre les variables indépendantes combinées dans une même spline. Prenons un exemple concret, dans la section sur le modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des ilôts de chaleur. Parmis nos variables indépendantes, nous avions notamment la distance au centre ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables influent conjoitement et de façon non-linéaire la surface d'ilôt de chaleur dans chaque AD. Pour représenter la *spline* bivariée, on utilise alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
+
+```{r figgam15, echo=FALSE, fig.align='center', fig.cap="Spline d'interaction bivariée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+dataset <- read.csv("data/glm/data_chaleur.csv")
+dataset$prt_hot01 <- dataset$prt_hot/100
+model <- gam(prt_hot01 ~ te(prt_veg,dist_cntr), data = dataset, family = betar)
+vis.gam(model, plot.type = 'contour',type = 'response', main = '', xlab = 'pourcentage de la surface végétalisée', ylab = 'distance au centre ville', too.far = 0.1,n.grid = 150)
+```
+
+La *spline* bivariée représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande densité de surface couverte par des ilôts de chaleurs sont situés à moins de 25km du centre ville, au delà de cette distance cette densité chute en dessous de 10%. En revanche, a proximité directe du centre ville  (moins de 1km), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marqués par un fort pourcentage de surface couverte par des ilôts de chaleurs.
+
+Les *splines* bivariées sont également régulièrement utilisées pour capturer un potentiel patern spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observations, il est possible d'ajuster une *spline* bivariées sur ces coordonnées qui capturera 
+
+## Mise en oeuvre dans R {#sect092}
+
+Il est possible d'ajuster des *splines* de régression dans n'importe quelle package permettant d'ajuster des coefficients pour un modèle de régression. Il suffit simplement de construire les bases des *splines* en amont à l'aide du package **splines2** et de les ajouter directement dans l'équation de régression. En revanche, il est nécessaire d'utiliser des packages spécialisés pour ajuster des *splines* de lissage. Parmis ceux-ci **mgcv** est probablement le plus populaire du fait de sa (très) grande flexibilité suivi de **gamlss** , **gam** et **VGAM**. Nous comparerons ici les deux approches. Nous allons tenter d'améliorer le modèle que nous avions ajusté pour prédire le pourcentage de surface couverte par des ilôts de chaleurs dans les aires de diffusion de Montréal, dans une perspective d'équité environnementale. Pour rappel, la variable dépendante est exprimée en pourcentage et nous utilisons une distribution *beta* pour la modéliser.
+
+```{r message=FALSE, warning=FALSE}
+library(mgcv)
+
+## Chargement des données
+dataset <- read.csv("data/gam/data_chaleur.csv",fileEncoding = "utf8")
+
+## ajustement du modele de base
+refmodel <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          poly(prt_veg, degree = 2)  + Arrond,
+        data = dataset, family = betar(link = "logit"))
+```
+
+Dans notre première analyse de ces données, nous avions ajusté une polynomiale d'ordre 2 pour représenter un potentiel impact non-linéaire de la végétation sur les ilôts de chaleur. Nous allons à présent remplacer ce terme par une *spline* de régression en sélectionnant 4 noeuds.
+
+```{r message=FALSE, warning=FALSE}
+library(splines2)
+
+## création des bases de la spline
+basis <- bSpline(x = dataset$prt_veg, df =4, intercept = FALSE)
+
+## ajouter les bases au dataframe
+basisdf <- as.data.frame(basis)
+names(basisdf) <- paste('spline',1:ncol(basisdf),sep='')
+dataset <- cbind(dataset, basisdf)
+
+## ajuster le modele
+model0 <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          spline1 + spline2 + spline3 + spline4 + Arrond,
+        data = dataset, family = betar(link = "logit"))
+
+```
+
+Nous pouvons à présent ajuster une *spline* de lissage et laisser **mgcv** décider de son niveau de complexité.
+
+```{r message=FALSE, warning=FALSE}
+## ajustement du modele avec une spline simple
+model1 <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          s(prt_veg)  + Arrond,
+        data = dataset, family = betar(link = "logit"))
+```
+
+Notez ici que la syntaxe à employer est très simple, il suffit de spécifier `s(prt_veg)` pour indiquer à la fonction `gam` que vous souhaitez ajuster une spline pour la variable `prt_veg`. Nous pouvons à présent comparer l'ajustement des deux modèles en utilisant l'indicateur AIC et représenter les effets marginaux du pourcentage de végétation dans les deux modèles.
+
+```{r message=FALSE, warning=FALSE}
+## comparaison des AIC
+AIC(refmodel, model0, model1)
+```
+
+On constate que le AIC du second modèle est plus petit, indiquant un meilleur ajustement du modèle avec une *spline* de régression. Notons cependant que la différence avec la *spline* de lissage est anecdotique (2 points de AIC) et que nous connaissions à priori le bon nombre de noeuds à utiliser. Pour des relations plus complexes, les *splines* de lissage ont tendance à nettement mieux performer. Voyons à présenter comme représenter ces trois termes non-linéaires.
+
+```{r message=FALSE, warning=FALSE, figgam16, fig.align='center', fig.cap="Comparaison d'une spline et d'une polynomiale", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+## création d'un dataframe de prédiction dans lequel seule
+## la variable prt_veg varie.
+
+dfpred <- data.frame(
+  prt_veg = seq(min(dataset$prt_veg), max(dataset$prt_veg), 0.5),
+  A65Pct = mean(dataset$A65Pct),
+  A014Pct = mean(dataset$A014Pct),
+  PopFRPct = mean(dataset$PopFRPct),
+  PopMVPct = mean(dataset$PopMVPct),
+  Arrond = "Verdun"
+)
+
+## recréation des bases de la spline de régression
+## pour les nouvelles observations
+nvl_bases <- data.frame(predict(basis,newx = dfpred$prt_veg))
+names(nvl_bases) <- paste('spline',1:ncol(basisdf),sep='')
+dfpred <- cbind(dfpred, nvl_bases)
+
+
+## definition de la fonction inv.logit, soit l'inverse de la fonction 
+## de lien du model pour retrouver les predictions dans l'echelle 
+## originales des donnees
+inv.logit <- function(x){exp(x)/(1+exp(x))}
+
+## utilisation des deux modèles pour effectuer les predictions
+predref <- predict(refmodel, newdata = dfpred, type = 'link', se.fit = T)
+predmod0 <- predict(model0, newdata = dfpred, type = 'link', se.fit = T)
+predmod1 <- predict(model1, newdata = dfpred, type = 'link', se.fit = T)
+
+## calcul de la valeur prédite et construction des intervales de confiance
+dfpred$polypred <- inv.logit(predref$fit)
+dfpred$poly025 <- inv.logit(predref$fit - 1.96 * predref$se.fit)
+dfpred$poly975 <- inv.logit(predref$fit + 1.96 * predref$se.fit)
+
+dfpred$regsplinepred <- inv.logit(predmod0$fit)
+dfpred$regspline025 <- inv.logit(predmod0$fit - 1.96 * predmod0$se.fit)
+dfpred$regspline975 <- inv.logit(predmod0$fit + 1.96 * predmod0$se.fit)
+
+dfpred$splinepred <- inv.logit(predmod1$fit)
+dfpred$spline025 <- inv.logit(predmod1$fit - 1.96 * predmod1$se.fit)
+dfpred$spline975 <- inv.logit(predmod1$fit + 1.96 * predmod1$se.fit)
+
+## créer un graphique pour afficher les résultats
+ggplot(dfpred) + 
+  geom_ribbon(aes(x = prt_veg, ymin = poly025, ymax = poly975),
+              alpha = 0.4, color = 'grey') +
+  geom_ribbon(aes(x = prt_veg, ymin = spline025, ymax = spline975),
+              alpha = 0.4, color = 'grey') +
+  geom_ribbon(aes(x = prt_veg, ymin = regspline025, ymax = regspline975),
+              alpha = 0.4, color = 'grey') +
+  geom_line(aes(y = polypred, x = prt_veg, color = 'polynomiale'),
+            size = 1) + 
+  geom_line(aes(y = regsplinepred, x = prt_veg, color = 'spline de régression'),
+            size = 1)+
+  geom_line(aes(y = splinepred, x = prt_veg, color = 'spline de lissage'),
+            size = 1)
+```
+
+Il est intéressant de constater ici que les trois termes renvoient des prédictions très similaires et qu'une légère différence n'est observable que pour les secteurs avec les plus haut niveaux de végétations (> 75%).
+
+Jusqu'ici, nous utilisions l'arrondissement dans lequel se trouve chaque aire de diffusion comme une variable multinomiale afin de capturer la dimension spatiale du jeu de données. Cependant, maintenant que nous savons utiliser des *splines* bivariées, il serait certainement plus efficace d'en construire une à partir des coordonnées X et Y des centroids des aires de diffusion. En effet, le phénomène des ilôts de chaleur a plus de chance de suivre un patern spatial continue sur le territoire plutôt que de suivre les délimitations arbitraire des arrondissements.
+
+```{r message=FALSE, warning=FALSE}
+## ajustement du modele avec une spline bivariée pour l'espace
+model2 <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          s(prt_veg)  + s(X,Y),
+        data = dataset, family = betar(link = "logit"))
+```
+
+Notez ici que l'expression `s(X,Y)` permet de créer une spline bivariée à partir des coordonnées X et Y présentent comme colonne dans le jeu de données. Ces coordonnées s'expriment toutes les deux en mètres. Si vous avez besoin d'ajuster une *spline* multivariée à des variables s'exprimant dans des unités différentes, il est nécessaire d'utiliser une autre syntaxe `te(X,Y)` ou `t2(X,Y)` faisant appel à une structure mathématique légèrement différente : des *tensor product smooths*.
+
+Nous n'avons pas encore montré à quoi ressemble le résumé d'un modèle GAM renvoyé par R.
+
+```{r message=FALSE, warning=FALSE}
+summary(model2)
+```
+La première partie du résumé se concentre sur les effets fixes et linéaires du modèle. Elle peut être interprétée de la même façon que dans un GLM classique. La seconde partie présente les résultats pour les termes non linéaires. La p-value permet de déterminer si la *spline* a un effet différent de 0. Une p-value non significative indique que la *spline* ne contribue pas au modèle. Les colonnes *edf* et *Ref.df* indiquent la complexité de la spline et peuvent être vu comme une approximation du nombre de noeuds. Dans notre cas, on peut constater que la *spline* spatiale (`s(X,Y)`) est environ 5 fois plus complexe que la *spline* ajustée pour la végétation (`s(prt_veg)`). Ceci n'est pas surprenant car les variations spatiales en deux dimensions du phénomène sont certainement plus complexe que le simple impact de la végétation. Notez ici que des valeurs *edf* et *Ref.df* proche de 1 signifient que l'impact de la variable en question est essentiellement linéaire et qu'il n'est pas nécessaire d'utiliser une spline pour cette variable.
+
+La dernière partie du résumé donne deux indicateurs de qualité d'ajustement : le R2 ajusté et la part de la déviance expliquée.
+
+```{r message=FALSE, warning=FALSE}
+AIC(refmodel, model1, model2)
+```
+On peut constater que le fait d'introduire la *spline* spatiale dans le modèle contribue à réduire encore le AIC et donc à améliorer le modèle. À ce stade, on pourrait tenter de forcer la spline à être plus complexe en augmentant le nombre de noeuds.
+
+```{r message=FALSE, warning=FALSE}
+## augmentation de la complexité de la spline spatiale
+model3 <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          s(prt_veg)  + s(X,Y,k = 40),
+        data = dataset, family = betar(link = "logit"))
+
+AIC(refmodel, model1, model2, model3)
+```
+On peut constater que la situation s'améliore encore pour le modèle. Pour déterminer si augmenter le nombre de noeuds se justifie, il est possible de représenter le résultat de deux *splines* précédentes.
+
+Nous allons pour cela calculer la valeur prédite par la *spline* pour chaque localisation dans notre terrain d'étude en le découpant en pixels de 100m par 100m. Pour cette prédiction, nous allons maintenir toutes les autres variables à leur moyenne afin de ne voir que l'effet de la *spline* spatiale.
+
+```{r message=FALSE, warning=FALSE, figgam17, fig.align='center', fig.cap="Comparaison de deux splines spatiales", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%'}
+library(viridis)
+library(metR) # pour placer des étiquettes sur les isolignes
+
+## creation d'un dataframe fictif pour les prédictions
+dfpred <- expand.grid(
+  prt_veg =mean(dataset$prt_veg),
+  A65Pct = mean(dataset$A65Pct),
+  A014Pct = mean(dataset$A014Pct),
+  PopFRPct = mean(dataset$PopFRPct),
+  PopMVPct = mean(dataset$PopMVPct),
+  X = seq(min(dataset$X),max(dataset$X),100),
+  Y = seq(min(dataset$Y),max(dataset$Y),100)
+)
+
+dfpred$predicted1 <- predict(model2, newdata = dfpred, type = 'response')
+dfpred$predicted2 <- predict(model3, newdata = dfpred, type = 'response')
+
+# centrons les predictions
+dfpred$predicted1 <- dfpred$predicted1 - mean(dfpred$predicted1)
+dfpred$predicted2 <- dfpred$predicted2 - mean(dfpred$predicted2)
+
+# représentons les splines
+plot1 <- ggplot(dfpred) + 
+  geom_raster(aes(x = X, y = Y, fill = predicted1)) + 
+  geom_point(aes(x = X, y = Y),
+             size = 0.2, alpha = 0.4,
+             color = 'black', data = dataset)+
+  geom_contour(aes(x = X, y = Y, z = predicted1),binwidth = 0.1, color = 'white', linetype = 'dashed') + 
+  geom_text_contour(aes(x = X, y = Y, z = predicted1), color = 'white', binwidth = 0.1)+
+  scale_fill_viridis() +
+  coord_cartesian() + 
+  theme(axis.title= element_blank(),
+        axis.text = element_blank(),
+        axis.ticks =  element_blank()
+        ) + 
+  labs(subtitle = 'spline de base')
+
+plot2 <- ggplot(dfpred) + 
+  geom_raster(aes(x = X, y = Y, fill = predicted2)) + 
+  geom_point(aes(x = X, y = Y),
+             size = 0.2, alpha = 0.4,
+             color = 'black', data = dataset)+
+  geom_contour(aes(x = X, y = Y, z = predicted2),binwidth = 0.1, color = 'white', linetype = 'dashed') + 
+  geom_text_contour(aes(x = X, y = Y, z = predicted2), color = 'white', binwidth = 0.1)+
+  scale_fill_viridis() +
+  coord_cartesian()+ 
+  theme(axis.title= element_blank(),
+        axis.text = element_blank(),
+        axis.ticks =  element_blank()
+        ) + 
+  labs(subtitle = 'spline plus complexe')
+
+ggarrange(plot1, plot2, nrow = 1, ncol = 2, common.legend = TRUE, legend = 'bottom')
+```
+
+Nous constatons ainsi que les deux *splines* spatiales sont très similaires et qu'il est vraissemblablement plus intéressant de garder la plus simple des deux dans ce cas. Il est intéressant de noter que le Mont-Royal (cercle central) est caractérisé par des valeurs plus faibles de densité d'îlot de chaleur alors que les quartiers centraux situés un peu plus au Nord sont au contraire marqués par des densité d'îlot de chaleur supérieures de 20 points de pourcentage en moyenne.
 
 ### GAMM {#sect0921}
-### GAMMAR {#sect0922}
+
+Il est bien sûr possible de combiner les modèles généralisés additifs (GAM) avec les modèles à effet mixtes (GLMM) vus dans les sections précédentes. Nous obtenons ainsi des modèles généralisés additifs à effets mixtes : GAMM. Il est possible de définir de tels modèles assez facilement dans **mgcv**. 
+
+#### GAMM et intercepts aléatoires
+
+Pour définit un intercept aléatoire, il suffit d'utiliser la notation `s(var, bs = 're')` avec `var` une variable multinomiale. Reprenons l'exemple précédent mais définissons cette-fois les arrondissements comme un intercept aléatoire.
+
+```{r message=FALSE, warning=FALSE}
+dataset$Arrond <- as.factor(dataset$Arrond)
+model4 <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          s(prt_veg)  + s(Arrond, bs = "re"),
+        data = dataset, family = betar(link = "logit"))
+```
+
+L'enjeu est ensuite d'extraire la variance propre à cet effet aléatoire ainsi que les valeurs des intercepts pour chaque arrondissement.
+
+```{r message=FALSE, warning=FALSE}
+gam.vcomp(model4)
+```
+
+On constate donc que l'écart type de l'effet aléatoire des arrondissements est de 0.39, ce qui signifie que les effets de chaque arrondissement seront compris à 95% entre -1,17 et 1,17 sur l'échelle du prédicteur linéaire. Pour extraire les intercepts spécifiques de chaque arrondissement, on peut utiliser la fonction `get_random` du package **itsadug**.
+
+```{r message=FALSE, warning=FALSE}
+library(itsadug)
+values <- get_random(model4)[[1]]
+df <- data.frame(
+  ri = as.numeric(values),
+  arrond = names(values)
+)
+
+ggplot(df) + 
+  geom_point(aes(x = ri, y = reorder(arrond, ri))) + 
+  geom_vline(xintercept = 0, color = "red") + 
+  labs(y = "Arrondissement", x = "intercept aléatoire")
+```
+On peut ainsi constater que pour une partie des arrondissements, la densité d'îlot de chaleur est systèmatiquement supérieure à la moyenne régionale représentée ici par la ligne rouge (0 = effet moyen pour tous les arrondissements). À ce stade, on souhaiterait compléter ce graphique en rajoutant le niveau d'incertitude associé à chaque intercept. Pour cela, nous allons utiliser la fonction `extract_random_effects` du package **mixedup**. Notez que ce package n'est actuellement pas disponible sur CRAN et doit être téléchargé sur github avec la commande : 
+
+```{r message=FALSE, warning=FALSE, eval = FALSE}
+remotes::install_github('m-clark/mixedup')
+```
+
+On peut ensuite procéder à l'extraction des effets aléatoires et les représenter à nouveau.
+
+```{r message=FALSE, warning=FALSE}
+library(mixedup)
+df_re <- extract_random_effects(model4, re = "Arrond")
+
+ggplot(df_re) + 
+  geom_errorbarh(aes(xmin = lower_2.5, xmax = upper_97.5, y = reorder(group, value))) +
+  geom_point(aes(x = value, y = reorder(group, value))) + 
+  geom_vline(xintercept = 0, color = "red") + 
+  labs(y = "Arrondissement", x = "intercept aléatoire")
+```
+
+Ce qui nous permet de distinguer quels écarts sont significativement différents de 0. Puisque nous utilisons ici la distribution *beta* et une fonction de lien logistique, nous devons utiliser des prédictions pour simplifier l'interprétation des coefficients. Nous allons ici fixer toutes les variables à leur moyenne sauf l'arrondissement et calculer les prédictions dans l'échelle originale (0 à 1).
+
+```{r message=FALSE, warning=FALSE}
+dfpred <- data.frame(
+  A65Pct = mean(dataset$A65Pct),
+  A014Pct = mean(dataset$A014Pct),
+  PopFRPct = mean(dataset$PopFRPct),
+  PopMVPct = mean(dataset$PopMVPct),
+  prt_veg = mean(dataset$prt_veg),
+  Arrond = as.character(unique(dataset$Arrond))
+)
+
+# calculer les prédictions pour le prédicteur linéaire
+dfpred$preds <- predict(model4, newdata = dfpred, type = "link")
+
+# calculer l'intervale de confiance en utilisant les valeurs
+# extraites avec extract_random_effects
+dfpred <- dfpred[order(dfpred$Arrond),]
+df_re <- df_re[order(df_re$group),]
+
+dfpred$lower <- dfpred$preds - 1.96*df_re$se
+dfpred$upper <- dfpred$preds + 1.96*df_re$se
+
+# il nous reste juste à reconvertir le tout dans l'unité d'origine
+# en utilisant l'inverse de la fonction logistique
+inv.logit <- function(x){exp(x)/(1+exp(x))}
+
+dfpred$lower <- inv.logit(dfpred$lower)
+dfpred$upper <- inv.logit(dfpred$upper)
+dfpred$preds <- inv.logit(dfpred$preds)
+
+ggplot(dfpred) + 
+  geom_errorbarh(aes(xmin = lower, xmax = upper, y = reorder(Arrond, preds))) +
+  geom_point(aes(x = preds, y = reorder(Arrond, preds))) + 
+  geom_vline(xintercept = mean(dfpred$preds), color = "red") + 
+  labs(y = "Arrondissement", x = "intercept aléatoire")
+
+```
+
+On constante ainsi que, pour une hypothétique aire de diffusion moyenne, la différence de densité d'îlot de chaleur peut être de 0,32 (32% de la surface de l'AD) entre les arrondissements Verdun et Dollards-des-Ormeaux.
+
+#### GAMM et coefficients aléatoires
+
+En plus des intercepts aléatoires, il est aussi possible de définir des coefficients aléatoires. Reprenons notre exemple et tentons de faire varier l'effet de la variable `PopFRPct` en fonction de l'arrondissement.
+
+```{r message=FALSE, warning=FALSE}
+model5 <- gam(hot ~
+          A65Pct + A014Pct + PopFRPct + PopMVPct +
+          s(prt_veg)  + s(Arrond, bs = "re") + 
+          s(PopFRPct, Arrond, bs = "re"),
+        data = dataset, family = betar(link = "logit"))
+```
+
+Notez ici une distinction importante ! Le modèle n'assume aucune corrélation entre les coefficients aléatoires pour la variable `PopFRPct` et pour l'intercept aléatoire. Il est assumé que ces deux effets proviennent de deux distributions normales distinctes. En d'autres terme, le modèle ne dispose pas des paramètres nécessaires pour vérifier si les arrondissements avec les intercepts les plus forts (avec des densités supérieures d'îlot de chaleur) sont aussi des arrondissements dans lesquels l'effet de la variable `PopFRPct` est plus prononcé (et vice-versa). Pour plus d'information sur cette distinction, référez-vous à la section \@ref(sect0724).
+
+```{r message=FALSE, warning=FALSE}
+AIC(model4, model5)
+```
+
+On observe que notre dernier modèle à un plus petit *AIC* et serait donc mieux ajusté que notre modèle avec seulement un intercept aléatoire. Nous pouvons donc extraire les coefficients aléatoires et les représenter.
+
+```{r message=FALSE, warning=FALSE}
+df_re <- extract_random_effects(model5)
+df_re <- subset(df_re, df_re$effect == 'PopFRPct')
+
+ggplot(df_re) + 
+  geom_errorbarh(aes(xmin = lower_2.5, xmax = upper_97.5, y = reorder(group, value))) +
+  geom_point(aes(x = value, y = reorder(group, value))) + 
+  geom_vline(xintercept = 0, color = "red") + 
+  labs(y = "Arrondissement", x = "coefficient aléatoire")
+```
+
+On constate notamment que seuls trois arrondissements ont des coefficients aléatoires significativement différents de 0. Ainsi, à Anjou et sur le Plateau-Mont-Royal, les coefficients aléatoires sont respectivement de `r df[df$group == "Anjou",]$value[[1]]` et `r df[df$group == "Le Plateau-Mont-Royal",]$value[[1]]`, et viennent donc se retrancher à la valeur moyenne régionnale de `r round(model5$coefficients[[4]],4)` qui atteint alors presque 0. Du point de vue de l'interprétation, on peut en conclure que le groupe de minorités visibles ne subis pas de sur-exposition aux îlots de chaleurs à l'échelle des AD dans ces arrondissements.
+
+En revanche, dans l'arrondissement Mercier-Hochelaga-Maisonneuve, la situation est à l'inverse plus systématiquement en défaveur des populations à faible revenu, avec une taille d'effet prêt de deux fois supérieure à la moyenne régionale.
+
+::: {.bloc_aller_loin data-latex=""}
+**Des effets aléatoires plus complexes dans les GAMM**
+
+Il est possibe de spécifier des GAMM avec des effets aléatoire plus complexes autorisant par exemple des corrélations entre les différents effets / niveaux. Il faut pour cela utiliser la fonction `gamm` de **mgcv** ou la fonction `gamm4` du package **gamm4**. La première offre plus de flexibilité, mais la seconde est plus facile à utiliser et doit être privilégiée quand un modèle comporte un très grand nombre de groupes dans un effet aléatoire, ou lorsque la distribution du modèle n'est pas gaussienne. `gamm` peut ajuster des modèles non-gaussiens, mais elle utilise une approche appelée *PQL* connue pour être moins stable et moins précise. 
+
+Cependant, dans l'exemple que nous avons donné dans cette section, nous utilisons un modèle GAMM avec une distribution *beta*, ce qui n'est actuellement pas supporté par les fonctions `gamm` et `gamm4`. Pour un modèle GAMM plus complexe utilisant une distribution beta, il serait nécessaire d'utiliser le *package* **gamlss**, mais ce dernier utilise aussi une approche de type PQL. Nous montrons tout de même ici comment ajuter un modèle qui incluerait une corrélation entre les deux effets aléatoires de l'exemple précédent. Notez ici que le terme `re` apparaissant dans la formule permet de spécifier un effet aléatoire en utilisant la syntaxe du *package* **nlme**. Plus spécifiquement, **gamlss** fait un pont avec **nlme** et utilise son algorithme d'ajustement au sein de ces propres routines. De même, le terme `pb` permet de spécifier une *spline* de lissage dans le même esprit que **mgcv**. Il est également possible d'utiliser le terme `ga` faisant le lien avec **mgcv** et de profiter de sa flexibilité dans **gamlss**.
+
+```{r message=FALSE, warning=FALSE}
+library(gamlss)
+library(gamlss.add)
+
+model6 <- gamlss(hot ~
+          pb(prt_veg) + 
+          re(fixed = ~ A65Pct + A014Pct + PopFRPct + PopMVPct, 
+             random = ~(1 + PopFRPct)|Arrond),
+        data = dataset, family = BE(mu.link = "logit"))
+```
+On peut ensuite accéder à la partie du modèle qui nous intéresse : celle concernant les effets aléatoires.
+
+```{r message=FALSE, warning=FALSE}
+randomPart <- model6$mu.coefSmo[[2]]
+print(randomPart)
+```
+si l'on observe la la partie dédiée aux effets aléatoire de ce résumé, on peut constater que la corrélation entre les intercepts aléatoires et les coefficients aléatoires est de -0,65. Du point de vue de l'interprétation, cela signifie que dans les arrondissements où les intercepts sont forts (plus grande densité d'îlot de chaleur), l'effet de la variable  `PopFRPct` tend à être plus faible. En d'autres termes, dans les arrondissements avec beaucoup d'ilôts de chaleur, la population semble plus équitablement exposée. On peut le représenter avec un graphique affichant ces effets aléatoires.
+
+```{r corr_random, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%', fig.pos = "H", out.extra = "",auto_pdf = TRUE}
+
+df <- ranef(randomPart)
+df$arrond <- rownames(df)
+names(df) <- c('Intercept', 'PopFRPct', 'Arrondissement')
+
+ggplot(df) + 
+  geom_hline(yintercept = 0, color = "red") +
+  geom_vline(xintercept = 0, color = "red") +
+  geom_point(aes(x = Intercept, y = PopFRPct))
+
+```
+
+La relation négative entre les deux effets aléatoires est très nette sur la figure \@ref(fig:corr_random).
+
+:::
