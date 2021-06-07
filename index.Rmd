@@ -108,38 +108,77 @@ if (knitr::is_latex_output()){
   font_size_table <- 14
 }
 
+# note : il ne faut changer que les caracteres en dehors des equations
+clean_text <- function(string){
+  if (is.na(string)){
+    return (NA)
+  }
+  if(string == ""){
+    return("")
+  }
+  changes <- list(
+     c("`", "", F),
+      c("\\^([^\"]*?)\\^","\\\\textsuperscript{\\1}",F),
+      c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+      c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+      c("\\%", "\\\\%", F),
+      c("&", "\\\\&", F),
+      #c("\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}", F),
+      c("\\*{2}", "doublestars", F),
+      c("\\*([^\"]*?)\\*", "\\\\textit{\\1}", F),
+      c("doublestars", "**", F),
+      c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}", F),
+      c("\\(\\%\\)", "(\\\\%)", F),
+      c("_", "\\_", TRUE),
+      c("beta\\_", "beta_", TRUE),
+      c("alpha\\_", "alpha_", TRUE)
+      )
+  parts <- strsplit(string, "$", fixed = T)[[1]]
+  new_strings <- sapply(1:length(parts), function(i){
+    thisstring <- parts[[i]]
+    if (thisstring != ""){
+      parts2 <- strsplit(thisstring, "`", fixed = T)[[1]]
+      new_strings2 <- sapply(1:length(parts2), function(j){
+        thisstring2 <- parts2[[j]]
+        if (j %% 2 ==0){
+          thisstring2 <- gsub("^","\\textasciicircum{}",thisstring2, fixed = T)
+          return(thisstring2)
+        }else{
+          return(thisstring2)
+        }
+      })
+      thisstring <- paste(new_strings2, collapse="")
+    }
+    
+    
+    if (i %% 2 ==0){
+      return(paste("$",thisstring,"$",sep=""))
+    }else{
+      for (ch in changes){
+          if(ch[[3]]){
+            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, fixed = T)
+          }else{
+            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, perl = T)
+          }
+          
+      }
+      return(thisstring)
+    }
+  })
+  fullstring <- paste(new_strings, collapse = "")
+  return (fullstring)
+  
+}
+
 clean_df_latex <- function(df){
   if(inherits(df, "list") == F){
     df <- list(df)
   }
-  changes <- list(c("`", "", F),
-                  c("\\^([^\"]*?)\\^","\\\\textasciicircum{\\1}",F),
-                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
-                  c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
-                  c("\\%", "\\\\%", F),
-                  c("&", "\\\\&", F),
-                  c("\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}", F),
-                  c("\\*{2}", "doublestars", F),
-                  c("\\*([^\"]*?)\\*", "\\\\textit{\\1}", F),
-                  c("doublestars", "**", F),
-                  c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}", F),
-                  c("\\(\\%\\)", "(\\\\%)", F),
-                  c("_", "\\_", TRUE),
-                  c("beta\\_", "beta_", TRUE),
-                  c("alpha\\_", "alpha_", TRUE)
-                  )
   df2 <- lapply(df, function(i){
     i <- data.frame(i)
     for(col in names(i)){
       if(is.character(i[[col]])){
-        for (ch in changes){
-          if(ch[[3]]){
-            i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], fixed = T)
-          }else{
-            i[[col]] <- gsub(ch[[1]],ch[[2]],i[[col]], perl = T)
-          }
-          
-        }
+       i[[col]] <- sapply(i[[col]], clean_text)
       }
     }
     return(i)
