@@ -439,7 +439,7 @@ Avec les splines de lissage, l'enjeu est alors de sélectionner une valeur optim
 
 L'interprétation d'une *spline* se fait à l'aide graphique. En effet, puisqu'elle est composée d'un ensemble de coefficients appliqués à des bases, il est difficile d'interpréter ces derniers. On préfère alors la représenter à l'aide d'un graphique, illustrant son *effet marginal*. Ce graphique est construit en trois étapes : 
 
-1. Créer un jeu de données fictif dans lequel l'ensemble des variables indépendantes sont fixées à leurs moyennes respectives, sauf la variable pour laquelle on souhaite représenter la *spline*. Pour cette dernière, un ensemble de valeurs allant de son minimum à son maximum est défini **COMPREND PAS CETTE PHRASE**.
+1. Créer un jeu de données fictif dans lequel l'ensemble des variables indépendantes sont fixées à leurs moyennes respectives, sauf la variable pour laquelle on souhaite représenter la *spline*. Pour cette dernière, un ensemble de valeurs allant de son minimum à son maximum sont utilisés.
 2. Utiliser le modèle pour prédire les valeurs attendues de la variable dépendante pour chacune des observations fictives ainsi créées.
 3. Afficher les prédictions obtenues dans un graphique.
 
@@ -496,7 +496,7 @@ ggplot() +
 
 Tel qu'abordé dans les chapitres précédents, il arrive régulièrement que les observations appartiennent à des différents groupes. Dans ce cas de figure, on peut être amené à vérifier si la relation décrite par une *spline* est identique pour chacun des groupes d'observations. Il s'agit alors d'ajuster une *spline* différente par groupe. Dans l'exemple précédent, chaque valeur de NO^2 a été mesurée par une station fixe de mesure spécifique. Compte tenu du fait que l'environnement autour de chaque station est particulier, on pourrait s'attendre à ce que les valeurs de NO^2 ne présentent pas exactement les mêmes patrons journaliers pour chaque station.
 
-À la figure \@ref(fig:figgam14), il est possible de constater que le NO^2 suit globalement le même patron temporel pour l'ensemble des stations à l'exception de trois d'entres-elles. Il s'agit en réalité de stations situées dans des secteurs **ruraux** **COMPREND PAS CETTE PHRASE** et donc moins impactés par le trafic routier.
+À la figure \@ref(fig:figgam14), il est possible de constater que le NO^2 suit globalement le même patron temporel pour l'ensemble des stations à l'exception de trois d'entres-elles. Il s'agit en réalité de stations situées dans des secteurs ruraux de la région parisienne et donc moins impactés par le trafic routier.
 
 
 ```{r figgam14, echo=FALSE, fig.align='center', fig.cap="Spline cyclique variant par groupe", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
@@ -535,9 +535,9 @@ Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une s
 
 **COMPREND PAS CETTE PHRASE** MULTIPLIER PAR 100. PROPORTION
 
-La *spline* bivariée représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande densité de surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre ville, au-delà de cette distance, la densité chute en dessous de 10%. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
+La *spline* bivariée représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande proportion de leur surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre ville, au-delà de cette distance, cette proportion chute en bas de 0,1, soit 10%. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
 
-Les *splines* bivariées sont aussi fréquemment utilisées pour capturer un potentiel patron spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observation (*x,y*), il est possible d'ajuster une *spline* bivariée sur ces coordonnées qui contrôlera ainsi l'effet de l'espace **COMPREND PAS CETTE PHRASE**. 
+Les *splines* bivariées sont aussi fréquemment utilisées pour capturer un potentiel patron spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observation (*x,y*), il est possible d'ajuster une *spline* bivariée sur ces coordonnées qui contrôlera ainsi l'effet de l'espace. 
 
 ```{r figgam15, echo=FALSE, fig.align='center', fig.cap="Spline d'interaction bivariée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 dataset <- read.csv("data/glm/data_chaleur.csv")
@@ -669,9 +669,7 @@ model2 <- gam(hot ~
         data = dataset, family = betar(link = "logit"))
 ```
 
-Notez ici que l'expression `s(X,Y)` permet de créer une *spline* bivariée à partir des coordonnées (X,Y) présentes comme colonnes dans le jeu de données. Ces coordonnées sont exprimées toutes deux en mètres. Si vous avez besoin d'ajuster une *spline* multivariée à des variables s'exprimant dans des unités différentes, il est nécessaire d'utiliser une autre syntaxe `te(X,Y)` ou `t2(X,Y)` faisant appel à une structure mathématique légèrement différente, soit des *tensor product smooths*.
-
-**COMPREND PAS CETTE PHRASE** plus haut multivariée au lieu de bivariée
+Notez ici que l'expression `s(X,Y)` permet de créer une *spline* bivariée à partir des coordonnées (X,Y), soit deux colonnes présentes dans le jeu de données. Ces coordonnées sont exprimées toutes deux en mètres. Si vous avez besoin d'ajuster une *spline* multivariée à des variables s'exprimant dans des unités différentes, il est nécessaire d'utiliser une autre syntaxe `te(X,Y)` ou `t2(X,Y)` faisant appel à une structure mathématique légèrement différente, soit des *tensor product smooths*.
 
 Voyons désormais, le résumé d'un modèle GAM tel que présenté dans R.
 
@@ -757,7 +755,7 @@ plot2 <- ggplot(dfpred) +
 ggarrange(plot1, plot2, nrow = 1, ncol = 2, common.legend = TRUE, legend = 'bottom')
 ```
 
-Or, il s'avère que les deux *splines* spatiales sont très similaires. Par conséquent, il est vraissemblablement plus pertinent de conserver la plus simple des deux. Notez que le Mont-Royal (cercle central) est caractérisé par des valeurs plus faibles de densité d'îlot de chaleur alors que les quartiers centraux situés un peu plus au Nord sont au contraire marqués par des densité d'îlots de chaleur supérieures de 20 points de pourcentage en moyenne. **DE NOUVEAU VARIABLE EN % OU EN PROPORTION**
+Or, il s'avère que les deux *splines* spatiales sont très similaires. Par conséquent, il est vraissemblablement plus pertinent de conserver la plus simple des deux. Notez que le Mont-Royal (cercle central) est caractérisé par des valeurs plus faibles d'îlots de chaleur alors que les quartiers centraux situés un peu plus au Nord sont au contraire marqués par des pourcentages d'îlots de chaleur supérieures de 20 points de pourcentage en moyenne.
 
 ### GAMM {#sect0921}
 
@@ -815,7 +813,7 @@ ggplot(df_re) +
   labs(y = "Arrondissement", x = "intercept aléatoire")
 ```
 
-Cela permet de distinguer quels écarts sont significativement différents de 0 au seuil de 95%. Puisque nous utilisons ici la distribution *beta* et une fonction de lien logistique, nous devons utiliser des prédictions pour simplifier l'interprétation des coefficients. Nous allons ici fixer toutes les variables à leur moyenne respective sauf l'arrondissement et calculer les prédictions dans l'échelle originale (0 à 1). **DONC C'EST PAS UN POURCENTAGE PAS BEL ET BIEN UNE PROPORTION!!!**
+Cela permet de distinguer quels écarts sont significativement différents de 0 au seuil de 95%. Puisque nous utilisons ici la distribution *beta* et une fonction de lien logistique, nous devons utiliser des prédictions pour simplifier l'interprétation des coefficients. Nous allons ici fixer toutes les variables à leur moyenne respective sauf l'arrondissement et calculer les prédictions dans l'échelle originale (0 à 1).
 
 ```{r message=FALSE, warning=FALSE}
 dfpred <- data.frame(
@@ -897,9 +895,7 @@ En revanche, dans l'arrondissement Mercier-Hochelaga-Maisonneuve, la situation e
 ::: {.bloc_aller_loin data-latex=""}
 **Des effets aléatoires plus complexes dans les GAMM**
 
-Il est possible de spécifier des GAMM avec des effets aléatoires plus complexes autorisant par exemple des corrélations entre les différents effets / niveaux. Il faut pour cela utiliser la fonction `gamm` de **mgcv** ou la fonction `gamm4` du package **gamm4**. La première offre plus de flexibilité, mais la seconde est plus facile à utiliser et doit être privilégiée quand un modèle comporte un très grand nombre de groupes dans un effet aléatoire, ou lorsque la distribution du modèle n'est pas gaussienne. La fonction `gamm` permet ajuster des modèles non gaussiens, mais elle utilise une approche appelée *PQL* connue pour être moins stable et moins précise.
-
-**DIRE LE NOM EXACT DE PQL entre parenthèses**
+Il est possible de spécifier des GAMM avec des effets aléatoires plus complexes autorisant par exemple des corrélations entre les différents effets / niveaux. Il faut pour cela utiliser la fonction `gamm` de **mgcv** ou la fonction `gamm4` du package **gamm4**. La première offre plus de flexibilité, mais la seconde est plus facile à utiliser et doit être privilégiée quand un modèle comporte un très grand nombre de groupes dans un effet aléatoire, ou lorsque la distribution du modèle n'est pas gaussienne. La fonction `gamm` permet ajuster des modèles non gaussiens, mais elle utilise une approche appelée *PQL* (*Penalized Quasi-Likelihood* en anglais) connue pour être moins stable et moins précise.
 
 Cependant, dans l'exemple de cette section, nous utilisons un modèle GAMM avec une distribution *beta*, ce qui n'est actuellement pas supporté par les fonctions `gamm` et `gamm4`. Pour un modèle GAMM plus complexe utilisant une distribution *beta*, il serait nécessaire d'utiliser le *package* **gamlss**, mais ce dernier utilise aussi une approche de type PQL. Nous montrons tout de même ici comment ajouter un modèle qui inclurait une corrélation entre les deux effets aléatoires de l'exemple précédent. Notez ici que le terme `re` apparaissant dans la formule permet de spécifier un effet aléatoire en utilisant la syntaxe du *package* **nlme**. Plus spécifiquement, **gamlss** fait un pont avec **nlme** et utilise son algorithme d'ajustement au sein de ces propres routines. De même, le terme `pb` permet de spécifier une *spline* de lissage dans le même esprit que **mgcv**. Il est également possible d'utiliser le terme `ga` faisant le lien avec **mgcv** et de profiter de sa flexibilité dans **gamlss**.
 
@@ -921,7 +917,7 @@ randomPart <- model6$mu.coefSmo[[2]]
 print(randomPart)
 ```
 
-**REVOIR LA FORMULATION ENSEMBLE** Si l'on observe la partie dédiée aux effets aléatoires de ce résumé, on peut constater que la corrélation entre les interceptes aléatoires et les coefficients aléatoires est de -0,65. Du point de vue de l'interprétation, cela signifie que dans les arrondissements où les interceptes sont forts (plus grande densité d'îlots de chaleur), l'effet de la variable `PopFRPct` tend à être plus faible. En d'autres termes, dans les arrondissements avec beaucoup d'îlots de chaleur, la population semble plus équitablement exposée. On peut le représenter avec un graphique présentant ces effets aléatoires. La relation négative entre les deux effets aléatoires est très nette à la lecture de la figure \@ref(fig:corr_random).
+À lecture de la partie du résumé consacrée aux résultats pour les effets aléatoires de ce résumé, on constate que la corrélation entre les interceptes aléatoires et les coefficients aléatoires est de -0,65. Cela signifie que pour les arrondissements avec des interceptes élevés (plus grande proportion d'îlots de chaleur), l'effet de la variable `PopFRPct` tend à être plus faible. Autrement dit, dans les arrondissements avec beaucoup d'îlots de chaleur, les personnes à faible revenu ont tendance à être moins exposées, tel qu'illustré à la figure \@ref(fig:corr_random).
 
 ```{r corr_random, fig.align='center', fig.cap="Relation entre les effets aléatoires des arrondissements et la variable population à faible revenu", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', fig.pos = "H", out.extra = "",auto_pdf = TRUE}
 
