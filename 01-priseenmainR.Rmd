@@ -608,7 +608,7 @@ print(mon_array)
 
 #### *DataFrames* {#sect01364}
 
-S'il est rare de manipuler des matrices et des *arrays*, le *DataFrame* (tableau de données en français) est la structure de données la plus souvent utilisé. Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une caractéristique de ces individus. Ces colonnes ont des noms, ce qui permet facilement d'accéder à leurs valeurs. Créons un *DataFrame* à partir de nos quatres vecteurs et de la fonction `data.frame`.
+S'il est rare de manipuler des matrices et des *arrays*, le *DataFrame* (tableau de données en français) est la structure de données la plus souvent utilisée. Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une caractéristique de ces individus. Ces colonnes ont des noms, ce qui permet facilement d'accéder à leurs valeurs. Créons un *DataFrame* à partir de nos quatres vecteurs et de la fonction `data.frame`.
 
 ```{r}
 df <- data.frame(
@@ -1032,7 +1032,7 @@ df$noms_corr <- str_to_title(df$noms)
 print(df$noms_corr)
 ```
 
-On pourrait également tout mettre en minuscules ou tout en majuscule.
+On pourrait également tout mettre en minuscules ou tout en majuscules.
 ```{r message=FALSE, warning=FALSE}
 df$noms_min <- tolower(df$noms)
 df$noms_maj <- toupper(df$noms)
@@ -1068,10 +1068,33 @@ print(df$num_civique)
 
 Pour être exact, sachez que pour notre exemple, la fonction `str_split_fixed` renvoie deux colonnes de texte : une avec le texte avant le premier espace, soit le numéro civique, et une avec le reste du texte. Le nombre de colonnes est contrôlé par l'argument `n`. Si `n = 1`, la fonction ne fait aucun découpage, avec `n = 2` la fonction va découper en deux parties le texte avec la première occurence du délimiteur, et ainsi de suite.  En ajoutant `[,1]` à la fin, nous indiquons que l'on souhaite garder seulement la première des deux colonnes.
 
-AJOUTER SUBSTR
-COUPER À GAUCHE ET TROIS
-SUBSTR(1,4)
-SUBSTR(lenght(x)-4, lenght(X))
+Il est également possible d'extraire des parties de texte et de ne garder par exemple que les N premiers caractères ou les N derniers caractères : 
+
+```{r message=FALSE, warning=FALSE}
+
+# ne garder que les 5 premiers caractères
+substr(df$adresses_3,start = 1, stop = 5)
+
+# ne garder que les 5 derniers caractères
+n_caract <- nchar(df$adresses_3)
+substr(df$adresses_3, start = n_caract-4, stop = n_caract)
+```
+Notez que les paramètres `start` et `stop` de la fonction `substr` peuvent accepter un vecteur de valeurs. Il est ainsi possible d'appliquer une sélection de texte différente à chaque chaînes de caractères dans notre vecteur en entrée. On pourrait par exemple vouloir récupérer tout le texte avant le second espace pour garder uniquement le numéros civique et le type de rue.
+
+```{r message=FALSE, warning=FALSE}
+# étape 1 : récupérer les positions des espaces pour chaque adresses
+positions <- str_locate_all(df$adresses_3, " ")
+
+#étapes 2 : récupérer les positions des seconds espaces
+sec_positions <- sapply(positions, function(i){
+  i[2,1]
+})
+
+#étapes 3 : appliquer le découpage
+substr(df$adresses_3, start = 1, stop = sec_positions-1)
+
+```
+
 
 ##### Coller du texte {#sect014254}
 
@@ -1101,8 +1124,6 @@ names(accidents_df)
 Nous disposons de trois colonnes représentant respectivement l'heure, la date et le nombre de victimes impliquées dans la collision.
 
 ##### Du texte à la date {#sect014261}
-
-FUSION HORAIRE JEREMY
 
 Actuellement, les colonnes *HEURE_ACCDN* et *DT_ACCDN* sont au format texte. Nous pouvons afficher quelques lignes du jeu de données avec la fonction `head` pour visualiser comment elles ont été saisies.
 
@@ -1194,17 +1215,30 @@ hist(accidents_df$diff_time_num, breaks = 50)
 
 On observe clairement deux pics, un premier entre 0 et 100 ( entre 07h00 08h30 environ) et un second plus important entre 550 et 650 (entre 16h00 et 17h30 environ), ce qui correspond sans surprise aux heures de pointe. Il est intéressant de noter que plus d'accidents se produisent à l'heure de pointe du soir qu'à celle du matin.
 
+##### Tenir compte du fuseau horaire {#sect014264}
+
+Lorsque l'on travaille avec des données provenant de différents endroits dans le monde ou que l'on doive tenir compte des heures d'été et d'hivers, il peut être nécessaire de tenir compte du fuseau horaire. Pour créer une date avec un fuseau horaire, il est possible d'utiliser le paramètre `tz` dans la function `as_datetime` et d'utiliser le code approprié. Dans notre cas, les données d'accident ont été collectée à Montréal qui a un décalage de -5 heures par rapport au temps de référence UTC (+1 heure en été). Le code spécifique de ce fuseau horaire est *EDT*, il est facile de trouver ces codes avec le site web [timeanddate.com](https://www.timeanddate.com/time/map/).
+
+```{r message=FALSE, warning=FALSE}
+accidents_df$datetime <- as_datetime(accidents_df$date_heure,
+                                     format = "%Y/%m/%d %H:%M:%S",
+                                     tz = "EDT")
+```
+
 #### Recoder des variables {#sect01427}
 
 Recoder des variables signifie changer la valeur d'une variable selon une condition afin d'obtenir une nouvelle variable. Si nous reprenons le jeu de données précédent sur les accidents à vélo, nous pourrions vouloir créer une nouvelle colonne nous indiquant si la collision a eu lieu en heures de pointe ou non. On obtiendrait ainsi une nouvelle variable avec seulement deux catégories plutôt que la variable numérique originale. Nous pourrions aussi définir quatre catégories avec l'heure de pointe du matin, l'heure de pointe du soir, le reste de la journée et la nuit.
-
-JEREMY table(is.na())
 
 ##### Le cas binaire avec ifelse {#sect014271}
 
 Si l'on ne souhaite créer que deux catégories, le plus simple est d'utiliser la fonction `ifelse`. Cette fonction va évaluer une condition (section \@ref(sect0135)) pour chaque ligne d'un *DataFrame* et produire un nouveau vecteur. Créons donc une variable binaire indiquant si une collision a eu lieu durant les heures de pointe ou hors heures de pointe. Nous devons alors évaluer les conditions suivantes : 
 
 Est-ce que l'accident a eu lieu entre 07h00 (0) **ET** 09h00 (120), **OU** est ce que la collision a eu lieu entre 16h30 (570) **ET** 18h30 (690)?
+
+```{r message=FALSE, warning=FALSE}
+table(is.na(accidents_df$diff_time_num))
+```
+Notons dans un premier temps que nous avons 40 observations sans valeurs pour la colonne `diff_time_num`. Il s'agit d'observations pour lesquelles nous ne disposions pas de dates au départ.
 
 ```{r message=FALSE, warning=FALSE}
 Cond1 <- accidents_df$diff_time_num >= 0 & accidents_df$diff_time_num <= 120
@@ -1225,6 +1259,9 @@ Avec la fonction `table`, nous pouvons rapidement visualisuer les effectifs des 
 
 ```{r message=FALSE, warning=FALSE}
 table(accidents_df$moment_bin)
+
+# vérifier si on a toujours seulement 40 NA
+table(is.na(accidents_df$moment_bin))
 ```
 Les heures de pointe représentent quatre heures de la journée, ce qui nous laisse neuf heures hors heures de pointe entre 07h00 et 20h00.
 
@@ -1258,6 +1295,9 @@ accidents_df$moment_multi <- case_when(
 )
 
 table(accidents_df$moment_multi)
+
+#vérifions encore les NA
+table(is.na(accidents_df$moment_multi))
 ```
 La syntaxe de cette fonction est un peu particulière. Elle accepte un nombre illimité d'arguments. Chaque argument est composé d'une condition et d'une valeur à renvoyer si la condition est vraie; ces deux éléments étant reliés par le symbole `~`. Notez que toutes les évaluations sont effectuées dans l'ordre des arguments. En d'autres termes, la fonction va d'abord tester la première condition et assigner ces valeurs, puis recommencer pour les prochaines conditions. Ainsi, si une observation (ligne du tableau de données) obtient `TRUE` à plusieurs conditions, elle obtiendra la valeur de la dernière condition qu'elle a validée.
 
@@ -1423,9 +1463,103 @@ print(df3)
 
 ## Bien structurer un code R  {#sect016}
 
-Commenter son code
-Convention d'écriture
+Terminons ici avec quelques conseils sur la rédaction de code R. Bien rédiger son code est essentiel pour trois raisons : 
 
+1. pouvoir relire et réutiliser son code dans le future
+2. permettre à d'autres personnes de réutiliser ou relire son code
+3. minimiser les risques d'erreurs
+
+Ne négligez pas l'importance d'un code bien rédigé et bien documenté, vous vous éviterez des migraines lorsque vous devrez héxumer du code écrit plusieurs mois en arrière.
+
+Voici quelques lignes directrices peu contraignantes mais qui devraient vous être utiles au quotidien : 
+
+1. **Privilégier la clareté à la concision** : Il vaut mieux parfois scinder une ligne de code en plusieurs sous étape pour rendre une opération plus facile à lire. Par exemple, si l'on reprend une ligne de code précédentes où nous sélectionnions l'ensemble des colonnes du jeu de données `iris` comprenant le mot `Length` : 
+```{r message=FALSE, warning=FALSE}
+iris_l <- iris[names(iris)[grepl("Length",names(iris), fixed = TRUE)]]
+```
+Il serait possible de simplifier la lecture de ce code en détaillaint les différentes étapes : 
+```{r message=FALSE, warning=FALSE}
+noms_cols <- names(iris)
+sel_noms <- noms_cols[grepl("Length",noms_cols, fixed = TRUE)]
+iris_l <- iris[sel_noms]
+```
+
+2. **Documenter et commenter son code le plus possible** : Il est possible de rajouter du texte dans un code R qui ne sera pas exécuté, on appelle cela des commentaires. Typiquement, une ligne commençant par un `#` ne sera pas interprétée par le logiciel. Utilisez des commentaires le plus souvent possible pour décrire les actions que vous souhaitez effectuer avec votre code. Il sera ainsi plus facile de le relire, de naviguer dedans, mais également de repérer d'éventuelles erreurs. Si l'on reprend l'exemple précédent : 
+```{r message=FALSE, warning=FALSE}
+# récupération du nom des colonnes dans le dataframe iris
+noms_cols <- names(iris)
+
+# sélection des colonnes avec les caractères "Length"
+sel_noms <- noms_cols[grepl("Length",noms_cols, fixed = TRUE)]
+
+# extraction des colonnes sélectionnées dans un nouveau dataframe
+iris_l <- iris[sel_noms]
+```
+
+3. **Éviter le code à rallonge** : Typiquement, essayez de vous limiter à des lignes de code d'une longueur maximale de 80 caractères. Au delà de cette limite, essayer le plus possible de découper votre code.
+
+4. **Adopter une convention d'écriture** : Une convention d'écriture est un ensemble de règles strictes définissant comme un code doit être rédigé. À titre d'exemple, il est parfois recommandé d'utiliser le lowerCamelCase, le UpperCamelCase, ou encore de séparer les mots par des tirets bas upper_camel_case. Un mélange de ces différentes conventions peut être utilisé pour distinguer les variables, les fonctions et les classes. Il peut être difficile de réellement arrêté une telle convention car les différents packages dans R utilisent des conventions différentes. Pour votre propre usage, il est surtout important d'avoir une certaine cohérence.
+
+5. **Indenter son code** : L'identation du code permet de rendre celui-ci beaucoup plus lisible. Identer son code signifie insérer au début de chaque ligne de code un certain nombre d'espaces permettant d'indiquer dans quel niveau de profondeur on se situe. Typiquement, lorsque des accolades ou des parenthèses sont ouvertes dans une fonction, une boucle ou une condition, on rajoute deux ou quatres espaces en début de ligne. Prenons un exemple très concret, admettons que nous écrivons une fonction affichant un résumé statistique à chaque colonne d'un jeu de donnée si cette colonne est de type numérique. L'indentation dans cette fonction va jouer un rôle crucial dans sa lisibilité. 
+Sans indentation et sans respecter la règle des 80 caractères, on obtient ceci : 
+
+```{r message=FALSE, warning=FALSE}
+summary_all_num_cols <- function(dataset){for(col in names(dataset)){if(class(dataset[[col]] == "numeric")){print(summary(dataset[[col]]))}}}
+```
+
+Avec de l'indentation et des commentaires, le tout est tout de suite plus lisible et on distingue bien les trois niveaux / palliers de code : 
+
+```{r message=FALSE, warning=FALSE}
+#définition d'une fonction
+summary_all_num_cols <- function(dataset){
+  #Itération sur chaque colonne de la fonction
+  for(col in names(dataset)){
+    # A chaque itération, testons si la colonne est de type numérique
+    if(class(dataset[[col]] == "numeric")){
+      # Si oui, on affiche un résumé statistique pour cette colonne
+      print(summary(dataset[[col]]))
+    } # ici on sort de la condition (niveau 3)
+  } # ici on sort de la boucle (niveau 2)
+}# ici on sort de la fonction (niveau 1)
+```
+
+6. **Adopter une structure globale pour ses scripts** : un code R peut être comparé à une recette de cuisine. Si tous les éléments sont dans le désordre et sans structure globale, la recette risque d'être très difficile à lire. Cette structure risque de changer quelque peu en fonction de la recette ou de l'auteur, mais les principaux éléments restent les mêmes. Dans un code R, on peut distinguer plusieurs éléments récurrents que nous vous recommandons d'organiser de la façon suivante :
+  1. charger les différents packages **utilisés** par le script. Cela permet dés le début du code de savoir quelles sont les fonctions et méthodes qui seronts employées dans le script. On limite aussi les risques d'oublier des packages qui seraient chargés plus loin dans le code.
+  2. définir les fonctions dont vous aurez besoin en plus de celles présentes dans les packages. Idem, placer ses fonctions en début de code évite d'oublier de les charger ou de les chercher quand on en a besoin
+  3. définir le répertoir de travail avec la fonction `setwd` et charger les données nécessaires.
+  4. effectuer au besoin les opérations de manipulations sur les données
+  5. effectuer les analyses nécessaires en scindant si possibles les différentes étapes
+
+Notez également que l'étape de définition des fonctions complémentaires peut être effectuées dans une feuille de code séparée, et l'ensemble de ces fonctions chargées à l'aide de la fonction `source`. De même, si la manipulation des données est conséquente, il est recommandée de l'effectuer avec un code à part, d'enregistrer les données structurées, puis de le charger directement au début de votre code dédié à l'analyse.
+
+7. **Exploiter les commentaires délimitant les sections dans Rstudio** : Dans RStudio, il est possible d'écrire des commentaires d'une certaine façon pour que l'IDE les détecte comme des délimiteurs de sections. L'intérêt principal est que l'on peut ensuite facilement naviguer entre ces sections en utilisant Rstudio comme montré à la figure \@ref(fig:sections_rstudio), mais aussi masquer des sections afin de faciliter la lecture du reste du code. Pour délimiter une section, il suffit simplement d'ajouter une ligne de commentaire comprenant quatre fois les caractères `-`, `=` ou `#` à la suite : 
+
+```{r
+
+# Voici ma section 1 ----------------------------------
+
+# Voici ma section 2 ==================================
+
+# Voici ma section 3 ##################################
+
+# Autre exemple mieux marquer la rupture dans un code : 
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#### Titre de ma section 4 ####
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
+
+```{r sections_rstudio, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Naviguer dans des sections de codes avec Rstudio",  out.width='50%'}
+knitr::include_graphics('images/introduction/sections_rstudio.png', dpi = NA)
+```
+
+8. **Adopter une structure globale pour ces projets** : au delà du script, il est nécessaire de bien structurer vos projets. Le plus important étant d'utiliser une structure commune à chaque projet pour vous faciliter le travail et ne pas perdre de temps ou de données. Nous proposons ci-dessous un exemple de structure assez général pour être utilisé dans la plupart des cas. Elle sépare notamment les données originales des données structurées, ainsi que les fonctions complémentaire et la structuration des données du principal bloc d'analyse.
+
+```{r structFolder, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Structure de dossier recommandée pour un projet avec R",  out.width='50%'}
+knitr::include_graphics('images/introduction/structuration projet.png', dpi = NA)
+```
+
+**Ne négligez pas l'importance d'un code bien écrit et documenté !**
 
 ## Conclusion et ressources pertinentes  {#sect016}
 Voilà qui conclut ce chapitre sur les bases du langage R. Vous avez maintenant les connaissances nécessaires pour commencer à travailler. N'hésitez pas à revenir sur les différentes sous-sections au besoin ! Pour aller plus loin dans l'apprentissage du langage, vous pouvez également vous plonger dans le chapitre R AVANCÉ. Cependant, nous vous recommandons de faire vos premiers pas avec cette base avant de vous lancer dans cette partie davantage orientée programmation. Quelques ressources pertinentes qui pourraient vous être utiles sont aussi reportées au tableau ci-dessous. 
