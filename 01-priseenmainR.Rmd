@@ -8,12 +8,12 @@ Dans ce chapitre, nous reviendrons brièvement sur l’histoire de R et la philo
 Dans ce chapitre, nous utiliserons principalement les *packages* suivants : 
 
 * Pour importer des fichiers externes :
-  - **foreign** pour entre autres les fichiers *dbase* et ceux des logiciels SPSS et Stata
-  - **sas7bdat** pour les fichiers du logiciel SAS
-  - **xlsx** pour les fichiers Excel
+  - **foreign** pour entre autres les fichiers *dbase* et ceux des logiciels. SPSS et Stata
+  - **sas7bdat** pour les fichiers du logiciel SAS.
+  - **xlsx** pour les fichiers Excel.
 * Pour manipuler des chaînes de caractères et des dates : 
-  - **stringr** pour les chaînes de caractères
-  - **lubridate** pour les dates
+  - **stringr** pour les chaînes de caractères.
+  - **lubridate** pour les dates.
 * Pour manipuler des données :
   - **dplyr ** du **tidyverse** propose une grammaire pour manipuler et structurer des données.
 :::
@@ -23,7 +23,7 @@ Dans ce chapitre, nous utiliserons principalement les *packages* suivants :
 R est à la fois un langage de programmation et un logiciel libre (sous la licence publique générale GNU) dédié à l'analyse statistique et soutenu par une fondation : _R foundation for Statistical computing_. Il est principalement écrit en C et Fortran.
 
 
-R a été créé par Ross Ihaka et Robert Gentleman à l'Université d'Auckland en Nouvelle-Zélande. Si vous avez un jour l'occasion de passer dans le coin, une plaque est affichée dans le département de statistique de l'université, ça mérite le détour (figure \@ref(fig:fig01)). Une version expérimentale a été publiée en 1996, mais la première version stable ne date que de 2000, il s'agit donc d'un logiciel relativement récent si on le compare à ses concurrents SPSS (1968) , SAS (1976) et Stata (1984).
+R a été créé par Ross Ihaka et Robert Gentleman à l'Université d'Auckland en Nouvelle-Zélande. Si vous avez un jour l'occasion de passer dans le coin, une plaque est affichée dans le département de statistique de l'université, ça mérite le détour (figure \@ref(fig:fig01)). Une version expérimentale a été publiée en 1996, mais la première version stable ne date que de 2000, il s'agit donc d'un logiciel relativement récent si on le compare à ses concurrents SPSS (1968), SAS (1976) et Stata (1984).
 
 ```{r fig01, echo=FALSE, fig.align='center', fig.cap="Lieu de pélerinage de R", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='40%'}
 library(dplyr)
@@ -43,7 +43,7 @@ Les nombreux atouts de R justifient largement sa popularité sans cesse croissan
 * R est un logiciel multi-plateforme, fonctionnant sur Linux, Unix, Windows et Mac.
 * Comparativement à ses concurrents, R dispose d'excellentes solutions pour manipuler des données et réaliser des graphiques.
 * R dispose de nombreuses interfaces lui permettant de communiquer, notamment avec des systèmes de bases de données SQL et non SQL (MySQL, PostgresSQL, MongoDB, etc.), avec des systèmes de *big data* (Spark, Hadoop), avec des systèmes d'information géographique (QGIS, ArcGIS) et même avec des services en ligne comme Microsoft Azure ou Amazon AWS.
-* R est un langage de programmation à part entière, ce qui lui donne plus de flexibilité que ses concurrents dans le domaine privé (SPSS, SAS, STATA). Avec R, vous pouvez accomplir des tâches aussi variées que : monter un site web, créer un robot collectant des données en ligne, combiner des fichiers PDF, composer des diapositives pour une présentation ou même éditer un livre (comme celui-ci), mais aussi et surtout réaliser des analyses statistiques.
+* R est un langage de programmation à part entière, ce qui lui donne plus de flexibilité que ses concurrents commerciaux (SPSS, SAS, STATA). Avec R, vous pouvez accomplir des tâches aussi variées que : monter un site web, créer un robot collectant des données en ligne, combiner des fichiers PDF, composer des diapositives pour une présentation ou même éditer un livre (comme celui-ci), mais aussi et surtout réaliser des analyses statistiques.
 
 Un des principaux attrait de R est la quantité astronomique de *packages* actuellement disponibles. **Un *package* est un ensemble de nouvelles fonctionnalités développées par un·e ou plusieurs utilisateurs·trices de R et mises à disposition de l'ensemble de la communauté**. Par exemple, le *package* **ggplot2** est dédié à la réalisation de graphiques; les *packages* **data.table** et **plyr** permettent de manipuler des tableaux de données; le *package* **car** apporte de nombreux outils pour faciliter l'analyse de modèles de régressions, etc. Ce partage des *packages* rend accessible à tous des méthodes d'analyses complexes et récentes et favorise grandement la reproductibilité de la recherche. Cependant, ce fonctionnement implique quelques désavantages : 
 
@@ -97,7 +97,7 @@ knitr::include_graphics('images/introduction/r_studio_01.jpeg', dpi = NA)
 Avant d'aller plus loin, notez que : 
 
 * La console actuellement ouverte dans RStudio vous informe de la version de R que vous utilisez. Vous pouvez en effet avoir plusieurs versions de R installées sur votre ordinateur et passer de l'une à l'autre avec RStudio. Pour cela, naviguez dans l'onglet *Tools / Global Options* et dans le volet  *General*, vous pouvez sélectionner la version de R que vous souhaitez utiliser.
-* L'aspect de RStudio peut être modifié en navigant dans l'onglet *Tools / Global Options* et dans le volet *Appearance*. Nous avons une préférence pour le mode sombre avec le style *pastel on dark*, mais libre à chacun de choisir le style qui lui convient.
+* L'aspect de RStudio peut être modifié en navigant dans l'onglet *Tools / Global Options* et dans le volet *Appearance*. Nous avons une préférence pour le mode sombre avec le style *pastel on dark*, mais libre à chacun·e de choisir le style qui lui convient.
 
 ```{r fig07, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="RStudio avec le style pastel on dark",  out.width='85%'}
 knitr::include_graphics('images/introduction/r_studio_02.jpeg', dpi = NA)
@@ -215,7 +215,7 @@ Maintenant que nous avons fait le tour de l'environnement de travail, nous pouvo
 
 ## Les bases du langage R {#sect013}
 
-R est un langage de programmation. Il vous permet de communiquer avec votre ordinateur pour lui donner des tâches à accomplir. Dans cette section, nous aborderons les bases du langage. Ce type de section introductive à R est présente dans tous les manuels sur R ; elle est donc incontournable. À la première lecture, elle vous semblera probablement aride, et ce, d'autant plus que nous ne réalisons pas d'analyse à proprement parler. Gardez en tête que l'analyse de données requiert au préalable une phase de structuration de ces dernières, opération qui nécessite la maîtrise des notions abordées dans cette section. Nous vous recommandons une première lecture de ce chapitre pour comprendre quelles manipulations que vous pouvez effectuer avec R, la lecture des chapitres suivants dédiés aux statistiques, puis de consulter à nouveau cette section au besoin. Notez aussi que la maîtrise des différents objets et opérations de base de R ne s’acquiert qu'en pratiquant. Vous gagnerez cette expertise au fil de vos prochains codes R, période durant laquelle vous pourrez consulter ce chapitre tel un guide de référence des différents objets et notions fondamentales de R.
+R est un langage de programmation. Il vous permet de communiquer avec votre ordinateur pour lui donner des tâches à accomplir. Dans cette section, nous aborderons les bases du langage. Ce type de section introductive à R est présente dans tous les manuels sur R ; elle est donc incontournable. À la première lecture, elle vous semblera probablement aride, et ce, d'autant plus que nous ne réalisons pas d'analyse à proprement parler. Gardez en tête que l'analyse de données requiert au préalable une phase de structuration de ces dernières, opération qui nécessite la maîtrise des notions abordées dans cette section. Nous vous recommandons une première lecture de ce chapitre pour comprendre quelles manipulations que vous pouvez effectuer avec R, la lecture des chapitres suivants dédiés aux analyses statistiques, puis de consulter à nouveau cette section au besoin. Notez aussi que la maîtrise des différents objets et opérations de base de R ne s’acquiert qu'en pratiquant. Vous gagnerez cette expertise au fil de vos prochains codes R, période durant laquelle vous pourrez consulter ce chapitre tel un guide de référence des différents objets et notions fondamentales de R.
 
 
 ### Hello World ! {#sect0131}
@@ -246,7 +246,7 @@ ma_somme <- 4 + 3
 
 Concrètement, nous venons de demander à R d'enregistrer le résultat de `4 + 3` dans un espace spécifique de notre mémoire vive. Si vous regardez dans votre fenêtre **Environment**, vous verrez en effet qu'un objet appelé ma_somme est actuellement en mémoire et a pour valeur 7.
 
-Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. R est sensible à la casse, en d'autre termes, les variables `Ma_somme`, `ma_sommE`, `ma_SOMME`, et `MA_SOMME` renvoient toutes à un objet différent. Attention donc aux fautes de frappe. Si vous déclarez une variable en utilisant le nom d'une variable existante, la première est écrasée par la seconde : 
+Notez ici que le nom des variables ne peut être composé que de lettres, de chiffres, de points (.) et de tiret bas (_) et doit commencer par une lettre. R est sensible à la casse; en d'autre termes, les variables `Ma_somme`, `ma_sommE`, `ma_SOMME`, et `MA_SOMME` renvoient toutes à un objet différent. Attention donc aux fautes de frappe. Si vous déclarez une variable en utilisant le nom d'une variable existante, la première est écrasée par la seconde : 
 
 ```{r}
 age <- 35
@@ -263,7 +263,7 @@ ma_somme2 <- ma_somme + ma_somme
 
 Avec cette nouvelle expression, nous indiquons à R que nous souhaitons déclarer une nouvelle variable appelée `ma_somme2`, et que cette variable aura pour valeur `ma_somme + ma_somme`, soit `7 + 7`. Sans surprise, `ma_somme2` a pour valeur 14.
 
-Notez que la mémoire vive (l'environnement) est vidée lorsque vous fermez R. En d'autres termes, R perd complètement la mémoire lorsque vous le fermez. Vous pouvez bien sûr recréer vos objets en relançant les mêmes syntaxes. C'est pourquoi vous devez conserver vos feuilles de codes et ne pas seulement travailler dans la console. La console ne garde aucune trace de votre travail. Pensez donc à bien enregistrer votre code !
+Notez que la mémoire vive (l'environnement) est vidée lorsque vous fermez R. Autrement dit, R perd complètement la mémoire lorsque vous le fermez. Vous pouvez bien sûr recréer vos objets en relançant les mêmes syntaxes. C'est pourquoi vous devez conserver vos feuilles de codes et ne pas seulement travailler dans la console. La console ne garde aucune trace de votre travail. Pensez donc à bien enregistrer votre code !
 
 Nous verrons dans un autre chapitre comment sauvegarder des objets et les recharger dans une session ultérieure de R (LIEN SECTION). Ce type d'opération est pertinent quand le temps de calcul nécessaire à la production de certains objets est très long.
 
@@ -327,7 +327,7 @@ print(ma_somme)
 Depuis le début de ce chapitre, nous avons déclaré plusieurs variables et essentiellement des données numériques. Dans R, il existe trois principaux types de données de base : 
 
 * Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats*), par exemple `15` et `15.3`.
-* Les données de type texte, qui sont des chaînes de caratères (appelées *strings*) et déclarées entre guillemets `"abcdefg"`.
+* Les données de type texte qui sont des chaînes de caractères (appelées *strings*) et déclarées entre guillemets `"abcdefg"`.
 * Les données booléennes (*booleans*) avec deux valeurs, soit vrai (`TRUE`) ou faux (`FALSE`).
 
 Déclarons une variable pour chacun de ces types : 
@@ -692,7 +692,7 @@ Dans cette section, vous apprendrez à charger et manipuler des *DataFrames* en 
 
 ### Charger un *DataFrame* depuis un fichier {#sect0141}
 
-Il sera rarement nécessaire de créer vos *DataFrames* manuellement comme réalisé dans la section précédente. Le plus souvent, vous disposerez de fichiers contenant vos données et utiliserez des fonctions pour les importer dans R sous forme d'un *DataFrame*. Les formats à importer les plus répandus sont : 
+Il sera rarement nécessaire de créer vos *DataFrames* manuellement comme signalé dans la section précédente. Le plus souvent, vous disposerez de fichiers contenant vos données et utiliserez des fonctions pour les importer dans R sous forme d'un *DataFrame*. Les formats à importer les plus répandus sont : 
 
 * *.csv*, soit un fichier texte dont chaque ligne représente une ligne du tableau de données et dont les colonnes sont séparées par un délimiteur (généralement une virgule ou un point-virgule).
 * *.dbf*, ou fichier *dBase*, souvent associés à des fichiers d'information géographique au format *ShapeFile*.
@@ -1238,7 +1238,7 @@ Est-ce que l'accident a eu lieu entre 07h00 (0) **ET** 09h00 (120), **OU** est c
 ```{r message=FALSE, warning=FALSE}
 table(is.na(accidents_df$diff_time_num))
 ```
-Notons dans un premier temps que nous avons 40 observations sans valeurs pour la colonne `diff_time_num`. Il s'agit d'observations pour lesquelles nous ne disposions pas de dates au départ.
+Notons dans un premier temps que nous avons 40 observations sans valeur pour la colonne `diff_time_num`. Il s'agit d'observations pour lesquelles nous ne disposions pas de dates au départ.
 
 ```{r message=FALSE, warning=FALSE}
 Cond1 <- accidents_df$diff_time_num >= 0 & accidents_df$diff_time_num <= 120
@@ -1465,7 +1465,7 @@ print(df3)
 Terminons ici avec quelques conseils sur la rédaction d’un code R. Bien rédiger son code est essentiel pour trois raisons :
 
 1. pouvoir relire et réutiliser son code dans le futur.
-2. permettre à d'autres personnes de réutiliser ou relire son code.
+2. permettre à d'autres personnes de bien lire et réutiliser votre code.
 3. minimiser les risques d'erreurs.
 
 Ne négligez pas l'importance d'un code bien rédigé et bien documenté, vous vous éviterez ainsi des migraines lorsque vous devrez exhumer du code écrit il y a plusieurs mois.
@@ -1497,7 +1497,7 @@ iris_l <- iris[sel_noms]
 
 3. **Éviter le code à rallonge…** : typiquement, essayez de vous limiter à des lignes de code d'une longueur maximale de 80 caractères. Au-delà de ce seuil, il est judicieux de découper votre code en plusieurs lignes.
 
-4. **Adopter une convention d'écriture** : une convention d'écriture est un ensemble de règles strictes définissant comment un code doit être rédigé. À titre d'exemple, il est parfois recommandé d'utiliser le lowerCamelCase, le UpperCamelCase, ou encore de séparer les mots par des tirets bas upper_camel_case. Un mélange de ces différentes conventions peut être utilisé pour distinguer les variables, les fonctions et les classes. Il peut être difficile de réellement arrêter une telle convention, car les différents packages dans R utilisent des conventions différentes. Dans vos propres codes, il est surtout important d'avoir une certaine cohérence et ne pas changer de convention au fil de votre code.
+4. **Adopter une convention d'écriture** : une convention d'écriture est un ensemble de règles strictes définissant comment un code doit être rédigé. À titre d'exemple, il est parfois recommandé d'utiliser le *lowerCamelCase*, le *UpperCamelCase*, ou encore de séparer les mots par des tirets bas *upper_camel_case*. Un mélange de ces différentes conventions peut être utilisé pour distinguer les variables, les fonctions et les classes. Il peut être difficile de réellement arrêter une telle convention, car les différents packages dans R utilisent des conventions différentes. Dans vos propres codes, il est surtout important d'avoir une certaine cohérence et ne pas changer de convention au fil de votre code.
 
 5. **Indenter son code** : l'indentation du code permet de le rendre beaucoup plus lisible. Indenter son code signifie insérer au début de chaque ligne de code un certain nombre d'espaces permettant d'indiquer à quel niveau de profondeur on se situe. Typiquement, lorsque des accolades ou des parenthèses sont ouvertes dans une fonction, une boucle ou une condition, on rajoute deux ou quatre espaces en début de ligne. Prenons un exemple très concret, admettons que nous écrivons une fonction affichant un résumé statistique à chaque colonne d'un jeu de données si cette colonne est de type numérique. L'indentation dans cette fonction va jouer un rôle crucial dans sa lisibilité. 
 Sans indentation et sans respecter la règle des 80 caractères, on obtient ceci : 
@@ -1523,15 +1523,15 @@ summary_all_num_cols <- function(dataset){
 ```
 
 6. **Adopter une structure globale pour vos scripts** : un code R peut être comparé à une recette de cuisine. Si tous les éléments sont dans le désordre et sans structure globale, la recette risque d'être très difficile à suivre. Cette structure risque de changer quelque peu en fonction de la recette ou de l'auteur·e, mais les principaux éléments restent les mêmes. Dans un code R, on peut distinguer plusieurs éléments récurrents que nous vous recommandons d'organiser de la façon suivante :
-  1. Charger les différents packages **utilisés** par le script. Cela permet dès le début du code de savoir quelles sont les fonctions et méthodes qui seront employées dans le script. On limite aussi les risques d'oublier des packages qui seraient chargés plus loin dans le code.
-  2. Définir les fonctions dont vous aurez besoin en plus de celles présentes dans les packages. Idem, placer ses fonctions en début de code évite d'oublier de les charger ou de les chercher quand on en a besoin.
-  3. Définir le répertoire de travail avec la fonction `setwd` et charger les données nécessaires.
-  4. Effectuer au besoin les opérations de manipulations sur les données.
-  5. Effectuer les analyses nécessaires en scindant si possibles les différentes étapes.
+  a. Charger les différents packages **utilisés** par le script. Cela permet dès le début du code de savoir quelles sont les fonctions et méthodes qui seront employées dans le script. On limite aussi les risques d'oublier des packages qui seraient chargés plus loin dans le code.
+  b. Définir les fonctions dont vous aurez besoin en plus de celles présentes dans les packages. Idem, placer ses fonctions en début de code évite d'oublier de les charger ou de les chercher quand on en a besoin.
+  c. Définir le répertoire de travail avec la fonction `setwd` et charger les données nécessaires.
+  d. Effectuer au besoin les opérations de manipulations sur les données.
+  e. Effectuer les analyses nécessaires en scindant si possibles les différentes étapes.
 
 Notez également que l'étape de définition des fonctions complémentaires peut être effectuée dans une feuille de code séparée, et l'ensemble de ces fonctions chargées à l'aide de la fonction `source`. De même, si la manipulation des données est conséquente, il est recommandé de l'effectuer avec un code à part, d'enregistrer les données structurées, puis de le charger directement au début de votre code dédié à l'analyse.
 
-7. **Exploiter les commentaires délimitant les sections dans Rstudio** : Dans RStudio, il est possible d'écrire des commentaires d'une certaine façon pour que l'IDE les détecte comme des délimiteurs de sections. L'intérêt principal est que l'on peut ensuite facilement naviguer entre ces sections en utilisant Rstudio comme montré à la figure \@ref(fig:sections_rstudio), mais aussi masquer des sections afin de faciliter la lecture du reste du code. Pour délimiter une section, il suffit d'ajouter une ligne de commentaire comprenant quatre fois les caractères `-`, `=` ou `#` à la suite : 
+7. **Exploiter les commentaires délimitant les sections dans Rstudio** : il est possible d'écrire des commentaires d'une certaine façon pour que l'IDE les détecte comme des délimiteurs de sections. L'intérêt principal est que l'on peut ensuite facilement naviguer entre ces sections en utilisant Rstudio comme montré à la figure \@ref(fig:sectionsRstudio), mais aussi masquer des sections afin de faciliter la lecture du reste du code. Pour délimiter une section, il suffit d'ajouter une ligne de commentaire comprenant quatre fois les caractères `-`, `=` ou `#` à la suite : 
 
 
 ```{r
@@ -1548,8 +1548,7 @@ Notez également que l'étape de définition des fonctions complémentaires peut
 #### Titre de ma section 4 ####
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ```
-
-```{r sections_rstudio, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Naviguer dans des sections de codes avec Rstudio",  out.width='50%'}
+```{r sectionsRstudio, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap='Naviguer dans des sections de codes avec Rstudio',  out.width='50%'}
 knitr::include_graphics('images/introduction/sections_rstudio.png', dpi = NA)
 ```
 
@@ -1561,7 +1560,7 @@ knitr::include_graphics('images/introduction/structuration projet.png', dpi = NA
 
 **Ne négligez jamais l'importance d'un code bien écrit et documenté !**
 
-## Conclusion et ressources pertinentes  {#sect016}
+## Conclusion et ressources pertinentes  {#sect017}
 Voilà qui conclut ce chapitre sur les bases du langage R. Vous avez maintenant les connaissances nécessaires pour commencer à travailler. N'hésitez pas à revenir sur les différentes sous-sections au besoin ! Pour aller plus loin dans l'apprentissage du langage, vous pouvez également vous plonger dans le chapitre R AVANCÉ. Cependant, nous vous recommandons de faire vos premiers pas avec cette base avant de vous lancer dans cette partie davantage orientée programmation. Quelques ressources pertinentes qui pourraient vous être utiles sont aussi reportées au tableau ci-dessous. 
 
 

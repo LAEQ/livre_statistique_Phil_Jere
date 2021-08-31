@@ -7,13 +7,12 @@ cover-image: images/cover.png
 bibliography: book.bib
 description: Ce livre propose une introduction aux méthodes quantitatives en sciences
   sociales basée sur le logiciel ouvert R. Le contenu est pensé pour être accessible
-  même à ceux n'ayant presque aucune base en statistique ou en programmation. Les
+  même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les
   personnes plus expérimentées y découvriront également des sections sur des méthodes
   poussées comme les modèles généralisés additifs à effets mixtes ou les méthodes
-  factorielles mixtes. Ceux cherchant à passer à R et abandonner SPSS, SAS ou STATA
-  trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie
+  factorielles mixtes. Celles cherchant à passer à R et délaisser progressivement SPSS, SAS ou STATA trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie
   de se livre est de donner toutes les clefs de compréhension et de mise en œuvre
-  des méthodes abordées afin de faciliter l'assimilation par le lecteur. La présentation
+  des méthodes abordées afin de faciliter l'assimilation par les lecteur·trices. La présentation
   des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique
   sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre
   boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et
@@ -88,12 +87,12 @@ Si vous googlez l'expression « comment lire un livre ? », vous trouverez une m
 
 ## Pourquoi faut-il programmer en sciences sociales ? {-}
 
-Il est vrai que la programmation n'est pas la compétence qui vient tout de suite à l'esprit lorsque l'on pense aux sciences sociales. Pourtant, cette compétence est de plus en plus importante, et ce pour plusieurs raisons : 
+Vous contrasterez rapidement que R est un véritable langage de programmation. Il est donc légitime de se questionner à savoir si l'apprentissage d'un tel langage est pertinent pour un·e étudiant·e ou un·e chercheur·e en sciences sociales. Il est vrai que la programmation n'est pas la compétence qui vient tout de suite à l'esprit lorsque l'on pense aux sciences sociales. Pourtant, cette compétence est de plus en plus importante, et ce, pour plusieurs raisons :
 
 * Une part toujours plus grande des phénomènes sociaux se produisent ou peuvent s'observer au travers d'environnements numériques. Être capable d'exploiter efficacement ces outils permet d'extraire des données riches sur des phénomènes complexes, tels qu’en témoigne des études récentes sur la propagation de la désinformation sur les réseaux sociaux [@allcott2017social], la migration des personnes [@spyratos2019quantifying], la propagation et les risques de contamination de la COVID19 [@boulos2020geographical], etc. Le plus souvent, les interfaces (API par exemple) permettant d'accéder à ces données nécessitent une base en programmation.
 * La quantité de données numériques ouvertes et accessibles en ligne croit chaque année sur des sujets très divers. La plupart des villes et des gouvernements ont maintenant leurs portails de données ouvertes auxquels s'ajoutent les données produites par des projets collaboratifs comme [OpenStreetMap](https://www.openstreetmap.org) ou [NoisePlanet](https://noise-planet.org/map_noisecapture/index.html). Récupérer ces données et les structurer pour les utiliser à des fins de recherche nécessite le plus souvent des compétences en programmation.
 * Les méthodes d'analyse quantitative connaissent également un développement très important. Les logiciels propriétaires peinent à suivre la cadence de ce développement contrairement aux logiciels à code source ouvert qui permettent d'avoir accès aux dernières méthodes. Il est souvent long et coûteux de développer une interface graphique pour un logiciel, ce qui explique que la plupart de ces programmes en sont dépourvus et nécessitent alors de savoir programmer pour les utiliser.
-* Savoir programmer donne une liberté considérable en recherche. Cette compétence permet notamment de ne plus être limité aux fonctionnalités proposées par des logiciels spécifiques. Il devient possible d'innover tant en matière de structuration, d'analyse que de représentation des résultats en écrivant vos propres fonctions. Cette flexibilité contribue directement à la production d'une recherche de meilleure qualité et plus diversifiée.
+* Savoir programmer donne une liberté considérable en recherche. Cette compétence permet notamment de ne plus être limité aux fonctionnalités proposées par des logiciels spécifiques. Il devient possible d'innover tant en matière de structuration, d'analyses que de représentations des résultats en écrivant vos propres fonctions. Cette flexibilité contribue directement à la production d'une recherche de meilleure qualité et plus diversifiée.
 * Programmer permet également d'automatiser des tâches qui autrement seraient extrêmement répétitives. Déplacer et renommer une centaine de fichiers ? Retirer les lignes inutiles dans un ensemble de fichiers CSV et les compiler dans une seule base de données ? Tester parmi des milliers d'adresses lesquelles sont valides ? Récupérer chaque jour les messages postés sur un forum ? Autant de tâches faciles à automatiser si l'on sait programmer.
 * Dans un logiciel avec une interface graphique, il est compliqué de conserver un historique des opérations effectuées. Programmer permet au contraire de garder une trace de l'ensemble des actions effectuées au cours d'un projet de recherche. En effet, le code utilisé reste disponible et permet de reproduire la méthode et les résultats obtenus ce qui est essentiel dans le monde de la recherche. À cela s'ajoute le fait que chaque ligne de code que vous écrivez vient s'ajouter à un capital de code que vous possédez, car elles pourront être réutilisées dans d'autres projets !
 
@@ -102,9 +101,21 @@ Il est vrai que la programmation n'est pas la compétence qui vient tout de suit
 
 À écrire plus tard.
 
+
+Partie 3
+
+Dans ce chapitre, nous présentons les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables, et ce, en fonction de leur type : deux variables quantitatives, deux variables qualitatives ou encore une variable quantitative _versus_ une variable qualitative (comprenant deux modalités ou plus de deux modalités) (figure \@ref(fig:fig1)). 
+
+```{r fig1, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Les principales méthodes bivariées",  out.width='65%'}
+knitr::include_graphics('images/bivariee/figure1.jpg', dpi = NA)
+```
+
+Plus spécifiquement, nous présentrons puis mettrons en œuvre dans le logiciel  les méthodes suivantes : covariance, corrélation et régression linéaire simple (entre deux variables quantitatives, section \@ref(sect041)), tableau de contingence et test du khi^2^ (entre deux variables qualitatives, section \@ref(sect042)), t de student (test *t*) et test de Wilcoxon (entre une variable quantitative et une variable qualitative comprenant deux modalités, section \@ref(sect043)), et analyse de variance et test de Kruskal-Wallis (entre une variable quantitative et une variable qualitative comprenant plus de deux modalités, section \@ref(sect044)).
+
 ## Remerciements {-}
 
 Note au beau Cargo (chien Mira) qui nous supporte dans l'écriture du livre !
+
 ```{r cargo, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo, le plus beau",  out.width='50%'}
 knitr::include_graphics('images/Cargo.jpg', dpi = NA)
 ```

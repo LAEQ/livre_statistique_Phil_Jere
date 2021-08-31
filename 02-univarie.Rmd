@@ -3,26 +3,26 @@ output:
   pdf_document: default
   html_document: default
 ---
-# (PART) Analyses univariées {-} 
+# (PART) Analyses univariées et graphiques dans R {-} 
 
 # Statistiques descriptives univariées {#chap02}
 
 Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Aussi, nous abordons un concept central de la statistique : les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chpaitre, nous utiliserons principalement les packages suivants (À MODIFIER PLUS TARD) : 
+Dans ce chapitre, nous utiliserons principalement les packages suivants : 
 
 * Pour créer des graphiques :
   - **ggplot2**, le seul, l'unique
   - **ggpubr** pour combiner des graphiques et réaliser des diagrammes
   
-* Pour créer des distribution :
+* Pour créer des distributions :
   - **fitdistrplus** pour générer différentes distributions
   - **actuar** pour la fonction de densité de Pareto
   - **gamlss.dist** pour des distributions de Poisson
 
 * Pour les statistiques descriptives :
-  - **stats** pour les statistiques descriptives
+  - **stats**, **moments** pour les statistiques descriptives
   - **nortest** pour le test de Kolmogorov-Smirnov
   - **DescTools** pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera
 
@@ -112,7 +112,7 @@ Différents types de données sont utilisés en sciences sociales. L'objectif ic
 Les **données secondaires** sont des données qui existent déjà au début de votre projet de recherche : pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
   
 ::: {.bloc_notes data-latex=""}
-Au Canada, les chercheurs (étudiants et professeurs) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du ([RCCDR](https://crdcn.org/fr/donn%C3%A9es){target="_blank"}) afin d'explorer les différentes enquêtes disponibles.
+Au Canada, les chercheurs (étudiant·e·s et professeur·e·s) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du ([RCCDR](https://crdcn.org/fr/donn%C3%A9es){target="_blank"}) afin d'explorer les différentes enquêtes disponibles.
 
 Au Québec, l'accès à ces enquêtes est possible dans les différentes antennes du Centre interuniversitaire québécois de statistiques sociales de Statistique Canada ([CIQSS](https://www.ciqss.org/){target="_blank"}).
 :::
@@ -170,24 +170,23 @@ Une collecte de données sur la pollution atmosphérique et sonore réalisée à
 ### Population, échantillon et inférence {#sect0231}
 
 Les notions de **population** et d'**échantillon** sont essentielles en statistique puisqu'elles sont le socle de l'inférence statistique.
-Un échantillon est un **sous-ensemble représentatif** d'une population donnée. Prenons un exemple concret. Une chercheure veut comprendre la mobilité des étudiants d'une université. Bien entendu, elle ne pourra interroger l’ensemble des étudiants de son université.  Elle devra alors s’assurer d'obtenir un échantillon de taille suffisante et représentatif de la population étudiante. Une fois les données collectées (avec un sondage par exemple), elle pourra utiliser des techniques inférentielles pour analyser la mobilité des étudiants interrogés. Si son échantillon est représentatif, les résultats obtenus pourront être inférés – c'est-à-dire généralisés, extrapolés – à l’ensemble de la population.
+Un échantillon est un **sous-ensemble représentatif** d'une population donnée. Prenons un exemple concret. Une chercheure veut comprendre la mobilité des étudiant·e·s d'une université. Bien entendu, elle ne pourra interroger l’ensemble des étudiant·e·s de son université.  Elle devra alors s’assurer d'obtenir un échantillon de taille suffisante et représentatif de la population étudiante. Une fois les données collectées (avec un sondage par exemple), elle pourra utiliser des techniques inférentielles pour analyser la mobilité des étudiant·e·s interrogé·e·s. Si son échantillon est représentatif, les résultats obtenus pourront être inférés – c'est-à-dire généralisés, extrapolés – à l’ensemble de la population.
 
 ::: {.bloc_aller_loin data-latex=""}
 **Les méthodes d’échantillonnage**
 
-Nous n’abordons pas ici les méthodes d’échantillonnage. Sachez toutefois qu’il existe plusieurs méthodes probabilistes pour constituer un échantillon, notamment de manière aléatoire, systématique, stratifiée, par grappes ([voir par exemple cette publique de Statistique Canada](https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch13/prob/5214899-fra.htm){target="_blank"}).
+Nous n’abordons pas ici les méthodes d’échantillonnage. Sachez toutefois qu’il existe plusieurs méthodes probabilistes pour constituer un échantillon, notamment de manière aléatoire, systématique, stratifiée, par grappes ([voir par exemple cette publication de Statistique Canada](https://www150.statcan.gc.ca/n1/edu/power-pouvoir/ch13/prob/5214899-fra.htm){target="_blank"}).
 :::
 
-Autre exemple, une autre chercheure souhaite comprendre les facteurs influençant le sentiment de sécurité des cyclistes dans un quartier. De nouveau, elle ne pourra pas enquêter tous les cyclistes du quartier et devra constituer un échantillon représentatif. Par la suite, la mise en œuvre de techniques inférentielles lui permettra d'identifier les caractéristiques individuelles (âge, sexe, habiletés à vélo, etc.) et de l'environnement urbain (types de voies empruntés, niveaux de trafic, de pollution, de bruit, etc.) ayant des effets significatifs sur le sentiment de sécurité. Si l'échantillon est représentatif, les résultats pourront être généralisés à l'ensemble des cyclistes du quartier.
+Autre exemple, une autre chercheure souhaite comprendre les facteurs influençant le sentiment de sécurité des cyclistes dans un quartier. De nouveau, elle ne pourra pas enquêter tous·tes les cyclistes du quartier et devra constituer un échantillon représentatif. Par la suite, la mise en œuvre de techniques inférentielles lui permettra d'identifier les caractéristiques individuelles (âge, sexe, habiletés à vélo, etc.) et de l'environnement urbain (types de voies empruntés, niveaux de trafic, de pollution, de bruit, etc.) ayant des effets significatifs sur le sentiment de sécurité. Si l'échantillon est représentatif, les résultats pourront être généralisés à l'ensemble des cyclistes du quartier.
 
 
 ### Deux grandes familles de méthodes statistiques {#sect0232}
 
-On distingue deux grandes familles de méthodes statistiques :
+On distingue habituellement deux grandes familles de méthodes statistiques : la statistique descriptive et exploratoire et la statistiques inférentielle et confirmatoire. Il existe de nombreuses définitions de ces deux branches de la statistique, celles proposées de Lebart et al. [-@lebart1995statistique] étant parmi les plus abouties :
 
 * « **La statistique descriptive et exploratoire** : elle permet, par des résumés et des graphiques plus ou moins élaborés, de décrire des ensembles de données statistiques, d’établir des relations entre les variables sans faire jouer de rôle privilégié à une variable particulière. Les conclusions ne portent dans cette phase de travail que sur les données étudiées, sans être inférées à une population plus large. L’analyse exploratoire s’appuie essentiellement sur des notions élémentaires telles que des indicateurs de moyenne et de dispersion, sur des représentations graphiques. [...]
 * **La statistique inférentielle et confirmatoire** : elle permet de valider ou d’infirmer, à partir de tests statistiques ou de modèles probabilistes, des hypothèses formulées a priori (ou après une phase exploratoire), et d’extrapoler, c’est-à-dire d’étendre certaines propriétés d’un échantillon à une population plus large. Les conclusions obtenues à partir des données vont au-delà de ces données. La statistique confirmatoire fait surtout appel aux méthodes dites explicatives et prévisionnelles, destinées comme leurs noms l’indiquent, à expliquer puis à prévoir, suivant des règles de décision, une variable privilégiée à l’aide d’une ou plusieurs variables explicatives (régressions multiples et logistiques, analyse de variance, analyse discriminante, segmentation, etc.) » [@lebart1995statistique, p. 209].
-
 
 ## La notion de distribution {#sect024}
 
@@ -365,7 +364,7 @@ Les paramètres permettent donc d’ajuster la fonction de masse ou de densité 
 
 Il existe un très grand nombre de distributions théoriques et parmi elles, de nombreuses sont en fait des cas spéciaux d’autres distributions. Pour un petit aperçu du bestiaire, vous pouvez faire un saut à la page [Univariate Distribution Relationships](http://www.math.wm.edu/~leemis/chart/UDR/UDR.html){target='_blank'}, qui liste près de 80 distributions. 
 
-Nous nous concentrons ici sur une sélection de 18 distributions très répandues en sciences sociales. La figure \@ref(fig:fig255) présente graphiquement leurs fonctions de masse et de densité présentées dans cette section. Notez que ces graphiques correspondent tous à une forme possible de chaque distribution. En modifiant leurs paramètres, il serait possible de produire une figure très différente. Les distributions discrètes sont représentées avec des graphiques en barres, et les distributions continues avec des graphiques de densité.
+Nous nous concentrons ici sur une sélection de 18 distributions très répandues en sciences sociales. La figure \@ref(fig:figdistribs) présente graphiquement leurs fonctions de masse et de densité présentées dans cette section. Notez que ces graphiques correspondent tous à une forme possible de chaque distribution. En modifiant leurs paramètres, il serait possible de produire une figure très différente. Les distributions discrètes sont représentées avec des graphiques en barres, et les distributions continues avec des graphiques de densité.
 
 (ref:figdistribs) 18 distributions essentielles, design inspiré de @SeanOwendist
 
@@ -1834,7 +1833,7 @@ La transformation des données fait et fera encore longtemps débat à la fois p
 
 Les trois transformations les plus couramment utilisées sont :
 
-* **La côte $z$** (*z score* en anglais) qui consiste à soustraire à chaque valeur sa moyenne (soit un centrage), puis à la diviser par son écart-type (soit une réduction) (eq. \@ref(eq:scorez)). Par conséquent, on parle aussi de variable centrée-réduite qui a comme propriétés intéressantes une moyenne égale à 0 et un écart-type égale à 1 (la variance est aussi égale à 1 puisque $1^2=1$). Nous verrons que cette transformation est largement utilisée dans les méthodes de classification (chapitre \@ref(chap09)) et les méthodes factorielles (chapitre \@ref(chap10)).
+* **La côte $z$** (*z score* en anglais) qui consiste à soustraire à chaque valeur sa moyenne (soit un centrage), puis à la diviser par son écart-type (soit une réduction) (eq. \@ref(eq:scorez)). Par conséquent, on parle aussi de variable centrée-réduite qui a comme propriétés intéressantes une moyenne égale à 0 et un écart-type égale à 1 (la variance est aussi égale à 1 puisque $1^2=1$). Nous verrons que cette transformation est largement utilisée dans les méthodes de classification (chapitre \@ref(chap13)) et les méthodes factorielles (chapitre \@ref(chap12)).
 
 \footnotesize
 \begin{equation}  
@@ -1843,7 +1842,7 @@ z= \frac{x_i-\mu}{\sigma}
 \end{equation}
 \normalsize
 
-* **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Spearman (section \@ref(sect04133)) et certains tests non-paramétriques (sections \@ref(sect0432) et \@ref(sect0442)). 
+* **La transformation en rangs** qui consiste simplement à trier une variable en ordre croissant, puis à affecter le rang de chaque observation de 1 à $n$. Cette transformation est très utilisée quand la variable est très anormalement distribuée, notamment pour calculer le coefficient de corrélation de Spearman (section \@ref(sect0433)) et certains tests non-paramétriques (sections \@ref(sect0612) et \@ref(sect0622)). 
 
 * **La transformation sur une échelle de 0 à 1** (ou de 0 à 100) qui consiste à soustraite à chaque observation la valeur minimale et à diviser le tout par l'étendue (eq. \@ref(eq:t01)). 
 
