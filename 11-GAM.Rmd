@@ -447,9 +447,24 @@ Notez ici qu'un graphique des effets marginaux se base sur les prédictions du m
 
 ## Aller plus loin avec les splines
 
-Jusqu'ici nous avons seulement présenté le cas le plus simple pour lequel une *spline* est construite à partir d'une seule variable dépendante continue, mais elles peuvent être utilisées dans de nombreux autres contextes et ont une incroyable flexibilité. Nous détaillons ici trois exemples fréquents : les splines cycliques, les splines variant par groupe et les splines multivariées.
+Jusqu'ici nous avons seulement présenté le cas le plus simple pour lequel une *spline* est construite à partir d'une seule variable dépendante continue, mais elles peuvent être utilisées dans de nombreux autres contextes et ont une incroyable flexibilité. Nous détaillons ici trois exemples fréquents : les splines cycliques, les splines variant par groupe et les splines multivariées. Pour une description complète des effets non linéaires possibles avec **mgcv**, n'hésitez pas à consulter sa [documentation](https://stat.ethz.ch/R-manual/R-patched/library/mgcv/html/smooth.terms.html).
 
-**POURQUOI NE PAS FAIRE UN TABLEAU ICI**
+```{r exemple_splines, echo=FALSE, message=FALSE, warning=FALSE}
+
+df <- data.frame(
+        Type = c("spline cyclique", "spline variant par groupe", "spline bivariée", 
+                 "spline d'interaction complète", "spline d'interaction partielle"),
+        Code = c("`s(x, bs = 'cc')`","`s(x, by = x2)`","`s(x1,x2)`","`te(x1,x2)`",
+                 "`s(x1) + s(x2) + ti(x1,x2)`"),
+        Description = c("Une spline cyclique doit être utilisée si le 0 de la variable X correspond également à sa valeur maximum. Un bon exemple est le temps dans une journée car 24h:00 est équivalent à 0h:00", "Une spline variant par groupe permet d'ajuster une spline à une variable X1 différente pour chaque groupe identifié par une variable qualitative X2", "Une spline bivariée pour modéliser l'interaction non linéaire deux variables X1 et X2 s'exprimant dans la même unité (typiquement des coordonnées géographiques carthésienne)", "Une spline d'interaction permet de modéliser l'interaction non linéaire de deux variables continues pouvant s'exprimer dans des unités différentes, elle combine les effets spécifique de chacune de des deux variables et leur interaction", "Une spline d'interaction partielle permet de distinguer les effets non linéaires individuels de deux variables de leur interaction non linéaire"))
+
+show_table(df, 
+           col.names = c("Type","Code","Description"),
+           caption = 'Exemples de splines avancées'
+           )
+
+```
+
 
 ### Splines cycliques
 
@@ -531,11 +546,11 @@ ggplot() +
 
 ### Splines bivariées
 
-Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante, cependant il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non linéaires entre les variables indépendantes combinées dans une même *spline*. Prenons un exemple concret, dans la section sur les modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des îlots de chaleur. Parmi les variables indépendantes, nous avions notamment la distance au centre-ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables impactent conjointement et de façon non linéaire la surface d'îlot de chaleur dans chaque AD. Pour représenter la *spline* bivariée, on utilise alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
+Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante, cependant il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non linéaires entre les variables indépendantes combinées dans une même *spline*. Prenons un exemple concret, dans la section sur les modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des îlots de chaleur. Parmi les variables indépendantes, nous avions notamment utilisé la distance au centre-ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables impactent conjointement et de façon non linéaire la proportion de la surface d'îlot de chaleur dans chaque AD. Pour représenter la *spline* bivariée, on utilise alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
 
 **COMPREND PAS CETTE PHRASE** MULTIPLIER PAR 100. PROPORTION
 
-La *spline* bivariée représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande proportion de leur surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre ville, au-delà de cette distance, cette proportion chute en bas de 0,1, soit 10%. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
+La *spline* bivariée représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande proportion de leur surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre ville, au-delà de cette distance, cette proportion chute en bas de 0,1, soit 10% de la surface de l'AD. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
 
 Les *splines* bivariées sont aussi fréquemment utilisées pour capturer un potentiel patron spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observation (*x,y*), il est possible d'ajuster une *spline* bivariée sur ces coordonnées qui contrôlera ainsi l'effet de l'espace. 
 
@@ -779,7 +794,7 @@ L'enjeu est ensuite d'extraire la variance propre à cet effet aléatoire ainsi 
 gam.vcomp(model4)
 ```
 
-On constate donc que l'écart type de l'effet aléatoire des arrondissements est de 0.39, ce qui signifie que les effets de chaque arrondissement seront compris à 95% entre -1,17 et 1,17 sur l'échelle du prédicteur linéaire. **FAUDRAIT EXPLIQUER COMMENT TU OBTIENS +-1.17**. Pour extraire les interceptes spécifiques de chaque arrondissement, on peut utiliser alors la fonction `get_random` du package **itsadug**.
+On constate donc que l'écart type de l'effet aléatoire des arrondissements est de 0.39, ce qui signifie que les effets de chaque arrondissement seront compris à 95% entre -1,17 et 1,17 (`1.17 = 3*0.39`) sur l'échelle du prédicteur linéaire. En effet, rappelons que les effets aléatoires sont modélisés comme des distributions normales et que 95% de la densité d'une distribution normale se situe entre -3 et +3 écarts types. Pour extraire les interceptes spécifiques de chaque arrondissement, on peut utiliser alors la fonction `get_random` du package **itsadug**.
 
 ```{r message=FALSE, warning=FALSE}
 library(itsadug)
@@ -800,11 +815,16 @@ On constate ainsi que pour une partie des arrondissements, la densité d'îlot d
 remotes::install_github('m-clark/mixedup')
 ```
 
+Avec la version 4.0.1 de R, nous avons rencontré des difficultés pour installer `mixedup`. Nous avons donc  simplement récupéré le code source de la fonction et l'avons enregistré dans un fichier de code séparé que nous appelons ici.
+
+```{r message=FALSE, warning=FALSE, eval = FALSE}
+source("code_complementaire/gam_functions.R")
+```
+
 On peut ensuite procéder à l'extraction des effets aléatoires et les représenter à nouveau.
 
 ```{r message=FALSE, warning=FALSE}
-library(mixedup)
-df_re <- extract_random_effects(model4, re = "Arrond")
+df_re <- extract_random_effects.gam(model4, re = "Arrond")
 
 ggplot(df_re) + 
   geom_errorbarh(aes(xmin = lower_2.5, xmax = upper_97.5, y = reorder(group, value))) +
@@ -875,7 +895,7 @@ AIC(model4, model5)
 Ce dernier modèle présente une valeur d'*AIC* plus faible et serait donc ainsi mieux ajusté que notre modèle avec seulement un intercepte aléatoire. Nous pouvons donc extraire les coefficients aléatoires et les représenter.
 
 ```{r message=FALSE, warning=FALSE}
-df_re <- extract_random_effects(model5)
+df_re <- extract_random_effects.gam(model5)
 df_re <- subset(df_re, df_re$effect == 'PopFRPct')
 
 ggplot(df_re) + 
@@ -885,12 +905,9 @@ ggplot(df_re) +
   labs(y = "Arrondissement", x = "coefficient aléatoire")
 ```
 
-**LES VALEURS NE PASSENT PAS DANS TON CODE**
-On constate notamment que seuls trois arrondissements ont des coefficients aléatoires significativement différents de 0. Ainsi, pour les arrondissements Anjou et Plateau-Mont-Royal, les coefficients aléatoires sont respectivement de `r df[df$group == "Anjou",]$value[[1]]` et `r df[df$group == "Le Plateau-Mont-Royal",]$value[[1]]`, et viennent donc se retrancher à la valeur moyenne régionale de `r round(model5$coefficients[[4]],4)` qui atteint alors presque 0. Du point de vue de l'interprétation, on peut en conclure que le groupe des personnes à faible revenu ne subit pas de sur-exposition aux îlots de chaleur à l'échelle des AD dans ces arrondissements.
+On constate notamment que seuls trois arrondissements ont des coefficients aléatoires significativement différents de 0. Ainsi, pour les arrondissements Anjou et Plateau-Mont-Royal, les coefficients aléatoires sont respectivement de `r df_re[df_re$group == "Anjou",]$value[[1]]` et `r df_re[df_re$group == "Le Plateau-Mont-Royal",]$value[[1]]`, et viennent donc se retrancher à la valeur moyenne régionale de `r round(model5$coefficients[[4]],4)` qui atteint alors presque 0. Du point de vue de l'interprétation, on peut en conclure que le groupe des personnes à faible revenu ne subit pas de sur-exposition aux îlots de chaleur à l'échelle des AD dans ces arrondissements.
 
-En revanche, dans l'arrondissement Mercier-Hochelaga-Maisonneuve, la situation est à l'inverse plus systématiquement en défaveur des populations à faible revenu, avec une taille d'effet prêt de deux fois supérieure à la moyenne régionale.
-
-**JE NE COMPRENDS PAS LE 2 FOIS**
+En revanche, dans l'arrondissement Mercier-Hochelaga-Maisonneuve, la situation est à l'inverse plus systématiquement en défaveur des populations à faible revenu, avec une taille d'effet prêt de deux fois supérieure à la moyenne régionale. En effet, l'effet moyen régional (coefficient fixe) est de `r round(model5$coefficients[[4]],4)` auquel vient se rajouter l'effet spécifique (coefficient aléatoire) de Mercier-Hochelaga-Maisonneuve, soit `r df_re[df_re$group == "Mercier-Hochelaga-Maisonneuve",]$value[[1]]`, pour un effet total de `r df_re[df_re$group == "Mercier-Hochelaga-Maisonneuve",]$value[[1]] + round(model5$coefficients[[4]],4)`
 
 ::: {.bloc_aller_loin data-latex=""}
 **Des effets aléatoires plus complexes dans les GAMM**
