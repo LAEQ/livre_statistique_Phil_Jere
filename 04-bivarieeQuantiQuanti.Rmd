@@ -28,7 +28,7 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
 
 En études urbaines, on pourrait vouloir vérifier si certaines variables socioéconomiques sont associées positivement ou négativement à des variables environnementales jugées positives (comme la couverture végétale ou des mesures d’accessibilité spatiale aux parcs) ou négatives (pollutions atmosphériques et sonores). 
 
-Par exemple, au niveau des secteurs de recensement d’une ville canadienne ou américaine, on pourrait vouloir vérifier si le revenu médian des ménages ou encore le coût moyen du loyer varient dans le même sens que la couverture végétale ; ou au contraire, en sens inverse des niveaux moyens de dioxyde d’azote ou de bruit routier.
+Par exemple, au niveau des secteurs de recensement d’une ville canadienne, on pourrait vouloir vérifier si le revenu médian des ménages ou encore le coût moyen du loyer varient dans le même sens que la couverture végétale ; ou au contraire, en sens inverse des niveaux moyens de dioxyde d’azote ou de bruit routier.
 
 Pour évaluer la linéarité entre deux variables continues, deux statistiques descriptives sont utilisées : la **covariance**\index{covariance} (section \@ref(sect042)) et la **corrélation**\index{corrélation} (section \@ref(sect043)).
 :::
@@ -131,7 +131,7 @@ r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1
 \end{equation}
 \normalsize
 
-La syntaxe  ci-dessous démontre que le coefficient de corrélation de Pearson est bien égal à la moyenne du produit de deux variables centrées-réduites.
+La syntaxe ci-dessous démontre que le coefficient de corrélation de Pearson est bien égal à la moyenne du produit de deux variables centrées-réduites.
 
 ```{r message=FALSE, warning=FALSE}
 library("MASS")
@@ -145,14 +145,14 @@ rxy <- .80 # corrélation entre X et Y
 # Création d'une matrice de covariance
 cov <- matrix(c(sd_x^2,  rxy*sd_x*sd_y, rxy*sd_x*sd_y, sd_y^2), nrow=2)
 # Création du tableau de données avec deux variables
-df <- as.data.frame(mvrnorm(N, c(moy_x, moy_y), cov))
+df1 <- as.data.frame(mvrnorm(N, c(moy_x, moy_y), cov))
 # Centrage et réduction des deux variables
-df$zV1 <- scale(df$V1, center = TRUE, scale = TRUE)
-df$zV2 <- scale(df$V2, center = TRUE, scale = TRUE)
+df1$zV1 <- scale(df1$V1, center = TRUE, scale = TRUE)
+df1$zV2 <- scale(df1$V2, center = TRUE, scale = TRUE)
 # Corrélation de Pearson
-cor1 <- cor(df$V1, df$V2)
+cor1 <- cor(df1$V1, df1$V2)
 # Moyenne du produit des variables centrées-réduites
-cor2 <- sum(df$zV1*df$zV2) / (nrow(df)-1)
+cor2 <- sum(df1$zV1*df1$zV2) / (nrow(df1)-1)
 cat("Corrélation de Pearson = ",round(cor1,5),
     "\nMoyenne du produit des variables centrées-réduites =", round(cor2,5))
 ```
@@ -202,7 +202,7 @@ plot3 <- ggplot(mapping = aes(x=data3[,1],y=data3[,2]))+
 ggarrange(plot1, plot2, plot3, ncol = 2, nrow = 2)
 ```
 
-Concrètement, le signe du coefficient de corrélation indique si la relation est positive ou négative et la valeur absolue du coefficient indique le degré d’association entre les deux variables. Reste à savoir comment déterminer qu’une valeur de corrélation est faible, moyenne ou forte. En sciences sociales, on utilise habituellement les intervalles de valeurs reportées au tableau \@ref(tab:tableIntervallesCorrelation). Toutefois, ces seuils sont tout à fait arbitraires. En effet, dépendamment de la discipline de recherche (sciences sociales, sciences de la santé, sciences physiques, etc.), et des variables à l’étude, l’interprétation d’une valeur de corrélation peut varier. Par exemple, en sciences sociales, une valeur de corrélation de 0,2 sera considérée comme très faible alors qu’en sciences de la santé, elle pourrait être considérée comme intéressante. À l’opposé, une valeur de 0,9 en sciences physiques pourrait être considérée comme faible. Il convient alors d’utiliser ces intervalles avec précaution.
+Concrètement, le signe du coefficient de corrélation indique si la relation est positive ou négative et la valeur absolue du coefficient indique le degré d’association entre les deux variables. Reste à savoir comment déterminer qu’une valeur de corrélation est faible, moyenne ou forte. En sciences sociales, on utilise habituellement les intervalles de valeurs reportées au tableau \@ref(tab:tableIntervallesCorrelation). Toutefois, ces seuils sont tout à fait arbitraires. En effet, dépendamment de la discipline de recherche (sciences sociales, sciences de la santé, sciences physiques, etc.) et des variables à l’étude, l’interprétation d’une valeur de corrélation peut varier. Par exemple, en sciences sociales, une valeur de corrélation de 0,2 sera considérée comme très faible alors qu’en sciences de la santé, elle pourrait être considérée comme intéressante. À l’opposé, une valeur de 0,9 en sciences physiques pourrait être considérée comme faible. Il convient alors d’utiliser ces intervalles avec précaution.
 
 ```{r tableIntervallesCorrelation, echo=FALSE, message=FALSE, warning=FALSE}
 df <- data.frame(
@@ -247,7 +247,7 @@ R2 <- R^2
    annotate(geom="text", x =.15, y=0.8, label="Faible et \n positive", color="black", hjust = 0.5, size = 3.5)
 ```
 
-**Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes ou extrêmes. D’ailleurs, plus le nombre d’observations sera réduit, plus la présence de valeurs aberrantes aura un impact important sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, dans le nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui se démarquent nettement dans le jeu de données : six observations avec une densité de population supérieure à 20 000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55%. Si l'on supprime ces observations (ce qui est défendable dans ce contexte) – soit moins d'un pourcent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
+**Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes ou extrêmes. D’ailleurs, plus le nombre d’observations sera réduit, plus la présence de valeurs extrêmes aura un impact important sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, dans le nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui se démarquent nettement dans le jeu de données : six observations avec une densité de population supérieure à 20 000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55%. Si l'on supprime ces observations (ce qui est défendable dans ce contexte) – soit moins d'un pourcent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
 
 ```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Illustation de l’effet des valeurs extrêmes sur le coefficient de Pearson', out.width='75%'}
 library("ggplot2")
@@ -525,7 +525,7 @@ round(cor(dfveg[, c("VegPct", "Pct_FR","LogDens")], method="p"), 3)
 # le pourcentage de personnes à faible revenu
 # une fois contrôlée la densité de population
 pcor.test(dfveg$Pct_FR, dfveg$VegPct, dfveg$LogDens, method="p")
-# Calcul de la corrélation partielle avec la formule :
+# Calcul de la corrélation partielle avec la formule
 corAB <- cor(dfveg$VegPct, dfveg$Pct_FR, method = "p")
 corAC <- cor(dfveg$VegPct, dfveg$LogDens, method = "p")
 corBC <- cor(dfveg$Pct_FR, dfveg$LogDens, method = "p")
@@ -546,19 +546,19 @@ Comme vous l'aurez compris, il est possible d'arriver au même résultat par dif
 * **correlation** pour aller plus loin et explorer les corrélations bayesiennes, robustes, non-linéaires ou multiniveaux.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+df1 <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 library("Hmisc")
 library("stargazer")
 library("apaTables")
 library("dplyr")
 # Corrélations de Pearson et Spearman et valeurs de p 
 # avec la fonction rcorr de Hmisc pour deux variables
-Hmisc::rcorr(df$RevMedMen, df$Locataire, type="pearson")
-Hmisc::rcorr(df$RevMedMen, df$Locataire, type="spearman")
+Hmisc::rcorr(df1$RevMedMen, df1$Locataire, type="pearson")
+Hmisc::rcorr(df1$RevMedMen, df1$Locataire, type="spearman")
 # Matrice de corrélation avec la fonction rcorr de Hmisc pour plus de variables
 # On crée un vecteur avec les noms des variables à sélectionner
 Vars <- c("RevMedMen","Locataire", "LogTailInc","A65plus","ImgRec", "HabKm2", "FaibleRev")
-Hmisc::rcorr(df[, Vars] %>% as.matrix())
+Hmisc::rcorr(df1[, Vars] %>% as.matrix())
 # # Avec la fonction corr.test de psych pour avoir la matrice de corrélation
 # # (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p
 # print(psych::corr.test(df[, Vars], 
@@ -566,13 +566,13 @@ Hmisc::rcorr(df[, Vars] %>% as.matrix())
 #              ci=TRUE, alpha = 0.05), short=FALSE) 
 # Création d'un tableau pour une matrice de corrélation
 # changer le paramètre type pour 'html' or 'LaTex'
-p <- cor(df[, Vars], method="pearson")
+p <- cor(df1[, Vars], method="pearson")
 stargazer(p, title="Correlation Matrix", type = "text")
 # stargazer(p, title="Correlation Matrix", type = "html")
 # stargazer(p, title="Correlation Matrix", type = "latex")
 # Créer un tableau avec la matrice de corrélation 
 # dans un fichier Word (.doc)
-apaTables::apa.cor.table(df[, c("RevMedMen","Locataire","LogTailInc")], 
+apaTables::apa.cor.table(df1[, c("RevMedMen","Locataire","LogTailInc")], 
                          filename = "data/bivariee/TitiLaMatrice.doc",
                          show.conf.interval = TRUE,
                          landscape = TRUE)
@@ -586,9 +586,9 @@ apaTables::apa.cor.table(df[, c("RevMedMen","Locataire","LogTailInc")],
 ```{r figcorrplot1, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Matrice de corrélation avec corrplot (chiffres)', out.width='60%'}
 library("corrplot")
 library("ggpubr")
-df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
+df1 <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 Vars <- c("RevMedMen","Locataire", "LogTailInc","A65plus","ImgRec", "HabKm2", "FaibleRev")
-p <- cor(df[, Vars], method="pearson")
+p <- cor(df1[, Vars], method="pearson")
 couleurs <- colorRampPalette(c("#053061", "#2166AC","#4393C3", "#92C5DE",
                                "#D1E5F0", "#FFFFFF", "#FDDBC7", "#F4A582",
                                "#D6604D", "#B2182B", "#67001F"))
@@ -711,7 +711,7 @@ La régression linéaire simple vise à déterminer une droite (une fonction lin
 
 avec $\widehat{y_i}$ et $x_{i}$ qui sont respectivement la valeur prédite de la variable indépendante et la valeur de la variable dépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais), soit la valeur prédite de la variable $Y$ quand $X$ est égale à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative, et proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la pente est forte, et plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
 
-Considérons un exemple fictif de dix municipalités d'une région métropolitaine pour lesquelles nous disposons de deux variables : le pourcentage d'actifs occupés se rendant au travail principalement à vélo et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
+Considérons un exemple fictif de dix municipalités d'une région métropolitaine pour lesquelles nous disposons de deux variables : le pourcentage de personnes occupées se rendant au travail principalement à vélo et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
 
 
 ```{r regfictives, echo=FALSE, message=FALSE, warning=FALSE, out.width='85%'}
@@ -848,7 +848,7 @@ show_table(df,
 ``` 
 
 ### Mesurer la qualité d'ajustement du modèle {#sect0443}
-Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (en anglais, *root-mean-square error*, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
+Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (*root-mean-square error* en anglais, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
 
 \footnotesize
 \begin{equation}
@@ -878,9 +878,9 @@ SCT = SCE + SCR
 
 avec :
 
-* *SCT* est la somme des écarts au carré des valeurs observées à la moyenne (en anglais, _total sum of squares_)
-* *SCE* est la somme des écarts au carré des valeurs prédites à la moyenne (en anglais, _regression sum of squares_)
-* *SCR* est la somme des carrés des résidus (en anglais, _sum of squared errors_).
+* *SCT* est la somme des écarts au carré des valeurs observées à la moyenne (_total sum of squares_ en anglais)
+* *SCE* est la somme des écarts au carré des valeurs prédites à la moyenne (_regression sum of squares_ en anglais)
+* *SCR* est la somme des carrés des résidus (_sum of squared errors_ en anglais).
 
 Autrement dit, la variance totale est égale à la variance expliquée plus la variance non expliquée. Au tableau \@ref(tab:computeR), vous pouvez repérer les valeurs de *SCT*, *SCE* et *SCR* et constater que 279,30 = 227,04 + 52,26 et 27,93 = 22,70 + 5,23.
 
@@ -971,9 +971,9 @@ Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}
 Comment calculer une régression linéaire simple dans ? Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-df <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
+df1 <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
 ## Création d'un objet pour le modèle
-monmodele <- lm(Velo ~ KmCV, df)
+monmodele <- lm(Velo ~ KmCV, df1)
 ## Sorties du modèle avec la fonction summary
 summary(monmodele)
 ## Calcul du MSE et du RMSE

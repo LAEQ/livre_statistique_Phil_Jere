@@ -31,13 +31,13 @@ Pour vérifier l'existence d'associations significatives entre les modalités de
 
 Les données du tableau de contingence ci-dessous décrivent 279 projets d'habitation à loyer modique (HLM) dans l'ancienne ville de Montréal, croisant les modalités de la période de construction (en colonnes) et de la taille (en ligne) des projets HLM [@TheseApparicio]. Les différents éléments du tableau sont décrits ci-dessous.
 
-* **Les fréquences observées**, nommées communément $f_{ij}$, correspondent aux observations appartenant à la fois à la *i^ème^* modalité de la variable en ligne et à la *j^ème^* modalité de la variable en colonne. À titre d’exemple, on compte 14 HLM construits entre 1985 et 1989 comprenant moins de 25 logements.
+* **Les fréquences observées**, nommées communément $f_{ij}$, correspondent aux observations appartenant à la fois à la *i^ème^* modalité de la variable en ligne et à la *j^ème^* modalité de la variable en colonne. À titre d’exemple, on compte 14 projets HLM construits entre 1985 et 1989 comprenant moins de 25 logements.
 
 * **Les marges** du tableau sont les totaux pour chaque modalité en ligne ($n_{i.}$) et en colonne ($n_{j.}$). En guise d’exemple, sur les 279 projets HLM, 53 comprennent de 25 à 49 logements et 56 ont été construites entre 1968 et 1974. Bien entenu, la somme des marges en ligne ($n_{i.}$) est égale au nombre total d'observations ($n_{ij}$), tout comme la somme de marges en colonne ($n_{.j}$).
 
 * **Trois pourcentages** sont disponibles (total, en ligne, en colonne). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}\times100$), par la marge en ligne ($f_{ij}/n_{i.} \times 100$) et en colonne ($f_{ij}/n_{.j}\times100$). En guise d'exemple, 5% des 279 projets HLM ont été construits entre 1985 et 1989 et comprennent moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
 
-* **Les fréquences théoriques**, représentent les valeurs que l'on devrait observer théoriquement s'il y avait indépendance entre les modalités des deux variables : si la répartition des deux modalités des deux variables étaient dûes au hasard. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalité *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06. Nous observons ici que la valeur théorique (16,06) est bien supérieure à la valeur réelle (6). On observe donc moins de HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre du hasard.
+* **Les fréquences théoriques**, représentent les valeurs que l'on devrait observer théoriquement s'il y avait indépendance entre les modalités des deux variables : si la répartition des deux modalités des deux variables étaient dûes au hasard. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalité *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06. Nous observons ici que la valeur théorique (16,06) est bien supérieure à la valeur réelle (6). On observe donc moins de projets HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre du hasard.
 
 * **La déviation** est la différence entre la fréquence observée et la fréquence théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*. Dans le cas précédent, on observait 6 habitations de moins de 25 logements construits avant 1975 et une fréquence théorique de 16,0. La déviation est donc -10,06, soit une sous-représentation du phénomène.
 
@@ -80,7 +80,7 @@ Outre le khi^2^, d'autres mesures d'association permettent de mesurer le degré 
 
 Statistique | Formule | Propriété et interprétation
 -------- | ------- | -----------------------------
-khi^2^  | $\chi^2 = \sum \frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$ | Mesure classique du Khi^2^ calculé à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible.
+khi^2^  | $\chi^2 = \sum \frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$ | Mesure classique du Khi^2^ calculée à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible.
 Ratio de vraissemblance du  khi^2^ | $G^2 = 2 \sum f_{ij} \ln{(\frac{f_{ij}}{ft_{ij}})}$ | Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible.
 khi^2^ de Mantel-Haenszel | $Q_{MH}=(N−1)r^2$ | avec $r$ étant le coefficient de corrélation entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.
 Corrélation polychorique | obtenue itérativement par maximum de vraissemblance | Dans le même esprit que le khi^2^ de Mantel-Haenszel, la corrélation polychorique s'applique à deux variables **ordinales**. Plus spécifiquement, elle formule le postulat que deux variables théoriques normalement distribuées ont été mesurées de façon approximative avec deux échelles ordinales. Par exemple, en psychologie, le sentiment de bien être et le sentiment de sécurité peuvent être conceptualisés comme deux variables continues normalement distribuées. Cependant, les mesurer directement est très difficile, on a donc recours à des échelles de Likert allant de 1 à 10. Pour cet exemple, il serait pertinent d'utiliser la corrélation polychorique. Comme une corrélation de Pearson, la corrélation polychorique varie de -1 à 1, une valeur négative indiquant une relation inverse entre les deux variables théoriques et inversement. Une valeur de *p* peut être obtenue.
@@ -103,7 +103,7 @@ Pour la construction du tableau de contingence, deux options sont possibles dép
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("gmodels")
-#Premiers enregistrements du tableau
+# Premiers enregistrements du tableau
 head(dataHLM)
 # La variable Periode comprend 5 modalités (de 1 à 5)
 table(dataHLM$Periode)
@@ -135,10 +135,10 @@ Deuxième cas de figure, vous disposez déjà d'un tableau de contingence, soit 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Importation des données
-df <-  read.csv("data/bivariee/data_transport.csv", stringsAsFactors = FALSE)
-df # Visualisation du tableau
-Matrice <- as.matrix(df[, c("Homme","Femme")])
-dimnames(Matrice) <- list(unique(df$ModeTransport), Sexe=c("Homme","Femme"))
+df1 <-  read.csv("data/bivariee/data_transport.csv", stringsAsFactors = FALSE)
+df1 # Visualisation du tableau
+Matrice <- as.matrix(df1[, c("Homme","Femme")])
+dimnames(Matrice) <- list(unique(df1$ModeTransport), Sexe=c("Homme","Femme"))
 # Notez que vous pouvez saisir vos données directement si vous avez peu d'observations
 Femme <- c(689400, 21315, 181435, 43715, 24295, 8395) # Vecteur de valeurs pour les femmes
 Homme <- c(561830, 40010, 238330, 54360, 13765, 6970) # Vecteur de valeurs pour les hommes
@@ -178,7 +178,7 @@ round(Matrice/colSums(Matrice)*100,2)
 Pour obtenir les autres mesures d'association, on pourra utiliser la syntaxe  suivante :
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-df <- read.csv("data/bivariee/hlm.csv")
+df1 <- read.csv("data/bivariee/hlm.csv")
 # Fonction pour calculer les autres mesures d'association
 AutresMesuresKhi2 <- function(x, y){
   testChi2 <- chisq.test(x, y) # Calcul du Chi2
@@ -199,9 +199,9 @@ AutresMesuresKhi2 <- function(x, y){
   PMH <- MHTest$p.value
   
   # Coefficient de correlation Polychorique
-  df <- data.frame("x" = as.factor(x),
+  df1 <- data.frame("x" = as.factor(x),
                  "y" = as.factor(y))
-  polychoricCorr <- correlation::cor_test(df,"x","y",method = "polychoric")
+  polychoricCorr <- correlation::cor_test(df1,"x","y",method = "polychoric")
   polyR <- polychoricCorr$rho
   polyP <- polychoricCorr$p
   
@@ -222,7 +222,7 @@ AutresMesuresKhi2 <- function(x, y){
   return(dfsortie)
 }
 
-dfkhi2 <- AutresMesuresKhi2(df$Periode, df$Taille)
+dfkhi2 <- AutresMesuresKhi2(df1$Periode, df1$Taille)
 
 show_table(dfkhi2,
            caption="Mesures d'association entre deux variables qualitatives",

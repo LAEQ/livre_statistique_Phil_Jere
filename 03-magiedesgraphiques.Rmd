@@ -84,7 +84,7 @@ knitr::include_graphics('images/magie_graphiques/composantes.png', dpi = NA)
 
 En plus de ces trois éléments, il est bien sûr nécessaire de disposer de **données**. Ces dernières sont assignées à des dimensions du graphique pour être représentées (notamment les axes *X* et *Y* et la couleur). Cette étape est appelée **aesthetics mapping** dans **ggplot2**.
 
-Lorsque l'on combine des données, leur assignation a des dimensions, un type de géométries, des échelles et un système de coordonnées, on obtient un **calque** (ou *layer*). Un graphique peut comprendre plusieurs calques comme nous le verrons dans les prochaines sections.
+Lorsque l'on combine des données, leur assignation a des dimensions, un type de géométries, des échelles et un système de coordonnées, on obtient un **calque** (*layer* en anglais). Un graphique peut comprendre plusieurs calques comme nous le verrons dans les prochaines sections.
 
 Prenons un premier exemple très simple et construisons un nuage de points à partir du jeu de données *iris* fourni de base dans R. Nous allons représenter la relation qui existe entre la longueur et la largeur des sépals de ces fleurs. Pour commencer, nous devons charger le package **ggplot2** et instancier un graphique avec la fonction `ggplot`.
 
@@ -386,15 +386,15 @@ L'argument `common.legend` permet d'indiquer à la fonction `ggarrange` de regro
 
 Dans un graphique, la couleur peut être utilisée à la fois pour représenter une variable quantitative (dégradé de couleur ou discrétisation), ou une variable qualitative (couleur par catégorie). Dans **ggplot2**, il est possible d'attribuer une couleur au contour des géométries avec l'argument `color` et au remplissage avec l'argument `fill`. Il est possible de spécifier une couleur de trois façons dans R : 
 
-* En utilisant le nom de la couleur dans une chaîne de caractère : `"chartreuse4"`. R dispose 657 noms de couleurs prédéfinis. Pour tous les afficher, utilisez la fonction `colors()` qui permet de les visualiser (figure \@ref(fig:figcolors)) .
+* En utilisant le nom de la couleur dans une chaîne de caractère : `"chartreuse4"`. R dispose 657 noms de couleurs prédéfinis. Pour tous les afficher, utilisez la fonction `colors()` qui permet de les visualiser (figure \@ref(fig:figcolors)).
 
 ```{r figcolors, echo=FALSE, fig.align='center', fig.cap="Couleurs de base", auto_pdf=TRUE, out.width='85%'}
 knitr::include_graphics('images/magie_graphiques/all_colors.png', dpi = NA)
 ```
 
-* En indiquant le code hexadécimal de la couleur. Il s'agit d'une suite de six lettres et de chiffres précédée par un dièse : `"#99ff33"`
+* En indiquant le code hexadécimal de la couleur. Il s'agit d'une suite de six lettres et de chiffres précédée par un dièse : `"#99ff33"`.
 
-* En utilisant une notation RGB (rouge, vert, bleu). Cette notation doit contenir quatre nombres entre 0 et 1 (0% et 100%), le premier indiquant la quantité de rouge, le second de vert, le troisième de bleu, et le quatrième la transparence. Ces quatres nombres sont donnés comme argument à la fonction `rgb` : `rgb(0.6, 1, 0.2, 0)`.
+* En utilisant une notation RGB (rouge, vert, bleu). Cette notation doit contenir quatre nombres entre 0 et 1 (0% et 100%), le premier indiquant la quantité de rouge, le second de vert, le troisième de bleu, et le quatrième la transparence. Ces quatre nombres sont donnés comme argument à la fonction `rgb` : `rgb(0.6, 1, 0.2, 0)`.
 
 Le choix des couleurs est un problème plus complexe que la manière de les spécifier. Il existe d'ailleurs tout un pan de la sémiologie graphique dédié à la question du choix et de l'association des couleurs. Une première ressource intéressante est  [ColorBrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3){target="_blank"}. Il s'agit d'une sélection de palettes de couleurs particulièrements efficaces et dont certaines sont mêmes adaptées pour les personnes daltoniennes. Il est possible d'accéder directement aux palettes dans R grâce au package **RColorBrewer** et la fonction `brewer.pal` : 
 
@@ -414,11 +414,11 @@ Puisque vous êtes désormais initié aux bases de la grammaire des graphiques i
 
 ### Histogramme {#sect0321}
 
-L'histogramme permet de décrire graphiquement la forme de la distribution d'une variable. Pour le réaliser, on utilise la fonction `geom_histogram`. Le paramètre le plus important est le nombre de barres (`bins`) qui composent l'histogramme. Plus ce nombre est grand, plus l'histogramme est précis et à l'inverse, plus il est petit, plus l'histogramme est simplifié. En revanche, il faut éviter d'utiliser un nombre de barres trop élevé comparativement au nombre d'observations disponibles dans le jeu de données, sinon votre histogramme sera plein de trous.
+L'histogramme permet de décrire graphiquement la forme de la distribution d'une variable. Pour le réaliser, on utilise la fonction `geom_histogram`. Le paramètre le plus important est le nombre de barres (`bins`) qui composent l'histogramme. Plus ce nombre est grand, plus l'histogramme est précis et à l'inverse, plus il est petit, plus l'histogramme est simplifié. En revanche, il faut éviter d'utiliser un nombre de barres trop élevé comparativement au nombre d'observations disponibles dans le jeu de données, sinon l'histogramme sera plein de trous.
 
 #### histogrammes simples {#sect03211}
 
-Générons quatre variables ayant respectivement une distribution Gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables et combinons les avec la fonction `ggarrange`.
+Générons quatre variables ayant respectivement une distribution gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables et combinons les avec la fonction `ggarrange`.
 
 ```{r fig318, fig.align='center', fig.cap="Histogrammes", message=FALSE, auto_pdf=TRUE, out.width='65%'}
 
@@ -497,7 +497,7 @@ Le graphique de droite (fréquence) nous indique donc que plus de 100 observatio
 
 #### Histogramme avec courbe de distribution {#sect03213}
 
-Les histogrammes sont souvent utilisés pour vérifier graphiquement si une distribution empirique s'approche d'une courbe normale. Pour cela, on rajoute sur l'histogramme de la variable empirique la forme qu'aurait une distribution normale parfaite en utilisant la moyenne et l'écart type de la distribution empirique. Pour créer cette figure dans **ggplot2**, il suffit d'utiliser la fonction `stat_function` pour créer un nouveau calque. Pour faire bonne mesure, il est aussi possible d'ajouter une ligne verticale (`geom_vline`) pour indiquer la moyenne de la distribution.
+Les histogrammes sont souvent utilisés pour vérifier graphiquement si une distribution empirique s'approche d'une courbe normale. Pour cela, on rajoute sur l'histogramme de la variable empirique la forme qu'aurait une distribution normale parfaite en utilisant la moyenne et l'écart type de la distribution empirique. Pour créer cette figure dans **ggplot2**, il suffit d'utiliser la fonction `stat_function` pour créer un nouveau calque. Il est aussi possible d'ajouter une ligne verticale (`geom_vline`) pour indiquer la moyenne de la distribution.
 
 ```{r fig322, fig.align='center', auto_pdf = TRUE, fig.cap="Histogrammes et courbe normale",  out.width='65%'}
 moyenne <- mean(distribs$gaussien)
@@ -543,7 +543,7 @@ ggplot(data = melted_distribs)+
   facet_wrap(vars(distribution), ncol=2, scales = "free")
 ```
 
-Les graphiques de densité sont souvent utilisés pour comparer la distribution d'une variable pour plusieurs sous groupe d'une population. Si nous reprenons le jeu de données iris, nous pouvons comparer les longueurs de sépals en fonction des espèces. On constate ainsi que les setosa ont une nette tendance à avoir des sépals plus courts et qu'à l'inverse, les virginca ont les sépals généralement les plus longs.
+Les graphiques de densité sont souvent utilisés pour comparer la distribution d'une variable pour plusieurs sous groupe d'une population. Si nous reprenons le jeu de données iris, nous pouvons comparer les longueurs de sépals en fonction des espèces. On constate ainsi que les setosas ont une nette tendance à avoir des sépals plus courts et qu'à l'inverse, les virginicas ont les sépals généralement les plus longs.
 
 ```{r fig325, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques de densité",  out.width='65%'}
 ggplot(data = iris)+
@@ -987,7 +987,7 @@ Dans cette dernière section, nous allons aborder des graphiques plus rarement u
 
 ### Graphique en radar {#sect0331}
 
-Les graphiques en radar (ou en toile d'araignée) sont utilisés pour comparer une série de variables continues pour plusieurs observations ou groupe d'observations. Chaque variable est associée à un axe et chaque observation est représentée avec un polygone. Prenons comme exemple les données de logement par secteur de recensement dans la région métropolitaine de Montréal en 2016. On pourrait souhaiter comparer la moyenne des pourcentages des différents types de logements pour les régions des Laurentides, de la Montérégie, de Laval, de Longueuil et de Montréal. Malheureusement, **ggplot2** ne permet pas de dessiner des graphiques en radar satisfaisants, nous devrons donc utiliser le *package* **fmsb**.
+Les graphiques en radar (ou en toile d'araignée) sont utilisés pour comparer une série de variables continues pour plusieurs observations ou groupes d'observations. Chaque variable est associée à un axe et chaque observation est représentée avec un polygone. Prenons l'exemple de données relatives aux logements par secteur de recensement dans la région métropolitaine de Montréal en 2016. On pourrait souhaiter comparer la moyenne des pourcentages des différents types de logements pour les régions des Laurentides, de la Montérégie, de Laval, de Longueuil et de Montréal. Malheureusement, **ggplot2** ne permet pas de dessiner des graphiques en radar satisfaisants, nous devrons donc utiliser le *package* **fmsb**.
 
 ```{r fig348, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%'}
 library(fmsb)
@@ -1052,7 +1052,7 @@ legend(x=1.3, y=1, legend = rownames(data_chart[-c(1,2),]), bty = "n",
        pch=20 , col=couleurs , text.col = "black", cex=0.9, pt.cex=1.5)
 ```
 
-À la lecture du graphique, on constate rapidement que l'île de Montréal a une situation très différentes des trois autres régions. Laval se ditingue également avec une part importante de logements dans des immeubles d'appartements. Ce type de graphique a pour objectif d'orienter le regard sur de potentielles différences dans un contexte multidimensionnelle, mais il comporte quelques inconvénients : 
+À la lecture du graphique, on constate rapidement que l'île de Montréal a une situation très différente des trois autres régions. Laval se ditingue également avec une part importante de logements dans des immeubles d'appartements. Ce type de graphique a pour objectif d'orienter le regard sur de potentielles différences dans un contexte multidimensionnelle, mais il présente quelques inconvénients : 
 
 * Les échelles de chaque axe sont différentes. Il est donc essentiel de se rapporter aux valeurs exactes pour estimer si les écarts sont importants en termes absolus.
 * La superposition de plusieurs polygones peut rendre la lecture difficile. Une alternative envisageable est de réaliser un graphique par polygone, mais cela prend beaucoup de place dans un document.
@@ -1121,7 +1121,7 @@ Le graphique permet de remarquer que la plupart des flux s’effectuent au sein 
 
 ### Nuage de mots {#sect0333}
 
-Un nuage de mots est un graphique utilisé en analyse de texte pour représenter les mots les plus importants d'un document. Mesurer l'importance des termes dans un document est une discipline à part entière (*Natural Language Processing*), nous proposons un simple exemple ici avec la méthode *TextRank* (basée sur la théorie des graphs) proposée par @mihalcea2004textrank et implémentée dans le *package* **textrank**. Nous aurons également besoin des *packages* **udpipe** (fournissant des dictionnaires linguistiques), **RColorBrewer** (pour sélectionner une palette de couleurs) et **wordcloud2** (pour générer le graphique). En guise d'exemple, nous avons choisi d'extraire les textes de deux Schémas d'Aménagement et de Développement (SAD), ceux des agglomérations de Québec et Montréal en vigueur en 2020. Il s'agit de deux documents de planification définissant les lignes directrices de l'organisation physique du territoire des municipalités régionales de comté (MRC) ou des agglomérations. Pour ces deux documents, nous nous concentrons sur le chapitre portant sur les grandes orientations d'aménagement et de développement, soit les pages 30 à 135 pour Québec et 30 à 97 pour Montréal. Pour extraire les textes des fichiers pdf, nous utilisons le *package* **pdftools**.
+Un nuage de mots est un graphique utilisé en analyse de texte pour représenter les mots les plus importants d'un document. Mesurer l'importance des termes dans un document est une discipline à part entière (*Natural Language Processing*), nous proposons un simple exemple ici avec la méthode *TextRank* (basée sur la théorie des graphes) proposée par @mihalcea2004textrank et implémentée dans le *package* **textrank**. Nous aurons également besoin des *packages* **udpipe** (fournissant des dictionnaires linguistiques), **RColorBrewer** (pour sélectionner une palette de couleurs) et **wordcloud2** (pour générer le graphique). En guise d'exemple, nous avons choisi d'extraire les textes de deux Schémas d'Aménagement et de Développement (SAD), ceux des agglomérations de Québec et Montréal en vigueur en 2020. Il s'agit de deux documents de planification définissant les lignes directrices de l'organisation physique du territoire des municipalités régionales de comté (MRC) ou des agglomérations. Pour ces deux documents, nous nous concentrons sur le chapitre portant sur les grandes orientations d'aménagement et de développement, soit les pages 30 à 135 pour Québec et 30 à 97 pour Montréal. Pour extraire les textes des fichiers pdf, nous utilisons le *package* **pdftools**.
 
 Nous devons donc réaliser les étapes suivantes pour produire le nuage de mots : 
 
@@ -1172,7 +1172,7 @@ model <- udpipe_load_model('data/graphique/french-sequoia-ud-2.4-190531.udpipe')
 # model <- udpipe_download_model("french-sequoia")
 # model <- udpipe_load_model(model)
 
-# Etape 5 : Analyse de la nature des mots du texte avec le dictionnaire fr
+# Étape 5 : Analyse de la nature des mots du texte avec le dictionnaire fr
 # On obtient des dataframes décrivant les mots des textes
 annote_qc <- udpipe_annotate(model, text_qc)
 df_qc <- data.frame(annote_qc)
@@ -1180,14 +1180,14 @@ df_qc <- data.frame(annote_qc)
 annote_mtl <- udpipe_annotate(model, text_mtl)
 df_mtl <- data.frame(annote_mtl)
 
-# Etape 6 : Utilisation de la méthode TextRank
+# Étape 6 : Utilisation de la méthode TextRank
 stats_qc <- textrank_keywords(df_qc$lemma,
                   relevant = df_qc$upos %in% c("NOUN", "ADJ"), ngram_max=2)
 
 stats_mtl <- textrank_keywords(df_mtl$lemma,
                   relevant = df_mtl$upos %in% c("NOUN","ADJ"), ngram_max=2)
 
-# Etape 7 : Nettoyer les coquilles dans les mots clefs 
+# Étape 7 : Nettoyer les coquilles dans les mots clefs 
 # NB : nous faisons ici le choix de garder des mots clefs uniques (ngram == 1)
 # il serait aussi possible de garder des associations de plusieurs mots
 dfstats_qc <- subset(stats_qc$keywords, stats_qc$keywords$ngram == 1 &
@@ -1200,7 +1200,7 @@ dfstats_mtl <- subset(stats_mtl$keywords, stats_mtl$keywords$ngram == 1 &
 dfstats_mtl$keyword <- gsub("d’","",dfstats_mtl$keyword,fixed = T)
 dfstats_mtl$keyword <- gsub("l’","",dfstats_mtl$keyword,fixed = T)
 
-# Etape 8 : Réaliser les nuages de mots
+# Étape 8 : Réaliser les nuages de mots
 couleurs <- sample(brewer.pal(12, "Paired")) # mise en désordre des couleurs
 
 wordcloud2(data = dfstats_mtl[c("keyword", "freq")],
@@ -1221,9 +1221,9 @@ knitr::include_graphics('images/magie_graphiques/nuage_qc.png', dpi = NA)
 
 Notez qu'à chaque génération du nuage de mots, vous obteindrez une disposition différente. N'hésitez pas à en essayer plusieurs jusqu'à trouver celle qui vous semble optimale.
 
-### Treemaps {#sect0334}
+### Carte proportionnelle {#sect0334}
 
-Un *treemap* est un graphique permettant de représenter une quantité partagée entre plusieurs observations structurées dans une hiérarchie de groupe. Le jeu de données portant sur les émissions de CO2 se prête tout à fait à une représentation par *treemaps*. La variable de quantité est bien sûr les émissions de CO<sub>2</sub> par pays; ces pays sont regroupés dans un premier ensemble de régions (découpage en 23 régions), qui elles-mêmes sont regroupées dans des régions plus larges (découpage en sept régions). Pour construire un *treemap*, nous allons utiliser le *package* **treemap**.
+Une carte proportionnelle ou carte à cases (*treemap* en anglais) est un graphique permettant de représenter une quantité partagée entre plusieurs observations structurées dans une hiérarchie de groupe. Le jeu de données portant sur les émissions de CO2 se prête tout à fait à une représentation par *treemaps*. La variable de quantité est bien sûr les émissions de CO<sub>2</sub> par pays; ces pays sont regroupés dans un premier ensemble de régions (découpage en 23 régions), qui elles-mêmes sont regroupées dans des régions plus larges (découpage en sept régions). Pour construire un *treemap*, nous allons utiliser le *package* **treemap**.
 
 ```{r fig352, fig.align='center', fig.cap="Treemap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
 library(treemap)

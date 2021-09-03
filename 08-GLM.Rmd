@@ -1,4 +1,4 @@
-# Régressions linéaires généralisées (GLM) {#chap07}
+# Régressions linéaires généralisées (GLM) {#chap08}
 
 **Les modèles linéaires généralisés**
 
@@ -81,7 +81,7 @@ Notez également que l’estimation des paramètres d’un modèle GLM (ici $\be
 
 ### Autres distributions et rôle de la fonction de lien {#sect0812}
 
-À première vue, on pourrait se demander pourquoi rajouter ces deux éléments puisqu’ils ne font que complexifier le modèle. Prenons donc un exemple appliqué au cas d’une variable binaire pour souligner la capacité de généralisation des modèles GLM. Admettons que nous souhaitons modéliser / prédire la probabilité qu’un cycliste décède lors d’une collision avec un véhicule motorisé. Notre variable dépendante est donc binaire (0 = survie, 1 = décès), et nous souhaitons la prédire avec trois variables continues que sont : la vitesse de déplacement du cycliste ($x_1$), la vitesse de déplacement du véhicule ($x_2$) et la masse du véhicule ($x_3$). Puisque *Y* n’est pas continue, il ne fait aucun sens d’assumer qu’elle est issue d’une distribution normale. Cependant, il est logique de supposer qu’elle provient d’une distribution de Bernoulli (pour rappel, une distribution de Bernoulli permet de modéliser un phénomène ayant deux issues possibles comme un lancer de pièce de monnaie, section \@ref(sect0241)). Plus spécifiquement, nous pourrions formuler l’hypothèse que nos trois variables $x_1$, $x_2$ et $x_3$ influencent le paramètre *p* (la probabilité d’occurrence de l’évènement) d’une distribution de Bernoulli. À partir de ces premières hypothèses, nous pouvons écrire le modèle suivant : 
+À première vue, on pourrait se demander pourquoi rajouter ces deux éléments puisqu’ils ne font que complexifier le modèle. Prenons donc un exemple appliqué au cas d’une variable binaire pour souligner la capacité de généralisation des modèles GLM. Admettons que nous souhaitons modéliser / prédire la probabilité qu’un·e cycliste décède lors d’une collision avec un véhicule motorisé. Notre variable dépendante est donc binaire (0 = survie, 1 = décès), et nous souhaitons la prédire avec trois variables continues que sont : la vitesse de déplacement du ou de la cycliste ($x_1$), la vitesse de déplacement du véhicule ($x_2$) et la masse du véhicule ($x_3$). Puisque *Y* n’est pas continue, il ne fait aucun sens d’assumer qu’elle est issue d’une distribution normale. Cependant, il est logique de supposer qu’elle provient d’une distribution de Bernoulli (pour rappel, une distribution de Bernoulli permet de modéliser un phénomène ayant deux issues possibles comme un lancer de pièce de monnaie, section \@ref(sect024)). Plus spécifiquement, nous pourrions formuler l’hypothèse que nos trois variables $x_1$, $x_2$ et $x_3$ influencent le paramètre *p* (la probabilité d’occurrence de l’évènement) d’une distribution de Bernoulli. À partir de ces premières hypothèses, nous pouvons écrire le modèle suivant : 
 
 \footnotesize
 \begin{equation}
@@ -239,7 +239,7 @@ Rappelons que la déviance d’un modèle est une quantité représentant à que
 \end{equation}
 \normalsize
 
-Il s’agit donc d’un simple calcul de pourcentage entre la déviance maximale ($D(M_n)$) et la déviance expliquée par le modèle étudié ($D(M_n )-D(M_e)$). Cet indicateur est compris entre 0 et 1, plus il est petit, plus la capacité de prédiction du modèle est faible. Attention, cet indicateur ne tient pas compte de la complexité du modèle. Ajouter une variable indépendante supplémentaire ne fait qu’augmenter la déviance expliquée, ce qui ne signifie pas que la complexification du modèle soit justifiée (**voir l'encadré sur le principe de parcimonie**, section \@ref(sect0532)).
+Il s’agit donc d’un simple calcul de pourcentage entre la déviance maximale ($D(M_n)$) et la déviance expliquée par le modèle étudié ($D(M_n )-D(M_e)$). Cet indicateur est compris entre 0 et 1, plus il est petit, plus la capacité de prédiction du modèle est faible. Attention, cet indicateur ne tient pas compte de la complexité du modèle. Ajouter une variable indépendante supplémentaire ne fait qu’augmenter la déviance expliquée, ce qui ne signifie pas que la complexification du modèle soit justifiée (**voir l'encadré sur le principe de parcimonie**, section \@ref(sect0732)).
 
 ##### Les pseudo $R^2$
 
@@ -262,7 +262,7 @@ show_table(df,
       col.width = "8cm")
 ```
 
-En dehors du pseudo R^2^ de McFadden ajusté, aucune de ces mesures ne tient compte de la complexité du modèle. Il est cependant intéressant de les reporter, car des valeurs très faibles indiquent vraisemblablement un modèle avec une moindre capacité informative. À l’inverse, des valeurs trop fortes pourraient également indiquer un problème de surajustement (**voir de nouveau l'encadré sur le principe de parcimonie**, section \@ref(sect0532)).
+En dehors du pseudo R^2^ de McFadden ajusté, aucune de ces mesures ne tient compte de la complexité du modèle. Il est cependant intéressant de les reporter, car des valeurs très faibles indiquent vraisemblablement un modèle avec une moindre capacité informative. À l’inverse, des valeurs trop fortes pourraient également indiquer un problème de surajustement (**voir de nouveau l'encadré sur le principe de parcimonie**, section \@ref(sect0732)).
 
 ##### Le critère d'information d'Akaike (*AIC*)
 
@@ -277,7 +277,7 @@ AIC = D(M_e) + 2K
 
 Avec *K* le nombre de paramètres à estimer dans le modèle (coefficients, paramètres de distribution, etc.). 
 
-Le *AIC* n’a pas d’interprétation directe, mais permet de comparer deux modèles imbriqués (voir section \@ref(sect0532)). Plus le *AIC* est petit, mieux le modèle est ajusté. L’idée derrière cet indicateur est relativement simple. Si la déviance *D* est grande, alors le modèle est mal ajusté. Ajouter des paramètres (des coefficients pour de nouvelles variables *X* par exemple) ne peut que réduire *D*, mais cette réduction n’est pas forcément suffisamment grande pour justifier la complexification du modèle. Le *AIC* pondère donc *D* en lui ajoutant 2 fois le nombre de paramètres du modèle. Un modèle plus simple (avec moins de paramètres) parvenant à une même déviance est préférable à un modèle complexe (principe de parcimonie ou du rasoir d’Ockham), ce que permet de « quantifier » le *AIC*. Attention, le *AIC* **ne peut pas être utilisé pour comparer des modèles non imbriqués**. Notez que d’autres indicateurs similaires comme le *WAIC*, le *BIC* et le *DIC* sont utilisés dans un contexte d’inférence bayésienne. Retenez simplement que ces indicateurs sont conceptuellement proches du *AIC* et s’interprètent (à peu de choses près) de la même façon.
+Le *AIC* n’a pas d’interprétation directe, mais permet de comparer deux modèles imbriqués (voir section \@ref(sect0732)). Plus le *AIC* est petit, mieux le modèle est ajusté. L’idée derrière cet indicateur est relativement simple. Si la déviance *D* est grande, alors le modèle est mal ajusté. Ajouter des paramètres (des coefficients pour de nouvelles variables *X* par exemple) ne peut que réduire *D*, mais cette réduction n’est pas forcément suffisamment grande pour justifier la complexification du modèle. Le *AIC* pondère donc *D* en lui ajoutant 2 fois le nombre de paramètres du modèle. Un modèle plus simple (avec moins de paramètres) parvenant à une même déviance est préférable à un modèle complexe (principe de parcimonie ou du rasoir d’Ockham), ce que permet de « quantifier » le *AIC*. Attention, le *AIC* **ne peut pas être utilisé pour comparer des modèles non imbriqués**. Notez que d’autres indicateurs similaires comme le *WAIC*, le *BIC* et le *DIC* sont utilisés dans un contexte d’inférence bayésienne. Retenez simplement que ces indicateurs sont conceptuellement proches du *AIC* et s’interprètent (à peu de choses près) de la même façon.
 
 #### Comparer les distributions originale et prédites
 
@@ -410,7 +410,7 @@ show_table(indicators,
 
 ### Comparer deux modèles GLM  {#sect0816}
 
-Tel qu'abordé dans le chapitre sur les régressions linéaires classiques, il est courant de comparer plusieurs modèles imbriqués (section \@ref(sect0414)). Cette procédure permet de déterminer si l'ajout d'une ou de plusieurs variables contribue à significativement améliorer le modèle. Il est possible d'appliquer la même démarche aux GLM à l'aide du test de rapport de vraisemblance (*likelihood ratio test*). L'idée derrière ce test est de comparer le *likelihood* de deux modèles GLM imbriqués, la valeur de ce test se calcule avec l'équation suivante :
+Tel qu'abordé dans le chapitre sur les régressions linéaires classiques, il est courant de comparer plusieurs modèles imbriqués (section \@ref(sect0732)). Cette procédure permet de déterminer si l'ajout d'une ou de plusieurs variables contribue à significativement améliorer le modèle. Il est possible d'appliquer la même démarche aux GLM à l'aide du test de rapport de vraisemblance (*likelihood ratio test*). Le principe de base de ce test est de comparer le *likelihood* de deux modèles GLM imbriqués; la valeur de ce test se calcule avec l'équation suivante :
 
 \footnotesize
 \begin{equation}
@@ -421,11 +421,11 @@ LR = 2(loglik(M_2) - loglik(M_1))
 
 Avec $M_2$ un modèle reprenant toutes les variables du modèle $M_1$, impliquant donc que  $loglik(M_2) >= loglik(M_1))$. 
 
-L'idée derrière ce test est que le modèle $M_2$ comporte plus de paramètres que le modèle $M_1$ et devrait donc être mieux ajusté aux données. Si c'est bien le cas, la différence entre les *loglikelihood* de deux modèles devrait être supérieure à 0. La valeur calculée *LR* suit une distribution du Chi^2^ avec un nombre de degrés de liberté égal au nombre de paramètres supplémentaires dans le modèle $M_2$ comparativement à $M_1$. Avec ces deux informations, il est possible de déterminer la valeur de *p* associée à ce test et de déterminer si $M_2$ est significativement mieux ajusté que $M_1$ aux données. Notez qu'il existe aussi deux autres tests (test de Wald et test de Lagrange) ayant la même fonction. Il s'agit, dans les deux cas, d'approximation du test de rapport des vraisemblances dont la puissance statistique est inférieure au test de rapport de vraisemblance [@NeymanLemma].
+Avec ce test, on suppose que le modèle $M_2$ qui comporte plus de paramètres que le modèle $M_1$ devrait être mieux ajusté aux données. Si c'est bien le cas, la différence entre les *loglikelihood* de deux modèles devrait être supérieure à 0. La valeur calculée *LR* suit une distribution du Chi^2^ avec un nombre de degrés de liberté égal au nombre de paramètres supplémentaires dans le modèle $M_2$ comparativement à $M_1$. Avec ces deux informations, il est possible de déterminer la valeur de *p* associée à ce test et de déterminer si $M_2$ est significativement mieux ajusté que $M_1$ aux données. Notez qu'il existe aussi deux autres tests (test de Wald et test de Lagrange) ayant la même fonction. Il s'agit, dans les deux cas, d'approximation du test de rapport des vraisemblances dont la puissance statistique est inférieure au test de rapport de vraisemblance [@NeymanLemma].
 
 ## Les principaux modèles GLM {#sect082}
 
-Dans cette section, nous décrivons les principaux modèles GLM utilisés. Il en existe de nombreuses variantes que nous ne pouvons pas toutes mentionner ici. L'objectif est donc de comprendre les rouages de ces modèles afin de pouvoir en cas de besoin reporter ces connaissances sur des modèles plus spécifiques. Pour faciliter la lecture de cette section, nous vous proposons une carte d’identité de chacun des modèles présentés. Elles contiennent l’ensemble des informations pertinentes à retenir pour chaque modèle.
+Dans cette section, nous décrivons les principaux modèles GLM utilisés. Il en existe de nombreuses variantes que nous ne pouvons pas toutes décrire ici. L'objectif est ici de comprendre les rouages de ces modèles afin de pouvoir, en cas de besoin, reporter ces connaissances sur des modèles plus spécifiques. Pour faciliter la lecture de cette section, nous vous proposons une carte d’identité de chacun des modèles présentés. Elles contiennent l’ensemble des informations pertinentes à retenir pour chaque modèle.
 
 ### Les modèles GLM pour des variables qualitatives {#sect0821}
 
@@ -443,7 +443,7 @@ Spécifiquement, on tente de prédire le paramètre *p* de la distribution binom
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
 tableau <- data.frame(
  C1 = c("Type de variable dépendante","Distribution utilisée", "Formulation", "Fonction de lien", "Paramètre modélisé", "Paramètres à estimer", "Conditions d'application"),
- C2 = c("Variable binaire (0 ou 1) ou comptage de réussite à une expérience (ex : 3 réussites sur 5 expériences)", "Binomiale", model_formula , "logistique", "p", "$\\beta_0$, $\\beta$", "Non-séparation complète, Absence de surdispersion ou sousdispersion")
+ C2 = c("Variable binaire (0 ou 1) ou comptage de réussite à une expérience (ex : 3 réussites sur 5 expériences)", "Binomiale", model_formula , "logistique", "p", "$\\beta_0$, $\\beta$", "Non-séparation complète. Absence de surdispersion ou sousdispersion")
 )
 show_table(tableau, 
     caption = "Carte d'identité du modèle logistique binomial",
@@ -463,7 +463,7 @@ Par exemple, admettons que nous ayons eu un coefficient $\beta_1$ de 1,2 pour un
 ::: {.bloc_aller_loin data-latex=""}
 **Les rapports de cotes**
 
-Le rapport de cote ou rapport des chances est une mesure utilisée pour exprimer l’effet d’un facteur sur une probabilité très utilisée dans le domaine de la santé, mais aussi des paris. Prenons un exemple concret avec le port du casque à vélo. Si sur 100 accidents impliquant des cyclistes portant un casque on observe seulement 3 cas de blessures graves à la tête, contre 15 dans un second groupe de 100 cyclistes ne portant pas de casques, on peut calculer le rapport de cote suivant : 
+Le rapport de cote ou rapport des chances est une mesure utilisée pour exprimer l’effet d’un facteur sur une probabilité très utilisée dans le domaine de la santé, mais aussi des paris. Prenons un exemple concret avec le port du casque à vélo. Si sur 100 accidents impliquant des cyclistes portant un casque, on observe seulement 3 cas de blessures graves à la tête, contre 15 dans un second groupe de 100 cyclistes ne portant pas de casque, on peut calculer le rapport de cote suivant : 
 
 \footnotesize
 \begin{equation}
@@ -471,7 +471,7 @@ Le rapport de cote ou rapport des chances est une mesure utilisée pour exprimer
 \end{equation}
 \normalsize
 
-avec *p* la probabilité d'observer le phénomène (ici la blessure grave à la tête) dans le groupe 1 (ici les cyclistes sans casque) et *q* la probabilité d'observer le phénomène dans le groupe 2 (ici les cyclistes avec un casque). Ce rapport de cote indique que les cyclistes sans casques ont 5,71 fois plus de chances de se blesser gravement à la tête lors d’un accident que ceux portant un casque.
+avec *p* la probabilité d'observer le phénomène (ici la blessure grave à la tête) dans le groupe 1 (ici les cyclistes sans casque) et *q* la probabilité d'observer le phénomène dans le groupe 2 (ici les cyclistes avec un casque). Ce rapport de cote indique que les cyclistes sans casques ont 5,71 fois plus de chances de se blesser gravement à la tête lors d’un accident comparativement à ceux et celles portant un casque.
 :::
 
 ##### Les conditions d'application {#sectcondapp}
@@ -496,7 +496,7 @@ Notez que si la variable *Y* modélisée est exactement binaire (chaque expérie
 
 **Présentation des données**
 
-Pour illustrer le modèle logistique binomial, nous utilisons ici un jeu de données proposé par l’Union européenne : [l’enquête de déplacement sur la demande pour des systèmes de transports innovants](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/P82V9X). Pour cette enquête, un échantillon de 1000 individus représentatifs de la population a été constitué dans chacun des 26 États membres de l’UE, soit un total de 26000 observations. Pour chaque individu ont été collectées plusieurs informations relatives à la catégorie socioprofessionnelle, le mode de transport le plus fréquent, le temps du trajet de son déplacement le plus fréquent et son niveau de sensibilité à la cause environnementale. Nous modélisons ici la probabilité qu’un individu déclare utiliser le plus fréquemment le vélo comme moyen de transport. Les variables explicatives sont résumées au tableau \@ref(tab:binomdata). Il existe bien évidemment un grand nombre de facteurs au niveau individuel qui impactent la prise de décision sur le mode de transport. Les résultats de ce modèle ne doivent donc pas être pris avec un grand sérieux; il est uniquement construit à des fins pédagogiques, et ce, sans cadre conceptuel solide.
+Pour illustrer le modèle logistique binomial, nous utilisons ici un jeu de données proposé par l’Union européenne : [l’enquête de déplacement sur la demande pour des systèmes de transports innovants](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/P82V9X). Pour cette enquête, un échantillon de 1000 individus représentatifs de la population a été constitué dans chacun des 26 États membres de l’UE, soit un total de 26000 observations. Pour chaque individu, plusieurs informations ont été collectées relatives à la catégorie socioprofessionnelle, le mode de transport le plus fréquent, le temps du trajet de son déplacement le plus fréquent et son niveau de sensibilité à la cause environnementale. Nous modélisons ici la probabilité qu’un individu déclare utiliser le plus fréquemment le vélo comme moyen de transport. Les variables explicatives sont résumées au tableau \@ref(tab:binomdata). Il existe bien évidemment un grand nombre de facteurs au niveau individuel qui impactent la prise de décision sur le mode de transport. Les résultats de ce modèle ne doivent donc pas être pris avec un grand sérieux; il est uniquement construit à des fins pédagogiques, et ce, sans cadre conceptuel solide.
 
 ```{r binomdata, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 tableau <- data.frame(
@@ -666,7 +666,7 @@ rsqs(loglike.full = as.numeric(logLik(model2)), # loglikelihood du modèle compl
 
 La déviance expliquée par le modèle est de 8,8%, les pseudos R^2^ de McFadden (ajusté), Efron et Nagelkerke sont respectivement 0,084, 0,069 et 0,123. L'ensemble de ces valeurs sont relativement faibles et indiquent qu'une large partie de la variabilité de *Y* reste inexpliquée.
 
-Pour vérifier la qualité de prédiction du modèle, nous devons comparer les catégories prédites et les catégories réelles de notre variable dépendante et construire une matrice de confusion. Cependant, un modèle GLM binomiale prédit **la probabilité d’appartenance au groupe 1** (ici les personnes utilisant le vélo pour effectuer leur déplacement le plus fréquent). Pour convertir ces probabilités prédites en catégories prédites, il faut choisir une probabilité seuil au-delà de laquelle on considère que la valeur attendue est 1 (cycliste) plutôt que 0 (autre). Un exemple naïf serait de prendre le seuil 0,5, ce qui signifierait que si le modèle prédit qu’une observation a au moins 50% de chance d’être un cycliste, alors nous l’attribuons à cette catégorie. Cependant, cette méthode est rarement optimale; il est donc plus judicieux de le fixer en trouvant le point d’équilibre entre la sensibilité (proportion de 1 correctement identifiés) et la spécificité (proportion de 0 correctement identifiés). Ce point d’équilibre est identifiable graphiquement en calculant la spécificité et la sensibilité de la prédiction selon toutes les valeurs possibles du seuil.
+Pour vérifier la qualité de prédiction du modèle, nous devons comparer les catégories prédites et les catégories réelles de notre variable dépendante et construire une matrice de confusion. Cependant, un modèle GLM binomiale prédit **la probabilité d’appartenance au groupe 1** (ici les personnes utilisant le vélo pour effectuer leur déplacement le plus fréquent). Pour convertir ces probabilités prédites en catégories prédites, il faut choisir une probabilité seuil au-delà de laquelle on considère que la valeur attendue est 1 (cycliste) plutôt que 0 (autre). Un exemple naïf serait de prendre le seuil 0,5, ce qui signifierait que si le modèle prédit qu’une observation a au moins 50% de chance d’être un·e cycliste, alors nous l’attribuons à cette catégorie. Cependant, cette méthode est rarement optimale; il est donc plus judicieux de le fixer en trouvant le point d’équilibre entre la sensibilité (proportion de 1 correctement identifiés) et la spécificité (proportion de 0 correctement identifiés). Ce point d’équilibre est identifiable graphiquement en calculant la spécificité et la sensibilité de la prédiction selon toutes les valeurs possibles du seuil.
 
 ```{r equlibresensispeci, message=FALSE, warning=FALSE, out.width='100%', fig.cap="Point d'équilibre entre sensibilité et spécificité", fig.align="center"}
 library(ROCR)
@@ -848,7 +848,7 @@ Prenons comme individu un homme de 30 ans, vivant dans une grande ville allemand
 `p = exp(-2,497 + 1 * 0,372 + 30 * -0,009 + 1 * 0,193 + 1 * 0,042 + 1 * 0,273 + 45 * -0,001 + 5 * 0,102)/(1+exp(-2,497 + 1 * 0,372 + 30 * -0,009 + 1 * 0,193 + 1 * 0,042 + 1 * 0,273 + 45 * -0,001 + 5 * 0,102)) = 0,194`
 
 
-Il y aurait donc 19,4% de chances pour que cette personne soit un cycliste. Cette probabilité dépasse le seuil que nous avons sélectionné, cet individu serait donc classé comme un cycliste. Si on augmente son âge de 15 ans, nous obtenons :
+Il y aurait donc 19,4% de chances pour que cette personne soit un·e cycliste. Cette probabilité dépasse le seuil que nous avons sélectionné, cet individu serait donc classé comme un·e cycliste. Si on augmente son âge de 15 ans, nous obtenons :
 
 `p = exp(-2,497 + 1 * 0,372 + 45 * -0,009 + 1 * 0,193 + 1 * 0,042 + 1 * 0,273 + 45 * -0,001 + 5 * 0,102) / (1+exp(-2,497 + 1 * 0,372 + 45 * -0,009 + 1 * 0,193 + 1 * 0,042 + 1 * 0,273 + 45 * -0,001 + 5 * 0,102)) = 0,174`
 
@@ -3680,7 +3680,7 @@ Nous pouvons ainsi observer à la figure \@ref(fig:heuresgamma) que les trajets 
 
 Le reste des coefficients (ainsi que le paramètre de forme) sont affichés dans le tableau \@ref(tab:coeffsgamma). Comparativement à un trajet effectué à pied, un trajet en transport en commun durera en moyenne 52% plus longtemps (1,53 fois plus long), alors que des déplacements en véhicule individuel et en vélo sont respectivement 28% et 23% moins longs. Aucune différence n’est observable entre les déplacements effectués en semaine ou pendant la fin de semaine.
 
-Les déplacements ayant comme motif le magasinage et le travail ont tendance à être en moyenne plus courts de 11% et 6% respectivement, comparativement aux déplacements effectués pour l’éducation ou le loisir (différence non significative entre loisir et éducation). Sans surprise, la distance entre le point de départ et d’arrivée du trajet (`LogDist`) affecte sa durée de façon positive. Considérant qu’il est difficile d’interpréter des log de kilomètre (dû à une transformation de la variable originale), nous représentons l’effet de cette variable avec la prédiction du modèle à la figure. Nous utilisons pour cela le cas suivant : déplacement à pied à 07h en semaine, ayant pour motif éducation, dont le point de départ se situe dans l’arrondissement Ahuntsic et donc le point d’arrivée est dans un autre arrondissement. Seule la distance du trajet varie de 1 à 40km. À titre de comparaison, nous représentons aussi pour les mêmes conditions le cas d’un cycliste (en vert), et d’un utilisateur du transport en commun (en bleu). Les lignes en pointillés représentent les intervalles de confiance à 95% des prédictions.
+Les déplacements ayant comme motif le magasinage et le travail ont tendance à être en moyenne plus courts de 11% et 6% respectivement, comparativement aux déplacements effectués pour l’éducation ou le loisir (différence non significative entre loisir et éducation). Sans surprise, la distance entre le point de départ et d’arrivée du trajet (`LogDist`) affecte sa durée de façon positive. Considérant qu’il est difficile d’interpréter des log de kilomètre (dû à une transformation de la variable originale), nous représentons l’effet de cette variable avec la prédiction du modèle à la figure. Nous utilisons pour cela le cas suivant : déplacement à pied à 07h en semaine, ayant pour motif éducation, dont le point de départ se situe dans l’arrondissement Ahuntsic et donc le point d’arrivée est dans un autre arrondissement. Seule la distance du trajet varie de 1 à 40km. À titre de comparaison, nous représentons aussi pour les mêmes conditions le cas d’un·e cycliste (en vert), et d’un·e utilisateur·trice du transport en commun (en bleu). Les lignes en pointillés représentent les intervalles de confiance à 95% des prédictions.
 
 ```{r coeffsgamma, warning = FALSE, message=FALSE, echo = F}
 tableau <- build_table(modele, coef_digits = 3, OR_digits = 3)

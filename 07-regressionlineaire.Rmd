@@ -1,7 +1,7 @@
 # (PART) Modèles de régression {-} 
 # La régression linéaire multiple  {#chap07}
 
-Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales : la régression linéaire multiple. À titre de rappel, dans le chapitre précédent (section \@ref(sect0414)), nous avons vu que la régression linéaire simple, basée sur la méthode des moindres carrées, permet d’expliquer et de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est rare que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple : elle permet ainsi de prédire et expliquer une variable dépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
+Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales : la régression linéaire multiple. À titre de rappel, dans le chapitre précédent (section \@ref(sect044)), nous avons vu que la régression linéaire simple, basée sur la méthode des moindres carrées, permet d’expliquer et de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est rare que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple : elle permet ainsi de prédire et expliquer une variable dépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
 
 Plus spécifiquement, nous aborderons ici les principes et hypothèses de la régression linéaire multiple, comment mesurer la qualité d’ajustement du modèle, introduire des variables explicatives particulières (variable qualitative dichotomique ou polytomique, variable d’interaction, etc.), interpréter les sorties d’un modèle de régression et finalement la mettre en oeuvre dans R.
 
@@ -13,15 +13,15 @@ Dans ce chapitre, nous utiliserons principalement les *packages* suivants :
   - **ggplot2**, le seul, l'unique
   - **ggpubr**, pour combiner les graphiques
 * Pour obtenir les coefficients standardisés : 
-  - **QuantPsyc**, avec la fonction *lm.beta* (section \@ref(sect0542)).
+  - **QuantPsyc**, avec la fonction *lm.beta* (section \@ref(sect0742)).
 * Pour les effets marginaux des variables indépendantes : 
-  - **ggeffects**, avec la fonction *ggpredict* (section \@ref(sect0574)).
+  - **ggeffects**, avec la fonction *ggpredict* (section \@ref(sect0774)).
 * Pour vérifier la normalité des résidus : 
-  - **DescTools**, avec la fonction *Skewness* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect0562)).
+  - **DescTools**, avec la fonction *Skewness* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect0762)).
 * Pour vérifier l'homoscédasticité des résidus : 
-  - **lmtest**, avec la fonction *bptest* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect05733)).
+  - **lmtest**, avec la fonction *bptest* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect07733)).
 * Pour vérifier la multicolinéarité excessive : 
-  - **car**, avec la fonction *vif* (section \@ref(sect05734)).
+  - **car**, avec la fonction *vif* (section \@ref(sect07734)).
 
 :::
 
@@ -32,7 +32,7 @@ Selon Tabachnich et Fidell [-@tabachnick2007], un modèle de régression permet 
 
 La première approche a pour objectif d’identifier les relations entre une variable dépendante (VD) et plusieurs variables indépendantes (VI). Il s’agit alors de déterminer si ces relations sont positives ou négatives, significatives ou non et d'évaluer leur ampleur. La construction du modèle de régression repose alors sur un cadre théorique et la formulation d’hypothèses sur les relations entre chacune des VI et la VD.
 
-La seconde approche est exploratoire et très utilisée en *data mining* (forage ou fouille de données). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Parfois, ce type de démarche ne repose ni sur un cadre théorique, ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle le plus efficacement possible afin de prédire, à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle de régression final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
+La seconde approche est exploratoire et très utilisée en forage ou fouille de données (*data mining* en anglais). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Parfois, ce type de démarche ne repose ni sur un cadre théorique, ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle le plus efficacement possible afin de prédire, à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle de régression final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
 
 ::: {.bloc_attention data-latex=""}
 **Cadre conceptuel et élaboration d'un modèle de régression**
@@ -180,7 +180,7 @@ Y  = \underbrace{X\beta}_{\mbox{partie expliquée par le modèle}}+ \underbrace{
 Un modèle est bien construit s'il respecte plusieurs hypothèses liées à la régression, dont les principales étant :
 
 * **Hypothèse 1**. *La variable dépendante doit être continue et non-bornée*. Quant aux variables indépendantes (VI), elles peuvent être quantitatives (discrètes ou continues) et qualitatives (nominale ou ordinale).
-* **Hypothèse 2**.  *La variance de chaque VI doit être supérieure à 0*. Autrement dit, elle ne peut pas la même valeur pour toutes les observations.
+* **Hypothèse 2**.  *La variance de chaque VI doit être supérieure à 0*. Autrement dit, toutes les observations ne peuvent avoir la même valeur.
 * **Hypothèse 3**. *Indépendance des termes d'erreur*. Les résidus des observations ($\epsilon_{1}, \epsilon_{2}, \ldots, \epsilon_{n}$) ne doivent pas être corrélés entre eux. Autrement dit, les observations doivent être indépendantes les unes des autres, ce qui n'est souvent pas le cas pour des mesures temporelles. Par exemple, l'application du cadre conceptuel sur la modélisation de l'exposition des cyclistes au bruit et à la pollution atmosphérique (figure \@ref(fig:figcadreconcept)) est basée sur des données primaires collectées lors de trajets réalisés à vélo dans une ville donnée. Par conséquent, deux observations qui se suivent ont bien plus de chances de se ressembler – du point de vue des mesures de pollution et des caractéristiques de l'environnement urbain – que deux observations tirées au hasard dans le jeu de données. Ce problème d'autocorrélation temporelle doit être contrôlé, sinon, les coefficients de régression seront biaisés.
 * **Hypothèse 4**. *Normalité des résidus* avec un moyenne centrée sur zéro.
 * **Hypothèse 5**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, on ne peut introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100%. On a donc une corrélation parfaite entre ces deux variables : le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne pourra pas être estimé avec ces deux variables et l'une des deux sera automatiquement ôtée.
@@ -330,17 +330,17 @@ cat("R2 =", round(SCE / SCT,4),
 
 ### Comparer des modèles incrémentiels {#sect0732}
 
-Tel que signalé plus haut, il est fréquent de construire plusieurs modèles de régression imbriqués. Cette démarche est très utile pour évaluer l'apport de l'introduction d'une nouveau bloc de variables dans un modèle. De manière exploratoire, cela permet également de vérifier si l'introduction d'une variable indépendante supplémentaire dans un modèle a ou non un apport significatif et ainsi décider de la conserver ou non dans le modèle final selon le principe de parcinomie. 
+Tel que signalé plus haut, il est fréquent de construire plusieurs modèles de régression imbriqués. Cette démarche est très utile pour évaluer l'apport de l'introduction d'un nouveau bloc de variables dans un modèle. De manière exploratoire, cela permet également de vérifier si l'introduction d'une variable indépendante supplémentaire dans un modèle a ou non un apport significatif et ainsi décider de la conserver ou non dans le modèle final selon le principe de parcinomie. 
 
 ::: {.bloc_notes  data-latex=""}
 **Le principe de parcimonie** 
 
 Le principe de parcimonie appliquée aux régressions correspond à l'idée qu'il est préférable de disposer d'un **modèle plus simple** pour expliquer un phénomène qu'un **modèle compliqué** si la qualité de leurs prédictions – qualité d’ajustement des deux modèles – est équivalente.
 
-Une première justification de ce principe trouve son origine dans la philosophie des sciences avec le **rasoir d'Ockham**. Il s'agit d'un principe selon lequel il est préférable de privilégier des théories faisant appel à un plus petit nombre d'hypothèses. L'idée centrale étant d'éviter d'apporter des réponses à une question qui soulèverait davantage de nouvelles questions. Dans le cas d'une régression, on pourrait être tenté d'ajouter de nombreux prédicteurs pour améliorer la capacité de prédiction du modèle. Cette stratégie conduit généralement à observer des relations contraires à nos connaissances entre les variables du modèle, ce qui soulève de nouvelles questions de recherche (pas toujours judicieuses…). Dans notre quotidien, si une casserole tombe de son support, il est plus raisonnable d'imaginer que nous l'avions mal fixée que d'émettre l'hypothèse qu'un fantôme l'a volontairement fait tomber. Cette seconde hypothèse soulève d’autres questions (pas toujours judicieuses…) sur la nature d'un fantôme, son identité, la raison le poussant à agir, etc.
+Une première justification de ce principe trouve son origine dans la philosophie des sciences avec le **rasoir d'Ockham**. Il s'agit d'un principe selon lequel il est préférable de privilégier des théories faisant appel à un plus petit nombre d'hypothèses. L'idée centrale étant d'éviter d'apporter des réponses à une question qui soulèverait davantage de nouvelles questions. Dans le cas d'une régression, on pourrait être tenté d'ajouter de nombreuses variables indépendantes pour améliorer la capacité de prédiction du modèle. Cette stratégie conduit généralement à observer des relations contraires à nos connaissances entre les variables du modèle, ce qui soulève de nouvelles questions de recherche (pas toujours judicieuses…). Dans notre quotidien, si une casserole tombe de son support, il est plus raisonnable d'imaginer que nous l'avions mal fixée que d'émettre l'hypothèse qu'un fantôme l'a volontairement fait tomber. Cette seconde hypothèse soulève d’autres questions (pas toujours judicieuses…) sur la nature d'un fantôme, son identité, la raison le poussant à agir, etc.
 
 Une seconde justification de ce principe s'observe dans la pratique statistique : des modèles plus complexes ont souvent une plus faible capacité de généralisation. En effet, un modèle complexe et trop bien ajusté aux données observées est souvent incapable d'effectuer des prédictions justes pour de nouvelles données. Ce phénomène est appelé surajustement ou surinterprétation (*overfitting* en anglais). 
-Le surajustement impliqué par des modèles trop complexes entre en conflit direct avec l'enjeu principal de l'inférence en statistique : pouvoir généraliser des observations faites sur un échantillon au reste d'une population.
+Le surajustement résultant de modèles trop complexes entre en conflit direct avec l'enjeu principal de l'inférence en statistique : pouvoir généraliser des observations faites sur un échantillon au reste d'une population.
 
 Notez que ce principe de parcimonie ne signifie pas que vous devez systématique retirer toutes les variables non significatives de votre analyse. En effet, il peut y avoir un intérêt théorique à démontrer l'absence de relation entre des variables. Il s'agit plutôt d'une ligne de conduite à garder à l'esprit lors de l'élaboration du cadre théorique et de l'interprétation des résultats.
 :::
@@ -354,7 +354,7 @@ R^2_{ajusté}= 1 - \frac{(1-R^2)(n-1)}{n-k-1} \mbox{ avec } R^2{ajusté} \in \le
 \end{equation}
 \normalsize
 
-Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif ? Pour y répondre, il convient de comparer les valeurs des statistiques F des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de P qui lui est associée avec comme degrés de liberté le nombre de prédicteurs ajoutés ($k_2-k_1$) et $n-k_2-1$. Si la valeur de P<0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5%). 
+Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif ? Pour y répondre, il convient de comparer les valeurs des statistiques F des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de P qui lui est associée avec comme degrés de liberté le nombre de variables indépendantes ajoutées ($k_2-k_1$) et $n-k_2-1$. Si la valeur de P<0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5%). 
 
 \footnotesize 
 \begin{equation}
@@ -414,7 +414,7 @@ anova(modele1, modele2)
 
 ## Les différentes mesures pour les coefficients de régression {#sect074}
 
-La fonction `summary(nom du modèle)` permet d'obtenir les sorties du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 indiquant que les prédicteurs du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
+La fonction `summary(nom du modèle)` permet d'obtenir les sorties du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 indiquant que les variables indépendantes du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
 
 
 ```{r dataregmodel1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -433,7 +433,7 @@ Les différentes sorties pour les coefficients sont reportées au tableau \@ref(
 ::: {.bloc_attention data-latex=""}
 **Que signifie l'expression *toutes choses étant égales par ailleurs* pour un coefficient de régression ?**
 
-Après l'apprentissage du grec grâce aux nombreuses équations intégrées au livre, passons au latin ! L'expression *toutes choses étant égales par ailleurs* vient du latin *ceteris paribus* à ne pas confondre *c'est terrible Paris en bus* (petite blague formulée par un étudiant ayant suivi notre cours *méthodes quantitatives appliquées en études urbaines* il y a quelques années) ! Certains auteurs emploient encore *ceteris paribus*; il est donc possible que vous la retrouviez dans un article scientifique... 
+Après l'apprentissage du grec grâce aux nombreuses équations intégrées au livre, passons au latin ! L'expression *toutes choses étant égales par ailleurs* vient du latin *ceteris paribus* à ne pas confondre *c'est terrible Paris en bus* (petite blague formulée par un étudiant ayant suivi le cours *méthodes quantitatives appliquées en études urbaines* il y a quelques années) ! Certains auteurs emploient encore *ceteris paribus*; il est donc possible que vous la retrouviez dans un article scientifique... 
 
 Plus sérieurement, l'expression *toutes choses étant égales par ailleurs* signifie que l'on estime l'effet de la variable indépendante sur la variable dépendante, si toutes les autres variables indépendantes restaient constantes ou autrement dit, une fois contrôlés tous les autres prédicteurs. 
 :::
@@ -491,7 +491,7 @@ Le coefficient de régression standardisé peut être aussi facilement calculé 
 La syntaxe R ci-dessous illustre trois façons d'obtenir les coefficients standardisés :
 
 * en centrant et réduisant préalablement les variables avec la fonction `scale` avant de construire le modèle avec la fonction `lm`
-* en calculant les écarts-types de VD et VI et en appliquant l'équation ci-dessous
+* en calculant les écarts-types de VD et VI et en appliquant l'équation ci-dessus
 * avec la fonction `lm.beta` du package **QuantPsyc**. Cette dernière méthode est moins « verbeuse » (deux lignes de codes uniquement), mais nécessite de charger un package supplémentaire.
 
 
@@ -617,7 +617,7 @@ Prenons deux variables indépendantes au tableau \@ref(tab:dataregmodel2) – `H
 6. Valider ou réfuter l'hypothèse nulle ($H_0$) :
   - pour `HABHA`, la valeur absolue de T (−31,975) est supérieure à la valeur critique de 3,29. Son coefficient de régression est donc significativement différent de 0. Autrement dit, ce prédicteur a un effet significatif et négatif sur la variable dépendante.
 
-  - pour `AgeMedian`, la valeur absolue de T (1,694) est supérieure à 1,65 (p=0,10), mais inférieure à 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de p=0,10, et non au seuil de p=0,05. Cela signifie qu'on a un peu moins de 10% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
+  - pour `AgeMedian`, la valeur absolue de T (1,694) est supérieure à 1,65 (p=0,10), mais inférieure à 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de p=0,10 et non au seuil de p=0,05. Cela signifie qu'on a un peu moins de 10% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
 
 
 ::: {.bloc_astuce data-latex=""}
@@ -684,7 +684,7 @@ L'intervalle du coefficient est obtenu à partir de :
 
 1. la valeur du coefficient ($\beta_k$),
 2. la valeur de son erreur type $s(\beta_k)$ et 
-3. la valeur critique de T ($t_{\alpha/2}$) obtenue avec $n-k-1$ degrés de liberté et le niveau de significatité retenu (95%, 99% ou 99,9%) .
+3. la valeur critique de T ($t_{\alpha/2}$) obtenue avec $n-k-1$ degrés de liberté et le niveau de significativité retenu (95%, 99% ou 99,9%) .
 
 \footnotesize
 \begin{equation}
@@ -782,9 +782,9 @@ Y = b_{0} + b_{1}X_{1} + b_{11}X_{1}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
 \end{equation}
 \normalsize
 
-Dans l'équation ci-dessus, la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{11}X_{1}^2$. Un coefficient différent est ajusté pour chacune de ces deux versions de la variable $X_{1}$
+Dans l'équation ci-dessus, la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{11}X_{1}^2$. Un coefficient différent est ajusté pour chacune de ces deux versions de la variable $X_{1}$.
 
-La démographie est certainement la disciplines des sciences sociales qui a le plus recours aux régressions polynomiales. En effet, la variable `âge` est souvent introduite comme variable explicative dans sa forme originale et mise au carré. L'objectif est de vérifier si l'âge partage ou non une relation curvilinéaire avec un phénomène donné : par exemple, il pourrait y être associé positivement jusqu'à un certain seuil (45 ans par exemple), puis négativement à partir de ce seuil.
+La démographie est prpbablement la discipline des sciences sociales qui a le plus recours aux régressions polynomiales. En effet, la variable `âge` est souvent introduite comme variable explicative dans sa forme originale et mise au carré. L'objectif est de vérifier si l'âge partage ou non une relation curvilinéaire avec un phénomène donné : par exemple, il pourrait y être associé positivement jusqu'à un certain seuil (45 ans par exemple), puis négativement à partir de ce seuil.
 
 
 ::: {.bloc_aller_loin data-latex=""}
@@ -794,33 +794,34 @@ Sachez qu'il est aussi possible de construire des régressions polynomiales avec
 
 \footnotesize 
 \begin{equation}
-\mbox{Ordre 2 : } Y = b_{0} + b_{1}X_{1} + b_{1}X_{11}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+\mbox{Ordre 2 : } Y = b_{0} + b_{1}X_{1} + b_{11}X_{}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
 (\#eq:regpolyordre2b)
 \end{equation}
 \normalsize
 
 \footnotesize 
 \begin{equation}
-\mbox{Ordre 3 : } Y = b_{0} + b_{1}X_{1} + b_{1}X_{11}^2 + b_{1}X_{111}^3 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+\mbox{Ordre 3 : } Y = b_{0} + b_{1}X_{1} + b_{11}X_{}^2 + b_{111}X_{}^3 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
 (\#eq:regpolyordre3)
 \end{equation}
 \normalsize
 
 \footnotesize 
 \begin{equation}
-\mbox{Ordre 4 : } Y = b_{0} + b_{1}X_{1} + b_{1}X_{11}^2 + b_{1}X_{111}^3 + b_{1}X_{1111}^4 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
+\mbox{Ordre 4 : } Y = b_{0} + b_{1}X_{1} + b_{11}X_{}^2 + b_{111}X_{}^3 + b_{1111}X_{}^4 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
 (\#eq:regpolyordre4)
 \end{equation}
 \normalsize
 
 :::
 
+
 Pour construire une régression polynomiale dans R, il est possible d'utiliser deux fonctions de R :
 
 * `I(VI^2)` avec `VI` est la variable indépendante sur laquelle est appliquée la mise au carré.
 * `poly(VI,2)` qui utilise une forme polynomiale orthogonale pour éviter les problèmes de corrélation entre les deux termes, c'est-à-dire entre **VI** et **VI^2^**.
 
-Ces deux méthodes produiront les mêmes résultats pour les autres variables dépendantes et pour la qualité d'ajustement du modèle (R^2^, F, etc.). On privilégie la seconde fonction pour éviter de détecter à tort problèmes de multicolinéarité excessive.
+Ces deux méthodes produiront les mêmes résultats pour les autres variables dépendantes et pour la qualité d'ajustement du modèle (R^2^, F, etc.). On privilégie la seconde fonction pour éviter de détecter à tort des problèmes de multicolinéarité excessive.
 
 Appliquons cette démarche à la variable `AgeMedian` (âge médian des bâtiments) afin de vérifier si elle partage ou non une relation curvilinéaire avec la couverture végétale de l'îlot. À la lecture des sorties pour les deux modèles, les constats suivants peuvent être avancés :
 
@@ -852,7 +853,7 @@ anova(modele1, modele2)
 
 Pour visualiser la relation linéaire et curvilinéaire, nous vous proposons de réaliser un graphique des effets marginaux à partir de la syntaxe ci-dessous.
 
-Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X<sub>1</sub>* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, et seule X<sub>1</sub> est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de Y quand *X<sub>1</sub>* augmente ou diminue, et ce, toute choses étant égales par ailleurs (puisque toutes les autres variables ont une valeur fixe). Cette approche est particulièrement intéressante pour décrire des effets non-linéaires obtenus avec des polynomiales, mais aussi des interractions comme nous le verrons plus tard. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap06) et \@ref(chap08)). Notez qu'il est aussi important de représenter sur ce type de graphique l'incertitude de la prédiction. Pour cela, il est possible de construire des intervalles de confiance à 95% autours de la prédiction en utilisant l'erreur standard de la prédiction (renvoyée par la fonction `predict`).
+Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X<sub>1</sub>* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, et seule X<sub>1</sub> est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de Y quand *X<sub>1</sub>* augmente ou diminue, et ce, toute choses étant égales par ailleurs (puisque toutes les autres variables ont une valeur fixe). Cette approche est particulièrement intéressante pour décrire des effets non-linéaires obtenus avec des polynomiales, mais aussi des interractions comme nous le verrons plus tard. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap06) et \@ref(chap08)). Notez qu'il est aussi important de représenter sur ce type de graphique l'incertitude de la prédiction. Pour cela, il est possible de construire des intervalles de confiance à 95% autour de la prédiction en utilisant l'erreur standard de la prédiction (renvoyée par la fonction `predict`).
 
 
 ```{r calculRegPoly2, echo=TRUE, fig.align='center', fig.cap="Relations linéaire et curvilinéaire", message=FALSE, warning=FALSE, out.width='75%'}
@@ -936,7 +937,7 @@ show_table(data.frame(tabreglog),
 Puisque l'interprétation du coefficient de régression de $log(\beta_k)$ est plus complexe, il convient de s'assurer que son apport au modèle soit justifiée, et ce, de deux façons :
 
 * **Comparez les mesures d'ajustement des deux modèles (surtout les R^2^ ajustés)**. Si le R^2^ ajusté du modèle avec $log(\beta_k)$ est plus élevé que celui avec $\beta_k$ alors la transformation logarithmique fait de votre variable indépendante un meilleur prédicteur, toutes choses étant égales par ailleurs. 
-* **Construisez les graphiques des effets marginaux** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (figure \@ref(figure:EffetMarginalVariableLogEtNon)). Notez que cette approche graphique peut aussi ne donner aucune indication lorsque vos données sont très dispersées ou que la relation est faible entre votre variable dépendante et indépendante.
+* **Construisez les graphiques des effets marginaux** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (figure \@ref(fig:EffetMarginalVariableLogEtNon)). Notez que cette approche graphique peut aussi ne donner aucune indication lorsque vos données sont très dispersées ou que la relation est faible entre votre variable dépendante et indépendante.
 
 ```{r EffetMarginalVariableLogEtNon, echo=TRUE, fig.align='center', fig.cap="Effet marginal de la densité de population", message=FALSE, warning=FALSE, out.width='75%'}
 library(ggpubr)
@@ -965,8 +966,7 @@ G1a <- ggplot(fit1a, aes(x, predicted)) +
       labs(title="Variable non transformée",
            y="VD: valeur prédite",
            x = "Habitants km2") + 
-  ylim(0,100) + 
-  xlim(0,600)
+  ylim(0,100) + xlim(0,600)
 
 G1b <- ggplot(fit1b, aes(x, predicted)) +
       geom_point(data = DataFinal, mapping = aes(x=HABHA, y = VegPct),
@@ -1023,7 +1023,7 @@ La modalité qui a la valeur de 0 est alors appelée **modalité ou catégorie d
 
 Autrement dit, si la variable avait été codée : 0 pour la Ville et de Montréal et 1 pour les autres municipalités, alors le coefficient aurait été de 7,699.
 
-Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans R (section \@ref(sect059)) qu'il peut est préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
+Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans R (section \@ref(sect077)) qu'il peut est préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
 :::
 
 Comme pour une variable indépendante introduite avec une fonction polynomiale, il est peut-être très intéressant d'illuster l'effet marginal de la variable dichotomique avec un graphique qui montre l'écart entre les moyennes des deux modalités, une fois contrôlées les autres variables indépendantes (figure \@ref(fig:EffetMarginalDich)). Notez que dans ce graphique, les barres d'erreurs situées au sommet des rectangles représentent les intervalles à 95% des prédictions du modèle.
@@ -1048,7 +1048,7 @@ ggplot(dfPreds, aes(x=x, y=predicted)) +
                                 
 ### Variable indépendante qualitative polytomique {#sect0753}
 
-Il possible d'introduire une variable qualitative polytomique comme variable explicative ou de contrôle dans un modèle. À titre de rappel, une variable polytomique comprend plus de deux modalités, qu'elle soit nominale ou ordinale (section \@ref(sect0212)). 
+Il est possible d'introduire une variable qualitative polytomique comme variable explicative ou de contrôle dans un modèle. À titre de rappel, une variable polytomique comprend plus de deux modalités, qu'elle soit nominale ou ordinale (section \@ref(sect0212)). 
 
 En guise d'exemple, une variable qualitative pourrait être : différents groupes de population (groupes d'âge, minorités visibles, catégories socioprofessionnelles, etc.), différents territoires ou régions (ville centrale, première couronne, deuxième couronne, etc.), une variable semi-quantitative (par exemple, une variable continue transformée en quatre ou cinq catégories ordinales selon les quartiles ou les quintiles).
 
@@ -1056,7 +1056,7 @@ En guise d'exemple, une variable qualitative pourrait être : différents groupe
 
 Prenons l'exemple d'un modèle de régression comprenant deux variables indépendantes : l'une continue (`X1`), l'autre qualitative (`X2`) avec quatre modalités (A, B, C et D). L'introduction de la variable qualitative dans le modèle revient à :
 
-* Transformer chaque modalité en variable muette (binaire). On a ainsi quatre nouvelles variables binaires : `X2A`, `X2B`, `X2C` et `X2D`. Par exemple, les observations de la modalité *A* se verront affectées la valeur de 1 versus 0 pour `X2A` pour les autres observations . La même démarche s'applique à `X2B`, `X2C` et `X2D` (voir tableau \@ref(tab:transfVarQMuettes)).
+* Transformer chaque modalité en variable muette (binaire). On a ainsi quatre nouvelles variables binaires : `X2A`, `X2B`, `X2C` et `X2D`. Par exemple, les observations de la modalité *A* se verront affectées la valeur de 1 versus 0 pour `X2A` pour les autres observations. La même démarche s'applique à `X2B`, `X2C` et `X2D` (voir tableau \@ref(tab:transfVarQMuettes)).
 
 ```{r transfVarQMuettes, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 df <- data.frame(
@@ -1153,7 +1153,7 @@ tabreg <- build_table(modele4c, confid = F, std_digits = 3, coef_digits = 3, z_d
 ```
 
 ::: {.bloc_astuce data-latex=""}
-**Mais, mais alors Jamy comment choisir la catégorie de référence ?**
+**Comment choisir la catégorie de référence ?**
 
 Plusieurs options sont possibles, choisir :
 
@@ -1349,10 +1349,10 @@ Pour interpréter le coefficient $B_3$, il convient alors de bien connaître le 
 
 * à chaque augmentation d'une unité du pourcentage à faible revenu (`Pct_FR`), le pourcentage de la couverture végétale diminue significativement de −0,444;
 * comparativement à un îlot situé dans une autre municipalité de l'île de Montréal, un îlot de la Ville de Montréal a en moyenne −9,804 de couverture végétale;
-* à chaque augmentation d'une unité de `Pct_FR` pour un îlot de la Ville Montréal, la couverture végétale augmente de 0,166 comparativement à une autre municipalité de l'île. En d'autres termes, le `Pct_FR` sur le territoire de la Ville de Montréal est associé à une diminution de la couverture végétale moins forte que les autres municipalités, tel qu'illustré à la figure \@ref(fig:ModeleInteractionBinaire) (voir les pentes en rouge en bleu).
+* à chaque augmentation d'une unité de `Pct_FR` pour un îlot de la Ville Montréal, la couverture végétale augmente de 0,166 comparativement à une autre municipalité de l'île. En d'autres termes, le `Pct_FR` sur le territoire de la Ville de Montréal est associé à une diminution de la couverture végétale moins forte que les autres municipalités, tel qu'illustré à la figure \@ref(fig:ModeleInteractionBinaire2) (voir les pentes en rouge en bleu).
 
 
-```{r ModeleInteractionBinaire, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+```{r ModeleInteractionBinaire2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 
 DataFinal$VilleMtlX_Pct_FR  <- DataFinal$VilleMtl*DataFinal$Pct_FR 
 
@@ -1408,10 +1408,11 @@ ggplot(data = df) +
 
 #### Variable d'interaction entre deux variables dichtomiques {#sect07543}
 
+::: {.bloc_aller_loin data-latex=""}
+**Variable d'interaction entre deux variables dichtomiques**
 
-
-https://www.econometrics-with-r.org/8-3-interactions-between-independent-variables.html
-
+Nous avons vu qu'il est possible d'introduire une variable d'interaction entre deux variables continues ou entre une variable continue et une autre dichotomique. Sachez qu’il est aussi possible d’introduire une interaction entre deux variables dichotomiques. Sur le sujet, on pourra consulter [cette section](https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/page_dl-tc.cfm?Lang=F){target="_blank"} de l'excellent ouvrage de Hanck et al. [-@hanck2019introduction].
+:::
 
 ## Diagnostics de la régression {#sect076}
 
@@ -1461,7 +1462,7 @@ if(nobs >= 104+k){
 
 ### Normalité des résidus {#sect0762}
 
-Pour vérifier si les résidus sont normalement distribués, trois démarches largement décrites dans la section \@ref(sect02541) peuvent être utilisées :
+Pour vérifier si les résidus sont normalement distribués, trois démarches largement décrites dans la section \@ref(sect0254) peuvent être utilisées :
 
 * le calcul des coefficients d’asymétrie et d’aplatissement;
 * les tests de normalité, particulièrement celui de Jarque-Bera basé sur un test multiplicateur de Lagrange;
@@ -1550,7 +1551,7 @@ Prenons deux variables indépendantes ($X_1$ et $X_2$) fortement corrélées ave
 
 Pour ce faire, on utilise habituellement le facteur d’inflation de la variance (*Variance Inflation Factor – VIF* en anglais). Le calcul de ce facteur pour chaque VI est basé sur trois étapes. 
 
-1. Pour chaque VI, on construit un modèle de régression multiple dans laquelle elle est expliquée par toutes les autres variables indépendantes du modèle. Par exemple, pour la première VI ($X_1$), l'équation du modèle s'écrit :
+1. Pour chaque VI, on construit un modèle de régression multiple où elle est expliquée par toutes les autres variables indépendantes du modèle. Par exemple, pour la première VI ($X_1$), l'équation du modèle s'écrit :
 
 \footnotesize
 \begin{equation} 
@@ -1585,7 +1586,7 @@ round(car::vif(modele3),3)
 
 #### Comment régler un problème de multicolinéarité ? {#sect07642}
 
-* La prudence est de mise ! Si une ou plusieurs variables présentent une valeur de VIF supérieure à 5, construisez une matrice de corrélation de Pearson (section \@ref(sect04137)) et repérez les valeurs de corrélation supérieures à 0,8 ou inférieures à −0,8. Vous repérerez ainsi les corrélations problématiques entre deux variables indépendantes du modèle.
+* La prudence est de mise ! Si une ou plusieurs variables présentent une valeur de VIF supérieure à 5, construisez une matrice de corrélation de Pearson (section \@ref(sect0437)) et repérez les valeurs de corrélation supérieures à 0,8 ou inférieures à −0,8. Vous repérerez ainsi les corrélations problématiques entre deux variables indépendantes du modèle.
 
  * Refaites ensuite un modèle en ôtant la variable indépendante avec la plus forte valeur de VIF (7 ou 12 par exemple), et revérifiez les valeurs de VIF. Refaites cette étape si le problème de multicolinéarité excessive persiste.
 
@@ -1612,7 +1613,7 @@ round(car::vif(modele6),3)
 
 #### Détection des observations très influentes du modèle {#sect07661} 
 
-Lors de l'analyse des corrélations (section \@ref(sect0413)), nous avons que des valeurs extrêmes peuvent avoir un impact important sur le coefficient de corrélation de Pearson. Le même principe s'applique à la régression multiple, pour laquelle on s'attendrait à ce que chaque observation joue un rôle équivalent dans la détermination de l'équation du modèle.
+Lors de l'analyse des corrélations (section \@ref(sect043)), nous avons que des valeurs extrêmes peuvent avoir un impact important sur le coefficient de corrélation de Pearson. Le même principe s'applique à la régression multiple, pour laquelle on s'attendrait à ce que chaque observation joue un rôle équivalent dans la détermination de l'équation du modèle.
 
 Autrement dit, il est possible que certaines observations avec des valeurs extrêmes – fortement dissemblables des autres – aient une influence importante, voire démesurée, dans l’estimation du modèle. Concrètement, cela signifie que si elles étaient ôtées, les coefficients de régression et la qualité d'ajustement du modèle pourraient changer drastiquement. Deux mesures sont habituellement utilisées pour évaluer l’influence de chaque observation sur le modèle :
 
@@ -1686,7 +1687,7 @@ ggarrange(G1,G2, nrow=1, ncol=2)
 
 Trois approches sont possibles :
 
-* **Recourir à des régressions *boostrap***, ce qui permet généralement de supprimer l'effet de ces observations (section \@ref(sect059)). Brièvement, le principe général est de créer un nombre élevé d'échantillons du jeu de données initial (1000 à 2000 itérations par exemple) et de construire un modèle de régression pour chacun d'eux. On obtiendra ainsi des intervalles de confiance pour les coefficients de régression et les mesures d'ajustement du modèle.
+* **Recourir à des régressions *boostrap***, ce qui permet généralement de supprimer l'effet de ces observations. Brièvement, le principe général est de créer un nombre élevé d'échantillons du jeu de données initial (1000 à 2000 itérations par exemple) et de construire un modèle de régression pour chacun d'eux. On obtiendra ainsi des intervalles de confiance pour les coefficients de régression et les mesures d'ajustement du modèle.
 
 * **Supprimer les observations trop influentes** (avec l'un des critères de $n/4$, $n/8$ et $n/16$ décrits plus haut). Une fois supprimées, il convient de 1) recalculer le modèle, 2) refaire le diagnostic de la régression au complet et finalement, 3) comparer les modèles avant et après suppression des valeurs trop influentes, notamment la qualité d'ajustement du modèle (R^2^ ajusté) et les coefficients de régression. Des changements importants indiqueront que le premier modèle est potentiellement biaisé.
 
@@ -1759,9 +1760,9 @@ modele8 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_F
 À la figure \@ref(fig:figOutputRegression), vous constaterez que les résultats de la régression linéaire multiple, obtenus avec la `summary(monModele)`, sont présentés en quatre sections distinctes :
 
 a. Le rappel de l'équation du modèle.
-b. Quelques statistiques descriptives sur les résidus du modèle, soit $y_i - \bar{y}$.
+b. Quelques statistiques descriptives sur les résidus du modèle, soit la différence entre les valeurs observées et prédites.
 c. un tableau pour les coefficients de régression comprenant plusieurs colonnes, à savoir les coefficients de régression (`Estimate`), l'erreur type du coefficient (`Std. Error`), la valeur de T (`t value`) et la probabilité associée à la valeur de T (`Pr(>|t|)`). La première ligne de ce tableau (`Estimate`) est pour la constante (*Intercept* en anglais) et celles qui suivent sont pour les variables indépendantes.
-d. les mesures d'ajustement du modèle dont le RMSE (`Residual standard error`), les R^2^ classique (`Multiple R-squared`) et ajusté  (`Adjusted R-squared`), la statistique F avec le nombre de degrés de libertés en lignes (nombre d'observations) et en colonnes (*n-k-1*) et la valeur de P qui est lui associée (`F-statistic:  1223 on 6 and 10203 DF,  p-value: < 2.2e-16`).
+d. les mesures d'ajustement du modèle dont le RMSE (`Residual standard error`), les R^2^ classique (`Multiple R-squared`) et ajusté  (`Adjusted R-squared`), la statistique F avec le nombre de degrés de liberté en lignes (nombre d'observations) et en colonnes (*n-k-1*) et la valeur de P qui est lui associée (`F-statistic:  1223 on 6 and 10203 DF,  p-value: < 2.2e-16`).
 
 ```{r figOutputRegression, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Les différentes parties obtenues à la fonction summary(Modele)",  out.width='75%', fig.pos="H"}
 knitr::include_graphics('images/lm/SortiesLM.jpg', dpi = NA)
@@ -1776,7 +1777,7 @@ confint(modele3)
 
 ### Comparer des modèles {#sect0772}
 
-Tel que détaillé à la section \@ref(sect04132), pour comparer des modèles imbriqués, il convient d'analyser les valeurs du R^2^ ajusté et du F incrémentiel, ce qui peut être fait en trois étapes.
+Tel que détaillé à la section \@ref(sect0772), pour comparer des modèles imbriqués, il convient d'analyser les valeurs du R^2^ ajusté et du F incrémentiel, ce qui peut être fait en trois étapes.
 
 **Première étape.** Il peut être judicieux d'afficher l'équation des différents modèles afin de se remémorer les VI introduites dans chacun d'eux, et ceux avec la fonction `MonModèle$call$formula`.
 
@@ -2352,6 +2353,4 @@ ggplot(data = df) +
        color = "")
 
 ```
-
-## Régression linéaire multiple robuste {#sect078}
 

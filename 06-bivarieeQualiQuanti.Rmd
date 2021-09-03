@@ -14,9 +14,9 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
   - **sjstats** pour réaliser des test *t* pondérés.
   - **effectsize**, pour calculer les tailles d'effet de tests de *t*.
 * Pour la section sur les ANOVA : 
-  - **car**, pour les ANOVA classiques.
+  - **car** pour les ANOVA classiques.
   - *lmtest* pour le test de Breusch-Pagan d'homogénéité des variances .
-  - **rstatix**, intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**.
+  - **rstatix** intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**.
 :::
 
 
@@ -74,7 +74,7 @@ t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_A}{n_A}+\frac{S^2_B}{n_B}}} \
 \end{equation}
 \normalsize
 
-Dans la syntaxe  ci-dessous, nous avons écrit une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculés les moyennes, nombres d'observations et variances pour les deux groupes, le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement à la vitesse de déplacement de cyclistes utilisant un vélo personnel ou un vélo en libre service (généralement plus lourd et moins utilisé par des cyclistes expérimentés) :
+Dans la syntaxe  ci-dessous, nous avons écrit une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculés les moyennes, nombres d'observations et variances pour les deux groupes, le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement à la vitesse de déplacement de cyclistes utilisant un vélo personnel ou un vélo en libre service (généralement plus lourd) :
 
 * Au cas 1, 60 cyclistes utilisant un vélo personnel roulant en moyenne à 18 km/h (écart-type de 1,5) et 50 utilisateurs·trices du système de vélo partage avec une vitesse moyenne de 15 km/h (écart-type de 1,5).
 
@@ -270,10 +270,11 @@ Si les échantillons sont de tailles identiques ($n_A=n_B$), alors *d* peut s'é
 
 \footnotesize
 \begin{equation}
-d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{(S^2_A+\S^2_A)/2}} = \frac{\bar{X}_{A}-\bar{X}_{B}}{(\sigma_A+\sigma_B)/2}
+d = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{(S^2_A+\S^2_B)/2}} = \frac{\bar{X}_{A}-\bar{X}_{B}}{(\sigma_A+\sigma_B)/2}
 (\#eq:dcohen2)
 \end{equation}
 \normalsize
+
 
 avec $\sigma_A$ et $\sigma_B$ étant les écart-types des deux groupes (rappel : l'écart-type est la racine carrée de la variance !).
 
@@ -287,7 +288,7 @@ g = d- \left(1- \frac{3}{4(n_A+n_B)-9} \right)
 \normalsize
 
 
-Moins utilisé en sciences sociales, mais surtout en études cliniques, le delta de Glass est simplement la différence des moyennes des groupes indépendants (numérateur) sur l'écar-type du deuxième groupe (démoninateur). Dans une étude clinique, on a habituellement un groupe qui subit un traitement (groupe de traitement) et un groupe qui a reçu un placebo (groupe de contrôle ou groupe témoin). L'effet de taille est ainsi évalué par rapport au groupe de contrôle : 
+Moins utilisé en sciences sociales, mais surtout en études cliniques, le delta de Glass est simplement la différence des moyennes des deux groupes indépendants (numérateur) sur l'écart-type du deuxième groupe (démoninateur). Dans une étude clinique, on a habituellement un groupe qui subit un traitement (groupe de traitement) et un groupe qui a reçu un placebo (groupe de contrôle ou groupe témoin). L'effet de taille est ainsi évalué par rapport au groupe de contrôle : 
 
 \footnotesize
 \begin{equation}
@@ -503,7 +504,7 @@ Si la variable continue est fortement anormalement distribuée, il est déconsei
 Pour ce faire, on utilise la fonction `wilcox.test` dans laquelle le paramètre `paired` permettra de spécifier si les échantillons sont indépendants ou non (`FALSE` ou `TRUE`).
 :::
 
-Dans l'exemple suivant, nous analysons le pourcentage de locataires dans les secteurs de recensements de la région métropolitaine de Montréal. Plus spécifiquement, nous comparons ce pourcentage entre les secteurs présents sur l'île et les secteurs hors de l'île. Il s'agit donc d'un test avec des échantillons indépendants.
+Dans l'exemple suivant, nous analysons le pourcentage de locataires dans les secteurs de recensement de la région métropolitaine de Montréal. Plus spécifiquement, nous comparons ce pourcentage entre les secteurs présents sur l'île et les secteurs hors de l'île. Il s'agit donc d'un test avec des échantillons indépendants.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("foreign")
@@ -840,13 +841,13 @@ Trois conditions d'application doivent être vérifiées avant d'effectuer une a
 
 * Lorsque les échantillons sont fortement anormalement distribués, certains auteurs vont simplement transformer leur variable en appliquant une fonction logarithme (le plus souvent) ou racine carré, inverse ou exponentielle, et reporter le test de fisher calculé sur cette transformation. Attention toutefois ! Transformer une variable ne va pas systématiquement la rapprocher d'une distribution normale et complique l'interprétation finale des résultats. Par conséquent, avant de recalculer votre test *F*, il convient de réaliser un test de normalité de Shapiro–Wilk et un test d'homoscédasticité (Levene, Bartlett ou/et Breusch-Pagan) sur la variable continue transformée.
 
-* Détecter les observations qui contribuent le plus à l'anormalité et l'hétéroscédasticité, dites valeurs aberrantes (*outliers* en anglais). Supprimez les et refaites votre ANOVA en vous assurant que les conditions sont désormais respectées. Notez que supprimer des observations peut être une pratique éthiquement questionnable en statistique. Si vos échantillons sont bien constitués et que la mesure collectée n'est pas erronée, pourquoi donc la supprimer? Si vous optez pour cette solution, prenez soin de comparer les résultats avant et après la suppression des valeurs aberrantes. Si les conditions sont respectées après suppression et que les résultats de l'ANOVA (Eta^2^ et test *F* de Fisher) sont très semblables, conservez donc les résultats de l'ANOVA intitiale et signalez que vous avez procédez aux deux tests.
+* Détecter les observations qui contribuent le plus à l'anormalité et l'hétéroscédasticité (valeurs aberrantes ou extrêmes). Supprimez les et refaites votre ANOVA en vous assurant que les conditions sont désormais respectées. Notez que supprimer des observations peut être une pratique éthiquement questionnable en statistique. Si vos échantillons sont bien constitués et que la mesure collectée n'est pas erronée, pourquoi donc la supprimer? Si vous optez pour cette solution, prenez soin de comparer les résultats avant et après la suppression des obervations. Si les conditions sont respectées après suppression et que les résultats de l'ANOVA (Eta^2^ et test *F* de Fisher) sont très semblables, conservez donc les résultats de l'ANOVA intitiale et signalez que vous avez procédez aux deux tests.
 
 * Lorsque les variances des groupes sont dissemblables, vous pouvez utiliser le test de Welch pour l'ANOVA au lieu du test *F* de Fisher. 
 
 * Dernière solution, lorsque les deux conditions ne sont vraiment pas respectées, utilisez le test non paramétrique de Kruskal-Wallis. Par analogie au *t* de student, il correspond au test des rangs signés de Wilcoxon. Ce test est décrit dans la section suivante.
 
-Vous l'aurez compris, dans de nombreux cas en statistique, les choix méthodologiques dépendent de la subjectivité des chercheur·e·s. Il faut s'adapter au jeu de données et à la culture statistique en vigueur dans votre champs d'études. N'hésitez pas à réaliser plusieurs tests différents pour évaluer la robustesse de vos conclusions et fiez-vous en premier lieu à ceux pour lesquels votre jeu de données est le plus adapté.
+Vous l'aurez compris, dans de nombreux cas en statistique, les choix méthodologiques dépendent de la subjectivité des chercheur·e·s. Il faut s'adapter au jeu de données et à la culture statistique en vigueur dans votre champ d'études. N'hésitez pas à réaliser plusieurs tests différents pour évaluer la robustesse de vos conclusions et fiez-vous en premier lieu à ceux pour lesquels votre jeu de données est le plus adapté.
 
 ### Test non paramétrique de Kruskal-Wallis {#sect0622}
 
@@ -896,7 +897,7 @@ GraphViolon <- ggplot(df_TrajetsDuree, aes(x=Mode, y=DureeMinute)) +
 ggarrange(GraphDens, GraphViolon)
 ``` 
 
-Nous pouvons vérifier si les échantillons sont normalement distribués avec la fonction `shapiro_test` du package **rstatix**. À titre de rappel, l'hypothèse nulle (h<sub>0</sub>) de ce test est que la distribution est normale. Par conséquent, quand la valeur de *P* associée à la statistique de Shapiro est supérieure à 0,05, alors on ne peut rejeter l'hypothèse d'une distribution normale (autrement dit, la distribution est anormale). À la lecture des sorties ci-dessous, seul le groupe des utilisateurs·trices en transport en commun présente une distribution proche de la normalité (p=0,0504). Ce test étant très restrictif, il est fortement conseillé de visualiser le diagramme quantile-quantile pour chaque groupe (graphique QQ plot) (figure \@ref(fig:figQqplot)). Ces graphiques sont utilisés pour déterminer visuellement si une distribution empirique (observées sur des données), s'approche d'une distribution théorique (ici la loi normale). Si effectivement les deux distributions sont proches, les points du diagramme devraient tous tomber sur une ligne droite parfaite. Un intervale de confiance (représenté ici en gris) peut être construit pour obtenir une interprétation plus nuancée. Dans notre cas, seules deux observations pour le vélo et deux autres pour l'automobile s'éloignent vraiment de la ligne droite. On peut considérer que ces trois distributions s'approchent d'une distribution normale.
+Nous pouvons vérifier si les échantillons sont normalement distribués avec la fonction `shapiro_test` du package **rstatix**. À titre de rappel, l'hypothèse nulle (h<sub>0</sub>) de ce test est que la distribution est normale. Par conséquent, quand la valeur de *P* associée à la statistique de Shapiro est supérieure à 0,05, alors on ne peut rejeter l'hypothèse d'une distribution normale (autrement dit, la distribution est anormale). À la lecture des sorties ci-dessous, seul le groupe des utilisateurs·trices en transport en commun présente une distribution proche de la normalité (p=0,0504). Ce test étant très restrictif, il est fortement conseillé de visualiser le diagramme quantile-quantile pour chaque groupe (graphique QQ plot) (figure \@ref(fig:figQqplot)). Ces graphiques sont utilisés pour déterminer visuellement si une distribution empirique (observées sur des données), s'approche d'une distribution théorique (ici la loi normale). Si effectivement les deux distributions sont proches, les points du diagramme devraient tous tomber sur une ligne droite parfaite. Un intervalle de confiance (représenté ici en gris) peut être construit pour obtenir une interprétation plus nuancée. Dans notre cas, seules deux observations pour le vélo et deux autres pour l'automobile s'éloignent vraiment de la ligne droite. On peut considérer que ces trois distributions s'approchent d'une distribution normale.
 
 ```{r figQqplot, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='QQ Plot pour les groupes', out.width='75%'}
 library("dplyr")
@@ -1055,7 +1056,7 @@ Nous avons vu que l'ANOVA permet de comparer les moyennes d'une variable continu
 
 * **L'analyse de covariance** (**ANCOVA**, **AN**alysis of **COVA**riance en anglais) comprend une variable dépendante continue, une variable indépendante qualitative (facteur) et plusieurs variables indépendantes continues dites covariables. L'objectif est alors de vérifier si les moyennes d'une variable dépendante sont différentes pour plusieurs groupes d'une population donnée, après avoir contrôlé l'effet d'une ou plusieurs variables continues. Par exemple, pour une métropole donnée, on pourra vouloir comparer les moyennes de loyers entre la ville-centre et ceux de la première et de la seconde couronnes (facteur), une fois contrôlée la taille de ces derniers (variable covariée continue). En effet, une partie de la variance des loyers s'explique certainement par la taille des logements.
 
-* **L'analyse de variance multivariée** (**MANOVA**, _**M**ultivariate **AN**alysis of **VA**riance_ en anglais) comprend deux variables dépendantes continues ou plus et une variable indépendante qualitative (facteur). Par exemple, on souheterait comparer les moyennes d'exposition au bruit et à différents polluants (dioxyde d'azote, particules fines, ozone) (variables dépendantes continues) selon le mode de transport utilisé (automobile, vélo, transport en commun, soit le facteur).
+* **L'analyse de variance multivariée** (**MANOVA**, _**M**ultivariate **AN**alysis of **VA**riance_ en anglais) comprend deux variables dépendantes continues ou plus et une variable indépendante qualitative (facteur). Par exemple, on souhaiterait comparer les moyennes d'exposition au bruit et à différents polluants (dioxyde d'azote, particules fines, ozone) (variables dépendantes continues) selon le mode de transport utilisé (automobile, vélo, transport en commun, soit le facteur).
 
 * **L'analyse de covariance multivariée** (**MANCOVA**, **M**ultivariate **AN**alysis of **COVA**riance en anglais), soit une analyse qui comprend deux variables dépendantes continues ou plus (comme la MANOVA) et une variable qualitative comme variable indépendante (facteur) et un covariable continue ou plus.
 
