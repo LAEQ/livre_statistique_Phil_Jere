@@ -217,7 +217,7 @@ clean_df_latex <- function(df){
 
 show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, 
                        col.width = NULL, digits = getOption("digits"),
-                       align = NULL){
+                       align = NULL, row.names = FALSE, ...){
   options(knitr.kable.NA = '')
   ## dans le cas d'un tableau LATEX
   if (knitr::is_latex_output()){
@@ -243,11 +243,11 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       format = "latex",
       digits = digits,
       format.args = list(decimal.mark = ",", big.mark = " "),
-      valign = 't', row.names = FALSE,
+      valign = 't', row.names = row.names,
       align = align,
       col.names = col.names,
       caption = caption,
-      escape = FALSE) %>% 
+      escape = FALSE, ...) %>% 
       kableExtra::kable_styling(font_size = 8,protect_latex = T)
     if (is.null(col.to.resize) == FALSE){
       table1 <- table1 %>% 
@@ -276,9 +276,11 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       format.args = list(decimal.mark = ",", big.mark = " "),
       col.names = col.names,
       align = align,
-      valign = 't', row.names = FALSE,
+      valign = 't', row.names = row.names,
       caption = caption,
-      escape = FALSE)
+      escape = FALSE, ...)
+    ## gerer le padding
+    table1 <- gsub(pattern = "NApadding", replacement = "padding",x = table1, fixed = T)
   }
   return(table1)
 }
@@ -292,4 +294,5 @@ tofr <- function(float){
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 source("code_complementaire/JG_helper.R")
+source("code_complementaire/QuizzFunctions.R")
 ```
