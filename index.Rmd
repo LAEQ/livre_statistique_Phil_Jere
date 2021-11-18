@@ -289,6 +289,17 @@ tofr <- function(float){
   return(gsub(".",",",as.character(float),fixed = T))
 }
 
+
+# a simple function to show a more simple figure when a lot of details are given
+show_as_png <- function(gplot, out, dpi = 250){
+  this_file <- ggsave(plot = gplot,
+                      filename = out, 
+                      device = "png",
+                      dpi = dpi)
+  knitr::include_graphics(out, dpi = dpi)
+}
+
+
 ```
 
 
