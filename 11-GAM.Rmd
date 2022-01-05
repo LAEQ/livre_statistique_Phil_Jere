@@ -58,7 +58,7 @@ library(dplyr)
 knitr::include_graphics('images/gam/no2_03_patterns.PNG', dpi = NA)
 ```
 
-### Non linéarité fonctionnelle
+### Non linéarité fonctionnelle {#sect1111}
 
 Il existe de nombreuses façons d'introduire des relations non linéaires dans un modèle. La première et la plus simple à mettre en oeuvre est de transformer la variable indépendante à l'aide d'une fonction inverse, exponentielle, logarithmique ou autre.
 
@@ -149,7 +149,7 @@ ggplot(dataset) +
 ```
 
 
-### Non linéarité avec des polynomiales
+### Non linéarité avec des polynomiales {#sect1112}
 
 Nous avions vu dans le chapitre sur la régression simple (section \@ref(sect07511)) qu'il est possible d'utiliser des polynomiales. Pour rappel, il s'agit simplement d'ajouter à un modèle la variable *X* à différents exposants ($X+X^2+\dots+X^k$). Chaque exposant supplémentaire (chaque ordre supplémentaire) permet au modèle d'ajuster une relation plus complexe. Rien de tel qu'un graphique pour illuster le tout (figure  \@ref(fig:figgam5)).
 
@@ -196,7 +196,7 @@ ggplot(dataset) +
 
 Un des problèmes inhérents à l'approche des polynomiales est la difficulté d'interprétation. En effet, les coefficients ne sont pas directement interprétables et seule une figure représentant les prédictions du modèle permet d'avoir une idée de l'impact de la variable *X* sur la variable *Y*.
 
-### Non linéarité par segments
+### Non linéarité par segments {#sect1113}
 
 Un compromis intéressant offrant une interprétation simple et une relation potentiellement complexe consiste à découper la variable *X* en segments, puis d'ajuster un coefficient pour chacun de ces segments. On obtient ainsi une ligne brisée et des coefficients faciles à interpréter (figure \@ref(fig:figgam7)). 
 
@@ -222,7 +222,7 @@ L'enjeu est alors de déterminer le nombre points et la localisation de points d
 * le troisième est aussi négatif, une augmentation de *X* sur le troisième segment est associée à une diminution de *Y*, mais moins forte que pour le second segment.
 
 
-### Non linéarité avec des *splines*
+### Non linéarité avec des *splines* {#sect1114}
 
 La dernière approche et certainement la plus flexible est d'utiliser ce que l'on appelle une *spline* pour capter des relations non linéaires. Une *spline* est une fonction créant des variables supplémentaires à partir d'une variable *X* et d'une fonction de base. Ces variables supplémentaires appelées bases (*basis* en anglais) sont ajoutées au modèle; la sommation de leurs valeurs multipliées par leurs coefficients permet de capter les relations non linéaires entre une variable dépendante et une variable indépendante. Le nombre de bases, ainsi que leur localisation (plus souvent appelé nœuds) permettent de contrôler la complexité de la fonction non linéaire.
 
@@ -444,7 +444,14 @@ L'interprétation d'une *spline* se fait à l'aide graphique. En effet, puisqu'e
 
 Notez ici qu'un graphique des effets marginaux se base sur les prédictions du modèle. Si un modèle est mal ajusté, les prédictions ne seront pas fiables et il sera inutile d'interpréter la *spline* en résultant.
 
-## Aller plus loin avec les splines {#sect115}
+Il est aussi possible dans le cas des *splines* de lissage, d'interpréter les *estimated degrees of freedom* (EDF) qui constituent une approximation du nombre de noeuds de la *spline*. S'ils ne nous renseignent pas sur la forme de la *spline*, ils nous indiquent sont niveau de complexité. Une *spline* avec un EDF de 1 est en réalité un simple terme linéaire. Plus l'EDF augmente, plus la *spline* est complexe. 
+
+
+## Multicolinéarité non-linéaire {#sect115}
+
+Lorsque des *splines* sont ajoutées dans un modèle, il est nécessaire de vérifier si ces dernières ne posent pas un problème de multicolinéarité. Cependant, le VIF ne peut plus être utilisé du fait de la non-linéarité des relations modélisées. Il est alors nécessaire d'utiliser une autre mesure : la *concurvité* (*concurvity*) permettant de mesurer sur une échelle allant de 0 à 1 à quel point deux splines ont en réalité capturé le même effet et se substituent l'une à l'autre. Une valeur de 0 indique un absence total de concurvité alors qu'une valeur de 1 indique que deux splines sont rigoureusement identiques (modèle non identifiable). 
+
+## Aller plus loin avec les splines {#sect116}
 
 Jusqu'ici nous avons seulement présenté le cas le plus simple pour lequel une *spline* est construite à partir d'une seule variable dépendante continue, mais elles peuvent être utilisées dans de nombreux autres contextes et ont une incroyable flexibilité. Nous détaillons ici trois exemples fréquents : les *splines* cycliques, les *splines* variant par groupe et les splines multivariées. Pour une description complète des effets non linéaires possibles avec **mgcv**, n'hésitez pas à consulter sa [documentation](https://stat.ethz.ch/R-manual/R-patched/library/mgcv/html/smooth.terms.html).
 
@@ -543,13 +550,15 @@ ggplot() +
 ```
 
 
-### Splines bivariées
+### Splines multivariées et splines d'interaction
 
-Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante; cependant, il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non linéaires entre les variables indépendantes combinées dans une même *spline*. Prenons un exemple concret, dans la section sur les modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des îlots de chaleur. Parmi les variables indépendantes, nous avions notamment utilisé la distance au centre-ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables impactent conjointement et de façon non linéaire la proportion de la surface d'îlot de chaleur dans chaque AD. Pour représenter la *spline* bivariée, on utilise alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
+Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante; cependant, il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non linéaires entre les variables indépendantes combinées dans une même *spline*. Prenons un exemple concret, dans la section sur les modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des îlots de chaleur. Parmi les variables indépendantes, nous avions notamment utilisé la distance au centre-ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables impactent conjointement et de façon non linéaire la proportion de la surface d'îlot de chaleur dans chaque AD. Pour représenter une *spline* sur plusieurs dimensions, on utilise alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
 
-La *spline* bivariée représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande proportion de leur surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre ville, au-delà de cette distance, cette proportion chute en bas de 0,1, soit 10% de la surface de l'AD. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
+Il est important de distinguer la *spline* d'**interaction** et la spline **multivariée**. La première est utilisée lorsque les variables indépendantes introduites dans la spline ne sont pas exprimées sur la mêne échelle et n'évoluent pas conjointement. L'exemple donné ci-dessus avec les variables de végétation et de distance au centre ville est un exemple de *spline* d'interaction, la première variable étant exprimée en pourcentage et l'autre en mètres. De plus, ces deux variables ne sont pas conjointes, mais bien distinctes l'une de l'autre. Un cas typique où une *spline* multivariée serait à privilégier est le cas de l'ajout des coordonnées spatiales dans le modèle. L'emplacement des AD est mesuré par deux variables (coordonnées spatiales X et Y) toutes les deux exprimées en mètres évoluant conjointement, au sens où les coordonnées X n'interagissent pas avec les coordonnées Y, mais forment à elles deux un espace propre. Au delà de la problématique de l'échelle des données, il est important de retenir que les *splines* d'interactions tendent à être davantage pénalisées que les splines *multivariées*.
 
-Les *splines* bivariées sont aussi fréquemment utilisées pour capturer un potentiel patron spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observation (*x,y*), il est possible d'ajuster une *spline* bivariée sur ces coordonnées qui contrôlera ainsi l'effet de l'espace. 
+La *spline* d'interaction représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande proportion de leur surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre ville, au-delà de cette distance, cette proportion chute en bas de 0,1, soit 10% de la surface de l'AD. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de mêmes marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
+
+Les *splines* bivariées sont fréquemment utilisées pour capturer un potentiel patron spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observation (*x,y*), il est possible d'ajuster une *spline* bivariée sur ces coordonnées qui contrôlera ainsi l'effet de l'espace. 
 
 ```{r figgam15, echo=FALSE, fig.align='center', fig.cap="Spline d'interaction bivariée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 dataset <- read.csv("data/glm/data_chaleur.csv")
@@ -558,8 +567,9 @@ model <- gam(prt_hot01 ~ te(prt_veg,dist_cntr), data = dataset, family = betar)
 vis.gam(model, plot.type = 'contour',type = 'response', main = '', xlab = 'Pourcentage de la surface végétalisée', ylab = 'Distance au centre-ville', too.far = 0.1,n.grid = 150)
 ```
 
+Il n'y a pas de limite théorique au nombre de variables qui peuvent être ajoutées dans une *spline* d'interaction ou multivariée. Notez cependant que plus le nombre de dimensions augmente, plus la fonction à estimer est complexe et plus le volume de données nécessaire est grand et doit couvrir densément l'ensemble de l'espace d'échantillonnage multidimensionnel.
 
-## Mise en oeuvre dans R {#sect116}
+## Mise en oeuvre dans R {#sect117}
 
 Il est possible d'ajuster des *splines* de régression dans n'importe quel package permettant d'ajuster des coefficients pour un modèle de régression. Il suffit de construire les bases des *splines* en amont à l'aide du package **splines2** et de les ajouter directement dans l'équation de régression. 
 En revanche, il est nécessaire d'utiliser des packages spécialisés pour ajuster des *splines* de lissage. Parmi ceux-ci, **mgcv** est probablement le plus populaire du fait de sa (très) grande flexibilité, suivi des packages **gamlss**, **gam** et **VGAM**. Nous comparerons ici les deux approches. Nous allons tenter d'améliorer le modèle que nous avions ajusté pour prédire le pourcentage de surface couverte par des îlots de chaleur dans les aires de diffusion de Montréal, dans une perspective d'équité environnementale. Pour rappel, la variable dépendante est exprimée en pourcentage et nous utilisons une distribution *beta* pour la modéliser.
@@ -681,7 +691,24 @@ model2 <- gam(hot ~
         data = dataset, family = betar(link = "logit"))
 ```
 
-Notez ici que l'expression `s(X,Y)` permet de créer une *spline* bivariée à partir des coordonnées (*X,Y*), soit deux colonnes présentes dans le jeu de données. Ces coordonnées sont exprimées toutes deux en mètres. Si vous avez besoin d'ajuster une *spline* multivariée à des variables s'exprimant dans des unités différentes, il est nécessaire d'utiliser une autre syntaxe `te(X,Y)` ou `t2(X,Y)` faisant appel à une structure mathématique légèrement différente, soit des *tensor product smooths*.
+Notez ici que l'expression `s(X,Y)` permet de créer une *spline* bivariée à partir des coordonnées (*X,Y*), soit deux colonnes présentes dans le jeu de données. Ces coordonnées sont exprimées toutes deux en mètres et n'interagissent pas ensemble au sens strict, nous devons donc ajuster une *spline* bivariée. Si vous avez besoin d'ajuster une *spline* d'interaction (notamment quand les variables sont dans des unités différentes), il est nécessaire d'utiliser une autre syntaxe `te(X,Y)` ou `t2(X,Y)` faisant appel à une structure mathématique légèrement différente, soit des *tensor product smooths*.
+
+Puisque notre modèle intègre deux *splines*, nous devons nous assurer que nous n'avons pas de problème de concurvité, ce que nous pouvons faire avec la fonction `concurvity` du package `mgcv`. 
+
+```{r message=FALSE, warning=FALSE}
+values <- concurvity(model2, full = FALSE)
+
+# worst, estimation pessimiste de la concurvité
+round(values$worst,3)
+
+# observed, estimation optimiste de la concurvité
+round(values$observed,3)
+
+# estimate, estimation entre deux de la concurvité
+round(values$estimate,3)
+```
+
+Nous pouvons ainsi constater des niveaux de concurvité tout à fait acceptables dans notre modèle. Des valeurs supérieures à 0,8 devraient être considérée comme alarmantes, surtout si elles sont observées pour `observed` et `estimate`.
 
 Voyons désormais, le résumé d'un modèle GAM tel que présenté dans R.
 
@@ -947,5 +974,13 @@ ggplot(df) +
   geom_point(aes(x = Intercept, y = PopFRPct))
 ```
 
-
 :::
+
+## Quizz final sur les modèles GAM
+
+Voici un court quizz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
+
+```{r quizClassif, results = "asis", warning=FALSE}
+quizz_classif <- quizz("quizzs/GAM.yml", "quizz_classif")
+render_quizz(quizz_classif)
+```

@@ -115,6 +115,7 @@ build_pdf_responses <- function(myquizz){
       s2 <- paste0("\n\t+ ",paste(quest$answers[quest$response],collapse="\n\t+ "))
       string <- paste0(string, s2)
     }
+
   }
 
 
@@ -138,6 +139,9 @@ render_quizz_pdf <- function(myquizz){
       s2 <- paste0("\n\t+ ",paste(quest$answers,collapse="\n\t+ "))
       string <- paste0(string, s2)
     }
+    if(is.null(quest$help) == FALSE){
+      string <- paste0(string, "\n\n\t",quest$help, "\n")
+    }
   }
 
   questions <- string
@@ -146,7 +150,7 @@ render_quizz_pdf <- function(myquizz){
   final_string <- paste0(
     "**Questions**\n",
     questions,"\n\n",
-    "**R?ponses**\n",
+    "**Réponses**\n",
     responses
   )
   return(final_string)
@@ -322,20 +326,3 @@ render_quizz <- function(myquizz){
   }
 }
 
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#### testing ####
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# quizz1 <- quizz(
-#   questions = list(
-#     question(label = "la question 1",
-#              type = "uc",response = 1,
-#              answers = c("rep A", "rep B", "rep C")),
-#     question(label = "la question 2",
-#              type = "mc",response = c(1,2),
-#              answers = c("rep A", "rep B", "rep C")),
-#     question(label = "quel est la capitale de Paris",
-#              type = "stat",response = "paris")
-#
-#   ),quizz_id = "monquizz1"
-# )
