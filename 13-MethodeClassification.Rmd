@@ -8,10 +8,14 @@ Dans ce chapitre, nous utiliserons principalement les packages suivants :
 * Pour créer des graphiques :
   - **ggplot2**, le seul, l'unique
   - **ggpubr** pour combiner des graphiques et réaliser des diagrammes
-  
-* Pour classifier des observations :
-  - **geocmeans** pour investiguer les résultats de classifications floues
 
+* Outils généraux pour faciliter les classifications
+  - **clusterCrit**, calculer des indicateurs de qualités de classification
+  - **NbClust**, trouver le bon nombre de groupe dans une classification
+  - **cluster**, pour appliquer la méthode GAP 
+  - **proxy**, pour calculer plusieurs types de distances
+  - **Gmedian**, pour calculer le k-medians
+  - **geocmeans** pour investiguer les résultats de classifications floues
 :::
 
 
@@ -54,7 +58,8 @@ Dans ce chapitre, nous décrirons les trois méthodes les plus classiques et les
 
 * confirmatoire : les groupes sont inconnus dans les données, mais le cadre théorique de la recherche prévoit d'observer certains groupes du fait par exemple de travaux antérieur. Dans ce contexte, l'objectif est de vérifier si le cadre théorique utilisé est valide, soit que les résultats de la classification vont dans le sens de la théorie. 
 
-## Notions essentielles en classification
+
+## Notions essentielles en classification {#sectclassFond}
 
 Avant de décrire différentes méthodes de classification non supervisées, il convient de définir deux notions centrales, soit la **distance** et l'**inertie**.
 
@@ -1942,7 +1947,7 @@ Nous pouvons constater une plus faible variance des résultats obtenus (en regar
 
 Voici un court quizz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
 
-```{r quizClassif, echo=FALSE, results = "asis", warning=FALSE}
+```{r quizClassif, results = "asis", warning=FALSE}
 quizz_classif <- quizz("quizzs/classification.yml", "quizz_classif")
 render_quizz(quizz_classif)
 ```

@@ -15,13 +15,14 @@ library(htmltools)
 # response :
 #   uc et mc : index des bonnes reponses
 #   stat : string avec la bonne reponse
-question <- function(label, type, response, answers = NULL){
+question <- function(label, type, response, answers = NULL, section = NULL){
   return(
     list("label" = label,
          "answers" = answers,
          "type" = type,
-         "response" = response
-         )
+         "response" = response,
+         "help" = help
+    )
   )
 }
 
@@ -114,6 +115,7 @@ build_pdf_responses <- function(myquizz){
       s2 <- paste0("\n\t+ ",paste(quest$answers[quest$response],collapse="\n\t+ "))
       string <- paste0(string, s2)
     }
+
   }
 
 
@@ -137,6 +139,9 @@ render_quizz_pdf <- function(myquizz){
       s2 <- paste0("\n\t+ ",paste(quest$answers,collapse="\n\t+ "))
       string <- paste0(string, s2)
     }
+    if(is.null(quest$help) == FALSE){
+      string <- paste0(string, "\n\n\t",quest$help, "\n")
+    }
   }
 
   questions <- string
@@ -158,7 +163,7 @@ render_quizz_pdf <- function(myquizz){
 build_html_quizz <- function(myquizz){
 
   # creation de la balise centrale pour le quizz
-  quizz_div <- tags$div(id = myquizz$id, class = "card")
+  quizz_div <- list()
 
   # creation des questions dans le quizz
   i <- 1
@@ -168,8 +173,18 @@ build_html_quizz <- function(myquizz){
     b1 <- tags$div(quest$label,class = "quizlib-question-title")
     # creation de la balise reponses
     resp <- build_html_response(quest, i)
-    balise$children <- list(b1,resp)
-    quizz_div$children[[i]] <- balise
+
+    # ajouter l'astuce
+    if(is.null(quest$help) == FALSE){
+      div_sec <- tags$div(
+        #paste0("voir section : \\@ref(",quest$section,")")
+        quest$help
+      )
+      balise$children <- list(b1,resp,div_sec)
+    }else{
+      balise$children <- list(b1,resp)
+    }
+    quizz_div[[i]] <- balise
     i <- i+1
   }
 
@@ -177,12 +192,12 @@ build_html_quizz <- function(myquizz){
   on_click <- paste0("showResults(quizz_",myquizz$id,");")
   result <- tags$button("Verifier", type="button", onclick=on_click)
 
-  quizz_div$children[[length(quizz_div$children)+1]] <- result
+  quizz_div[[length(quizz_div)+1]] <- result
 
   # ajout d'une balise de resultat
   res_div <- tags$div("Votre score ",tags$span(id = "quiz-percent"),id="quiz-result", class="card")
 
-  quizz_div$children[[length(quizz_div$children)+1]] <- res_div
+  quizz_div[[length(quizz_div)+1]] <- res_div
 
   return(quizz_div)
 }
@@ -191,7 +206,7 @@ build_html_quizz <- function(myquizz){
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #### javascript code to launch the quizz ####
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-js_code1 <- 'var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans réponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};'
+js_code1 <- 'var Quiz=function(a,b){this.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),this.unansweredQuestionText="Question sans r?ponse !",this.container=document.getElementById(a),this.questions=[],this.result=new QuizResult,this.answers=b;for(var c=0;c<this.container.children.length;c++)this.container.children[c].classList.contains(Quiz.Classes.QUESTION)&&this.questions.push(this.container.children[c]);if(this.answers.length!=this.questions.length)throw new Error("Number of answers does not match number of questions!")};Quiz.Classes=Object.freeze({QUESTION:"quizlib-question",QUESTION_TITLE:"quizlib-question-title",QUESTION_ANSWERS:"quizlib-question-answers",QUESTION_WARNING:"quizlib-question-warning",CORRECT:"quizlib-correct",INCORRECT:"quizlib-incorrect",TEMP:"quizlib-temp"}),Quiz.prototype.checkAnswers=function(a){void 0===a&&(a=!0);for(var b=[],c=[],d=0;d<this.questions.length;d++){var e=this.questions[d],f=this.answers[d],g=[];this.clearHighlights(e);for(var h,i=e.getElementsByClassName(Quiz.Classes.QUESTION_ANSWERS)[0].getElementsByTagName("input"),j=0;j<i.length;j++)h=i[j],"checkbox"===h.type||"radio"===h.type?h.checked&&g.push(h.value):""!==h.value&&g.push(h.value);1!=g.length||Array.isArray(f)?0===g.length&&b.push(e):g=g[0],c.push(Utils.compare(g,f))}if(0===b.length||!a)return this.result.setResults(c),!0;for(d=0;d<b.length;d++){var k=document.createElement("span");k.appendChild(document.createTextNode(this.unansweredQuestionText)),k.className=Quiz.Classes.QUESTION_WARNING,b[d].getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].appendChild(k)}return!1},Quiz.prototype.clearHighlights=function(a){for(var b=a.getElementsByClassName(Quiz.Classes.QUESTION_WARNING);b.length>0;)b[0].parentNode.removeChild(b[0]);var c,d=[a.getElementsByClassName(Quiz.Classes.CORRECT),a.getElementsByClassName(this.Classes.INCORRECT)];for(i=0;i<d.length;i++)for(;d[i].length>0;)c=d[i][0],c.classList.remove(Quiz.Classes.CORRECT),c.classList.remove(Quiz.Classes.INCORRECT);for(var e=a.getElementsByClassName(Quiz.Classes.TEMP);e.length>0;)e[0].parentNode.removeChild(e[0])},Quiz.prototype.highlightResults=function(a){for(var b,c=0;c<this.questions.length;c++)b=this.questions[c],b.getElementsByClassName(Quiz.Classes.QUESTION_TITLE)[0].classList.add(this.result.results[c]?Quiz.Classes.CORRECT:Quiz.Classes.INCORRECT),void 0!==a&&a(this,b,c,this.result.results[c])};var QuizResult=function(){this.results=[],this.totalQuestions=0,this.score=0,this.scorePercent=0,this.scorePercentFormatted=0};QuizResult.prototype.setResults=function(a){this.results=a,this.totalQuestions=this.results.length,this.score=0;for(var b=0;b<this.results.length;b++)this.results[b]&&this.score++;this.scorePercent=this.score/this.totalQuestions,this.scorePercentFormatted=Math.floor(100*this.scorePercent)};var Utils=function(){};Utils.compare=function(a,b){if(a.length!=b.length)return!1;if(Array.isArray(a)&&Array.isArray(b)){for(var c=0;c<a.length;c++)if(a[c]!==b[c])return!1;return!0}return a===b};'
 js_code <- "
 function showResults(quiz) {
     // Check answers and continue if all questions have been answered
@@ -284,11 +299,12 @@ render_quizz_html<-function(myquizz){
   js_code <- prep_jscode(myquizz)
   tag2 <- tags$script(js_code)
 
-  global_div <- tags$div(
-    tag1, tag2, tag3, html_code
-  )
+  global_div <- tags$div(id = myquizz$id, class = "card")
+  global_div$children <- c(list(tag1, tag2, tag3), html_code)
 
-  string <- doRenderTags(global_div)
+  #string <- doRenderTags(global_div)
+  string <- doRenderTags(global_div, indent = FALSE)
+  string <- as.character(string)
   string <- gsub(pattern = "&gt;", replacement = ">",string, fixed = TRUE)
   string <- gsub(pattern = "&lt;", replacement = "<",string, fixed = TRUE)
   string <- gsub(pattern = "&amp;&amp;", replacement = "&&",string, fixed = TRUE)
@@ -306,24 +322,7 @@ render_quizz <- function(myquizz){
   if (knitr::is_latex_output()){
     return(cat(render_quizz_pdf(myquizz)))
   }else{
-    return(render_quizz_html(myquizz))
+    return(cat(render_quizz_html(myquizz)))
   }
 }
 
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#### testing ####
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# quizz1 <- quizz(
-#   questions = list(
-#     question(label = "la question 1",
-#              type = "uc",response = 1,
-#              answers = c("rep A", "rep B", "rep C")),
-#     question(label = "la question 2",
-#              type = "mc",response = c(1,2),
-#              answers = c("rep A", "rep B", "rep C")),
-#     question(label = "quel est la capitale de Paris",
-#              type = "stat",response = "paris")
-#
-#   ),quizz_id = "monquizz1"
-# )
