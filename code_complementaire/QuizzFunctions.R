@@ -134,7 +134,7 @@ render_quizz_pdf <- function(myquizz){
     string <- paste0(string, "\n* ","**",quest$label,"**")
 
     if(is.null(quest$image) == FALSE){
-      string <- paste0(string, "\n\n\t ![",quest$alt_txt,"](",quest$image,")", "\n")
+      string <- paste0(string, "\n\n\t ![",quest$alt_txt,"](",quest$image,"){width=25%}", "\n")
     }
 
     if(quest$type == "stat"){
