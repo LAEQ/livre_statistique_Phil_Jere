@@ -12,11 +12,12 @@ dl <- c(1:30, 40, 50, 100, 250, 500)
 # la fonction qchisq permet d'obtenir la valeur théorique en fonction 
 # d'une valeur de p et d'un nombre de degrés de liberté
 tableChi2 <- cbind(dl,
-                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
-                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = FALSE),3),
-                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = FALSE),3))
+                p0.10 =  round(qchisq(p=0.90,  df=dl, lower.tail = TRUE),3),
+                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = TRUE),3),
+                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = TRUE),3),
+                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = TRUE),3))
 # Impression du tableau avec la library stargazer
-stargazer(tableChi2, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 3,
+stargazer(tableChi2, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 2,
           title="Distribution des valeurs critiques du Khi2")
 ```
 
@@ -24,17 +25,12 @@ stargazer(tableChi2, type="text", summary=FALSE, rownames=FALSE, align = TRUE, d
 ```{r tableCritiqueChi2, echo=FALSE, message=FALSE, warning=FALSE}
 dl <- c(1:30, 40, 50, 100, 250, 500)
 tableChi2 <- cbind(dl,
-                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = FALSE),3),
-                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = FALSE),3),
-                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = FALSE),3))
-
-# knitr::kable(
-#   head(tableChi2, n=nrow(tableChi2)), booktabs = TRUE,
-#   col.names=c("dl", "p=0,05", "p=0,01", "p=0,001"),
-#   caption = 'Distribution des valeurs critiques du khi2'
-#   )
+                p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = TRUE),3),
+                p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = TRUE),3),
+                p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = TRUE),3))
 
 show_table(tableChi2, 
+           digits = 2,
            caption = "Distribution des valeurs critiques du khi2",
            col.names=c("dl", "p=0,05", "p=0,01", "p=0,001")
 )

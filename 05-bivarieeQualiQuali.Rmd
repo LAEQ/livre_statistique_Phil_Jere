@@ -1,19 +1,15 @@
 # Relation entre deux variables qualitatives {#chap05}
 
-Dans le cadre de ce chapitre, nous présenterons les deux principales méthodes permettant d'explorer les associations entre des variables qualitatives, principalement la construction d'un tableau de contingence et le test du khi-deux ($\chi^2$, appelé aussi khi carré).
+Dans le cadre de ce chapitre, nous présenterons les deux principales méthodes permettant d'explorer les associations entre deux variables qualitatives : la construction d'un tableau de contingence et le test du khi-deux ($\chi^2$, appelé aussi khi carré).
 
 
 ::: {.bloc_package data-latex=""}
-Dans cette section, nous utiliserons principalement les *packages* suivants : 
+Dans ce chapitre, nous utiliserons les *packages* suivants : 
 
-* Pour créer des graphiques :
-  - **ggplot2**, le seul, l'unique.
-  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles.
-* Pour manipuler des données : 
-  - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*.
-* Pour le tableau de contignence :
-  - **gmodels**, pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes.
-  - **vcd**, pour construire un graphique pour un tableau de contingence.
+* **gmodels** pour construire des tableaux de contingence et calculer les tests *t* et ses différentes variantes.
+* **vcd** pour construire un graphique pour un tableau de contingence.
+* **DescTools** pour calculer le khi-deux de Mantel-Haenszel
+* **stargazer** pour imprimer des tableaux.
 :::
 
 ::: {.bloc_objectif data-latex=""}
@@ -21,7 +17,7 @@ Dans cette section, nous utiliserons principalement les *packages* suivants :
 
 Prenons l'exemple de deux variables qualitatives : l'une intitulée *groupe d'âge* comprenant trois modalités (15 à 29 ans, 30 à 44 ans, 45 à 64 ans); l'autre intitulée *mode de transport habituel pour se rendre au travail* comprenant quatre modalités (véhicule motorisé, transport en commun, vélo, marche). 
 
-Comparativement aux deux autres groupes, on pourrait supposer que les jeunes se déplacent proportionnellement plus en modes de transport actif (vélo et marche) et en transports en commun. À l'inverse, il est possible que les 45 à 64 ans se déplacent majoritairement en véhicules motorisés.
+Comparativement aux deux autres groupes, on pourrait supposer que les jeunes se déplacent proportionnellement plus en modes de transport actif (vélo et marche) et en transport en commun. À l'inverse, il est possible que les 45 à 64 ans se déplacent majoritairement en véhicules motorisés.
 
 Pour vérifier l'existence d'associations significatives entre les modalités de deux variables qualitatives, il est possible de construire un **tableau de contingence**\index{tableau de contingence} (section \@ref(sect051)), puis de réaliser le **test du khi-deux**\index{khi-deux} (section \@ref(sect052)).
 :::
@@ -31,18 +27,18 @@ Pour vérifier l'existence d'associations significatives entre les modalités de
 
 Les données du tableau de contingence ci-dessous décrivent 279 projets d'habitation à loyer modique (HLM) dans l'ancienne ville de Montréal, croisant les modalités de la période de construction (en colonnes) et de la taille (en ligne) des projets HLM [@TheseApparicio]. Les différents éléments du tableau sont décrits ci-dessous.
 
-* **Les fréquences observées**, nommées communément $f_{ij}$, correspondent aux observations appartenant à la fois à la *i^ème^* modalité de la variable en ligne et à la *j^ème^* modalité de la variable en colonne. À titre d’exemple, on compte 14 projets HLM construits entre 1985 et 1989 comprenant moins de 25 logements.
+* **Les fréquences observées** (*count* au tableau ci-dessous), nommées communément $f_{ij}$, correspondent aux observations appartenant à la fois à la *i^ème^* modalité de la variable en ligne et à la *j^ème^* modalité de la variable en colonne. À titre d’exemple, on compte 14 projets HLM construits entre 1985 et 1989 comprenant moins de 25 logements.
 
 * **Les marges** du tableau sont les totaux pour chaque modalité en ligne ($n_{i.}$) et en colonne ($n_{j.}$). En guise d’exemple, sur les 279 projets HLM, 53 comprennent de 25 à 49 logements et 56 ont été construites entre 1968 et 1974. Bien entendu, la somme des marges en ligne ($n_{i.}$) est égale au nombre total d'observations ($n_{ij}$), tout comme la somme de marges en colonne ($n_{.j}$).
 
-* **Trois pourcentages** sont disponibles (total, en ligne, en colonne). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}\times100$), par la marge en ligne ($f_{ij}/n_{i.} \times 100$) et en colonne ($f_{ij}/n_{.j}\times100$). En guise d'exemple, 5% des 279 projets HLM ont été construites entre 1985 et 1989 et comprennent moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
+* **Trois pourcentages** sont disponibles (total, en ligne, en colonne; *Total Percent*, *Row Percent* et *Column Percent* au tableau ci-dessous). Ils sont respectivement la fréquence observée divisée par le nombre d'observations ($f_{ij}/n_{ij}\times100$), par la marge en ligne ($f_{ij}/n_{i.} \times 100$) et en colonne ($f_{ij}/n_{.j}\times100$). En guise d'exemple, 5% des 279 projets HLM ont été construites entre 1985 et 1989 et comprennent moins de 25 logements (pourcentage total, soit 14/279×100). Aussi, plus de la moitié des habitations de moins de 25 logements ont été construits entre 1990 et 1994 (pourcentage en ligne, 41/80×100). Finalement, près de 36% des logements construits avant 1975 ont 100 logements et plus (20/56×100).
 
-* **Les fréquences théoriques**, représentent les valeurs que l'on devrait observer théoriquement s'il y avait indépendance entre les modalités des deux variables : si la répartition des deux modalités des deux variables était du au hasard. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalités *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06. Nous observons ici que la valeur théorique (16,06) est bien supérieure à la valeur réelle (6). On observe donc moins de projets HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre du hasard.
+* **Les fréquences théoriques** (*Expected Values* au tableau ci-dessous), représentent les valeurs que l'on devrait observer théoriquement s'il y avait indépendance entre les modalités des deux variables; autrement dit, si la répartition des deux modalités des deux variables était du au hasard. Pour le croisement de deux modalités, la fréquence théorique est égale au produit des marges divisé par le nombre total d'observations ($ft_{ij} = (n_{i.}n_{.j})/n_{ij}$). Par exemple, la fréquence théorique pour le croisement des modalités *moins de 25 logements* et *avant 1975* est égale à : (80×56)/279 = 16,06. Nous observons ici que la valeur théorique (16,06) est bien supérieure à la valeur réelle (6). On observe donc moins de projets HLM de moins de 25 logements avant 1975 que ce que l'on pourrait attendre du hasard.
 
-* **La déviation** est la différence entre la fréquence observée et la fréquence théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*. Dans le cas précédent, on observait 6 habitations de moins de 25 logements construits avant 1975 et une fréquence théorique de 16,0. La déviation est donc -10,06, soit une sous-représentation du phénomène.
+* **La déviation** (*Residual* au tableau ci-dessous) est la différence entre la fréquence observée et la fréquence théorique ($f_{ij}-ft_{ij}$). Plus la déviation est grande, plus on s'écarte d'une situation d'indépendance entre les deux modalités *i* et *j*. La somme des déviations sur une ligne ou sur une colonne est nulle. Si la déviation *ij* est nulle, la fréquence théorique est égale à la fréquence observée, ce qui signifie qu’il y a indépendance entre les modalités *i* et *j*. Une déviation positive traduit, quant à elle, une attraction entre les modalités *i* et *j*, ou autrement dit, une surreprésentation du phénomène *ij*; tandis qu’une déviation négative renvoie à une répulsion entre les modalités *i* et *j*, soit une sous-représentation du phénomène *ij*. Dans le cas précédent, on observait 6 habitations de moins de 25 logements construits avant 1975 et une fréquence théorique de 16,06. La déviation est donc -10,06, soit une sous-représentation du phénomène.
 
 
-* **La contribution au khi-deux** est égale à la déviation au carré divisée par la fréquence théorique : $\chi_{ij}^2 = (f_{ij}-ft_{ij})^2/ft_{ij}$. Plus sa valeur est forte, plus il y a association entre les deux modalités. La somme des contributions au khi-deux représente le khi-deux total pour l'ensemble du tableau de contingence (ici à 63,54) que nous aborderons dans la section suivante.
+* **La contribution au khi-deux** (*Chi-square contribution* au tableau ci-dessous) est égale à la déviation au carré divisée par la fréquence théorique : $\chi_{ij}^2 = (f_{ij}-ft_{ij})^2/ft_{ij}$. Plus sa valeur est forte, plus il y a association entre les deux modalités. La somme des contributions au khi-deux représente le khi-deux total pour l'ensemble du tableau de contingence (ici à 63,54) que nous aborderons dans la section suivante.
 
 
 ```{r tablecontingence, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -62,7 +58,9 @@ CrossTable(TabKhi2$Taille, TabKhi2$Periode,
 ```
 
 ## Test du khi-deux {#sect052}
-Avec le test du khi-deux, on postule qu'il y a indépendance entre les modalités des deux variables qualitatives, soit l'hypothèse nulle (*H~0~*). Puis, on calcule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contingence, nous avons 12 degrés de liberté : $(4-1)(5-1)=12$. À partir du nombre de degré de liberté et d'un seuil critique de significativité (prenons 5% ici), nous pouvons trouver la valeur critique de khi-deux dans le tableau des valeurs critiques du khi-deux, soit 21,03 (voir section \@ref(annexe1)). Puisque la valeur du khi-deux calculé dans le tableau de contingence est bien supérieure à celle obtenue dans le tableau des valeurs critiques (63,54), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. Autrement dit, si les deux variables n'étaient pas associées, nous aurions eu moins de 5% de chances de collecter des données avec ce niveau d'association, ce qui nous permet de rejeter l'hypothèse nulle (absence d'association). Notez que le test reste significatif avec des seuils de 1% (*p*=0,01) et 0,1% (*p*=0,001) puisque les valeurs critiques sont de 26,22 et 32,91.
+Avec le test du khi-deux, on postule qu'il y a indépendance entre les modalités des deux variables qualitatives, soit l'hypothèse nulle (*H~0~*). Puis, on calcule le nombre de degrés de liberté : $DL = (n-1)(l-1)$ avec $l$ et $n$ étant respectivement les nombres de modalités en ligne et en colonne. Pour notre tableau de contingence, nous avons 12 degrés de liberté : $(4-1)(5-1)=12$. 
+
+À partir du nombre de degrés de liberté et d'un seuil critique de significativité (prenons 5% ici), nous pouvons trouver la valeur critique de khi-deux dans le tableau des valeurs critiques du khi-deux, soit 21,03 (voir section \@ref(annexe1)). Puisque la valeur du khi-deux calculé dans le tableau de contingence (63,54) est bien supérieure à celle obtenue dans le tableau des valeurs critiques (21,03), on peut rejeter l'hypothèse d'indépendance au seuil de 5%. Autrement dit, si les deux variables n'étaient pas associées, nous aurions eu moins de 5% de chances de collecter des données avec ce niveau d'association, ce qui nous permet de rejeter l'hypothèse nulle (absence d'association). Notez que le test reste significatif avec des seuils de 1% (*p*=0,01) et 0,1% (*p*=0,001) puisque les valeurs critiques sont de 26,22 et 32,91.
 
 Bien entendu, une fois que l'on connaît le nombre de degrés de liberté, on peut directement calculer les valeurs critiques pour différents seuils de signification et éviter ainsi de recourir à la table ci-dessus. Dans la même veine, on peut aussi calculer la valeur de *p* d'un tableau de contingence en spécifiant le nombre de degrés de liberté et la valeur du khi-deux obtenue.
 
@@ -71,7 +69,7 @@ cat("Valeurs critiques du khi-deux avec le nombre de degrés de liberté", "\n",
     round(qchisq(p=0.95,  df=12, lower.tail = FALSE),3), "avec p=0,05", "\n",
     round(qchisq(p=0.99,  df=12, lower.tail = FALSE),3), "avec p=0,01", "\n",
     round(qchisq(p=0.999, df=12, lower.tail = FALSE),3), "avec p=0,0001")
-cat("Valeur de p du Khi-deux obtenu (63.54291) avec 12 degrés de liberté :", "\n",
+cat("Valeur de p du khi-deux obtenu (63.54291) avec 12 degrés de liberté :", "\n",
     pchisq(q=63.54291, df=12, lower.tail = FALSE))
 ```
 
@@ -80,26 +78,28 @@ Outre le khi-deux, d'autres mesures d'association permettent de mesurer le degr�
 
 Statistique | Formule | Propriété et interprétation
 -------- | ------- | -----------------------------
-Khi-deux  | $\chi^2 = \sum \frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$ | Mesure classique du Khi-deux calculée à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible.
+Khi-deux  | $\chi^2 = \sum \frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$ | Mesure classique du khi-deux calculée à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible.
 Ratio de vraisemblance du khi-deux | $G^2 = 2 \sum f_{ij} \ln{(\frac{f_{ij}}{ft_{ij}})}$ | Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible.
 khi-deux de Mantel-Haenszel | $Q_{MH}=(N−1)r^2$ | avec $r$ étant le coefficient de corrélation entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.
 Corrélation polychorique | obtenue itérativement par maximum de vraisemblance | Dans le même esprit que le khi-deux de Mantel-Haenszel, la corrélation polychorique s'applique à deux variables **ordinales**. Plus spécifiquement, elle formule le postulat que deux variables théoriques normalement distribuées ont été mesurées de façon approximative avec deux échelles ordinales. Par exemple, en psychologie, le sentiment de bien-être et le sentiment de sécurité peuvent être conceptualisés comme deux variables continues normalement distribuées. Cependant, les mesurer directement est très difficile, on a donc recours à des échelles de Likert allant de 1 à 10. Pour cet exemple, il serait pertinent d'utiliser la corrélation polychorique. Comme une corrélation de Pearson, la corrélation polychorique varie de -1 à 1, une valeur négative indiquant une relation inverse entre les deux variables théoriques et inversement. Une valeur de *p* peut être obtenue.
-Coefficient Phi | $\phi=\sqrt{\frac{\chi^2}{n}}$ | Simplement le Khi-deux divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune (tableau 2x2 dimensions) alors $\phi$ varie de −1 à 1; sinon de 0 à $min(\sqrt{c-1}, \sqrt{l-1})$ avec $c$ et $l$ étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est peu utile pour les tableaux de plus de 2x2 dimensions. Pas de valeur de *p* disponible.
+Coefficient Phi | $\phi=\sqrt{\frac{\chi^2}{n}}$ | Simplement le khi-deux divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune (tableau 2x2 dimensions) alors $\phi$ varie de −1 à 1; sinon de 0 à $min(\sqrt{c-1}, \sqrt{l-1})$ avec $c$ et $l$ étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est peu utile pour les tableaux de plus de 2x2 dimensions. Pas de valeur de *p* disponible.
 V de Cramer | $V=\sqrt{\frac{\chi^2/n}{min(c-1,l-1)}}$ | Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que pour un tableau de 2 x 2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.
 :::
 
 ## Mise en œuvre dans R {#sect053}
 
-Pour calculer le Khi-deux entre deux variables qualitatives, on utilise la fonction de base : `chisq.test(x = ..., y = ...)` qui renvoie le nombre de degrés de liberté, les valeurs du Khi-deux et de *p*.
+Pour calculer le khi-deux entre deux variables qualitatives, on utilise la fonction de base : 
+
+`chisq.test(x = ..., y = ...)` qui renvoie le nombre de degrés de liberté, les valeurs du khi-deux et de *p*.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Importation du csv
 dataHLM <- read.csv("data/bivariee/hlm.csv")
-# Calcul du Khi-deux avec la fonction de base chisq.test
+# Calcul du khi-deux avec la fonction de base chisq.test
 chisq.test(x = dataHLM$Taille, y = dataHLM$Periode)
 ```
 
-Pour la construction du tableau de contingence, deux options sont possibles dépendamment de la structure de votre tableau de données. Premier cas de figure, votre tableau comprend une ligne par observation avec les différentes modalités dans deux colonnes (ici *Periode* et *Taille*). Dans la syntaxe ci-dessous, pour chacune des deux variables qualitatives, on crée un facteur afin de spécifier un intitulé à chaque modalité (`factor(levels =c(....), labels = c(..)`). Puis, on utilise la fonction `CrossTable` du package **gmodels**. Pour obtenir les fréquences théoriques, les contributions locales au Khi-deux et les déviations, on spécifie les options suivantes : `expected=TRUE, chisq=TRUE, resid=TRUE`.
+Pour la construction du tableau de contingence, deux options sont possibles dépendamment de la structure de votre tableau de données. Premier cas de figure, votre tableau comprend une ligne par observation avec les différentes modalités dans deux colonnes (ici *Periode* et *Taille*). Dans la syntaxe ci-dessous, pour chacune des deux variables qualitatives, on crée un facteur afin de spécifier un intitulé à chaque modalité (`factor(levels =c(....), labels = c(..)`). Puis, on utilise la fonction `CrossTable` du *package* **gmodels**. Pour obtenir les fréquences théoriques, les contributions locales au khi-deux et les déviations, on spécifie les options suivantes : `expected=TRUE, chisq=TRUE, resid=TRUE`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("gmodels")
@@ -146,12 +146,12 @@ Matrice <- as.table(cbind(Femme, Homme)) # Création du tableau
 # Nom des deux variables et de leurs modalités respectives
 dimnames(Matrice) <- list(transport=c("Automobile (conducteur)",
                                       "Automobile (passager)",
-                                      "Transport en commun",                            
+                                      "transport en commun",                            
                                       "A pied",
                                       "Bicyclette",
                                       "Autre moyen"),
                           sexe=c("Homme","Femme"))
-# Test du Khi-deux
+# Test du khi-deux
 test <- chisq.test(Matrice)
 print(test)
 # Fréquences observées (Fij)
@@ -160,7 +160,7 @@ test$observed
 round(test$expected,0)
 # Déviations (Fij - FTij)
 round(test$observed-test$expected,0)
-# Contributions au Khi-deux
+# Contributions au khi-deux
 round((test$observed-test$expected)^2/test$expected,2)
 # Marges en lignes et en colonnes
 colSums(Matrice)
@@ -175,25 +175,25 @@ round(Matrice/rowSums(Matrice)*100,2)
 round(Matrice/colSums(Matrice)*100,2)
 ```
 
-Pour obtenir les autres mesures d'association, on pourra utiliser la syntaxe  suivante :
+Pour obtenir les autres mesures d'association (tableau \@ref(tab:TableMesuresAssociations)), on pourra utiliser la syntaxe  suivante :
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
 df1 <- read.csv("data/bivariee/hlm.csv")
 # Fonction pour calculer les autres mesures d'association
 AutresMesuresKhi2 <- function(x, y){
-  testChi2 <- chisq.test(x, y) # Calcul du Chi2
+  testChi2 <- chisq.test(x, y) # Calcul du khi-deux
   n  <- sum(testChi2$observed)  # Nombre d'observations
   nc <- ncol(testChi2$observed) # Nombre de colonnes
   l <- nrow(testChi2$observed) # Nombre de lignes
   dl <- (nc-1)*(l-1)            # Nombre de degrés de libertés
-  chi2 <- testChi2$statistic   # Khi-deux
-  Pchi2 <- testChi2$p.value    # P pour le Khi-deux
+  chi2 <- testChi2$statistic   # Valeeur du khi-deux
+  Pchi2 <- testChi2$p.value    # P pour le khi-deux
   
   #Ratio de vraisemblance du khi-deux
   G <- 2*sum(testChi2$observed*log(testChi2$observed/testChi2$expected)) # G2
   PG <- pchisq(G, df=dl, lower.tail = FALSE) # P pour le G22
   
-  # khi-deux de Mantel-Haenszel avec la librarie DescTools
+  # khi-deux de Mantel-Haenszel avec le package DescTools
   MHTest <- DescTools::MHChisqTest(testChi2$observed)
   MH <- MHTest$statistic
   PMH <- MHTest$p.value
@@ -214,7 +214,7 @@ AutresMesuresKhi2 <- function(x, y){
         Statistique = c("Khi-deux", 
                         "Ratio de vraisemblance du  khi-deux", 
                         "Khi-deux de Mantel-Haenszel",
-                        "Corrélation Polychoric",
+                        "Corrélation Polychorique",
                         "Coefficient de Phi",
                         "V de Cramer"), 
         Valeur = round(c(Pchi2, G, MH, polyR, phi, vc),3), 
@@ -224,25 +224,36 @@ AutresMesuresKhi2 <- function(x, y){
 
 dfkhi2 <- AutresMesuresKhi2(df1$Periode, df1$Taille)
 
+# Impression du tableau avec le package stargazer
+library(stargazer)
+stargazer(dfkhi2, type="text", summary=FALSE, rownames=FALSE, align = FALSE, digits = 3,
+          title="Mesures d'association entre les deux variables qualitatives")
+
+```
+
+```{r TableMesuresAssociations, echo=FALSE, message=FALSE, warning=FALSE}
 show_table(dfkhi2,
            digits = 3,
            caption="Mesures d'association entre deux variables qualitatives"
            )
+
 ```
 
 ## Interprétation d'un tableau de contingence {#sect054}
 
 Nous vous proposons une démarche très simple pour vérifier l'association entre deux variables qualitatives avec les deux étapes suivantes :
 
-* On pose l'hypothèse nulle (*H~0~*), soit l'indépendance entre les deux variables. Si la valeur Khi-deux total du tableau de contingence est inférieure à la valeur critique du Khi-deux avec *p*=0,05 et le nombre de degrés de liberté de la table *T*, alors il y a bien indépendance. La valeur de *p* sera alors supérieure à 0,05. L'analyse s'arrête donc là ! Autrement dit, il n'est pas nécessaire d'analyser le contenu de votre tableau de contingence puisqu'il n'y pas d'associations significatives entre les modalités des deux variables. Vous pouvez simplement signaler que : selon les résultats du test du Khi-deux, il n'y a pas d'association significative entre les deux variables ($\chi$ = ... avec *p*= ...).
+* On pose l'hypothèse nulle (*H~0~*), soit l'indépendance entre les deux variables. 
 
-* S'il y a dépendance ($khi_{observé}^2 > khi_{critique}^2$), trouver les cellules *ij* où les contributions au Khi-deux sont les plus fortes, c'est-à-dire où les associations entre les modalités *i* de la variable en ligne et les modalités *j* de la variable en colonne sont les plus marquées. Pour ces cellules, le phénomène *ij* est surreprésenté si la déviation est positive ou sous-représenté si la déviation est négative. Commentez ces associations et utilisez les pourcentages en lignes ou en colonnes pour appuyer vos propos.
+* Si la valeur du khi-deux total du tableau de contingence est inférieure à la valeur critique du khi-deux avec *p*=0,05 et le nombre de degrés de liberté de la table *T*, alors il y a bien indépendance. La valeur de *p* sera alors supérieure à 0,05. **L'analyse s'arrête donc là !** Autrement dit, il n'est pas nécessaire d'analyser le contenu de votre tableau de contingence puisqu'il n'y pas d'associations significatives entre les modalités des deux variables. Vous pouvez simplement signaler que : selon les résultats du test du khi-deux, il n'y a pas d'association significative entre les deux variables ($\chi$ = ... avec *p*= ...).
+
+* S'il y a dépendance ($khi_{observé}^2 > khi_{critique}^2$), trouver les cellules *ij* où les contributions au khi-deux sont les plus fortes, c'est-à-dire où les associations entre les modalités *i* de la variable en ligne et les modalités *j* de la variable en colonne sont les plus marquées. Pour ces cellules, le phénomène *ij* est surreprésenté si la déviation est positive ou sous-représenté si la déviation est négative. Commentez ces associations et utilisez les pourcentages en lignes ou en colonnes pour appuyer vos propos.
 
 ::: {.bloc_astuce data-latex=""}
-Pour repérer rapidement les cellules où les contributions au Khi-deux sont les plus fortes, vous pouvez construire un graphique avec la fonction **mosaic** du *package* **vcd**. À la figure \@ref(fig:figVDC), la taille des rectangles représente les effectifs entre les deux modalités tandis que les associations sont représentées comme suit : 
+Pour repérer rapidement les cellules où les contributions au khi-deux sont les plus fortes, vous pouvez construire un graphique avec la fonction **mosaic** du *package* **vcd**. À la figure \@ref(fig:figVDC), la taille des rectangles représente les effectifs entre les deux modalités tandis que les associations sont représentées comme suit : 
 en gris lorsqu'elles ne sont pas significatives, en rouge pour des déviations significatives et négatives et en bleu pour des déviations significatives et positives.
 
-```{r figVDC, fig.pos="H", auto_pdf=TRUE, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Figure avec la fonction mosaic de la librarie vcd'}
+```{r figVDC, fig.pos="H", auto_pdf=TRUE, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Figure avec la fonction mosaic du package vcd'}
 
 library(vcd)
 mosaic(~ Taille+Periode, 
@@ -254,16 +265,30 @@ mosaic(~ Taille+Periode,
 :::
 
 **Exemple d'interprétation.** « Les résultats du test du khi-deux signalent qu'il existe des associations entre les modalités de la taille et de la période de construction des projets d'habitation ($\chi$ =63,5, *p* < 0,001). Les fortes contributions au khi-deux et le signe positif ou négatif des déviations correspondantes permettent de repérer cinq associations majeures entre les modalités de taille et de période de construction des projets HLM : **1)** la répulsion entre les projets d’habitation de moins de 25 logements et la période de construction 1964-1974; **2)** l’attraction entre les projets d’habitation de 100 logements et plus et la période de construction de 1969-1974; **3)** l’attraction entre les projets d’habitation de moins de 25 logements et la période de construction de 1990-1994; **4)** la répulsion entre les projets d’habitation de 50 à 99 logements et la période de construction 1990-1994; **5)** la répulsion entre les projets d’habitation de 100 logements et plus et la période de construction 1990-1994.
-On observe donc une tendance bien marquée dans l’évolution du type de construction entre 1970 et 1994 : entre 1969 et 1974, on construit habituellement de grandes habitations dépassant souvent 100 logements; du milieu des années 1970 à la fin des années 1980, on privilégie la construction d’habitations de taille plus modeste, entre 50 et 100 logements; tandis qu’au début des années 1990, on opte plutôt pour des habitations de taille réduite (moins de 50 logements). Quelques chiffres à l’appui : sur les 56 habitations réalisées entre 1969 et 1974, 20 ont plus de 100 logements, 20 comprennent entre 50 et 99 logements et seules 10 ont moins de 25 logements. Près de la moitié des habitations construites entre 1975 et 1989 regroupent 50 à 99 logements (43,8% pour la période 1975-1979, 45,8% pour 1980-1984 et 44,7% pour 1985-1989). Par contre, 51% des logements érigés à partir de 1990 disposent de moins de 25 logements » (@TheseApparicio, p. 117-118). Notez que cette évolution décroissante est aussi soutenue par le coefficient négatif de la corrélation polychorique.
+On observe donc une tendance bien marquée dans l’évolution du type de construction entre 1970 et 1994 : entre 1969 et 1974, on a construit de grandes habitations dépassant souvent 100 logements; du milieu des années 1970 à la fin des années 1980, on privilégie la construction d’habitations de taille plus modeste, entre 50 et 100 logements; tandis qu’au début des années 1990, on opte plutôt pour des habitations de taille réduite (moins de 50 logements). Quelques chiffres à l’appui : sur les 56 habitations réalisées entre 1969 et 1974, 20 ont plus de 100 logements, 20 comprennent entre 50 et 99 logements et seules 10 ont moins de 25 logements. Près de la moitié des habitations construites entre 1975 et 1989 regroupent 50 à 99 logements (43,8% pour la période 1975-1979, 45,8% pour 1980-1984 et 44,7% pour 1985-1989). Par contre, 51% des logements érigés à partir de 1990 disposent de moins de 25 logements » (@TheseApparicio, p. 117-118). Notez que cette évolution décroissante est aussi soutenue par le coefficient négatif de la corrélation polychorique.
 
 Vous pouvez aussi construire un graphique pour appuyer vos constats, soit avec les pourcentages en ligne ou en colonne (figure \@ref(fig:fighlm) tirée de @TheseApparicio).
 
-```{r fighlm, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Taille des ensembles HLM selon la période de construction",  out.width='80%'}
+```{r fighlm, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Taille des projets d'habitation à loyer modique selon la période de construction",  out.width='80%'}
 knitr::include_graphics('images/bivariee/figurehlm.png', dpi = NA)
 ```
 
-**Comment rapporter succinctement les résultats d'un Test du Khi-deux?**
+**Comment rapporter succinctement les résultats d'un test du khi-deux?**
 
-Le test du Khi-deux a été réalisé pour examiner la relation entre la taille et la période de construction des habitations HLM. Cette relation est significative : $\chi^2$(12, N = 279) = 63,5, *p* < 0,001. Plus les projets ont été construits récemment, plus ils sont de taille réduite.
+Le test du khi-deux a été réalisé pour examiner la relation entre la taille et la période de construction des habitations HLM. Cette relation est significative : $\chi^2$(12, N = 279) = 63,5, *p* < 0,001. Plus les projets ont été construits récemment, plus ils sont de taille réduite.
 
 Pour un texte en anglais, vous pourrez consulter [https://www.socscistatistics.com/tutorials/chisquare/default.aspx](https://www.socscistatistics.com/tutorials/chisquare/default.aspx){target="_blank"}.
+
+
+## Quiz de révision du chapitre
+
+```{r quizClassif, echo=FALSE, warning=FALSE, results="asis"}
+Chapitre5_QualiQuali <- quizz("quizzs/Chapitre5_QualiQuali.yml", "Chapitre5_QualiQuali")
+render_quizz(Chapitre5_QualiQuali)
+```
+
+
+
+
+
+

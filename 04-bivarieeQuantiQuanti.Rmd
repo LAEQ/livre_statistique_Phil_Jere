@@ -6,29 +6,34 @@ Dans le cadre de ce chapitre, nous présenterons les trois principales méthodes
 
 
 ::: {.bloc_package data-latex=""}
-Dans cette section, nous utiliserons principalement les *packages* suivants : 
+Dans ce chapitre, nous utiliserons les *packages* suivants : 
 
 * Pour créer des graphiques :
-  - **ggplot2**, le seul, l'unique.
-  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles.
+  - **ggplot2**, le seul, l'unique!
+  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles.
 * Pour manipuler des données : 
-  - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*.
+  - **dplyr** notamment pour les fonctions *group_by*, *summarize* et les pipes *%>%*.
 * Pour les corrélations : 
-  - **correlation**, de l'ensemble de packages **easy_stats**, offrant une large gamme de méthodes de corrélation.
   - **boot** pour réaliser des corrélations avec *bootstrap*.
+  - **correlation**, de l'ensemble de packages **easy_stats**, offrant une large panoplie de mesures de corrélation.
+  - **corrplot**, pour créer des graphiques de matrices de corrélation.
   - **Hmisc** pour calculer des corrélations de Pearson et Spearman.
-  - **ppcor** pour des corrélations partielles.
+  - **ppcor** pour calculer des corrélations partielles.
   - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
   - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en HTML ou en LaTeX ou en ASCII.
-  - **corrplot**, pour créer des graphiques de matrices de corrélation.
+* Autres *packages* :
+  - **foreign** pour importer des fichiers externes.
+  - **MASS** pour générer des échantillons normalement distribués.
+  - **stargazer** pour imprimer des tableaux.
+
 :::
 
 ::: {.bloc_objectif data-latex=""}
-**Deux variables continues varient-elles dans le même sens ou bien en sens contraire ?** Répondre à cette question est une démarche exploratoire classique en sciences sociales puisque les données socioéconomiques sont souvent associées linéairement. En d'autres termes, lorsque l'une des deux variables tant à augmenter, la seconde augmente également ou diminue systématiquement.
+**Deux variables continues varient-elles dans le même sens ou bien en sens contraire?** Répondre à cette question est une démarche exploratoire classique en sciences sociales puisque les données socioéconomiques sont souvent associées linéairement. En d'autres termes, lorsque l'une des deux variables tant à augmenter, la seconde augmente également ou diminue systématiquement.
 
 En études urbaines, on pourrait vouloir vérifier si certaines variables socioéconomiques sont associées positivement ou négativement à des variables environnementales jugées positives (comme la couverture végétale ou des mesures d’accessibilité spatiale aux parcs) ou négatives (pollutions atmosphériques et sonores). 
 
-Par exemple, au niveau des secteurs de recensement d’une ville canadienne, on pourrait vouloir vérifier si le revenu médian des ménages et le coût moyen du loyer varient dans le même sens que la couverture végétale ; et s'ils varient en sens inverse des niveaux moyens de dioxyde d’azote ou de bruit routier.
+Par exemple, au niveau des secteurs de recensement d’une ville canadienne, on pourrait vouloir vérifier si le revenu médian des ménages et le coût moyen du loyer varient dans le même sens que la couverture végétale ; ou encore s'ils varient en sens inverse des niveaux moyens de dioxyde d’azote ou de bruit routier.
 
 Pour évaluer la linéarité entre deux variables continues, deux statistiques descriptives sont utilisées : la **covariance**\index{covariance} (section \@ref(sect042)) et la **corrélation**\index{corrélation} (section \@ref(sect043)).
 :::
@@ -42,7 +47,7 @@ Vérifier le postulat de la linéarité consiste à évaluer si deux variables q
 
 * Le cas **b** illustre une relation linéaire négative entre les deux variables puisqu’elles vont en sens inverse. Autrement dit, quand les valeurs de *X* augmentent, celles de *Y* diminuent, et inversement. En guise d'exemple, pour les secteurs de recensement d'une métropole donnée, il est fort probable que le revenu médian des ménages soit associé négativement avec le taux de chômage. De nouveau, une droite résumerait efficacement cette relation.
 
-* Pour le cas **c**,  il y a une relation entre les deux variables, mais qui n’est pas linéaire. Le nuage de points entre les deux variables prend d’ailleurs une forme parabolique qui traduit une relation curvilinéaire. Concrètement, on observe une relation positive jusqu'à un certain seuil, puis une relation négative. 
+* Pour le cas **c**, il y a une relation entre les deux variables, mais qui n’est pas linéaire. Le nuage de points entre les deux variables prend d’ailleurs une forme parabolique qui traduit une relation curvilinéaire. Concrètement, on observe une relation positive jusqu'à un certain seuil, puis une relation négative. 
  
 * Pour le cas **d**,  la relation entre les deux variables est aussi curvilinéaire; d'abord négative, puis positive.
 
@@ -51,7 +56,7 @@ Vérifier le postulat de la linéarité consiste à évaluer si deux variables q
 knitr::include_graphics('images/bivariee/figure2.jpg', dpi = NA)
 ```
 
-Prenons un exemple concret. Dans une étude portant sur l'équité environnementale et la végétation à Montréal, Pham *et al.* [-@PhamApparicioSeguin2012] ont montré qu'il existe une relation curvilinéaire entre l'âge médian des bâtiments résidentiels (axe des abscisses) et les couvertures végétales (axes des ordonnées) :
+Prenons un exemple concret pour illuster le cas **c**. Dans une étude portant sur l'équité environnementale et la végétation à Montréal, Pham *et al.* [-@PhamApparicioSeguin2012] ont montré qu'il existe une relation curvilinéaire entre l'âge médian des bâtiments résidentiels (axe des abscisses) et les couvertures végétales (axes des ordonnées) :
 
 * la couverture de la végétation totale et celle des arbres augmentent quand l'âge médian des bâtiments croît jusqu'à atteindre un pic autour de 60 ans (autour de 1950). On peut supposer que les secteurs récemment construits, surtout ceux dans les banlieues, présentent des niveaux de végétation plus faibles. Au fur et à mesure que le quartier vieillit, les arbres plantés lors du développement résidentiel deviennent matures — canopée plus importante –, d'où l'augmentation des valeurs de la couverture végétale totale et de celle des arbres.
 *  Par contre, dans les secteurs développés avant les années 1950, la densité du bâti est plus forte, laissant ainsi moins de place pour la végétation, ce qui explique une diminution des variables relatives à la couverture végétale (figure \@ref(fig:fig3)).
@@ -60,7 +65,7 @@ Prenons un exemple concret. Dans une étude portant sur l'équité environnement
 knitr::include_graphics('images/bivariee/figure3.jpg', dpi = NA)
 ```
 
-Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives et exploratoires – la covariance (section \@ref(sect042)) et la corrélation (section \@ref(sect043)) – utilisées pour évaluer la **relation linéaire** entre deux variables continues. Ces deux mesures permettent de mesurer le degré d'association entre deux variables, sans que l'une soit la variable dépendante (variable à expliquer) et l'autre, la variable indépendante (variable explicative). Puis, nous décrirons la régression linéaire simple (section \@ref(sect044))  qui permet justement de prédire une variable dépendante (_Y_) à partir d'une variable indépendante (_X_).
+Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives et exploratoires – la covariance (section \@ref(sect042)) et la corrélation (section \@ref(sect043)) – utilisées pour évaluer la **relation linéaire** entre deux variables continues (cas **a** et **b** à la figure \@ref(fig:fig2)). Ces deux mesures permettent de mesurer le degré d'association entre deux variables, sans que l'une soit la variable dépendante (variable à expliquer) et l'autre, la variable indépendante (variable explicative). Puis, nous décrirons la régression linéaire simple (section \@ref(sect044))  qui permet justement de prédire une variable dépendante (_Y_) à partir d'une variable indépendante (_X_).
 
 ## Covariance {#sect042}
 
@@ -126,7 +131,7 @@ Le coefficient de corrélation de Pearson ($r$) est égal à la covariance (num�
 
 \footnotesize
 \begin{equation}
-r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2(y_i - \bar{y})^2}}=\sum_{i=1}^n\frac{ZxZy}{n-1}
+r_{xy} = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{(n-1)\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2(y_i - \bar{y})^2}}=\sum_{i=1}^n\frac{Zx_iZy_i}{n-1}
 (\#eq:cor)
 \end{equation}
 \normalsize
@@ -210,7 +215,7 @@ df <- data.frame(
         Positive = c("de 0,0 à 0,3","de 0,3 à 0,5", "de 0,5 à 1,0"))
 
 show_table(df, 
-           caption = 'Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales',
+           caption = "Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales",
            col.names = c("Corrélation","Négative","Positive"))
 ```
 
@@ -267,13 +272,14 @@ plot1 <- ggplot(data=df1, mapping = aes(x=A65plus,HabKm2))+
   annotate(geom="text", x =60, y=46000, label=paste0("Shapiro = ", round(shapiro.test(df1$HabKm2)$statistic,3)), color="black", hjust = 1, size = 3.5)
 plot2 <- ggplot(data=df2, mapping = aes(x=A65plus,HabKm2))+
   geom_point(colour="red")+
+  xlim(0, 50)+
   ggtitle(paste0("N = ", nrow(df2)), subtitle = paste0("Corrélation = ",round(cor2,3)))+
   xlab("65 ans et plus (%)")+
   ylab(expression("Densité de population : 1000 habitants au"~km^{2}))+
   stat_smooth(method="lm", se=FALSE)+
-  annotate(geom="text", x =60, y=20000, label=paste0("Skewness = ", round(skewness(df2$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
-  annotate(geom="text", x =60, y=19200, label=paste0("Kurtosis = ", round(kurtosis(df2$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
-  annotate(geom="text", x =60, y=18400, label=paste0("Shapiro = ", round(shapiro.test(df2$HabKm2)$statistic,3)), color="black", hjust = 1, size = 3.5)
+  annotate(geom="text", x =50, y=20000, label=paste0("Skewness = ", round(skewness(df2$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =50, y=19200, label=paste0("Kurtosis = ", round(kurtosis(df2$HabKm2),3)), color="black", hjust = 1, size = 3.5)+
+  annotate(geom="text", x =50, y=18400, label=paste0("Shapiro = ", round(shapiro.test(df2$HabKm2)$statistic,3)), color="black", hjust = 1, size = 3.5)
 ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ```
 
@@ -291,7 +297,6 @@ r_{xy} = \frac{cov(rg_{x},rg_{y})}{\sigma_{rg_{x}}\sigma_{rg_{y}}}
 \normalsize
 
 La syntaxe  ci-dessous démontre clairement que le coefficient de Spearman est bien le coefficient de Pearson calculé sur les rangs (\@ref(sect0431)).
-
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
@@ -318,7 +323,7 @@ Le **tau de Kendall** est une autre mesure non paramétrique calculée comme sui
 \end{equation}
 \normalsize
 
-avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observations **c**oncordantes et **d**iscordantes; et le dénominateur étant le nombre total de paires d'observations. Des paires sont dites concordantes quand les valeurs des deux observations vont dans le même sens pour les deux variables ($x_{i}>x_{j}$ et $y_{i}>y_{j}$ ou  $x_{i}<x_{j}$ et $y_{i}<y_{j}$), et discordantes quand elles vont en sens contraire ($x_{i}>x_{j}$ et $y_{i}<y_{j}$ ou $x_{i}<x_{j}$ et $y_{i}>y_{j}$). Contrairement au calcul du coefficient de Spearman, celui du tau Kendall peut être chronophage : plus le nombre d'observations sera élevé, plus les temps de calcul et la mémoire utilisée sont importants. En effet, avec _n_=1000, le nombre de paires d'observations (${0.5*n(n-1)}$) sera de 499500, contre près de 50 millions avec _n_=10000 (49 995 000).
+avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observations **c**oncordantes et **d**iscordantes; et le dénominateur étant le nombre total de paires d'observations. Des paires sont dites concordantes quand les valeurs des deux observations vont dans le même sens pour les deux variables ($x_{i}>x_{j}$ et $y_{i}>y_{j}$ ou  $x_{i}<x_{j}$ et $y_{i}<y_{j}$), et discordantes quand elles vont en sens contraire ($x_{i}>x_{j}$ et $y_{i}<y_{j}$ ou $x_{i}<x_{j}$ et $y_{i}>y_{j}$). Contrairement au calcul du coefficient de Spearman, celui du tau Kendall peut être chronophage : plus le nombre d'observations sera élevé, plus les temps de calcul et la mémoire utilisée sont importants. En effet, avec _n_=1000, le nombre de paires d'observations (${0.5\times n(n-1)}$) sera de 499500, contre près de 50 millions avec _n_=10000 (49 995 000).
 
 ```{r fig8, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Comparaison des coefficients de Pearson, Spearman et Kendall sur deux variables anormalement distribuées', out.width='75%'}
 library("moments")
@@ -362,16 +367,16 @@ ggarrange(Plot1, Plot2, Plot3, ncol=3,nrow=1)
 
 ### Corrélations robustes (*Biweight midcorrelation*, *Percentage bend correlation* et la corrélation *pi* de Shepherd) {#sect0434}
 
-Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs aberrantes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser pour des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit : 
+Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs extrêmes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser pour des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit : 
 
 \footnotesize
 \begin{equation}
 \begin{aligned}
-&u_{i} = \frac{x_{i} - med(x)}{9 * (med(|x_{i} - med(x)|))} \text{ et } v_{i} = \frac{y_{i} - med(y)}{9 * (med(|y_{i} - med(y)|))}\\
+&u_{i} = \frac{x_{i} - med(x)}{9 \times (med(|x_{i} - med(x)|))} \text{ et } v_{i} = \frac{y_{i} - med(y)}{9 \times (med(|y_{i} - med(y)|))}\\
 &w_{i}^{(x)} = (1 - u_{i}^2)^2 I(1 - |u_{i}|) \text{ et } w_{i}^{(y)} = (1 - v_{i}^2)^2 I(1 - |v_{i}|)\\
 &I(x) = 
 \begin{cases}
-1, \text{si} x = 1\\
+1, \text{si } x = 1\\
 0, \text{sinon}
 \end{cases}\\
 &\tilde{x}_{i} = \frac{(x_{i} - med(x))w_{i}^{(x)}}{\sqrt{(\sum_{j=1}^m)[(x_{j} - med(x))w_{j}^{(x)}]^2}} \text{ et } \tilde{y}_{i} = \frac{(y_{i} - med(y))w_{i}^{(y)}}{\sqrt{(\sum_{j=1}^m)[(y_{j} - med(y))w_{j}^{(y)}]^2}}\\
@@ -385,11 +390,11 @@ Comme le souligne l'équation \@ref(eq:bicor), la *Biweight midcorrelation* est 
 
 Assez proche de la *Biweight midcorrelation*, la *Percentage bend correlation* se base également sur la médiane des variables *X* et *Y*. Le principe général est de donner un poids plus faible dans le calcul de cette corrélation à un certain pourcentage des observations (20% sont généralement recommandés) dont la valeur est éloignée de la médiane. Pour une description complète de la méthode, vous pourrez lire l'article de @wilcox1994percentage.
 
-Enfin, une autre option est l'utilisation de la corrélation $pi$ de Sherphred [@Schwarzkopf2012]. Il s'agit simplement d'une méthode en deux étapes. Premièrement, les valeurs extrêmes sont identifiées à l'aide d'une approche par *bootstrap* utilisant la distance de Mahalanobis (calculant les écarts multivariés entre les observations). Ensuite, le coefficient de *Spearman* est calculé sur les observations restantes.
+Enfin, une autre option est l'utilisation de la corrélation $pi$ de Sherphred [@Schwarzkopf2012]. Il s'agit simplement d'une méthode en deux étapes. Premièrement, les valeurs extrêmes sont identifiées à l'aide d'une approche par *bootstrap* utilisant la distance de Mahalanobis (calculant les écarts multivariés entre les observations). Deuxièmement, le coefficient de *Spearman* est calculé sur les observations restantes.
 
 Appliquons ces corrélations aux données précédentes. Notez que ce simple code d'une dizaine de lignes permet d'explorer rapidement la corrélation entre deux variables selon six mesures de corrélation.
 
-```{r robcorr, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
 library("correlation")
 df1 <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 methods <- c("pearson","spearman","biweight","percentage","shepherd")
@@ -398,21 +403,30 @@ rs <- lapply(methods,function(m){
   return(c(test$r,test$CI_low, test$CI_high))
   })
 dfCorr <- data.frame(do.call(rbind,rs))
-names(dfCorr) <- c("r","IC_05","CI_95")
+names(dfCorr) <- c("r","IC_2.5","IC_97.5")
 dfCorr$method <- methods
 
+# Impression du tableau avec le package stargazer
+library(stargazer)
+stargazer(dfCorr, type="text", summary=FALSE, rownames=FALSE, align = FALSE, digits = 3,
+          title="Comparaison de différentes corrélations pour les deux variables")
+
+```
+
+```{r robcorr, echo=FALSE, message=FALSE, warning=FALSE}
 show_table(dfCorr,
            digits = 3,
             caption = 'Comparaison de différentes corrélations pour les deux variables',
-           col.names=c("r","IC 5%","IC 95%", "Méthode")
+           col.names=c("r","IC 2,5%","IC 97,5%", "Méthode")
            )
+
 ```
 
-Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche : les méthodes les plus connues sont les plus utilisées, car elles sont plus facilement acceptées par les autres chercheur·e·s. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumissions pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
+Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche : les méthodes les plus connues sont les plus utilisées, car elles sont plus facilement acceptées par la communauté scientifique. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumissions pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
 
 ### Significativité des coefficients de corrélation {#sect0435} 
 
-Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonnage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents ? Le calcul de ce degré de significativité nous permet de quantifier notre niveau de certitude quant à l'existence d'une corrélation entre nos deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté : $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant le coefficient de corrélation et le nombre d'observations. De manière classique, on utilisera la table des valeurs critiques de la distribution de $t$ : si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degrés de liberté), alors le coefficient est significatif à 5%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon aurait été inférieure à 5%. Dans ce contexte, on peut raisonnablement rejeter l'hypothèse nulle (corrélation réelle de 0). 
+Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonnage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents? Le calcul de ce degré de significativité permet de quantifier le niveau de certitude quant à l'existence d'une corrélation entre les deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté : $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant le coefficient de corrélation et le nombre d'observations. De manière classique, on utilisera la table des valeurs critiques de la distribution de $t$ : si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degrés de liberté), alors le coefficient est significatif à 5%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon aurait été inférieure à 5%. Dans ce contexte, on peut raisonnablement rejeter l'hypothèse nulle (corrélation de 0). 
 
 La courte syntaxe ci-dessous illustre comment calculer la valeur de $t$, le nombre de degrés de liberté et la valeur de _p_ pour une corrélation donnée.
 
@@ -439,7 +453,7 @@ p <- cor.test(df$HabKm2, df$A65plus)
 cat("Valeur de corrélation = ", round(p$estimate,3), "\n",
     "Intervalle à 95% = [", round(p$conf.int[1],3), " ", round(p$conf.int[2],3), "]", "\n",
     "Valeur de t = ", round(p$statistic,3), "\n",
-    "Valeur de p = ", round(p$p.value,3), sep="")
+    "Valeur de p = ", round(p$p.value,3),"\n", sep="")
 # Corrélation de Spearman
 cor.test(df$HabKm2, df$A65plus, method = "spearman")
 # Corrélation de Kendall
@@ -454,7 +468,7 @@ cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .90)
 cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .99)
 ```
 
-**Corrélation et _bootstrap_.** Il est possible d'estimer la corrélation en mobilisant la notion de _bootstrap_, soit des méthodes d'inférence statistique basées sur des réplications des données initiales par rééchantillonnage. Il est possible d'appliquer la même méthode du _bootstrap_ aux corrélations afin d'obtenir un intervalle de confiance avec _r_ réplications, comme illustré à partir de la syntaxe  ci-dessous.
+**Corrélation et _bootstrap_.** Il est possible d'estimer la corrélation en mobilisant la notion de _bootstrap_, soit des méthodes d'inférence statistique basées sur des réplications des données initiales par rééchantillonnage. Concrètement, la méthode du _bootstrap_ permet une mesure de la corrélation avec un intervalle de confiance à partir de _r_ réplications, comme illustré à partir de la syntaxe ci-dessous.
 
 
 ```{r fig9, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Histogramme pour les valeurs de corrélation issues du Bootstrap', out.width='75%'}
@@ -493,14 +507,14 @@ Le _bootstrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Le
 
 ::: {.bloc_objectif data-latex=""}
 
-**Quelle est la relation entre deux variables continues une fois prise en compte une autre variable dite de contrôle ?** En études urbaines, on pourrait vouloir vérifier si deux variables sont ou non associées après avoir contrôlé la densité de population ou encore la distance au centre-ville.
+**Quelle est la relation entre deux variables continues une fois prise en compte une autre variable dite de contrôle?** En études urbaines, on pourrait vouloir vérifier si deux variables sont ou non associées après avoir contrôlé la densité de population ou encore la distance au centre-ville.
 
 La corrélation partielle\index{corrélation partielle} permet d'évaluer la relation linéaire entre deux variables quantitatives continues, une fois contrôlées une ou plusieurs autres variables quantitatives (dites variables de contrôle).
 
 
 :::
 
-Le coefficient de corrélation partielle peut être calculé pour les trois méthodes (Pearson, Spearman et Kendall). Variant aussi de −1 à 1, il est calculé comme suit :
+Le coefficient de corrélation partielle peut être calculé pour plusieurs mesures de corrélation (notamment, Pearson, Spearman et Kendall). Variant aussi de −1 à 1, il est calculé comme suit :
 
 \footnotesize
 \begin{equation}
@@ -511,7 +525,7 @@ r_{ABC} = \frac{r_{AB}-r_{AC}r_{BC}}{\sqrt{(1-r_{AC}^2)(1-r_{BC}^2)}}
 
 avec _A_ et _B_ étant les deux variables pour lesquelles on souhaite évaluer la relation linéaire, une fois contrôlée la variable _C_; $r$ étant le coefficient de corrélation (Pearson, Spearman ou Kendall) entre deux variables.
 
-Dans l'exemple ci-dessous, nous voulons estimer la relation linéaire entre le pourcentage de personnes à faible revenu et la couverture végétale au niveau des îlots de l'île de Montréal, une fois contrôlée la densité de population. En effet, plus cette dernière sera forte, plus la couverture végétale sera faible ($r$ de Pearson = −0,603). La valeur du $r$ de Pearson s'élève à −0,546 entre le pourcentage de personnes à faible revenu dans la population totale de l'îlot et la couverture végétale. Une fois la densité de population contrôlée, elle chute à −0,316. Pour calculer la corrélation partielle, on pourra utiliser la fonction `pcor.test` du package **ppcor**.
+Dans l'exemple ci-dessous, nous voulons estimer la relation linéaire entre le pourcentage de personnes à faible revenu et la couverture végétale au niveau des îlots de l'île de Montréal, une fois contrôlée la densité de population. En effet, plus cette dernière sera forte, plus la couverture végétale sera faible ($r$ de Pearson = −0,563). La valeur du $r$ de Pearson s'élève à −0,513 entre le pourcentage de personnes à faible revenu dans la population totale de l'îlot et la couverture végétale. Une fois la densité de population contrôlée, elle chute à −0,316. Pour calculer la corrélation partielle, on pourra utiliser la fonction `pcor.test` du package **ppcor**.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("foreign")
@@ -519,7 +533,7 @@ library("ppcor")
 dfveg <- read.dbf("data/bivariee/IlotsVeg2006.dbf")
 # Corrélation entre les trois variables
 round(cor(dfveg[, c("VegPct", "Pct_FR","LogDens")], method="p"), 3)
-# Corrélation partielle entre :
+# Corrélation partielle avec la fonction pcor.test entre :
 # la couverture végétale de l'îlot (%) et
 # le pourcentage de personnes à faible revenu
 # une fois contrôlée la densité de population
@@ -536,10 +550,10 @@ cat("Corr. partielle avec ppcor  = ",
 
 ### Mise en œuvre dans R {#sect0437}
 
-Comme vous l'aurez compris, il est possible d'arriver au même résultat par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test` . Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
+Comme vous l'aurez compris, il est possible d'arriver au même résultat par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test`. Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
 
-* **Hmisc** dont la fonction `rcorr` permet de calculer des corrélations de Pearson et Spearman (mais non celle de Kendall) avec la valeur de _p_;
-* **psych** dont la fonction `corr.test` permet d'obtenir la matrice de corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de _p_;
+* **Hmisc** dont la fonction `rcorr` permet de calculer des corrélations de Pearson et Spearman (mais non celle de Kendall) avec les valeurs de _p_;
+* **psych** dont la fonction `corr.test` permet d'obtenir une matrice de corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de _p_;
 * **stargazer** pour créer des beaux tableaux d'une matrice de corrélation en *HTML* ou en *LaTeX* ou en ASCII;
 * **apaTables**  pour créer un tableau avec une matrice de corrélation dans un fichier Word;
 * **correlation** pour aller plus loin et explorer les corrélations bayésiennes, robustes, non linéaires ou multiniveaux.
@@ -555,20 +569,18 @@ library("dplyr")
 Hmisc::rcorr(df1$RevMedMen, df1$Locataire, type="pearson")
 Hmisc::rcorr(df1$RevMedMen, df1$Locataire, type="spearman")
 # Matrice de corrélation avec la fonction rcorr de Hmisc pour plus de variables
-# On crée un vecteur avec les noms des variables à sélectionner
+# On crée au préalable un vecteur avec les noms des variables à sélectionner
 Vars <- c("RevMedMen","Locataire", "LogTailInc","A65plus","ImgRec", "HabKm2", "FaibleRev")
 Hmisc::rcorr(df1[, Vars] %>% as.matrix())
-# # Avec la fonction corr.test de psych pour avoir la matrice de corrélation
+# # Avec la fonction corr.test du package psych pour avoir la matrice de corrélation
 # # (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p
 # print(psych::corr.test(df[, Vars], 
 #              method = "kendall", 
 #              ci=TRUE, alpha = 0.05), short=FALSE) 
 # Création d'un tableau pour une matrice de corrélation
-# changer le paramètre type pour 'html' or 'LaTex'
+# changer le paramètre type pour 'html' or 'LaTex' si souhaité
 p <- cor(df1[, Vars], method="pearson")
 stargazer(p, title="Correlation Matrix", type = "text")
-# stargazer(p, title="Correlation Matrix", type = "html")
-# stargazer(p, title="Correlation Matrix", type = "latex")
 # Créer un tableau avec la matrice de corrélation 
 # dans un fichier Word (.doc)
 apaTables::apa.cor.table(df1[, c("RevMedMen","Locataire","LogTailInc")], 
