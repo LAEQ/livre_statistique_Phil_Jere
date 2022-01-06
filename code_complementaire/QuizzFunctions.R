@@ -115,7 +115,6 @@ build_pdf_responses <- function(myquizz){
       s2 <- paste0("\n\t+ ",paste(quest$answers[quest$response],collapse="\n\t+ "))
       string <- paste0(string, s2)
     }
-
   }
 
 
@@ -129,9 +128,14 @@ build_pdf_responses <- function(myquizz){
 
 render_quizz_pdf <- function(myquizz){
   string <- ""
+
   for (quest in myquizz$questions){
 
     string <- paste0(string, "\n* ","**",quest$label,"**")
+
+    if(is.null(quest$image) == FALSE){
+      string <- paste0(string, "\n\n\t ![",quest$alt_txt,"](",quest$image,")", "\n")
+    }
 
     if(quest$type == "stat"){
       string <- paste0(string, "\n\t+ ","...")
@@ -142,6 +146,7 @@ render_quizz_pdf <- function(myquizz){
     if(is.null(quest$help) == FALSE){
       string <- paste0(string, "\n\n\t",quest$help, "\n")
     }
+
   }
 
   questions <- string
@@ -167,10 +172,17 @@ build_html_quizz <- function(myquizz){
 
   # creation des questions dans le quizz
   i <- 1
+
   for(quest in myquizz$questions){
     balise <- tags$div(class = "card quizlib-question")
     # creation de la balise question
     b1 <- tags$div(quest$label,class = "quizlib-question-title")
+    # creation de la balise image
+    if(is.null(quest$image) == FALSE){
+      bimg <- tags$img(src=quest$image,
+                       alt=quest$alt_txt,
+                       style = "width: 25%;display: block;margin-left: auto;margin-right: auto;margin-bottom: 0.5em;margin-top: 0.5em;")
+    }
     # creation de la balise reponses
     resp <- build_html_response(quest, i)
 
@@ -180,10 +192,21 @@ build_html_quizz <- function(myquizz){
         #paste0("voir section : \\@ref(",quest$section,")")
         quest$help
       )
-      balise$children <- list(b1,resp,div_sec)
-    }else{
-      balise$children <- list(b1,resp)
     }
+
+    childs <- list(b1)
+
+    if(is.null(quest$image) == FALSE){
+      childs[[length(childs)+1]] <- bimg
+    }
+
+    if(is.null(quest$help) == FALSE){
+      childs[[length(childs)+1]] <- div_sec
+    }
+
+    childs[[length(childs)+1]] <- resp
+    balise$children <- childs
+
     quizz_div[[i]] <- balise
     i <- i+1
   }
