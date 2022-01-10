@@ -3,20 +3,22 @@
 Dans le cadre de ce chapitre, nous présenterons les principales méthodes permettant d'explorer les associations entre une variable quantitative et une variable qualitative avec deux modalités (tests de Student, de Welch et de Wilcoxon) ou avec plus de deux modalités (ANOVA et test de Kruskal-Wallis).
 
 ::: {.bloc_package data-latex=""}
-Dans cette section, nous utiliserons principalement les *packages* suivants : 
+Dans ce chapitre, nous utiliserons les *packages* suivants : 
 
 * Pour créer des graphiques :
-  - **ggplot2**, le seul, l'unique.
-  - **ggpubr**, pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles.
+  - **ggplot2**, le seul, l’unique!
+  - **ggpubr** pour combiner des graphiques.
 * Pour manipuler des données : 
   - **dplyr**, avec les fonctions *group_by*, *summarize* et les pipes *%>%*.
 * Pour les test *t* : 
   - **sjstats** pour réaliser des test *t* pondérés.
-  - **effectsize**, pour calculer les tailles d'effet de tests de *t*.
+  - **effectsize** pour calculer les tailles d'effet de tests de *t*.
 * Pour la section sur les ANOVA : 
   - **car** pour les ANOVA classiques.
   - **lmtest** pour le test de Breusch-Pagan d'homogénéité des variances.
   - **rstatix** intégrant de nombreux tests classiques (comme le test de Shapiro) avec **tidyverse**.
+* Autre *package* : 
+  - **foreign** pour importer des fichiers externes.
 :::
 
 
@@ -39,7 +41,7 @@ Le **t de Student**, appelé aussi **test _t_** (*t-test* en anglais), est un te
 
 * **Échantillons dépendants (dits appariés)**, les individus des deux groupes sont les mêmes et  sont donc associés par paires. Autrement dit, on a deux séries de valeurs de taille identique $n_a = n_b$ et $n_{ai}$ est le même individu que $n_{bi}$. Ce type d'analyse est souvent utilisée en études cliniques : pour $n$ individus, on dispose d'une mesure quantitative de leur état de santé pour deux séries (l'une avant le traitement, l'autre une fois le traitement terminé). Cela permet de comparer les mêmes individus avant et après un traitement, une expérimentation; on parle alors d'étude, d'expérience ou d'analyse pré-post. Concrètement, on cherche à savoir si la moyenne des différences des observations avant et après est significativement différente de 0. Si c'est le cas, on peut en conclure que l'expérimentation a eu un impact sur le phénomène mesuré (variable continue). Ce type d'analyse pré-post peut aussi être utilisé pour évaluer l'impact du réaménagement d'un espace public (rue commerciale, place publique, parc, etc.). Par exemple, on pourrait questionner le même échantillon de commerçants ou d'usagers avant et après le réaménagement d'une artère commerciale.
 
-**Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement distribuée. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect0432)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
+**Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement distribuée. Si elle est fortement anormale, on utilisera le test non paramétrique de Wilcoxon (section \@ref(sect0612)). Il existe trois principaux tests pour comparer les moyennes de deux groupes :
 
 * Test de Student (test *t*) avec échantillons indépendants et variances similaires (méthode *pooled*).  Les variances de deux groupes sont semblables quand leur ratio varie de 0,5 à 2, soit $0,5< (S^2_{X_A}/S^2_{X_B})<2$.
 * Test de Welch (appelé aussi Satterthwaite) avec échantillons indépendants quand les variances des deux groupes sont dissemblables.
@@ -49,7 +51,7 @@ Il s'agit de vérifier si les moyennes des deux groupes sont statistiquement dif
 
 * On pose l'hypothèse nulle (*H~0~*), soit que les moyennes des deux groupes *A* et *B* ne sont pas différentes ($\bar{X}_{A}=\bar{X}_{B}$) ou autrement dit, la différence des deux moyennes est nulle ($\bar{X}_{A}-\bar{X}_{B}=0$). L'hypothèse alternative (*H~1~*) est donc $\bar{X}_{A}\ne\bar{X}_{B}$.
 * On calcule la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* sera négative quand la moyenne du groupe A est inférieure au groupe B et inversement.
-* On compare la valeur absolue de *t* ($\mid T \mid$) avec celle issue de la table des valeurs critiques de T (voir section \@ref(annexe2)) avec le bon nombre de degrés de liberté et en choisissant un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
+* On compare la valeur absolue de *t* ($\mid t \mid$) avec celle issue de la table des valeurs critiques de T (voir section \@ref(annexe2)) avec le bon nombre de degrés de liberté et en choisissant un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
 * Si les moyennes sont statistiquement différentes, on peut calculer la taille de l'effet.
 
 
@@ -69,16 +71,17 @@ avec $n_A$,$n_B$, $S^2_{X_A}$ et $S^2_{X_B}$ étant respectivement les nombres d
 
 \footnotesize
 \begin{equation}
-t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_A}{n_A}+\frac{S^2_B}{n_B}}} \mbox{ et } dl = \frac{ \left( \frac{S^2_{X_A}}{n_A}+\frac{S^2_{X_B}}{n_B} \right)^2} {\frac{S^4_{X_A}}{n^2_A(n_A-1)}+\frac{S^4_{X_B}}{n^2_B(n_B-1)}}
+t = \frac{\bar{X}_{A}-\bar{X}_{B}}{\sqrt{\frac{S^2_{X_A}}{n_A}+\frac{S^2_{X_B}}{n_B}}} \mbox{ et } dl = \frac{ \left( \frac{S^2_{X_A}}{n_A}+\frac{S^2_{X_B}}{n_B} \right)^2} {\frac{S^4_{X_A}}{n^2_A(n_A-1)}+\frac{S^4_{X_B}}{n^2_B(n_B-1)}}
 (\#eq:cas2welch)
 \end{equation}
 \normalsize
 
-Dans la syntaxe  ci-dessous, nous avons écrit une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculées les moyennes, nombres d'observations et variances pour les deux groupes, le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement à la vitesse de déplacement de cyclistes utilisant un vélo personnel ou un vélo en libre-service (généralement plus lourd) :
 
-* Au cas 1, 60 cyclistes utilisant un vélo personnel roulant en moyenne à 18 km/h (écart-type de 1,5) et 50 utilisateurs·trices du système de vélopartage avec une vitesse moyenne de 15 km/h (écart-type de 1,5).
+Dans la syntaxe ci-dessous, nous avons écrit une fonction dénommée `test_independants` permettant de calculer les deux tests pour des échantillons indépendants. Dans cette fonction, vous pourrez repérer comment sont calculées les moyennes, nombres d'observations et variances pour les deux groupes, le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests. Puis, nous avons créé aléatoirement deux jeux de données relativement à la vitesse de déplacement de cyclistes utilisant un vélo personnel ou un vélo en libre-service (généralement plus lourd) :
 
-* Au cas 2, 60 cyclistes utilisant un vélo personnel roulant en moyenne à 16 km/h (écart-type de 3) et 50 utilisateurs·trices du système de vélopartage avec une vitesse moyenne de 15 km/h (écart-type de 1,5). Ce faible écart des moyennes, combiné à une plus forte variance va réduire la significativité de la différence entre les deux groupes.
+* Au cas 1, 60 cyclistes utilisant un vélo personnel roulant en moyenne à 18 km/h (écart-type de 1,5) et 50 autres utilisant un système de vélopartage avec une vitesse moyenne de 15 km/h (écart-type de 1,5).
+
+* Au cas 2, 60 cyclistes utilisant un vélo personnel roulant en moyenne à 16 km/h (écart-type de 3) et 50 autres utilisant un système de vélopartage avec une vitesse moyenne de 15 km/h (écart-type de 1,5). Ce faible écart des moyennes, combiné à une plus forte variance va réduire la significativité de la différence entre les deux groupes.
 
 D'emblée, l'analyse visuelle des boîtes à moustaches (figure \@ref(fig:figttest1)) signale qu'au cas 1 contrairement au cas 2, les groupes sont plus homogènes (boîtes plus compactes) et les moyennes semblent différentes (les boîtes sont centrées différemment sur l'axe des ordonnées). Cela est confirmé par les résultats des tests.
 
@@ -177,7 +180,7 @@ Nous disposons de plusieurs personnes pour lesquelles nous avons mesuré un phé
 
 * On pose l'hypothèse nulle (*H~0~*), soit que la moyenne des différences entre les deux séries est égale à 0 ($\bar{D} = 0$ avec $d = {x}_{t_1}- {x}_{t_2}$). L'hypothèse alternative (*H~1~*) est donc $\bar{D} \ne 0$. Notez que l'on peut tester une autre valeur que 0.
 * On calcule la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* sera négative quand la moyenne des différences entre ${X}_{t_1}$ et ${X}_{t_2}$ est négative et inversement.
-* On compare la valeur absolue de *t* ($\mid T \mid$) avec celle issue de la table des valeurs critiques T avec le bon nombre de degrés de liberté et en choisissant un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
+* On compare la valeur absolue de *t* ($\mid t \mid$) avec celle issue de la table des valeurs critiques de T avec le nombre de degrés de liberté et en choisissant un degré de signification (habituellement, p = 0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
 
 Pour le test de Student avec des échantillons appariés, la valeur de *t* se calcule comme suit :
 
@@ -191,9 +194,9 @@ t = \frac{\bar{D}-\mu_0}{\sigma_D / \sqrt{n}}
 
 avec $\bar{D}$ étant la moyenne des différences entre les observations appariées de la série A et de la série B, $\sigma_D$ l'écart des différences, *n* le nombre d'observations, et finalement $\mu_0$ la valeur de l'hypothèse nulle que l'on veut tester (habituellement 0). Bien entendu, il est possible de fixer une autre valeur pour $\mu_0$ : par exemple, avec $\mu_0 = 10$, on chercherait ainsi à vérifier si la moyenne des différences est significativement différente de 10. Le nombre de degrés de liberté sera égal à $n-1$.
 
-Dans la syntaxe  ci-dessous, nous avons écrit une fonction dénommée `tstudent_dependants` permettant de réaliser le test de Student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
+Dans la syntaxe ci-dessous, nous avons écrit une fonction dénommée `tstudent_dependants` permettant de réaliser le test de Student pour des échantillons appariés. Dans cette fonction, vous pourrez repérer comment sont calculés la différence entre les observations pairées, la moyenne et l'écart-type de cette différence, puis le nombre de degrés de liberté, les valeurs de *t* et de *p* pour les deux tests.
 
-Pour illustrer l'utilisation de la fonction, nous avons créé aléatoirement deux jeux de données. Imaginons que ces données décrivent 50 personnes utilisant habituellement l'automobile pour se rendre au travail. Pour ces personnes, nous avons généré des valeurs du risque perçu de l'utilisation du vélo (de 0 à 100), et ce, avant et après une période de 20 jours ouvrables durant lesquels ils devaient impérativement se rendre au travail à vélo.
+Pour illustrer l'utilisation de la fonction, nous avons créé aléatoirement deux jeux de données. Imaginons que ces données décrivent 50 personnes utilisant habituellement l'automobile pour se rendre au travail. Pour ces personnes, nous avons généré des valeurs du risque perçu de l'utilisation du vélo (de 0 à 100), et ce, avant et après une période de 20 jours ouvrables durant lesquels elles devaient impérativement se rendre au travail à vélo.
 
 * Au cas 1, les valeurs de risque ont une moyenne de 70 avant l'expérimentation et de 50 après l'expérimentation, avec des écarts-types de 5.
 * Au cas 2, les valeurs de risque ont une moyenne de 70 avant et 66 après, avec des écarts-types de 5.
@@ -235,13 +238,17 @@ Avant1 <- rnorm(50,70,5)
 Apres1 <- rnorm(50,50,5)
 df1 <- data.frame(Avant=Avant1, Apres=Apres1)
 boxplot1 <- ggpaired(df1, cond1 = "Avant", cond2 = "Apres", fill = "condition", 
-                     palette = "jco", title = "Données fictives (cas 1)")
+                     palette = "jco", 
+                     xlab="", ylab="Sentiment de sécurité", 
+                     title = "Données fictives (cas 1)")
 # CAS 2 : données fictives ------------------
 Avant2 <- rnorm(50,70,5)
 Apres2 <- rnorm(50,66,5)
 df2 <- data.frame(Avant=Avant2, Apres=Apres2)
-boxplot2 <- ggpaired(df2, cond1 = "Avant", cond2 = "Apres", fill = "condition", 
-                     palette = "jco", title = "Données fictives (cas 2)")
+boxplot2 <- ggpaired(df2, cond1 = "Avant", cond2 = "Apres", fill = "condition",
+                     palette = "jco", 
+                     xlab="", ylab="Sentiment de sécurité", 
+                     title = "Données fictives (cas 2)")
 ggarrange(boxplot1, boxplot2, ncol = 2, nrow = 1)
 # Test t : appel de la fonction tstudent_dependants
 tstudent_dependants(Avant1, Apres1, mu=0)
@@ -251,7 +258,7 @@ tstudent_dependants(Avant2, Apres2, mu=0)
 
 #### Mesurer la taille de l'effet {#sect06112}
 
-Rappelons que la taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas d'une comparaison de moyennes (avec des échantillons pairés ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le second étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test de Student ou de Welch s'est révélé significatif (p<0,05).
+La taille de l'effet permet d'évaluer la magnitude (force) de l'effet d'une variable (ici la variable qualitative à deux modalités) sur une autre (ici la variable continue). Dans le cas d'une comparaison de moyennes (avec des échantillons pairés ou non), pour mesurer la taille d'effet, on utilise habituellement le *d* de Cohen ou encore le *g* de Hedges; le second étant un ajustement du premier. Notez que nous analyserons la taille de l'effet uniquement si le test de Student ou de Welch s'est révélé significatif (p<0,05).
 
 **Pourquoi utiliser le *d* de Cohen?** Deux propriétés en font une mesure particulièrement intéressante. Premièrement, elle est facile à calculer puisque *d* est le ratio entre la différence de deux moyennes de groupes (A, B) et l'écart-type combiné des deux groupes. Deuxièmement, *d* représente ainsi une mesure standardisée de la taille de l'effet ; elle permet ainsi l'évaluation de la taille d'effet indépendamment de l'unité de mesure de la variable continue. Concrètement, cela signifie que, quelle que soit l'unité de mesure de la variable continue *X*, elle est toujours exprimée en unité d'écart-type de *X*. Cette propriété facilite ainsi grandement les comparaisons entre des valeurs de *d* calculées sur différentes combinaisons de variables (au même titre que le coefficient de variation ou le coefficient de corrélation par exemple). Pour des échantillons indépendants de tailles différentes, il s'écrit : 
 
@@ -315,7 +322,7 @@ show_table(df,
 
 #### Mise en œuvre dans R {#sect06113}
 
-Nous avons écrit précédemment les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Il existe des fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux tests avec une seule ligne de code.
+Nous avons écrit précédemment les fonctions `tstudent_independants` et `tstudent_dependants` uniquement pour décomposer les différentes étapes de calcul des tests de Student et de Welch. Heureusement, il existe des fonctions de base (`t.test` et `var.test`) qui permettent de réaliser l'un ou l'autre de ces deux tests avec une seule ligne de code.
 
 La fonction `t.test` permet ainsi de calculer les tests de Student et de Welch :
 
@@ -326,7 +333,7 @@ La fonction `t.test` permet ainsi de calculer les tests de Student et de Welch :
 
 Les fonctions `cohens_d` et `hedges_g` du *package* **effectsize** renvoient respectivement les mesures de *d* de Cohen et du *g* de Hedge :
 
-* `cohens_d(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou  `cohens_d(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou
+* `cohens_d(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou  `cohens_d(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
 * `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `hedges_g(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
 
 * `glass_delta(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `glass_delta(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
@@ -419,7 +426,8 @@ Post <- c(56,47,40,45,49,51,54,47,44,54,42,56,45,45,48,
 # Première façon de faire un tableau : avec deux colonnes Avant et Après
 df1 <- data.frame(Avant=Pre, Apres=Post)
 head(df1)
-ggpaired(df1, cond1 = "Avant", cond2 = "Apres", fill = "condition", palette = "jco")
+ggpaired(df1, cond1 = "Avant", cond2 = "Apres", fill = "condition", palette = "jco",
+         xlab="", ylab="Variable continue")
 # Nombre d'observations, moyennes et écart-types
 cat(nrow(df1), " observations",
     "\nPOST. moy = ", round(mean(df1$Avant),1), ", e.t. = ", round(sd(df1$Avant),1),
@@ -442,7 +450,8 @@ group_by(df2, periode) %>%
     moy = mean(risque, na.rm = TRUE),
     et = sd(risque, na.rm = TRUE)
     )
-ggpaired(data=df2, x= "periode", y="risque", fill = "periode")
+ggpaired(data=df2, x= "periode", y="risque", fill = "periode",
+         xlab="", ylab="Variable continue")
 t.test(risque ~ periode, data=df2, paired = TRUE)
 ```
 
@@ -453,7 +462,7 @@ En études urbaines et en géographie, le recours aux données agrégées (non i
 
 * Pour chaque secteur de recensement des îles de Montréal et de Laval, nous avons calculé la distance au parc le plus proche à travers le réseau de rues avec un système d'information géographique (SIG). On souhaite vérifier si les personnes âgées de moins de 15 ans résidant sur l'île de Montréal bénéficient en moyenne d'une meilleure accessibilité au parc.
 
-* Dans une étude pour sur la concentration de polluants atmosphériques dans l'environnement autour des écoles primaires montréalaises, Carrier *et al.* [-@carrier2014] souhaitaient vérifier si les élèves fréquentant les écoles les plus défavorisées sont plus exposé·e·s au dioxyde d'azote (NO~2~) dans leur milieu scolaire. Pour ce faire, ils ont réalisé un test _t_ sur un tableau avec comme observations les écoles primaires et trois variables : la moyenne de NO~2~ (variable continue), les quintiles extrêmes d'un indice de défavorisation (premier et dernier quintiles, variable qualitative) et le nombre d'élèves inscrit·e·s par école (variable pour la pondération).
+* Dans une étude pour sur la concentration de polluants atmosphériques dans l'environnement autour des écoles primaires montréalaises, Carrier *et al.* [-@carrier2014] souhaitaient vérifier si les élèves fréquentant les écoles les plus défavorisées sont plus exposé·e·s au dioxyde d'azote (NO~2~) dans leur milieu scolaire. Pour ce faire, ils ont réalisé un test _t_ sur un tableau avec comme observations les écoles primaires et trois variables : la moyenne de NO~2~ (variable continue), les quintiles extrêmes d'un indice de défavorisation (premier et dernier quintiles, variable qualitative) et le nombre d'élèves par école (variable pour la pondération).
 
 Pour réaliser un test *t* pondéré, nous pouvons utiliser la fonction `weighted_ttest` du package **sjstats**.
 
@@ -482,7 +491,7 @@ weighted_ttest(Locataire ~ Montreal + Logement, dfRMR,
 
 #### Comment rapporter un test de Student ou de Welch? {#sect06115}
 
-Pour les différentes versions du test, il est important de rapporter la valeur de *t*, la valeur de _p_ et les moyennes des groupes; voici quelques exemples.
+Pour les différentes versions du test, il est important de rapporter les valeurs de _*_t_ et _p_, les moyennes et écarts-types des groupes; voici quelques exemples.
 
 **Test de Student ou de Welch pour échantillons indépendants**
 
@@ -556,7 +565,7 @@ wilcox.test(df1$Avant, df1$Apres, paired = TRUE)
 
 **Comment rapporter un test de Wilcoxon?**
 
-Lorsque l'on rapporte les résultats d'un test de Wilcoxon, il est important de signaler la valeur du test (W), le degré de signification (valeur de p) et éventuellement la médiane des rangs ou de la variable originale pour les deux groupes. Voici quelques exemples :
+Lorsque l'on rapporte les résultats d'un test de Wilcoxon, il est important de signaler la valeur du test (W), le degré de signification (valeur de *p*) et éventuellement la médiane des rangs ou de la variable originale pour les deux groupes. Voici quelques exemples :
 
 * Les résultats du test des rangs signés de Wilcoxon signalent que les rangs de l'île de Montréal sont significativement plus élevés que ceux de l'île de Laval (W = 1223, p < 0,001).
 * Les résultats du test de Wilcoxon signalent que les rangs post-tests sont significativement plus faibles que ceux du pré-test (W = 1273,5, p < 0,001).
@@ -607,14 +616,14 @@ VT=\sum_{i=1}^n (y_{i}-\overline{y})^2
 
 \footnotesize
 \begin{equation}
-Var_{inter} \mbox{ ou } VE=\sum_{i\in{g_1}}(\overline{y_{g_1}}-\overline{y})^2 + \sum_{i\in{g_2}}(\overline{y_{g_2}}-\overline{y})^2 + ... + \sum_{i\in{g_n}}(\overline{y_{g_k}}-\overline{y})^2
+Var_{inter} \mbox{ ou } VE=n_{g_1}\sum_{i\in{g_1}}(\overline{y_{g_1}}-\overline{y})^2 + n_{g_2}\sum_{i\in{g_2}}(\overline{y_{g_2}}-\overline{y})^2 + ... + n_{g_k}\sum_{i\in{g_n}}(\overline{y_{g_k}}-\overline{y})^2
 (\#eq:anova2)
 \end{equation}
 \normalsize
 
 \footnotesize
 \begin{equation}
-Var_{intra} \mbox{ ou } VNE=n_{g_1}\sum_{i\in{g_1}}(y_{i}-\overline{y_{g_1}})^2 + n_{g_2}\sum_{i\in{g_2}}(y_{i}-\overline{y_{g_2}})^2 + ... + n_{g_k}\sum_{i\in{g_n}}(y_{i}-\overline{y_{g_k}})^2 
+Var_{intra} \mbox{ ou } VNE=\sum_{i\in{g_1}}(y_{i}-\overline{y_{g_1}})^2 + \sum_{i\in{g_2}}(y_{i}-\overline{y_{g_2}})^2 + ... + \sum_{i\in{g_n}}(y_{i}-\overline{y_{g_k}})^2 
 (\#eq:anova3)
 \end{equation}
 \normalsize
@@ -647,11 +656,11 @@ VT = Var_{inter} + Var_{intra} \mbox{ ou } VT = VNE + VE
 Autrement dit, plus la variance intergroupe (**dissimilarité** des groupes) est maximisée et corollairement plus la variance intragroupe (**homogénéité** de chacun des groupes) est minimisée, plus les groupes sont clairement distincts et plus l'ANOVA sera performante.
 :::
 
-Examinons un premier jeu de données fictives sur la vitesse de déplacements de cyclistes (variable continue exprimée en km/h) et une variable qualitative comprenant trois groupes de cyclistes utilisant soit un vélo personnel (*n~A~* = 5), soit en libre-service (*n~B~* = 7), soit électrique (*n~C~* = 6) (tableau \@ref(tab:aovfictive1)). D'emblée, on note que les moyennes de vitesse des trois groupes sont différentes : 17,6 km/h pour les cyclistes avec leur vélo personnel, 12,3  km/h les utilisateurs·trices des vélos en libre-service et 23,1 km/h pour les cyclistes avec un vélo électrique. Pour chaque observation, la troisième colonne du tableau représente les écarts à la moyenne globale mis au carré, tandis que les colonnes suivantes représentent la déviation au carré de chaque observation à la moyenne de son groupe d'appartenance. Ainsi, pour la première observation, on a $(16,900 - 17,339)^2 = 0,193$ et $(16,900 - 17,580)^2~ = 0,46$. Les valeurs des trois variances sont les suivantes :
+Examinons un premier jeu de données fictives sur la vitesse de déplacements de cyclistes (variable continue exprimée en km/h) et une variable qualitative comprenant trois groupes de cyclistes utilisant soit un vélo personnel (*n~A~* = 5), soit en libre-service (*n~B~* = 7), soit électrique (*n~C~* = 6) (tableau \@ref(tab:aovfictive1)). D'emblée, on note que les moyennes de vitesse des trois groupes sont différentes : 17,6 km/h pour les cyclistes avec leur vélo personnel, 12,3 km/h celles et ceux avec des vélos en libre-service et 23,1 km/h pour les cyclistes avec un vélo électrique. Pour chaque observation, la troisième colonne du tableau représente les écarts à la moyenne globale mis au carré, tandis que les colonnes suivantes représentent la déviation au carré de chaque observation à la moyenne de son groupe d'appartenance. Ainsi, pour la première observation, on a $(16,900 - 17,339)^2 = 0,193$ et $(16,900 - 17,580)^2~ = 0,462$. Les valeurs des trois variances sont les suivantes :
 
-* la variance totale (*VT*) est donc égale à la somme de la troisième colonne ($424,663$)
-* la variance intragroupe (non expliquée, VNE) est égale à $11,228+21,537+13,993=46,758$. 
+* la variance totale (*VT*) est donc égale à la somme de la troisième colonne ($424,663$).
 * la variance intergroupe (expliquée, VE), elle est égale à $5\times(17,580-17,339)^2+7\times(12,257-17,339)^2+6\times(23,067-17,339)^2 = 377,904$.
+* la variance intragroupe (non expliquée, VNE) est égale à $11,228+21,537+13,993=46,758$. 
 
 On a donc $VT = Var_{inter} + Var_{intra}$, soit $424,663 = 377,904 + 46,758$ et $\eta_2 = 377,904 / 424,663 = 0,89$. Cela signale que 89% de la variance de la vitesse des cyclistes est expliquée par le type de vélo utilisé.
 
@@ -722,8 +731,8 @@ show_table(tabl,
 Examinons un deuxième jeu de données fictives pour lequel le type de vélo utilisé n'aurait que peu d'effet sur la vitesse des cyclistes (tableau \@ref(tab:aovfictive2)). D'emblée, les moyennes des trois groupes semblent très similaires (19,3, 17,9 et 18,7). Les valeurs des trois variances sont les suivantes :
 
 * la variance totale est égale à 121,756.
-* la variance intragroupe (non expliquée, VNE) est égale à $9,140+50,254+56,275 = 115,669$.
 * la variance intergroupe (expliquée, VE) est égale à $5\times(19,300-18,528)^2+7\times(17,871-18,528)^2+6\times(18,650-18,528)^2 = 6,087$.
+* la variance intragroupe (non expliquée, VNE) est égale à $9,140+50,254+56,275 = 115,669$.
 
 On a donc $VT = Var_{inter} + Var_{intra}$, soit $121,756 = 6,087 + 115,669$ et $\eta_2 = 6,087 / 121,756 = 0,05$. Cela signale que 5% de la variance de la vitesse des cyclistes est uniquement expliquée par le type de vélo utilisé.
 
@@ -789,18 +798,6 @@ show_table(tabl,
                 "$(y_{i}-\\overline{y_{C}})^2$"
                 )
            )
-# knitr::kable(
-#   head(tabl, nrow(tabl)), booktabs = TRUE, valign = 't', row.names = FALSE,
-#    format.args = list(decimal.mark = ",", big.mark = " "),           
-#   col.names = c("Type de vélo",
-#                 "km/h",
-#                 "$(y_{i}-\\overline{y})^2$",
-#                 "$(y_{i}-\\overline{y_{A}})^2$",
-#                 "$(y_{i}-\\overline{y_{B}})^2$",
-#                 "$(y_{i}-\\overline{y_{C}})^2$"
-#                 ),
-#   caption = "Données fictives et calcul des trois variances (cas 2)")  %>%
-#   kableExtra::kable_styling(font_size = font_size_table)
 ```
 
 
@@ -822,7 +819,7 @@ $\alpha$ (*p*=0,05 habituellement) (voir le tableau des valeurs critiques de *F*
 Appliquons rapidement la démarche du test *F* à nos deux jeux de données fictives qui comprennent 3 modalités pour la variable qualitative et 18 observations. Avec $\alpha$=0,05, 2 degrés de liberté (3-1) au numérateur et 15 au dénominateur (18-3), la valeur critique de F est de 3,68. On en conclut alors que :
 
 * pour le cas A, le F calculé est égal à $F = (377,904 /2) / (46,758 / 15) = 60,62$. Il est  supérieur à la valeur F critique; les moyennes sont donc statistiquement différentes au seuil 0,05. Autrement dit, nous aurions eu moins de 5% de chance d'obtenir un échantillon produisant ces résultats si en réalité la différence entre les moyennes était de 0.
-* pour le cas B, le F calculé est égal à $F = (6,087/2)/ (115,669 / 15) = 0,39$. Il est inférieur à la valeur F critique; les moyennes ne sont donc pas statistiquement différentes au seuil 0,05.
+* pour le cas B, le F calculé est égal à $F = (6,087/2)/ (115,669 / 15) = 0,39$. Il est inférieur à la valeur F critique; les moyennes ne sont donc pas statistiquement différentes au seuil de 0,05.
 
 #### Conditions d'application de l'ANOVA et solutions alternatives {#sect06213}
 
@@ -834,12 +831,12 @@ Trois conditions d'application doivent être vérifiées avant d'effectuer une a
 
 * **Indépendance des observations (pseudo-réplication).** Chaque individu doit appartenir à un et un seul groupe. En d'autres termes, les observations ne sont pas indépendantes si plusieurs mesures (variable continue) sont faites sur un même individu. Si c'est le cas, on utilisera alors une analyse de variance sur des mesures répétées (voir le bloc à la fin du chapitre).
 
-**Quelles sont les conséquences si les conditions d'application ne sont pas respectées ?** La non-vérification des conditions d'application cause deux problèmes distincts : elle affecte la puissance du test (sa capacité à détecter un effet, si celui-ci existe réellement) et le taux d'erreur de type 1 (la probabilité de trouver un résultat significatif alors qu'aucune relation n'existe réellement, soit un faut-positif) [@glass1972consequences; @lix1996consequences].
+**Quelles sont les conséquences si les conditions d'application ne sont pas respectées ?** La non-vérification des conditions d'application cause deux problèmes distincts : elle affecte la puissance du test (sa capacité à détecter un effet, si celui-ci existe réellement) et le taux d'erreur de type 1 (la probabilité de trouver un résultat significatif alors qu'aucune relation n'existe réellement, soit un faux-positif) [@glass1972consequences; @lix1996consequences].
 
 * Si la distribution est asymétrique plutôt que centrée (comme pour une distribution normale), la puissance et le taux d'erreur de type 1 sont tous les deux peu affectés, car le test est non orienté (la différence de moyennes peut être négative ou positive).
 * Si la distribution est leptocurtique (pointue, avec des extrémités de la distribution plus importantes), le taux d'erreur de type 1 est peu affecté; en revanche, la puissance du test est réduite. L'inverse s'observe si la distribution est platicurtique (aplatie, c'est-à-dire avec des extrémités de la distribution plus réduites.
 * Si les groupes ont des variances différentes, le taux d'erreur de type 1 augmente légèrement.
-* Si les observations ne sont pas indépendantes, à la fois le taux d'erreurs de type 1 et la puissance du test sont fortement affectés.
+* Si les observations ne sont pas indépendantes, à la fois le taux d'erreur de type 1 et la puissance du test sont fortement affectés.
 * Si les échantillons sont petits, les effets présentés ci-dessus sont démultipliés.
 * Si plusieurs conditions ne sont pas respectées, les conséquences présentées ci-dessus s'additionnent, voire se combinent.
 
@@ -853,7 +850,7 @@ Trois conditions d'application doivent être vérifiées avant d'effectuer une a
 
 * Dernière solution, lorsque les deux conditions ne sont vraiment pas respectées, utilisez le test non paramétrique de Kruskal-Wallis. Par analogie au *t* de Student, il correspond au test des rangs signés de Wilcoxon. Ce test est décrit dans la section suivante.
 
-Vous l'aurez compris, dans de nombreux cas en statistique, les choix méthodologiques dépendent de la subjectivité des chercheur·e·s. Il faut s'adapter au jeu de données et à la culture statistique en vigueur dans votre champ d'études. N'hésitez pas à réaliser plusieurs tests différents pour évaluer la robustesse de vos conclusions et fiez-vous en premier lieu à ceux pour lesquels votre jeu de données est le plus adapté.
+Vous l'aurez compris, dans de nombreux cas en statistique, les choix méthodologiques dépendent en partie de la subjectivité des chercheur·e·s. Il faut s'adapter au jeu de données et à la culture statistique en vigueur dans votre champ d'études. N'hésitez pas à réaliser plusieurs tests différents pour évaluer la robustesse de vos conclusions et fiez-vous en premier lieu à ceux pour lesquels votre jeu de données est le plus adapté.
 
 ### Test non paramétrique de Kruskal-Wallis {#sect0622}
 
@@ -903,7 +900,7 @@ GraphViolon <- ggplot(df_TrajetsDuree, aes(x=Mode, y=DureeMinute)) +
 ggarrange(GraphDens, GraphViolon)
 ``` 
 
-Nous pouvons vérifier si les échantillons sont normalement distribués avec la fonction `shapiro_test` du package **rstatix**. À titre de rappel, l'hypothèse nulle (*H~0~*) de ce test est que la distribution est normale. Par conséquent, quand la valeur de *P* associée à la statistique de Shapiro est supérieure à 0,05, alors on ne peut rejeter l'hypothèse d'une distribution normale (autrement dit, la distribution est anormale). À la lecture des sorties ci-dessous, seul le groupe des utilisateurs·trices en transport en commun présente une distribution proche de la normalité (p=0,0504). Ce test étant très restrictif, il est fortement conseillé de visualiser le diagramme quantile-quantile pour chaque groupe (graphique QQ plot) (figure \@ref(fig:figQqplot)). Ces graphiques sont utilisés pour déterminer visuellement si une distribution empirique (observées sur des données), s'approche d'une distribution théorique (ici la loi normale). Si effectivement les deux distributions sont proches, les points du diagramme devraient tous tomber sur une ligne droite parfaite. Un intervalle de confiance (représenté ici en gris) peut être construit pour obtenir une interprétation plus nuancée. Dans notre cas, seules deux observations pour le vélo et deux autres pour l'automobile s'éloignent vraiment de la ligne droite. On peut considérer que ces trois distributions s'approchent d'une distribution normale.
+Nous pouvons vérifier si les échantillons sont normalement distribués avec la fonction `shapiro_test` du package **rstatix**. À titre de rappel, l'hypothèse nulle (*H~0~*) de ce test est que la distribution est normale. Par conséquent, quand la valeur de *P* associée à la statistique de Shapiro est supérieure à 0,05, alors on ne peut rejeter l'hypothèse d'une distribution normale (autrement dit, la distribution est anormale). À la lecture des résultats ci-dessous, seul le groupe utilisant le transport en commun présente une distribution proche de la normalité (p=0,0504). Ce test étant très restrictif, il est fortement conseillé de visualiser le diagramme quantile-quantile pour chaque groupe (graphique QQ plot) (figure \@ref(fig:figQqplot)). Ces graphiques sont utilisés pour déterminer visuellement si une distribution empirique (observées sur des données), s'approche d'une distribution théorique (ici la loi normale). Si effectivement les deux distributions sont proches, les points du diagramme devraient tous tomber sur une ligne droite parfaite. Un intervalle de confiance (représenté ici en gris) peut être construit pour obtenir une interprétation plus nuancée. Dans notre cas, seules deux observations pour le vélo et deux autres pour l'automobile s'éloignent vraiment de la ligne droite. On peut considérer que ces trois distributions s'approchent d'une distribution normale.
 
 ```{r figQqplot, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='QQ Plot pour les groupes', out.width='75%'}
 library("dplyr")
@@ -936,13 +933,13 @@ Deux fonctions peuvent être utilisées pour calculer l'analyse de variance : la
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library("rstatix")
-library("lmtest")
 library("car")
+library("effectsize")
 # ANOVA avec la fonction aov
 aov1 <- aov(DureeMinute ~ Mode, data = df_TrajetsDuree)
 summary(aov1)
-# calcul de Eta2 avec la fonction eta_sq du package lmtest
-eta_sq(aov1)
+# calcul de Eta2 avec la fonction eta_squared du package effectsize
+effectsize::eta_squared(aov1)
 # ANOVA avec la fonction anova_test du package rstatix
 anova_test(DureeMinute ~ Mode, data = df_TrajetsDuree)
 ```
@@ -963,7 +960,7 @@ load("data/bivariee/dataPollution.RData")
    get_summary_stats(laeq, type = "mean_sd")  # Variable continue 
 ```
 
-À la lecture des graphiques de densité et en violon (figure \@ref(fig:figAnova1b)), il semble clair que les niveaux d'exposition au bruit sont plus faibles pour les automobilistes et plus élevés pour les cyclistes et surtout les utilisateurs·trices du transport en commun. En outre, la distribution des valeurs d'exposition au bruit dans le transport en commun semble bimodale. Cela s'explique par le fait que les niveaux de bruit sont beaucoup plus élevés dans le métro que dans les autobus.
+À la lecture des graphiques de densité et en violon (figure \@ref(fig:figAnova1b)), il semble clair que les niveaux d'exposition au bruit sont plus faibles pour les automobilistes et plus élevés pour les cyclistes et surtout les personnes en transport en commun. En outre, la distribution des valeurs d'exposition au bruit dans le transport en commun semble bimodale. Cela s'explique par le fait que les niveaux de bruit sont beaucoup plus élevés dans le métro que dans les autobus.
 
 ```{r figAnova1b, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Graphique de densité et en violons', out.width='75%'}
 library("ggplot2")
@@ -1032,7 +1029,7 @@ aov2 <- aov(laeq ~ Mode, data = df_Bruit)
 TukeyHSD(aov2, conf.level = 0.95)
 ```
 
-Le calcul de test non paramétrique de Kruskal-Wallis avec la fonction `kruskal.test` démontre aussi que les médianes des groupes sont différentes (*p*< 0,001). De manière comparable au test de Tukey, la fonction `pairwise.wilcox.test` permet aussi de repérer les différences significatives entre les paires de groupes. Pour conclure, tant l'ANOVA que le test non paramétrique de Kruskal-Wallis indiquent que les trois modes de transport sont significativement différents quant à l'exposition au bruit, avec des valeurs plus faibles pour les automobilistes comparativement aux cyclistes et aux utilisateur·rice·s du transport en commun.
+Le calcul de test non paramétrique de Kruskal-Wallis avec la fonction `kruskal.test` démontre aussi que les médianes des groupes sont différentes (*p*< 0,001). De manière comparable au test de Tukey, la fonction `pairwise.wilcox.test` permet aussi de repérer les différences significatives entre les paires de groupes. Pour conclure, tant l'ANOVA que le test non paramétrique de Kruskal-Wallis indiquent que les trois modes de transport sont significativement différents quant à l'exposition au bruit, avec des valeurs plus faibles pour les automobilistes comparativement aux cyclistes et aux personnes ayant pris le transport en commun.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 # Test de Kruskal-Wallis
@@ -1050,9 +1047,9 @@ pairwise.wilcox.test(df_Bruit$laeq, df_Bruit$Mode, p.adjust.method = "BH")
 
 Plusieurs éléments doivent être reportés pour détailler les résultats d'une ANOVA ou d'un test de Kruskal-Wallis : la valeur de *F*, de *W* (dans le cas d'une ANOVA de Welch) ou du χ2 (Kruskal-Wallis), les valeurs de *P*, les moyennes ou médianes respectives des groupes et éventuellement un tableau détaillant les écarts intergroupes obtenus avec les tests de Tukey ou Wilcoxon par paires.
 
-* Les résultats de l'analyse de variance à un facteur démontrent que le mode de transport utilisé n'a pas d'effet significatif sur le temps de déplacement en heures de pointe à Montréal (*F*(2,96)=0,82, *p*=0,444). En effet, pour des trajets de dix kilomètres entre un quartier périphérique et le centre-ville, les cyclistes (Moy=38,4, ET=15,2) arrivent en moyenne moins d'une minute après les automobilistes (Moy=37,7, ET=12,8) et moins de quatre minutes comparativement aux usagers·ères du transport en commun (Moy=41,6, ET=11,4). 
+* Les résultats de l'analyse de variance à un facteur démontrent que le mode de transport utilisé n'a pas d'effet significatif sur le temps de déplacement en heures de pointe à Montréal (*F*(2,96)=0,82, *p*=0,444). En effet, pour des trajets de dix kilomètres entre un quartier périphérique et le centre-ville, les cyclistes (Moy=38,4, ET=15,2) arrivent en moyenne moins d'une minute après les automobilistes (Moy=37,7, ET=12,8) et moins de quatre minutes comparativement aux personnes ayant pris le transport en commun (Moy=41,6, ET=11,4). 
 
-* Les résultats de l'analyse de variance à un facteur démontrent que le mode de transport utilisé a un impact significatif sur le niveau d'exposition en heures de pointe à Montréal (*F*(2,96)=544, *p*<0,001 et *Welch*(2,96)=446, *p*<0,001). En effet, les usagers·ères du transport en commun (Moy=74,0, ET=6,79) et les cyclistes (Moy=68,8, ET=4,3) sont significativement plus exposé·e·s au bruit que les automobilistes (Moy=66,8, ET=4,56). 
+* Les résultats de l'analyse de variance à un facteur démontrent que le mode de transport utilisé a un impact significatif sur le niveau d'exposition en heures de pointe à Montréal (*F*(2,96)=544, *p*<0,001 et *Welch*(2,96)=446, *p*<0,001). En effet, les personnes en transport en commun (Moy=74,0, ET=6,79) et les cyclistes (Moy=68,8, ET=4,3) ont des niveaux d'exposition au bruit significativement plus élevés que les automobilistes (Moy=66,8, ET=4,56). 
 
 * Les résultats du test de Kruskal-Wallis démontrent qu'il existe des différences significatives d'exposition au bruit entre les trois modes de transport (χ2(2) = 784,74, p<0,001) avec des moyennes de rangs de 1094 pour l'automobile, 1124 pour le vélo et 1207 pour le transport en commun.
 
@@ -1073,3 +1070,11 @@ Pour le test *t*, nous avons vu qu'il peut s'appliquer soit à deux échantillon
 
 Bref, si l'ANOVA était un roman, elle serait certainement « un monde sans fin » de Ken Follett! Notez toutefois que la SUPERNOVA, la BOSSA-NOVA et le CASANOVA ne sont pas des variantes de l'ANOVA!
 :::
+
+
+## Quiz de révision du chapitre
+
+```{r Chapitre6_QualiQuanti, echo=FALSE, warning=FALSE, results="asis"}
+Chapitre6_QualiQuanti <- quizz("quizzs/Chapitre6_QualiQuanti.yml", "Chapitre6_QualiQuanti")
+render_quizz(Chapitre6_QualiQuanti)
+```

@@ -7,10 +7,10 @@ Plus spécifiquement, nous aborderons ici les principes et hypothèses de la ré
 
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons principalement les *packages* suivants : 
+Dans ce chapitre, nous utiliserons les *packages* suivants : 
 
 * Pour créer des graphiques :
-  - **ggplot2**, le seul, l'unique
+  - **ggplot2**, le seul, l’unique!
   - **ggpubr**, pour combiner les graphiques
 * Pour obtenir les coefficients standardisés : 
   - **QuantPsyc**, avec la fonction *lm.beta* (section \@ref(sect0742)).
@@ -22,7 +22,8 @@ Dans ce chapitre, nous utiliserons principalement les *packages* suivants :
   - **lmtest**, avec la fonction *bptest* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect07733)).
 * Pour vérifier la multicolinéarité excessive : 
   - **car**, avec la fonction *vif* (section \@ref(sect07734)).
-
+* Autre *package* : 
+  - **foreign** pour importer des fichiers externes.
 :::
 
 
@@ -32,7 +33,7 @@ Selon Tabachnich et Fidell [-@tabachnick2007], un modèle de régression permet 
 
 La première approche a pour objectif d’identifier les relations entre une variable dépendante (VD) et plusieurs variables indépendantes (VI). Il s’agit alors de déterminer si ces relations sont positives ou négatives, significatives ou non et d'évaluer leur ampleur. La construction du modèle de régression repose alors sur un cadre théorique et la formulation d’hypothèses sur les relations entre chacune des VI et la VD.
 
-La seconde approche est exploratoire et très utilisée en forage ou fouille de données (*data mining* en anglais). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Parfois, ce type de démarche ne repose ni sur un cadre théorique ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle le plus efficacement possible afin de prédire, à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle de régression final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
+La seconde approche est exploratoire et très utilisée en forage ou fouille de données (*data mining* en anglais). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Parfois, ce type de démarche ne repose ni sur un cadre théorique ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle le plus efficace possible afin de prédire, à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
 
 ::: {.bloc_attention data-latex=""}
 **Cadre conceptuel et élaboration d'un modèle de régression**
@@ -66,7 +67,7 @@ En lien avec le cadre conceptuel du modèle, il est fréquent de construire plus
 
 L’intérêt d’une telle approche est qu'elle permet d’évaluer successivement l’apport explicatif de chacune des dimensions du modèle; nous y reviendrons dans la section \@ref(sect053).
 
-On dit donc que deux modèles sont imbriqués lorsque le modèle avec le plus de variables comprend également **toutes** les variables du modèle avec le moins de variables.
+On dit alors que deux modèles sont imbriqués lorsque le modèle avec le plus de variables comprend également **toutes** les variables du modèle avec le moins de variables.
 :::
 
 
@@ -200,12 +201,9 @@ Dans le tableau \@ref(tab:datareg), sont reportées les variables utilisées (ca
 * deux variables indépendantes de contrôle (VC) relatives à la forme urbaine;
 * les pourcentages des quatre groupes de population comme variables indépendantes explicatives (VE).
 
-L'équation de départ du premier modèle de régression est donc :
+**Notez que ce jeu de données est utilisé tout au long du chapitre.** L'équation de départ du premier modèle de régression est donc :
+
 `VegPct ~ HABHA + AgeMedian + Pct_014 + Pct_65P + Pct_MV + Pct_FR`
-
-**Notez que ce jeu de données est utilisé tout au long du chapitre.**
-
-
 
 ```{r datareg, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 library("foreign")
@@ -330,7 +328,7 @@ cat("R2 =", round(SCE / SCT,4),
 
 ### Comparer des modèles incrémentiels {#sect0732}
 
-Tel que signalé plus haut, il est fréquent de construire plusieurs modèles de régression imbriqués. Cette démarche est très utile pour évaluer l'apport de l'introduction d'un nouveau bloc de variables dans un modèle. De manière exploratoire, cela permet également de vérifier si l'introduction d'une variable indépendante supplémentaire dans un modèle a, ou non, un apport significatif et ainsi décider de la conserver, ou non, dans le modèle final selon le principe de parcimonie. 
+Tel que signalé plus haut, il est fréquent de construire plusieurs modèles de régression imbriqués. Cette démarche est très utile pour évaluer l'apport de l'introduction d'un nouveau bloc de variables dans un modèle. De manière exploratoire, cela permet également de vérifier si l'introduction d'une variable indépendante supplémentaire dans un modèle a ou non un apport significatif et ainsi décider de la conserver, ou non, dans le modèle final selon le principe de parcimonie. 
 
 ::: {.bloc_notes  data-latex=""}
 **Le principe de parcimonie** 
@@ -349,23 +347,23 @@ Mathématiquement, plus on ajoute de variables supplémentaires dans un modèle,
 
 \footnotesize
 \begin{equation} 
-R^2_{ajusté}= 1 - \frac{(1-R^2)(n-1)}{n-k-1} \mbox{ avec } R^2{ajusté} \in \left[0,1\right]
+R^2_{\text {ajusté}}= 1 - \frac{(1-R^2)(n-1)}{n-k-1} \mbox{ avec } R^2_{\text {ajusté}} \in \left[0,1\right]
 (\#eq:R2ajuste)
 \end{equation}
 \normalsize
 
-Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif ? Pour y répondre, il convient de comparer les valeurs des statistiques F des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de P qui lui est associé avec comme degrés de liberté, le nombre de variables indépendantes ajoutées ($k_2-k_1$) et $n-k_2-1$. Si la valeur de P<0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5%). 
+Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif ? Pour y répondre, il convient de comparer les valeurs des statistiques *F* des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de *P* qui lui est associé avec comme degrés de liberté, le nombre de variables indépendantes ajoutées ($k_2-k_1$) et $n-k_2-1$. Si la valeur de P<0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5%). 
 
 \footnotesize 
 \begin{equation}
-F_{incr}= \frac{\frac{R^2_2-R^2_1}{k_2-k_1}} {\frac{1-R^2_2}{n-k_2-1}}
+F_{\text {incrémentiel}}= \frac{\frac{R^2_2-R^2_1}{k_2-k_1}} {\frac{1-R^2_2}{n-k_2-1}}
 (\#eq:Fincrementiel)
 \end{equation}
 \normalsize
 
 avec $R^2_1$ et $R^2_2$ étant les coefficients de détermination des modèles 1 et 2 et $k_1$ et $k_2$ étant les nombres de variables indépendantes qu'ils comprennent ($k_2 > k_1$).
 
-Illustrons le tout avec deux modèles. Dans la syntaxe R ci-dessous, nous avons construit un premier modèle avec uniquement les variables de contrôle (`modele1`), comprenant uniquement deux variables indépendantes (`HABHA` et `AgeMedian`). Puis, dans un second modèle (`modele2`), nous ajoutons comme variables indépendantes les pourcentages des quatre groupes de population (`Pct_014`, `Pct_65P`, `Pct_MV`, `Pct_FR`). Repérez comment sont calculés les R^2^ ajustés pour les modèles et le F incrémentiel.
+Illustrons le tout avec deux modèles. Dans la syntaxe ![](Images/Rlogo.png) ci-dessous, nous avons construit un premier modèle avec uniquement les variables de contrôle (`modele1`), soit deux variables indépendantes (`HABHA` et `AgeMedian`). Puis, dans un second modèle (`modele2`), nous ajoutons comme variables indépendantes les pourcentages des quatre groupes de population (`Pct_014`, `Pct_65P`, `Pct_MV`, `Pct_FR`). Repérez comment sont calculés les R^2^ ajustés pour les modèles et le F incrémentiel.
 
 Le R^2^ ajusté passe de 0,269 à 0,418 des modèles 1 à 2 signalant que l'ajout des quatre variables indépendantes augmente considérablement la variance expliquée. Autrement dit, le second modèle est bien plus performant. Le F incrémentiel s'élève à 653,8 et est significatif (P < 0,001). Notez que la syntaxe ci-dessous illustre comment calculer les valeurs du R^2^ ajusté et du F incrémentiel à partir des équations \@ref(eq:R2ajuste) et \@ref(eq:Fincrementiel). Sachez toutefois qu'il est possible d'obtenir directement le R^2^ ajusté avec la fonction `summary(VotreModele)` et le F incrémentiel avec la fonction `anova(modele1, modele2)`. 
 
@@ -414,7 +412,7 @@ anova(modele1, modele2)
 
 ## Les différentes mesures pour les coefficients de régression {#sect074}
 
-La fonction `summary(nom du modèle)` permet d'obtenir les sorties du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 indiquant que les variables indépendantes du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
+La fonction `summary(nom du modèle)` permet d'obtenir les résultats du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 indiquant que les variables indépendantes du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
 
 
 ```{r dataregmodel1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -424,7 +422,7 @@ summary(modelereg)
 
 ### Les coefficients de régression : évaluer l'effet des variables indépendantes {#sect0741}
 
-Les différentes sorties pour les coefficients sont reportées au tableau \@ref(tab:dataregmodel2). 
+Les différentes résultats pour les coefficients sont reportées au tableau \@ref(tab:dataregmodel2). 
 
 **La constante** ($\beta_0$) est la valeur attendue de la variable dépendante (*Y*) quand les valeurs de toutes les variables indépendantes sont égales à 0. Pour ce modèle, quand les variables indépendantes sont égales à 0, plus du quart de la superficie des îlots serait en moyenne couverte par de la végétation ($\beta_0$=26,36). Notez que la constante n'a pas toujours une interprétation pratique. Il est par exemple très invraisemblable de trouver un îlot avec de la population dans lequel il n'y aurait aucune personne à faible revenu, aucune personne ne déclarant appartenir à une minorité visible, aucun enfant de moins de 15 ans et aucune personne âgée 65 ans et plus. La constante a donc avant tout un rôle mathématique dans le modèle.
 
@@ -433,7 +431,7 @@ Les différentes sorties pour les coefficients sont reportées au tableau \@ref(
 ::: {.bloc_attention data-latex=""}
 **Que signifie l'expression *toutes choses étant égales par ailleurs* pour un coefficient de régression ?**
 
-Après l'apprentissage du grec, grâce aux nombreuses équations intégrées au livre, passons au latin ! L'expression *toutes choses étant égales par ailleurs* vient du latin *ceteris paribus* à ne pas confondre avec *c'est terrible Paris en bus* (petite blague formulée par un étudiant ayant suivi le cours *méthodes quantitatives appliquées en études urbaines* il y a quelques années) ! Certains auteurs emploient encore *ceteris paribus*; il est donc possible que vous la retrouviez dans un article scientifique... 
+Après l'apprentissage du grec, grâce aux nombreuses équations intégrées au livre, passons au latin ! L'expression *toutes choses étant égales par ailleurs* vient du latin *ceteris paribus* à ne pas confondre avec *c'est terrible Paris en bus* (petite blague formulée par un étudiant ayant suivi le cours *méthodes quantitatives appliquées en études urbaines* à l'INRS il y a quelques années) ! Certains auteurs emploient encore *ceteris paribus*; il est donc possible que vous la retrouviez dans un article scientifique... 
 
 Plus sérieusement, l'expression *toutes choses étant égales par ailleurs* signifie que l'on estime l'effet de la variable indépendante sur la variable dépendante, si toutes les autres variables indépendantes restaient constantes ou autrement dit, une fois contrôlés tous les autres prédicteurs. 
 :::
@@ -451,7 +449,7 @@ show_table(data.frame(tabreg),
 
 À partir des coefficients du tableau \@ref(tab:dataregmodel2), l'équation du modèle de régression s'écrit alors comme suit :
 
-`VegPct = 26,356 * HABHA − 0,070 * AgeMedian + 0,011 * AgeMedian + 1,084 * Pct_014 + 0,401 * Pct_65P − 0,031 * Pct_MV − 0,348 * Pct_FR + e`
+`VegPct = 26,356 − 0,070 HABHA  + 0,011 AgeMedian + 1,084 Pct_014 + 0,401 Pct_65P −0,031 Pct_MV − 0,348 Pct_FR + e`
 
 
 **Comment interpréter un coefficient de régression pour une variable indépendante ?**
@@ -472,9 +470,9 @@ Comme nous le verrons plus loin, l'utilité principale de l'erreur type est qu'e
 
 ### Coefficients de régression standardisés : repérer les variables les plus importantes du modèle {#sect0742}
 
-Un coefficient de régression est exprimé dans les unités de mesure des variables indépendante (VI) et dépendante (VD) : une augmentation d’une unité de la VI a un effet de $\beta$ (valeur de coefficient) unité de mesure sur la VD, toutes choses étant égales par ailleurs. Prenons l’exemple d’un modèle fictif dans lequel une variable indépendante mesurée en mètres obtiendrait un coefficient de régression de 0,000502. Si cette variable était exprimée en kilomètres et non en mètres, son coefficient serait alors de 0,502 ($0,000502 \times 1000 = 0,502$). Cela explique que pour certaines variables, il est souvent préférable de modifier son unité de mesure, particulièrement pour les variables de distance ou de revenu. Par exemple, dans un modèle de régression, on introduit habituellement une variable de revenu par tranche de mille dollars ou le loyer mensuel par tranche de cent dollars, puisque les coefficients du revenu ou de loyer exprimé en dollars risquent d'être faibles. Concrètement, cela signifie que l'on divisera la variable *revenu* par 1000 et celle du *loyer* par 100 avant de l'introduire dans le modèle.
+Un coefficient de régression est exprimé dans les unités de mesure des variables indépendante (VI) et dépendante (VD) : une augmentation d’une unité de la VI a un effet de $\beta$ (valeur de coefficient) unité de mesure sur la VD, toutes choses étant égales par ailleurs. Prenons l’exemple d’un modèle fictif dans lequel une variable indépendante mesurée en mètres obtiendrait un coefficient de régression de 0,000502. Si cette variable était exprimée en kilomètres et non en mètres, son coefficient serait alors de 0,502 ($0,000502 \times 1000 = 0,502$). Cela explique que pour certaines variables, il est souvent préférable de modifier son unité de mesure, particulièrement pour les variables de distance ou de revenu. Par exemple, dans un modèle de régression, on introduit habituellement une variable de revenu par tranche de mille dollars ou le loyer mensuel par tranche de cent dollars, puisque les coefficients du revenu ou de loyer exprimé en dollars risquent d'être extrêmement faibles. Concrètement, cela signifie que l'on divisera la variable *revenu* par 1000 et celle du *loyer* par 100 avant de l'introduire dans le modèle.
 
-Du fait de leurs unités de mesure souvent différentes, vous aurez compris qu'on ne peut pas comparer directement les coefficients de régression afin de repérer la ou les variables indépendantes (*X*) qui ont les effets (impacts) les plus importants sur la variable dépendante (*Y*). Pour remédier à ce problème, on utilise les **coefficients de régression standardisés**. Ces coefficients standardisés sont simplement les valeurs de coefficients de régression qui seraient obtenus si toutes les variables du modèle (VD et VI) étaient préalablement centrées et réduites (soit avec une moyenne égale à 0 et un écart-type égal à 1; voir la section \@ref(sect02552) pour un rappel). Puisque toutes les variables du modèle sont exprimées en écarts-types, les coefficients standardisés permettent ainsi d'évaluer **l'effet relatif** des VI sur la VD. Cela permet ainsi de repérer la ou les variables les plus « importantes » du modèle.
+Du fait de leurs unités de mesure souvent différentes, vous aurez compris qu'on ne peut pas comparer directement les coefficients de régression afin de repérer la ou les variables indépendantes (*X*) qui ont les effets (impacts) les plus importants sur la variable dépendante (*Y*). Pour remédier à ce problème, on utilise les **coefficients de régression standardisés**. Ces coefficients standardisés sont simplement les valeurs de coefficients de régression qui seraient obtenus si toutes les variables du modèle (VD et VI) étaient préalablement centrées réduites (soit avec une moyenne égale à 0 et un écart-type égal à 1; voir la section \@ref(sect02552) pour un rappel). Puisque toutes les variables du modèle sont exprimées en écarts-types, les coefficients standardisés permettent ainsi d'évaluer **l'effet relatif** des VI sur la VD. Cela permet ainsi de repérer la ou les variables les plus « importantes » du modèle.
 
 **L'interprétation d'un coefficient de régression standardisé est donc la suivante : il indique le changement en termes d'unités d'écart-type de la variable dépendante (Y) à chaque ajout d'un écart-type de la variable indépendante, toutes choses étant égales par ailleurs**. 
 
@@ -491,8 +489,8 @@ Le coefficient de régression standardisé peut être aussi facilement calculé 
 La syntaxe R ci-dessous illustre trois façons d'obtenir les coefficients standardisés :
 
 * en centrant et réduisant préalablement les variables avec la fonction `scale` avant de construire le modèle avec la fonction `lm`;
-* en calculant les écarts-types de VD et VI et en appliquant l'équation ci-dessus;
-* avec la fonction `lm.beta` du package **QuantPsyc**. Cette dernière méthode est moins « verbeuse » (deux lignes de codes uniquement), mais nécessite de charger un package supplémentaire.
+* en calculant les écarts-types de VD et VI et en appliquant l'équation \@ref(eq:CoefStand);
+* avec la fonction `lm.beta` du *package* **QuantPsyc**. Cette dernière méthode est moins « verbeuse » (deux lignes de codes uniquement), mais nécessite de charger un *package* supplémentaire.
 
 
 ```{r CoefStand1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -563,7 +561,7 @@ T=\frac{\beta_k - 0}{s(\beta_k)}
 \end{equation}
 \normalsize
 
-avec $s(\beta_k)$ étant l'erreur type du coefficient de régression. Notez que dans l'équation ci-dessous, on indique habituellement $-0$, pour signaler que l'on veut vérifier si le coefficient est différent de 0. En guise d'exemple, au tableau \@ref(tab:dataregmodel2), la valeur de T de la variable `HABHA` est bien égale à :
+avec $s(\beta_k)$ étant l'erreur type du coefficient de régression. Notez que dans l'équation \@ref(eq:ValeurT), on indique habituellement $-0$, pour signaler que l'on veut vérifier si le coefficient est différent de 0. En guise d'exemple, au tableau \@ref(tab:dataregmodel2), la valeur de *T* de la variable `HABHA` est bien égale à :
 
 `−0.070401 / 0.002202 = −31.975`.
 
@@ -572,24 +570,24 @@ avec $s(\beta_k)$ étant l'erreur type du coefficient de régression. Notez que 
 **Démarche pour vérifier si un coefficient est significativement différent de 0 avec un seuil de confiance**
 
 1. Poser l'hypothèse nulle (*H~0~*) stipulant que le coefficient est égal à 0, soit $H_0 : \beta_k = 0$. L'hypothèse alternative (*H~1~*) est que le coefficient est différent de 0, soit $H_1 : B_k \neq 0$.
-2. Calculer la valeur de T, soit le coefficient de régression divisé par son erreur type (équation \@ref(eq:ValeurT)).
+2. Calculer la valeur de *T*, soit le coefficient de régression divisé par son erreur type (équation \@ref(eq:ValeurT)).
 3. Calculer le nombre de degrés de liberté, soit $dl = n − k - 1$, *n* et *k* étant respectivement les nombres d'observations et de variables indépendantes.
 4. Choisir un seuil de signification alpha (5%, 1% ou 0,1%, soit *p* = 0,05, 0,01 ou 0,01).
-5. Trouver la valeur critique de T dans la table T de Student (\@ref(annexe3)) avec *p* et le nombre de degrés de liberté (dl).
+5. Trouver la valeur critique de T dans la table T de Student (\@ref(annexe3)) avec *p* et le nombre de degrés de liberté (*dl*).
 6. Valider ou réfuter l'hypothèse nulle (*H~0~*) :
-  - si la valeur de T est inférieure à la valeur critique de T avec *dl* et le seuil choisi, on valide *H~0~* : le coefficient n'est pas significativement différent de 0.
-  - si la valeur de T est supérieure à la valeur critique de T avec *dl* et le seuil choisi, on peut réfuter l'hypothèse nulle, et choisir l'hypothèse alternative (*H~1~*) stipulant que le coefficient est significativement différent de 0.
+  - si la valeur de *T* est inférieure à la valeur critique de *T* avec *dl* et le seuil choisi, on valide *H~0~* : le coefficient n'est pas significativement différent de 0.
+  - si la valeur de *T* est supérieure à la valeur critique de *T* avec *dl* et le seuil choisi, on peut réfuter l'hypothèse nulle, et choisir l'hypothèse alternative (*H~1~*) stipulant que le coefficient est significativement différent de 0.
 
 
-**Valeurs critiques de la valeur de T à retenir !**
+**Valeurs critiques de la valeur de *T* à retenir !**
 
 Lorsque le nombre de degrés de liberté (*n − k - 1*) est très important (supérieur à 2500), et donc le nombre d'observations de votre jeu de données, on retient habituellement les valeurs critiques suivantes : **1,65 (p=0,10), 1,96 (p=0,05)**, **2,58 (p=0,01)** et **3,29 (p=0,001)**. Concrètement, cela signifie que :
 
-* une valeur de T supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *T* supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de T supérieure à 2,58 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *T* supérieure à 2,58 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de T supérieure à 3,29 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 0,1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *T* supérieure à 3,29 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 0,1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
 Concrètement, retenez et utilisez les seuils de $\pm1,96$, $\pm2,58$ et $\pm3,29$ pour repérer les variables significatives positivement ou négativement aux seuils respectifs de 0,5, 0,1 et 0,001.
 
@@ -606,7 +604,7 @@ Notez que si 100 études étaient conduites sur le même sujet et dans les même
 Prenons deux variables indépendantes du tableau \@ref(tab:dataregmodel2) – `HABHA` et `AgeMedian` – et vérifions si leurs coefficients de régression respectifs (−0,070 et 0,011) sont significatifs. Appliquons la démarche décrite dans l'encadré ci-dessus :
 
 1. On pose l'hypothèse nulle stipulant que les valeurs de ces deux coefficients sont égales à 0, soit $H_0 : \beta_k = 0$.
-2. Leurs valeurs de T sont égales à `−0,070401 / 0,002202 = −31,97139` pour `HABHA` et à `0,010790 / 0,006369 = 1,694144` pour `AgeMedian`.
+2. Leurs valeurs de *T* sont égales à `−0,070401 / 0,002202 = −31,97139` pour `HABHA` et à `0,010790 / 0,006369 = 1,694144` pour `AgeMedian`.
 3. Le nombre de degrés de liberté est égal à *dl = n-k-1 = 10210 − 6 - 1 = 10203*.
 4. On choisit respectivement les seuils $\alpha$ de 0,10, 0,05, 0,01 ou 0,01.
 5. Avec 10210 degrés de liberté, les valeurs critiques de la table T de Student (section \@ref(annexe3)) sont de 1,65 (p=0,10), 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001).
@@ -622,7 +620,7 @@ Prenons deux variables indépendantes du tableau \@ref(tab:dataregmodel2) – `H
 
 Il est très rare que l'on utilise directement la table T de Student pour obtenir un seuil de significativité. 
 
-D'une part, il est possible de calculer directement la valeur de P à partir de la valeur de T et du nombre de degrés de liberté avec la fonction `pt` avec les paramètres suivants :
+D'une part, il est possible de calculer directement la valeur de P à partir de la valeur de *T* et du nombre de degrés de liberté avec la fonction `pt` avec les paramètres suivants :
 
 `pt(q= abs(valeur de T), df= nombre de degrés de liberté, lower.tail = F) *2`
 
@@ -665,7 +663,7 @@ Finalement, il est possible de calculer l'intervalle de confiance d'un coefficie
 
 Cela explique que de nombreux auteurs reportent les intervalles de confiance dans les articles scientifiques (habituellement à 95%). Dans le modèle ici présenté, il serait alors possible d'écrire : toutes choses étant égales par ailleurs, le pourcentage d'enfants de moins de 15 ans est positivement et significativement associé avec le pourcentage de la couverture végétale dans l'îlot (B=1,084; IC 95% = [1,021 - 1,148], p <0.001).
 
-En guise d'exemple, à la lecture de la sortie R ci-dessous, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` se situe dans l'intervalle -0,002 à 0,023 qui est à cheval sur 0. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec p=0,05.
+En guise d'exemple, à la lecture de la sortie ![](Images/Rlogo.png) ci-dessous, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` se situe dans l'intervalle -0,002 à 0,023 qui est à cheval sur 0. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec p=0,05.
 
 ```{r confintReg2, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 
@@ -778,7 +776,7 @@ Y = b_{0} + b_{1}X_{1} + b_{11}X_{1}^2 + b_{2}X_{2} +\ldots+ b_{k}X_{k} + e
 \end{equation}
 \normalsize
 
-Dans l'équation ci-dessus, la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{11}X_{1}^2$. Un coefficient différent est ajusté pour chacune de ces deux versions de la variable $X_{1}$.
+Dans l'équation \@ref(eq:regpolyordre2), la première variable indépendante est introduite dans le modèle de régression à la fois dans sa forme originelle et mise au carré : $b_{1}X_{1} + b_{11}X_{1}^2$. Un coefficient différent est ajusté pour chacune de ces deux versions de la variable $X_{1}$.
 
 La démographie est probablement la discipline des sciences sociales qui a le plus recours aux régressions polynomiales. En effet, la variable `âge` est souvent introduite comme variable explicative dans sa forme originale et mise au carré. L'objectif est de vérifier si l'âge partage ou non une relation curvilinéaire avec un phénomène donné : par exemple, il pourrait y être associé positivement jusqu'à un certain seuil (45 ans par exemple), puis négativement à partir de ce seuil.
 
@@ -819,7 +817,7 @@ Pour construire une régression polynomiale dans R, il est possible d'utiliser d
 
 Ces deux méthodes produiront les mêmes résultats pour les autres variables dépendantes et pour la qualité d'ajustement du modèle (R^2^, F, etc.). On privilégie la seconde fonction pour éviter de détecter à tort des problèmes de multicolinéarité excessive.
 
-Appliquons cette démarche à la variable `AgeMedian` (âge médian des bâtiments) afin de vérifier si elle partage ou non une relation curvilinéaire avec la couverture végétale de l'îlot. À la lecture des sorties pour les deux modèles, les constats suivants peuvent être avancés :
+Appliquons cette démarche à la variable `AgeMedian` (âge médian des bâtiments) afin de vérifier si elle partage ou non une relation curvilinéaire avec la couverture végétale de l'îlot. À la lecture des résultats pour les deux modèles, les constats suivants peuvent être avancés :
 
 * Le R^2^ ajusté passe de 0,4179 à 0,4378 du modèle 1 au modèle 2, ce qui signale un gain de variance expliquée.
 * Le F incrémentiel entre les deux modèles s'élève à 362,64 et est significatif (P<0,001). On peut donc en conclure que le second modèle est plus performant que le premier, ce qui signale que la forme curvilinéaire pour `AgeMedian` (modèle 2) est plus efficace que la forme linéaire (modèle 1).
@@ -849,7 +847,7 @@ anova(modele1, modele2)
 
 Pour visualiser la relation linéaire et curvilinéaire, nous vous proposons de réaliser un graphique des effets marginaux à partir de la syntaxe ci-dessous.
 
-Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X~1~* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, et seule *X~1~* est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de Y quand *X~1~* augmente ou diminue, et ce, toutes choses étant égales par ailleurs (puisque toutes les autres variables ont une valeur fixe). Cette approche est particulièrement intéressante pour décrire des effets non linéaires obtenus avec des polynomiales, mais aussi des interactions comme nous le verrons plus tard. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap08) et \@ref(chap11)). Notez qu'il est aussi important de représenter sur ce type de graphique l'incertitude de la prédiction. Pour cela, il est possible de construire des intervalles de confiance à 95% autour de la prédiction en utilisant l'erreur standard de la prédiction (renvoyée par la fonction `predict`).
+Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X~1~* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, et seule *X~1~* est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de *Y* quand *X~1~* augmente ou diminue, et ce, toutes choses étant égales par ailleurs (puisque toutes les autres variables ont une valeur fixe). Cette approche est particulièrement intéressante pour décrire des effets non linéaires obtenus avec des polynomiales, mais aussi des interactions comme nous le verrons plus tard. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap08) et \@ref(chap11)). Notez qu'il est aussi important de représenter sur ce type de graphique l'incertitude de la prédiction. Pour cela, il est possible de construire des intervalles de confiance à 95% autour de la prédiction en utilisant l'erreur standard de la prédiction (renvoyée par la fonction `predict`).
 
 
 ```{r calculRegPoly2, echo=TRUE, fig.align='center', fig.cap="Relations linéaire et curvilinéaire", message=FALSE, warning=FALSE, out.width='75%'}
@@ -935,7 +933,7 @@ Puisque l'interprétation du coefficient de régression de $log(\beta_k)$ est pl
 * **Comparez les mesures d'ajustement des deux modèles (surtout les R^2^ ajustés)**. Si le R^2^ ajusté du modèle avec $log(\beta_k)$ est plus élevé que celui avec $\beta_k$ alors la transformation logarithmique fait de votre variable indépendante un meilleur prédicteur, toutes choses étant égales par ailleurs. 
 * **Construisez les graphiques des effets marginaux** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (figure \@ref(fig:EffetMarginalVariableLogEtNon)). Notez que cette approche graphique peut aussi ne donner aucune indication lorsque vos données sont très dispersées ou que la relation est faible entre votre variable dépendante et indépendante.
 
-```{r EffetMarginalVariableLogEtNon, echo=TRUE, fig.align='center', fig.cap="Effet marginal de la densité de population", message=FALSE, warning=FALSE, out.width='75%'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
 library(ggpubr)
 library(ggplot2)
 library(ggeffects)
@@ -973,7 +971,13 @@ G1b <- ggplot(fit1b, aes(x, predicted)) +
            y="VD: valeur prédite",
            x = "Habitants km2")
 
-ggarrange(G1a, G1b, nrow = 1)
+G1aG1b <- ggarrange(G1a, G1b, nrow = 1)
+G1aG1b
+```
+
+```{r EffetMarginalVariableLogEtNon, echo=FALSE, fig.align='center', fig.cap="Effet marginal de la densité de population", message=FALSE, warning=FALSE, out.width='75%'}
+show_as_png(G1aG1b, out = "images/lm/EffetMarginalVariableLogEtNon.png", dpi = 300)
+
 ```
 
 
@@ -981,7 +985,7 @@ ggarrange(G1a, G1b, nrow = 1)
 
 Il est très fréquent d'introduire une variable qualitative dichotomique comme variable explicative ou de contrôle dans un modèle. À titre de rappel, une variable dichotomique comprend deux modalités (section \@ref(sect0212)). 
 
-Dans le modèle ci-dessous, nous voulons vérifier si un îlot situé sur le territoire de la Ville de Montréal a proportionnellement moins de végétation qu'un îlot situé dans une autre municipalité de l'île de Montréal, toutes choses étant égales à ailleurs. Pour ce faire, nous créons une variable binaire dénommée `VilleMtl` qui prend la valeur de 1 pour la Ville de Montréal et 0 pour une autre municipalité.
+Dans le modèle ci-dessous, nous voulons vérifier si un îlot situé sur le territoire de la Ville de Montréal a proportionnellement moins de végétation qu'un îlot situé dans une autre municipalité de l'île de Montréal, toutes choses étant égales par ailleurs. Pour ce faire, nous créons une variable binaire dénommée `VilleMtl` qui prend la valeur de 1 pour les îlots de la Ville de Montréal et 0 pour ceux d'autre municipalité.
 
 Nous obtenons ainsi un coefficient de régression pour `VilleMtl` de -7,699. Cela signifie que si toutes les autres variables indépendantes du modèle étaient constantes, alors en moyenne, un îlot de la Ville de Montréal aurait une valeur de -7,7% de moins de végétation comparativement à un îlot situé dans une autre municipalité.
 
@@ -1013,13 +1017,13 @@ tabreg <- build_table(modele3, confid = T, std_digits = 3, coef_digits = 3, z_di
 
 Nous avons vu que le coefficient de régression ($\beta_k$) indique le changement de la variable dépendante (*Y*), lorsque la variable indépendante augmente d’une unité, toutes choses étant égales par ailleurs.
 
-Pour une variable dichotomique, le coefficient indique le changement de *Y* quand les observations appartiennent à la modalité qui a la valeur de 1 (ici la ville de Montréal), comparativement à celle qui a la valeur de 0 (autres municipalités de l'île de Montréal), toutes choses étant égales par ailleurs.
+Pour une variable dichotomique, le coefficient indique le changement de *Y* quand les observations appartiennent à la modalité qui a la valeur de 1 (ici la Ville de Montréal), comparativement à celle qui a la valeur de 0 (autres municipalités de l'île de Montréal), toutes choses étant égales par ailleurs.
 
 La modalité qui a la valeur de 0 est alors appelée **modalité ou catégorie de référence**.
 
 Autrement dit, si la variable avait été codée : 0 pour la Ville et de Montréal et 1 pour les autres municipalités, alors le coefficient aurait été de 7,699.
 
-Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans R (section \@ref(sect077)) qu'il peut être préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
+Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans ![](Images/Rlogo.png) (section \@ref(sect077)) qu'il peut être préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
 :::
 
 Comme pour une variable indépendante introduite avec une fonction polynomiale, il peut être très intéressant d'illustrer l'effet marginal de la variable dichotomique avec un graphique qui montre l'écart entre les moyennes des deux modalités, une fois contrôlées les autres variables indépendantes (figure \@ref(fig:EffetMarginalDich)). Notez que dans ce graphique, les barres d'erreurs situées au sommet des rectangles représentent les intervalles à 95% des prédictions du modèle.
@@ -1151,7 +1155,7 @@ tabreg <- build_table(modele4c, confid = F, std_digits = 3, coef_digits = 3, z_d
 ::: {.bloc_astuce data-latex=""}
 **Comment choisir la catégorie de référence ?**
 
-Plusieurs options sont possibles. Vous pouvez choisir :
+Plusieurs options sont possibles. Vous pouvez retenir :
 
 * la modalité comprenant le plus d'observations;
 * la modalité avec la plus forte valeur pour la variable dépendante;
@@ -1199,7 +1203,7 @@ Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \beta_{3}(X_{1}\times X_{2}) +
 
 Un nouveau coefficient ($\beta_{3}$) s'ajoute pour l'interaction (la multiplication) entre les deux variables continues. **Pourquoi ajouter une interaction entre deux variables?** L'objectif est d'évaluer l'effet d'une augmentation de $\beta_{1}$ en fonction d'un niveau donné de $\beta_{2}$ et inversement. Cela permet ainsi de répondre à la question suivante : l'effet de la variable $\beta_{1}$ est-il influencé par la variable $\beta_{2}$ et inversement?
 
-Prenons un exemple concret pour illustrer le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B= 0,659, P<0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59% plus de végétation.
+Prenons un exemple concret pour illustrer le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B= 0,659, P<0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59% plus de végétation (tableau \@ref(tab:ModeleInteraction1)).
 
 ```{r ModeleInteraction1, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 modele5 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
@@ -1215,7 +1219,7 @@ tabreg <- build_table(modele5, confid = F, std_digits = 3, coef_digits = 3, z_di
              )
 ```
 
-Dans ce modèle ci-dessous (tableau \@ref(tab:ModeleInteraction1)), les pourcentages de jeunes de moins de 15 ans et de 65 ans et plus (`Pct_014` et `Pct_65P`) sont associés positivement à la variable dépendante tandis que le pourcentage de personnes à faible revenu (`Pct_FR`) est associé négativement.
+Dans ce modèle (tableau \@ref(tab:ModeleInteraction1)), les pourcentages de jeunes de moins de 15 ans et de 65 ans et plus (`Pct_014` et `Pct_65P`) sont associés positivement à la variable dépendante tandis que le pourcentage de personnes à faible revenu (`Pct_FR`) est associé négativement.
 
 Que se passe-t-il si nous introduisons une variable d'interaction entre `DistCBDkm` et `Pct_FR` (tableau \@ref(tab:ModeleInteraction2))? L’effet du pourcentage de personnes à faible revenu (%) est significatif et négatif lorsqu’il est mis en interaction avec la distance au centre-ville. Cela indique que plus l'îlot est éloigné du centre-ville, plus `Pct_FR` a un effet négatif sur la couverture végétale (B=−0,011, P<0,001).
 
@@ -1239,11 +1243,11 @@ tabreg <- build_table(modele6, confid = F, std_digits = 3, coef_digits = 3, z_di
              )
 ```
 
-À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variable dépendante, ce que nous pouvons faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interaction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95% de la prédiction dans les deuxième et troisième panneaux. 
+À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variable dépendante, ce qu'il est possible de faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interaction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95% de la prédiction dans les deuxième et troisième panneaux. 
 
 On constate ainsi que le modèle prédit des valeurs de végétation les plus faibles lorsque le pourcentage de personnes à faible revenu est élevé et que la distance au centre-ville est élevée (en haut à droite à la figure \@ref(fig:ModeleInteraction2heat)). En revanche, les valeurs les plus élevées de végétation sont atteintes lorsque la distance au centre-ville est élevée et que le pourcentage de personnes à faible revenu est faible (en bas à droite). Il semble donc que l'éloignement au centre-ville soit associé avec une augmentation de la densité végétale, mais que cette augmentation puisse être mitigée par l'augmentation parallèle du pourcentage de personnes à faible revenu.
 
-```{r ModeleInteraction2heat, fig.cap = "Effet marginal de l'interaction entre deux variables continues", echo=FALSE, message=FALSE, warning=FALSE, out.width='95%'}
+```{r ModeleInteraction2heat, echo=FALSE, fig.cap="Effet marginal de l'interaction entre deux variables continues", message=FALSE, warning=FALSE, out.width='95%'}
 
 library(metR) # pour ajouter des labels aux contours
 library(viridis) # pour les jolies couleurs
@@ -1271,7 +1275,7 @@ P1 <- ggplot(data = df) +
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), )+
   scale_fill_viridis(discrete=FALSE) + 
   labs(x = "Distance au centre-ville", 
-       y = "Pers à faible revenu (%)",
+       y = "Pers. à faible revenu (%)",
        fill = "",
        subtitle = "Densité de végétation prédite (%)")
 
@@ -1281,7 +1285,7 @@ P2 <- ggplot(data = df) +
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = lower), )+
   scale_fill_viridis(discrete=FALSE)+ 
   labs(x = "Distance au centre-ville", 
-       y = "Pers à faible revenu (%)",
+       y = "Pers. à faible revenu (%)",
        fill = "",
        subtitle = "IC 2,5%")
 
@@ -1295,7 +1299,8 @@ P3 <- ggplot(data = df) +
        fill = "",
        subtitle = "IC 97,5%")
 
-ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
+P1P2P3 <- ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
+show_as_png(P1P2P3, out = "images/lm/ModeleInteraction2heat.png", dpi = 300)
 
 ```
 
@@ -1320,7 +1325,7 @@ df$pred_se <- pred$se.fit
 df$lower <- df$pred - 1.96 * df$pred_se
 df$upper <- df$pred + 1.96 * df$pred_se
 
-ggplot(data = df) + 
+P1 <- ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = pred)) +
   stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), )+
@@ -1329,6 +1334,8 @@ ggplot(data = df) +
        y = "Pers à faible revenu (%)",
        fill = "",
        subtitle = "Prédiction de la densité de végétation (%)")
+
+show_as_png(P1, out = "images/lm/ModeleInteraction2heat2.png", dpi = 300)
 ```
 
 #### Variable d'interaction entre une variable continue et une variable dichotomique {#sect07542}
@@ -1367,7 +1374,7 @@ tabreg <- build_table(modele7, confid = F, std_digits = 3, coef_digits = 3, z_di
 
 L'interaction entre une variable qualitative et une variable quantitative peut être représentée par un graphique des effets marginaux. La pente (coefficient) de la variable quantitative varie en fonction des deux catégories de la variable qualitative dichotomique.
 
-```{r ModeleInteractionBinaireFIG, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%', fig.cap="Graphique de l'effet marginal de l'interaction entre une variable quantitative et qualitative"}
+```{r ModeleInteractionBinaireFIG, echo=FALSE, fig.cap="Graphique de l’effet marginal de l’interaction entre une variable quantitative et qualitative", message=FALSE, warning=FALSE, out.width='75%', fig.align='center'}
 
 df <- expand.grid(
   VilleMtl = c(0,1),
@@ -1390,7 +1397,7 @@ DataFinal$VilleMtl_str <- ifelse(DataFinal$VilleMtl==0,"Autre municipalité","Vi
 
 cols <- c("Autre municipalité" ="#1d3557" ,"Ville de Montréal"="#e63946")
 
-ggplot(data = df) + 
+Myplot <- ggplot(data = df) + 
   geom_point(data = DataFinal, mapping = aes(x = Pct_FR, y = VegPct, color = VilleMtl_str), size = 0.2, alpha = 0.2)+
   geom_ribbon(aes(x = Pct_FR, ymin = lower, ymax = upper, group = VilleMtl_str), fill = rgb(0.1,0.1,0.1,0.4))+
   geom_path(aes(x = Pct_FR, y = pred, color = VilleMtl_str), size = 1) + 
@@ -1398,6 +1405,8 @@ ggplot(data = df) +
   labs(x = "Personnes à faible revenu (%)",
        y = "Densité de végétation prédite (%)",
        color = "")
+
+show_as_png(Myplot, out = "images/lm/ModeleInteractionBinaireFIG.png", dpi = 300)
 
 ```
 
@@ -1420,7 +1429,7 @@ Pour illustrer comment vérifier si le modèle respecte ou non les hypothèses d
 ### Nombre d'observations {#sect0761}
 Tous les auteurs ne s'entendent pas sur le nombre d'observations minimal que devrait comprendre une régression linéaire multiple, tant s'en faut ! Parallèlement, d'autres auteurs proposent aussi des méthodes de simulation pour estimer les coefficients de régression sur un jeu de données comprenant peu d'observations. Bien qu'aucune règle ne soit bien établie, la question du nombre d'observations mérite d'être posée puisqu'un modèle basé sur trop peu d'observations risque de produire des coefficients de régression peu fiables. Par faible fiabilité des coefficients, on entend que la suppression d’une ou plusieurs observations pourrait drastiquement changer l’effet et/ou la significativité d’une ou plusieurs variables explicatives.
 
-Dans un ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, pp. 123-124] proposent deux règles à la louche :
+Dans un ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, pp. 123-124] proposent deux règles de pouce (à la louche) :
 
 1. $n \geq 50 + 8k$ avec $n$ et $k$ étant respectivement les nombres d'observations et de variables indépendantes, pour tester le coefficient de corrélation multiple (*R^2^*).
 2. $n \geq 104 + k$ pour tester individuellement chaque variable indépendante.
@@ -1470,7 +1479,6 @@ Pour notre modèle, les coefficients d’asymétrie (−0,263) et d’aplatissem
 
 ```{r VerifierNormaliteResidus, echo=FALSE, fig.align='center', fig.cap="Vérifier la normalité des résidus", message=FALSE, warning=FALSE, out.width='75%'}
 library(DescTools)
-library(stats)
 library(ggplot2)
 library(ggpubr)
 
@@ -1514,13 +1522,15 @@ Un modèle est efficace si la dispersion des résidus est homogène sur tout le 
 residus <-  modele3$residuals
 ypredits <- modele3$fitted.values
 
-ggplot() +
+Plot1 <- ggplot() +
   geom_point(aes(x = ypredits, y = residus),
                  color = "#343a40", fill = "#a8dadc",
                  alpha = 0.2, size = 0.8) +
   geom_smooth(aes(x = ypredits, y = residus), 
               method = lm, color = "red")+
   labs(x="Valeurs prédites", y = "Résidus")
+
+show_as_png(Plot1, out = "images/lm/VerifierHomoscedasticiteFig.png", dpi = 300)
 
 ```
 
@@ -1532,7 +1542,7 @@ Le test de Breusch-Pagan est souvent utilisé pour vérifier l'homoscédasticit�
 Si la valeur de P associé à ce test est inférieure à 0,05, on réfute l'hypothèse nulle et on conclut qu'il y a un problème d'hétéroscédasticité, ce qui est le cas pour notre modèle.
 
 
-```{r , echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+```{r message=FALSE, warning=FALSE, , echo=FALSE, out.width='75%'}
 library(lmtest)
 bptest(modele3)
 ```
@@ -1575,7 +1585,7 @@ VIF_k = \frac{1}{1-R_k^2}
 \normalsize
 
 Pour notre modèle, toutes les valeurs de VIF sont inférieures à 2, indiquant, sans l'ombre d'un doute, l'absence de multicolinéarité excessive.
-```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE, out.width='75%'}
+```{r echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 library(car)
 round(car::vif(modele3),3)
 ```
@@ -1617,19 +1627,19 @@ Autrement dit, il est possible que certaines observations avec des valeurs extr�
 
 \footnotesize
 \begin{equation} 
-D_i = \frac{\sum_{j=1}^n(\bar{y_i}-\bar{y}_{i(j)})^2}{ks^2}
+D_i = \frac{\sum_{j=1}^n(\widehat{y}_i-\widehat{y}_{i(j)})^2}{ks^2}
 (\#eq:DistanceCook)
 \end{equation}
 \normalsize
 
-avec $\bar{y}_{i(j)}$ la valeur prédite quand l'observation *i* est ôté du modèle, *k* le nombre de variables indépendantes et $s^2$ l'erreur quadratique moyenne du modèle.
+avec $\widehat{y}_{i(j)}$ la valeur prédite quand l'observation *i* est ôté du modèle, *k* le nombre de variables indépendantes et $s^2$ l'erreur quadratique moyenne du modèle.
 
 * **La statistique de l'effet levier** (*leverage value* en anglais) qui varie de 0 (aucune influence) à 1 (explique tout le modèle). La somme de toutes les valeurs de cette statistique est égale au nombre de VI dans le modèle.
 
 
 **Quel critère retenir pour détecter les observations avec potentiellement une trop grande influence sur le modèle?**
 
-Pour les repérer, voire les supprimer, certains auteurs proposent les seuils suivants : $4/n$ ou $8/n$ ou $16/n$. Avec 10210 observations dans le modèle, les seuils seraient les suivants : 
+Pour les repérer, voire les supprimer, plusieurs auteur·e·s proposent les seuils suivants : $4/n$ ou $8/n$ ou $16/n$. Avec 10210 observations dans le modèle, les seuils seraient les suivants : 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE, out.width='75%'}
 nobs <- length(modele3$fitted.values)
@@ -1648,7 +1658,7 @@ cat("Nombre d'observations =", nobs, "(100%)",
     )
 ```
 
-Le critère de $4/n$ étant plutôt sévère, nombreux sont les chercheurs qui privilégient celui de $8/n$, voire $16/n$. Il est aussi possible de construire un nuage de points pour les repérer (figure \@ref(fig:GraphCookLev)).
+Le critère de $4/n$ étant plutôt sévère, on privilégie généralement celui de $8/n$, voire $16/n$. Il est aussi possible de construire un nuage de points pour les repérer (figure \@ref(fig:GraphCookLev)).
 
 
 ```{r GraphCookLev, echo=FALSE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%'}
@@ -1675,7 +1685,8 @@ G2 <-  ggplot()+
        title = 'Repérer les valeurs influentes',
        subtitle = '(agrandissement)')
 
-ggarrange(G1,G2, nrow=1, ncol=2)
+G1G2 <- ggarrange(G1,G2, nrow=1, ncol=2)
+show_as_png(G1G2, out = "images/lm/GraphCookLev.png", dpi = 300)
 
 ```
 
@@ -1687,7 +1698,7 @@ Trois approches sont possibles :
 
 * **Supprimer les observations trop influentes** (avec l'un des critères de $4/n$, $8/n$ et $16/n$ vus plus haut). Une fois supprimées, il convient de 1) recalculer le modèle, 2) refaire le diagnostic de la régression au complet et finalement, 3) comparer les modèles avant et après suppression des valeurs trop influentes, notamment la qualité d'ajustement du modèle (R^2^ ajusté) et les coefficients de régression. Des changements importants indiqueront que le premier modèle est potentiellement biaisé.
 
-* **Utiliser un modèle linéaire généralisé (GLM)** permettant d'utiliser une distribution différente correspondant plus à votre jeu de données (voir chapitre suivant).
+* **Utiliser un modèle linéaire généralisé (GLM)** permettant d'utiliser une distribution différente correspondant plus à votre jeu de données (voir le chapitre \@ref(chap08)).
 
 
 ## Mise en œuvre dans R {#sect077}
@@ -1921,9 +1932,19 @@ ggarrange(Ghisto, Gqqplot, ncol=2, nrow=1)
 La syntaxe suivante permet de vérifier si l'hypothèse d'homoscédasticité des résidus est respectée avec : 1) un nuage de points entre les valeurs prédites et des résidus, 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile) et 2) le test de Breusch-Pagan (fonction `bptest` du *package* **lmtest**).
 
 
-```{r DiaHomoscedasticite, echo=TRUE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, fig.show="hide"}
 
-# 1. Graphique entre les valeurs prédites et les résidus
+# 1. Test de Breusch-Pagan pour vérifier l'homoscédasticité
+library(lmtest)
+bptest(modele3)
+
+if(bptest(modele3)$p.value < 0.05){
+  cat("\nAttention : problème d'hétéroscédasticité des résidus")
+}else{
+   cat("\nParfait : homoscédasticité des résidus")
+}
+
+# 2. Graphique entre les valeurs prédites et les résidus
 residus <-  modele3$residuals
 ypredits <- modele3$fitted.values
 
@@ -1935,15 +1956,19 @@ ggplot() +
               method = lm, color = "red")+
   labs(x="Valeurs prédites", y = "Résidus")
 
-# 2. Test de Breusch-Pagan pour vérifier l'homoscédasticité
-library(lmtest)
-bptest(modele3)
+```
 
-if(bptest(modele3)$p.value < 0.05){
-  cat("\nAttention : problème d'hétéroscédasticité des résidus")
-}else{
-   cat("\nParfait : homoscédasticité des résidus")
-}
+
+```{r DiaHomoscedasticite, echo=FALSE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
+G1 <- ggplot() +
+        geom_point(aes(x = ypredits, y = residus),
+                       color = "#343a40", fill = "#a8dadc",
+                       alpha = 0.2, size = 0.8) +
+        geom_smooth(aes(x = ypredits, y = residus), 
+                    method = lm, color = "red")+
+        labs(x="Valeurs prédites", y = "Résidus")
+show_as_png(G1, out = "images/lm/DiaHomoscedasticite.png", dpi = 300)
+
 ```
 
 #### Vérifier la multicolinéarité excessive {#sect07734}
@@ -1985,26 +2010,26 @@ cat("Nombre d'observations =", nobs, "(100%)",
 
 Vous pouvez également construire un nuage de points avec la distance de Cook et l'effet de levier (*leverage value*) pour repérer visuellement les observations très influentes.
 
-```{r DiaGraphCookLev, echo=TRUE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
 library(car)
 library(ggpubr)
 DistanceCook <- cooks.distance(modele3)
 LeverageValue <- hatvalues(modele3)
 
-G1 <-  ggplot()+
+G1 <- ggplot()+
   geom_point(aes(x = LeverageValue, y = DistanceCook), 
              alpha = 0.2, size = 2, col="black", fill="red")+
-  labs(x = "Leverage value",
+  labs(x = "Effet levier",
        y = 'Distance de Cook',
        title = 'Repérer les valeurs influentes',
        subtitle = '(toutes les observations)')
 
-G2 <-  ggplot()+
+G2 <- ggplot()+
   geom_point(aes(x = LeverageValue, y = DistanceCook), 
              alpha = 0.2, size = 2, col="black", fill="red")+
   ylim(0,0.01)+
   xlim(0,0.01)+
-  labs(x = "Leverage value",
+  labs(x = "Effet levier",
        y = 'Distance de Cook',
        title = 'Repérer les valeurs influentes',
        subtitle = '(agrandissement)')
@@ -2013,6 +2038,12 @@ ggarrange(G1,G2, nrow=1, ncol=2)
 
 ```
 
+
+```{r DiaGraphCookLev, echo=FALSE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%'}
+G1G2 <- ggarrange(G1,G2, nrow=1, ncol=2)
+show_as_png(G1G2, out = "images/lm/DiaGraphCookLev.png", dpi = 300)
+
+```
 #### Construite un nouveau modèle en supprimant les observations très influentes du modèle {#sect07736}
 
 Dans un premier temps, il convient de construire un nouveau modèle sans les valeurs influentes du modèle de départ.
@@ -2093,12 +2124,11 @@ Ghisto2 <- ggplot() +
   stat_function(fun = dnorm,  args = list(mean = mean(resmodele3b),
                                           sd = sd(resmodele3b)), 
                 color = "#e63946", size = 1.2, linetype = "dashed")+
-  labs(title="Modèle après suppression", y = "densité", "Résidus studentisés")
+  labs(title="Modèle après suppression", x="Valeurs théoriques", y="Résidus studentisés")
 
 Gqqplot2 <- qplot(sample = resmodele3b)+
   geom_qq_line(line.p = c(0.25, 0.75), color = "#e63946", size=1.2)+
-  labs(title="Modèle après suppression",
-     x="Valeurs théoriques", y = "Résidus studentisés")
+  labs(title="Modèle après suppression",x="Valeurs théoriques", y = "Résidus studentisés")
 
 library(ggpubr)
 ggarrange(Ghisto1, Ghisto2, Gqqplot1, Gqqplot2, ncol=2, nrow=2)
@@ -2108,10 +2138,12 @@ ggarrange(Ghisto1, Ghisto2, Gqqplot1, Gqqplot2, ncol=2, nrow=2)
 
 * la valeur du test de Breusch-Pagan est beaucoup plus faible, mais il semble persister un problème d'hétéroscédasticité.
 
-```{r HomosComp, echo=TRUE, fig.align='center', fig.cap="Amélioration de l'homoscédasticité des résidus", message=FALSE, warning=FALSE, out.width='65%'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, fig.show="hide"}
 
 # homoscédasticité des résidus améliorée ou non?
 library(lmtest)
+library(ggpubr)
+
 bptest(modele3)
 bptest(modele3b)
 
@@ -2119,7 +2151,6 @@ resmodele3  <- residuals(modele3)
 resmodele3b <- residuals(modele3b)
 ypredits3 <- modele3$fitted.values
 ypredits3b <- modele3b$fitted.values
-
 
 G1 <- ggplot() +
   geom_point(aes(x = ypredits3, y = resmodele3),
@@ -2133,9 +2164,32 @@ G2 <- ggplot() +
   geom_smooth(aes(x = ypredits3b, y = resmodele3b),  method = lm, color = "red")+
   labs(title="Modèle après suppression",x="Valeurs prédites", y = "Résidus studentisés")
 
-library(ggpubr)
 ggarrange(G1, G2, ncol=2, nrow=1)
+
 ```
+
+```{r HomosComp, echo=FALSE, fig.align='center', fig.cap="Amélioration de l'homoscédasticité des résidus", message=FALSE, warning=FALSE, out.width='65%'}
+resmodele3  <- residuals(modele3)
+resmodele3b <- residuals(modele3b)
+ypredits3 <- modele3$fitted.values
+ypredits3b <- modele3b$fitted.values
+
+G1 <- ggplot() +
+  geom_point(aes(x = ypredits3, y = resmodele3),
+                 color = "#343a40", fill = "#a8dadc", alpha = 0.2, size = 0.8) +
+  geom_smooth(aes(x = ypredits3, y = resmodele3),  method = lm, color = "red")+
+  labs(title="Modèle de départ",x="Valeurs prédites", y = "Résidus studentisés")
+
+G2 <- ggplot() +
+  geom_point(aes(x = ypredits3b, y = resmodele3b),
+                 color = "#343a40", fill = "#a8dadc", alpha = 0.2, size = 0.8) +
+  geom_smooth(aes(x = ypredits3b, y = resmodele3b),  method = lm, color = "red")+
+  labs(title="Modèle après suppression",x="Valeurs prédites", y = "Résidus studentisés")
+
+G1G2 <- ggarrange(G1, G2, ncol=2, nrow=1)
+show_as_png(G1G2, out = "images/lm/HomosComp.png", dpi = 300)
+```
+
 
 Finalement, il convient de comparer les coefficients de régression.
 
@@ -2150,7 +2204,7 @@ Tel que signalé ultérieurement, il est courant de représenter l'effet margina
 
 #### Effet marginal pour une variable continue {#sect07741}
 
-La syntaxe ci-dessous illustre comment obtenir un graphique pour nos quatre variables explicatives. Bien entendu, si le coefficient de régression est positif (comme pour les pourcentages de jeunes de moins de 15 ans et les personnes âgées), la pente sera alors montante, et inversement décroissante pour des coefficients négatifs (comme pour les personnes ayant déclaré appartenir à une minorité visible et les personnes à faible revenu). En outre, plus la valeur absolue du coefficient sera forte, plus la pente sera prononcée.
+La syntaxe ci-dessous illustre comment obtenir un graphique pour nos quatre variables explicatives. Bien entendu, si le coefficient de régression est positif (comme pour les pourcentages de jeunes de moins de 15 ans et les personnes âgées), la pente sera alors montante, et inversement descendante pour des coefficients négatifs (comme pour les personnes ayant déclaré appartenir à une minorité visible et les personnes à faible revenu). En outre, plus la valeur absolue du coefficient sera forte, plus la pente sera prononcée.
 
 ```{r EffetMarginalVariablesContinues, echo=TRUE, fig.align='center', fig.cap="Effets marginaux pour des variables continues", message=FALSE, warning=FALSE, out.width='85%'}
 library(ggplot2)
@@ -2258,8 +2312,7 @@ Graphique + coord_flip()
 
 #### Effet marginal pour une variable d'interaction (deux VI continues) {#sect07746}
 
-
-```{r ModeleInteraction2heatex, echo=TRUE, fig.cap="Effet marginal de l'interaction entre deux variables continues", message=FALSE, warning=FALSE, out.width='95%'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
 
 library(metR) # pour ajouter des labels aux contours
 
@@ -2292,7 +2345,8 @@ P1 <- ggplot(data = df) +
 
 P2 <- ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = lower)) +
-  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = lower), color = "black", linetype = "dashed") + 
+  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = lower), 
+               color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = lower), )+
   scale_fill_viridis(discrete=FALSE)+ 
   labs(x = "Distance au centre-ville", 
@@ -2302,7 +2356,8 @@ P2 <- ggplot(data = df) +
 
 P3 <- ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = upper)) +
-  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = upper), color = "black", linetype = "dashed") + 
+  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = upper), 
+               color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = upper), )+
   scale_fill_viridis(discrete=FALSE)+ 
   labs(x = "Distance au centre-ville", 
@@ -2314,9 +2369,20 @@ ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
 
 ```
 
+
+
+```{r ModeleInteraction2heatex, echo=FALSE, fig.align='center', fig.cap="Effet marginal de l'interaction entre deux variables continues", message=FALSE, warning=FALSE, out.width='95%'}
+
+library(metR) # pour ajouter des labels aux contours
+
+P1P2P3 <- ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
+show_as_png(P1P2P3, out = "images/lm/ModeleInteraction2heatex.png", dpi = 300)
+
+```
+
 #### Effet marginal pour une variable d'interaction (une VI continue et une VI dichotomique) {#sect07747}
 
-```{r ModeleInteractionBinaireeffectex, echo=TRUE, fig.cap="Graphique de l’effet marginal de l’interaction entre une variable quantitative et qualitative", message=FALSE, warning=FALSE, out.width='75%'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
 
 df <- expand.grid(
   VilleMtl = c(0,1),
@@ -2329,6 +2395,8 @@ df <- expand.grid(
 )
 df$VilleMtlX_Pct_FR <- df$VilleMtl * df$Pct_FR
 
+head(df, n=5)
+
 pred <- predict(modele7, se = T, newdata = df)
 df$pred <- pred$fit
 df$upper <- df$pred + 1.96*pred$se.fit
@@ -2339,14 +2407,37 @@ DataFinal$VilleMtl_str <- ifelse(DataFinal$VilleMtl==0,"Autre municipalité","Vi
 
 cols <- c("Autre municipalité" ="#1d3557" ,"Ville de Montréal"="#e63946")
 
-ggplot(data = df) + 
-  geom_point(data = DataFinal, mapping = aes(x = Pct_FR, y = VegPct, color = VilleMtl_str), size = 0.2, alpha = 0.2)+
-  geom_ribbon(aes(x = Pct_FR, ymin = lower, ymax = upper, group = VilleMtl_str), fill = rgb(0.1,0.1,0.1,0.4))+
+ggplot(data = df) +
+  geom_point(data = DataFinal, mapping = aes(x = Pct_FR, y = VegPct, color = VilleMtl_str),
+             size = 0.2, alpha = 0.2)+
+  geom_ribbon(aes(x = Pct_FR, ymin = lower, ymax = upper, group = VilleMtl_str),
+              fill = rgb(0.1,0.1,0.1,0.4))+
+  geom_path(aes(x = Pct_FR, y = pred, color = VilleMtl_str), size = 1) +
+  scale_colour_manual(values = cols)+
+  labs(x = "Personnes à faible revenu (%)",
+       y = "Densité de végétation prédite (%)",
+       color = "")
+```
+
+
+```{r ModeleInteractionBinaireeffectex, echo=FALSE, fig.align='center', fig.cap="Graphique de l’effet marginal de l’interaction entre une variable quantitative et qualitative", message=FALSE, warning=FALSE, out.width='75%'}
+plot1 <- ggplot(data = df) + 
+  geom_point(data = DataFinal, mapping = aes(x = Pct_FR, y = VegPct, color = VilleMtl_str), 
+             size = 0.2, alpha = 0.2)+
+  geom_ribbon(aes(x = Pct_FR, ymin = lower, ymax = upper, group = VilleMtl_str), 
+              fill = rgb(0.1,0.1,0.1,0.4))+
   geom_path(aes(x = Pct_FR, y = pred, color = VilleMtl_str), size = 1) + 
   scale_colour_manual(values = cols)+
   labs(x = "Personnes à faible revenu (%)",
        y = "Densité de végétation prédite (%)",
        color = "")
 
+show_as_png(plot1, out = "images/lm/ModeleInteractionBinaireeffectex.png", dpi = 300)
 ```
 
+## Quiz de révision du chapitre
+
+```{r quizChapitre6, echo=FALSE, warning=FALSE, results="asis"}
+Chapitre7_Lm <- quizz("quizzs/Chapitre7_Lm.yml", "Chapitre7_Lm")
+render_quizz(Chapitre7_Lm)
+```

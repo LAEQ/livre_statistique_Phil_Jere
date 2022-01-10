@@ -134,7 +134,7 @@ render_quizz_pdf <- function(myquizz){
     string <- paste0(string, "\n* ","**",quest$label,"**")
 
     if(is.null(quest$image) == FALSE){
-      string <- paste0(string, "\n\n\t ![",quest$alt_txt,"](",quest$image,"){width=25%}", "\n")
+      string <- paste0(string, "\n\n\t ![",quest$alt_txt,"](",quest$image,"){width=50%}", "\n")
     }
 
     if(quest$type == "stat"){
@@ -155,7 +155,7 @@ render_quizz_pdf <- function(myquizz){
   final_string <- paste0(
     "**Questions**\n",
     questions,"\n\n",
-    "**Réponses**\n",
+    "**R?ponses**\n",
     responses
   )
   return(final_string)
@@ -181,7 +181,7 @@ build_html_quizz <- function(myquizz){
     if(is.null(quest$image) == FALSE){
       bimg <- tags$img(src=quest$image,
                        alt=quest$alt_txt,
-                       style = "width: 25%;display: block;margin-left: auto;margin-right: auto;margin-bottom: 0.5em;margin-top: 0.5em;")
+                       style = "width: 50%;display: block;margin-left: auto;margin-right: auto;margin-bottom: 0.5em;margin-top: 0.5em;")
     }
     # creation de la balise reponses
     resp <- build_html_response(quest, i)
