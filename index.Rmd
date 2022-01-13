@@ -217,8 +217,11 @@ clean_df_latex <- function(df){
 
 show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, 
                        col.width = NULL, digits = getOption("digits"),
-                       align = NULL, row.names = FALSE, ...){
+                       align = NULL, row.names = FALSE, position = NULL, ...){
   options(knitr.kable.NA = '')
+  if(is.null(position)){
+    position <- "basic"
+  }
   ## dans le cas d'un tableau LATEX
   if (knitr::is_latex_output()){
     #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
@@ -248,7 +251,7 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       col.names = col.names,
       caption = caption,
       escape = FALSE, ...) %>% 
-      kableExtra::kable_styling(font_size = 8,protect_latex = T)
+      kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
     if (is.null(col.to.resize) == FALSE){
       table1 <- table1 %>% 
         kableExtra::column_spec(col.to.resize, width=col.width)
