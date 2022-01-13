@@ -6,14 +6,14 @@ Dans le cadre de ce chapitre, nous présenterons les trois principales méthodes
 
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons les *packages* suivants : 
+Dans ce chapitre, nous utiliserons les *packages* suivants&nbsp;: 
 
-* Pour créer des graphiques :
+* Pour créer des graphiques&nbsp;:
   - **ggplot2**, le seul, l'unique!
   - **ggpubr** pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles.
-* Pour manipuler des données : 
+* Pour manipuler des données&nbsp;: 
   - **dplyr** notamment pour les fonctions *group_by*, *summarize* et les pipes *%>%*.
-* Pour les corrélations : 
+* Pour les corrélations&nbsp;: 
   - **boot** pour réaliser des corrélations avec *bootstrap*.
   - **correlation**, de l'ensemble de packages **easy_stats**, offrant une large panoplie de mesures de corrélation.
   - **corrplot** pour créer des graphiques de matrices de corrélation.
@@ -21,7 +21,7 @@ Dans ce chapitre, nous utiliserons les *packages* suivants :
   - **ppcor** pour calculer des corrélations partielles.
   - **psych** pour obtenir une matrice de  corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de p.
   - **stargazer** pour créer des beaux tableaux d’une matrice de corrélation en HTML ou en LaTeX ou en ASCII.
-* Autres *packages* :
+* Autres *packages*&nbsp;:
   - **foreign** pour importer des fichiers externes.
   - **MASS** pour générer des échantillons normalement distribués.
   - **stargazer** pour imprimer des tableaux.
@@ -35,13 +35,13 @@ En études urbaines, on pourrait vouloir vérifier si certaines variables socio�
 
 Par exemple, au niveau des secteurs de recensement d’une ville canadienne, on pourrait vouloir vérifier si le revenu médian des ménages et le coût moyen du loyer varient dans le même sens que la couverture végétale ; ou encore s'ils varient en sens inverse des niveaux moyens de dioxyde d’azote ou de bruit routier.
 
-Pour évaluer la linéarité entre deux variables continues, deux statistiques descriptives sont utilisées : la **covariance**\index{covariance} (section \@ref(sect042)) et la **corrélation**\index{corrélation} (section \@ref(sect043)).
+Pour évaluer la linéarité entre deux variables continues, deux statistiques descriptives sont utilisées&nbsp;: la **covariance**\index{covariance} (section \@ref(sect042)) et la **corrélation**\index{corrélation} (section \@ref(sect043)).
 :::
 
 
 ## Bref retour sur le postulat de la relation linéaire {#sect041}
 
-Vérifier le postulat de la linéarité consiste à évaluer si deux variables quantitatives varient dans le même sens ou bien en sens contraire. Toutefois, la relation entre deux variables quantitatives n’est pas forcément linéaire. En guise d'illustration, la figure \@ref(fig:fig2) permet de distinguer quatre types de relations :
+Vérifier le postulat de la linéarité consiste à évaluer si deux variables quantitatives varient dans le même sens ou bien en sens contraire. Toutefois, la relation entre deux variables quantitatives n’est pas forcément linéaire. En guise d'illustration, la figure \@ref(fig:fig2) permet de distinguer quatre types de relations&nbsp;:
 
 * Le cas **a** illustre une relation linéaire positive entre les deux variables puisqu’elles vont dans le même sens. Autrement dit, quand les valeurs de *X* augmentent, celles de *Y* augmentent aussi. En guise d'exemple, pour les secteurs de recensement d'une métropole donnée, il est fort probable que le coût moyen du loyer soit associé positivement avec le revenu médian des ménages. Graphiquement parlant, il est clair qu'une droite dans ce nuage de points résumerait efficacement la relation entre ces deux variables.
 
@@ -56,7 +56,7 @@ Vérifier le postulat de la linéarité consiste à évaluer si deux variables q
 knitr::include_graphics('images/bivariee/figure2.jpg', dpi = NA)
 ```
 
-Prenons un exemple concret pour illuster le cas **c**. Dans une étude portant sur l'équité environnementale et la végétation à Montréal, Pham *et al.* [-@PhamApparicioSeguin2012] ont montré qu'il existe une relation curvilinéaire entre l'âge médian des bâtiments résidentiels (axe des abscisses) et les couvertures végétales (axes des ordonnées) :
+Prenons un exemple concret pour illuster le cas **c**. Dans une étude portant sur l'équité environnementale et la végétation à Montréal, Pham *et al.* [-@PhamApparicioSeguin2012] ont montré qu'il existe une relation curvilinéaire entre l'âge médian des bâtiments résidentiels (axe des abscisses) et les couvertures végétales (axes des ordonnées)&nbsp;:
 
 * la couverture de la végétation totale et celle des arbres augmentent quand l'âge médian des bâtiments croît jusqu'à atteindre un pic autour de 60 ans (autour de 1950). On peut supposer que les secteurs récemment construits, surtout ceux dans les banlieues, présentent des niveaux de végétation plus faibles. Au fur et à mesure que le quartier vieillit, les arbres plantés lors du développement résidentiel deviennent matures — canopée plus importante –, d'où l'augmentation des valeurs de la couverture végétale totale et de celle des arbres.
 *  Par contre, dans les secteurs développés avant les années 1950, la densité du bâti est plus forte, laissant ainsi moins de place pour la végétation, ce qui explique une diminution des variables relatives à la couverture végétale (figure \@ref(fig:fig3)).
@@ -71,7 +71,7 @@ Dans les sous-sections suivantes, nous décrirons deux statistiques descriptives
 
 ### Formulation {#sect0421} 
 
-La covariance\index{covariance} (eq. \@ref(eq:cov)), écrite $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives :
+La covariance\index{covariance} (eq. \@ref(eq:cov)), écrite $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives&nbsp;:
 
 
 \footnotesize
@@ -85,7 +85,7 @@ avec $n$ étant le nombre d’observations; $\bar{x}$ et $\bar{y}$ (prononcez x 
 
 ### Interprétation {#sect0422} 
 
-Le numérateur de l'équation \@ref(eq:cov) représente la covariation\index{covariance}, soit la somme du produit des déviations des valeurs $x_{i}$ et $y_{i}$ par rapport à leurs moyennes respectives ($\bar{x}$ et $\bar{y}$). La covariance est donc la covariation divisée par le nombre d’observations, soit la moyenne de la covariation. Sa valeur peut être positive ou négative :  
+Le numérateur de l'équation \@ref(eq:cov) représente la covariation\index{covariance}, soit la somme du produit des déviations des valeurs $x_{i}$ et $y_{i}$ par rapport à leurs moyennes respectives ($\bar{x}$ et $\bar{y}$). La covariance est donc la covariation divisée par le nombre d’observations, soit la moyenne de la covariation. Sa valeur peut être positive ou négative&nbsp;:  
 
 * positive quand les deux variables varient dans le même sens, c'est-à-dire lorsque les valeurs de la variable _X_ s'éloignent de la moyenne, les valeurs de _Y_ s'éloignent aussi dans le même sens; et négative pour une situation inverse. 
  * Quand la covariance est égale à 0, il n’y a pas de relation entre les variables _X_ et _Y_. Plus sa valeur absolue est élevée, plus la relation entre les deux variables *X* et *Y* est importante. 
@@ -127,7 +127,7 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ## Corrélation {#sect043}
 
 ### Formulation {#sect0431} 
-Le coefficient de corrélation de Pearson ($r$) est égal à la covariance (numérateur) divisée par le produit des écarts-types des deux variables *X* et *Y* (dénominateur). Il représente une standardisation de la covariance. Autrement dit, le coefficient de corrélation repose sur un centrage (moyenne = 0) et une réduction (variance = 1) des deux variables, c’est-à-dire à soustraire à chaque valeur sa moyenne correspondante et à la diviser par son écart-type. Il correspond ainsi à la moyenne du produit des deux variables centrées réduites. Il s'écrit alors :
+Le coefficient de corrélation de Pearson ($r$) est égal à la covariance (numérateur) divisée par le produit des écarts-types des deux variables *X* et *Y* (dénominateur). Il représente une standardisation de la covariance. Autrement dit, le coefficient de corrélation repose sur un centrage (moyenne = 0) et une réduction (variance = 1) des deux variables, c’est-à-dire à soustraire à chaque valeur sa moyenne correspondante et à la diviser par son écart-type. Il correspond ainsi à la moyenne du produit des deux variables centrées réduites. Il s'écrit alors&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -164,7 +164,7 @@ cat("Corrélation de Pearson = ",round(cor1,5),
 
 ### Interprétation {#sect0432} 
 
-Le coefficient de corrélation $r$ varie de −1 à 1 avec :
+Le coefficient de corrélation $r$ varie de −1 à 1 avec&nbsp;:
 
 * 0 quand il n’y a pas de relation linéaire entre les variables _X_ et _Y_;
 * −1 quand il y a relation linéaire négative parfaite;
@@ -219,7 +219,7 @@ show_table(df,
            col.names = c("Corrélation","Négative","Positive"))
 ```
 
-Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
+Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49&nbsp;% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
 
 ```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Coefficient de corrélation et proportion de la variance expliquée', out.width='75%'}
 library("ggplot2")
@@ -251,7 +251,7 @@ R2 <- R^2
    annotate(geom="text", x =.15, y=0.8, label="Faible et \n positive", color="black", hjust = 0.5, size = 3.5)
 ```
 
-**Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes ou extrêmes. D’ailleurs, plus le nombre d’observations sera réduit, plus la présence de valeurs extrêmes aura un impact important sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, dans le nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui se démarquent nettement dans le jeu de données : six observations avec une densité de population supérieure à 20 000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55%. Si l'on supprime ces observations (ce qui est défendable dans ce contexte) – soit moins d'un pour cent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
+**Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes ou extrêmes. D’ailleurs, plus le nombre d’observations sera réduit, plus la présence de valeurs extrêmes aura un impact important sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, dans le nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui se démarquent nettement dans le jeu de données&nbsp;: six observations avec une densité de population supérieure à 20 000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55&nbsp;%. Si l'on supprime ces observations (ce qui est défendable dans ce contexte) – soit moins d'un pour cent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
 
 ```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Illustation de l’effet des valeurs extrêmes sur le coefficient de Pearson', out.width='75%'}
 library("ggplot2")
@@ -286,8 +286,8 @@ ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 
 ### Corrélations pour des variables anormalement distribuées (coefficient de Spearman, tau de Kendall) {#sect0433} 
 
-Lorsque les variables sont fortement anormalement distribuées, le coefficient de corrélation de Pearson est peu adapté pour analyser leurs relations linéaires. Il est alors conseillé d'utiliser deux statistiques non-paramétriques : principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le tau ($\tau$) de Kendall, qui varient aussi tous deux de −1 à 1. 
-Calculé sur les rangs des deux variables, **le coefficient de Spearman** est le rapport entre la covariance des deux variables de rangs sur les écarts-types des variables de rangs. En d'autres termes, il représente simplement le coefficient de Pearson calculé sur les rangs des deux variables :
+Lorsque les variables sont fortement anormalement distribuées, le coefficient de corrélation de Pearson est peu adapté pour analyser leurs relations linéaires. Il est alors conseillé d'utiliser deux statistiques non-paramétriques&nbsp;: principalement, le coefficient de corrélation de Spearman (_rho_) et secondairement, le tau ($\tau$) de Kendall, qui varient aussi tous deux de −1 à 1. 
+Calculé sur les rangs des deux variables, **le coefficient de Spearman** est le rapport entre la covariance des deux variables de rangs sur les écarts-types des variables de rangs. En d'autres termes, il représente simplement le coefficient de Pearson calculé sur les rangs des deux variables&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -314,7 +314,7 @@ cat("Covariance divisée par le produit des écarts-types sur les rangs :",
     round(cov(df$HabKm2_rang, df$A65plus_rang) / (sd(df$HabKm2_rang)*sd(df$A65plus_rang)),5))
 ```
 
-Le **tau de Kendall** est une autre mesure non paramétrique calculée comme suit :
+Le **tau de Kendall** est une autre mesure non paramétrique calculée comme suit&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -323,7 +323,7 @@ Le **tau de Kendall** est une autre mesure non paramétrique calculée comme sui
 \end{equation}
 \normalsize
 
-avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observations **c**oncordantes et **d**iscordantes; et le dénominateur étant le nombre total de paires d'observations. Des paires sont dites concordantes quand les valeurs des deux observations vont dans le même sens pour les deux variables ($x_{i}>x_{j}$ et $y_{i}>y_{j}$ ou  $x_{i}<x_{j}$ et $y_{i}<y_{j}$), et discordantes quand elles vont en sens contraire ($x_{i}>x_{j}$ et $y_{i}<y_{j}$ ou $x_{i}<x_{j}$ et $y_{i}>y_{j}$). Contrairement au calcul du coefficient de Spearman, celui du tau Kendall peut être chronophage : plus le nombre d'observations sera élevé, plus les temps de calcul et la mémoire utilisée sont importants. En effet, avec _n_=1000, le nombre de paires d'observations (${0.5\times n(n-1)}$) sera de 499500, contre près de 50 millions avec _n_=10000 (49 995 000).
+avec $n_{c}$ et $n_{d}$ qui sont respectivement les nombres de paires d'observations **c**oncordantes et **d**iscordantes; et le dénominateur étant le nombre total de paires d'observations. Des paires sont dites concordantes quand les valeurs des deux observations vont dans le même sens pour les deux variables ($x_{i}>x_{j}$ et $y_{i}>y_{j}$ ou  $x_{i}<x_{j}$ et $y_{i}<y_{j}$), et discordantes quand elles vont en sens contraire ($x_{i}>x_{j}$ et $y_{i}<y_{j}$ ou $x_{i}<x_{j}$ et $y_{i}>y_{j}$). Contrairement au calcul du coefficient de Spearman, celui du tau Kendall peut être chronophage&nbsp;: plus le nombre d'observations sera élevé, plus les temps de calcul et la mémoire utilisée sont importants. En effet, avec _n_=1000, le nombre de paires d'observations (${0.5\times n(n-1)}$) sera de 499500, contre près de 50 millions avec _n_=10000 (49 995 000).
 
 ```{r fig8, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Comparaison des coefficients de Pearson, Spearman et Kendall sur deux variables anormalement distribuées', out.width='75%'}
 library("moments")
@@ -367,7 +367,7 @@ ggarrange(Plot1, Plot2, Plot3, ncol=3,nrow=1)
 
 ### Corrélations robustes (*Biweight midcorrelation*, *Percentage bend correlation* et la corrélation *pi* de Shepherd) {#sect0434}
 
-Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs extrêmes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser pour des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit : 
+Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des valeurs extrêmes que nous avons retirées du jeu de données. Cette pratique peut tout à fait se justifier quand les données sont erronées (un capteur de pollution renvoyant une valeur négative, un questionnaire rempli par un mauvais plaisantin, etc.), mais parfois les cas extrêmes font partie du phénomène à analyser. Dans ce contexte, les identifier et les retirer peut paraître arbitraire. Une solution plus élégante est d'utiliser des méthodes dites **robustes**, c'est à dire moins sensibles aux valeurs extrêmes. Pour les corrélations, la *Biweight midcorrelation* [@wilcox1994percentage] est au coefficient de Pearson ce que la médiane est à la moyenne. Il est donc pertinent de l'utiliser pour des jeux de données présentant potentiellement des valeurs extrêmes. Elle est calculée comme suit&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -388,7 +388,7 @@ Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des v
 
 Comme le souligne l'équation \@ref(eq:bicor), la *Biweight midcorrelation* est basée sur les écarts à la médiane, plutôt que sur les écarts à la moyenne.
 
-Assez proche de la *Biweight midcorrelation*, la *Percentage bend correlation* se base également sur la médiane des variables *X* et *Y*. Le principe général est de donner un poids plus faible dans le calcul de cette corrélation à un certain pourcentage des observations (20% sont généralement recommandés) dont la valeur est éloignée de la médiane. Pour une description complète de la méthode, vous pourrez lire l'article de @wilcox1994percentage.
+Assez proche de la *Biweight midcorrelation*, la *Percentage bend correlation* se base également sur la médiane des variables *X* et *Y*. Le principe général est de donner un poids plus faible dans le calcul de cette corrélation à un certain pourcentage des observations (20&nbsp;% sont généralement recommandés) dont la valeur est éloignée de la médiane. Pour une description complète de la méthode, vous pourrez lire l'article de @wilcox1994percentage.
 
 Enfin, une autre option est l'utilisation de la corrélation $pi$ de Sherphred [@Schwarzkopf2012]. Il s'agit simplement d'une méthode en deux étapes. Premièrement, les valeurs extrêmes sont identifiées à l'aide d'une approche par *bootstrap* utilisant la distance de Mahalanobis (calculant les écarts multivariés entre les observations). Deuxièmement, le coefficient de *Spearman* est calculé sur les observations restantes.
 
@@ -417,16 +417,16 @@ stargazer(dfCorr, type="text", summary=FALSE, rownames=FALSE, align = FALSE, dig
 show_table(dfCorr,
            digits = 3,
             caption = 'Comparaison de différentes corrélations pour les deux variables',
-           col.names=c("r","IC 2,5%","IC 97,5%", "Méthode")
+           col.names=c("r","IC 2,5 %","IC 97,5 %", "Méthode")
            )
 
 ```
 
-Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche : les méthodes les plus connues sont les plus utilisées, car elles sont plus facilement acceptées par la communauté scientifique. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumissions pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
+Il est intéressant de mentionner que ces trois corrélations sont rarement utilisées malgré leur pertinence dans de nombreux cas d'application. Nous faisons face ici à un cercle vicieux dans la recherche&nbsp;: les méthodes les plus connues sont les plus utilisées, car elles sont plus facilement acceptées par la communauté scientifique. Des méthodes plus élaborées nécessitent davantage de justification et de discussion, ce qui peut conduire à de multiples sessions de corrections/resoumissions pour qu'un article soit accepté, malgré le fait qu'elles puissent être plus adaptées au jeu de données à l'étude.
 
 ### Significativité des coefficients de corrélation {#sect0435} 
 
-Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonnage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents? Le calcul de ce degré de significativité permet de quantifier le niveau de certitude quant à l'existence d'une corrélation entre les deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté : $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant le coefficient de corrélation et le nombre d'observations. De manière classique, on utilisera la table des valeurs critiques de la distribution de $t$ : si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degrés de liberté), alors le coefficient est significatif à 5%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon aurait été inférieure à 5%. Dans ce contexte, on peut raisonnablement rejeter l'hypothèse nulle (corrélation de 0). 
+Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonnage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents? Le calcul de ce degré de significativité permet de quantifier le niveau de certitude quant à l'existence d'une corrélation entre les deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté&nbsp;: $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant le coefficient de corrélation et le nombre d'observations. De manière classique, on utilisera la table des valeurs critiques de la distribution de $t$&nbsp;: si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degrés de liberté), alors le coefficient est significatif à 5&nbsp;%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon aurait été inférieure à 5&nbsp;%. Dans ce contexte, on peut raisonnablement rejeter l'hypothèse nulle (corrélation de 0). 
 
 La courte syntaxe ci-dessous illustre comment calculer la valeur de $t$, le nombre de degrés de liberté et la valeur de _p_ pour une corrélation donnée.
 
@@ -443,15 +443,15 @@ cat("\nCorrélation =", round(r, 4),
     "\np=", round(p, 4))        
 ```
 
-Plus simplement, la fonction `cor.test` permet d'obtenir en une seule ligne de code le coefficient de corrélation, l'intervalle de confiance à 95% et les valeurs de _t_ et de _p_, comme illustré dans la syntaxe  ci-dessous. Si l'intervalle de confiance est à cheval sur 0, c'est-à-dire que la borne inférieure est négative et la borne supérieure positive, alors le coefficient de corrélation n'est pas significatif au seuil choisi (95% habituellement). Dans l'exemple ci-dessous, la relation linéaire entre les deux variables est significativement négative avec une corrélation de Pearson de −0,158 (P=0,000) et un intervalle de confiance à 95% de [−0,219 −0,095].
+Plus simplement, la fonction `cor.test` permet d'obtenir en une seule ligne de code le coefficient de corrélation, l'intervalle de confiance à 95&nbsp;% et les valeurs de _t_ et de _p_, comme illustré dans la syntaxe  ci-dessous. Si l'intervalle de confiance est à cheval sur 0, c'est-à-dire que la borne inférieure est négative et la borne supérieure positive, alors le coefficient de corrélation n'est pas significatif au seuil choisi (95&nbsp;% habituellement). Dans l'exemple ci-dessous, la relation linéaire entre les deux variables est significativement négative avec une corrélation de Pearson de −0,158 (P=0,000) et un intervalle de confiance à 95&nbsp;% de [−0,219 −0,095].
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-# Intervalle de confiance à 95%
+# Intervalle de confiance à 95 %
 cor.test(df$HabKm2, df$A65plus, conf.level = .95)
 # Vous pouvez accéder à chaque sortie de la fonction cor.test comme suit :
 p <- cor.test(df$HabKm2, df$A65plus)
 cat("Valeur de corrélation = ", round(p$estimate,3), "\n",
-    "Intervalle à 95% = [", round(p$conf.int[1],3), " ", round(p$conf.int[2],3), "]", "\n",
+    "Intervalle à 95 % = [", round(p$conf.int[1],3), " ", round(p$conf.int[2],3), "]", "\n",
     "Valeur de t = ", round(p$statistic,3), "\n",
     "Valeur de p = ", round(p$p.value,3),"\n", sep="")
 # Corrélation de Spearman
@@ -460,11 +460,11 @@ cor.test(df$HabKm2, df$A65plus, method = "spearman")
 cor.test(df$HabKm2, df$A65plus, method="kendall")
 ```
 
-On pourra aussi modifier l'intervalle de confiance, par exemple à 90% ou 99%. Le choix de l'intervalle de confiance et du seuil de significativité doivent être définis avant l'étude. Il doit s'appuyer sur les standards de la littérature du domaine étudié, du niveau de preuve attendu et de la quantité de données.
+On pourra aussi modifier l'intervalle de confiance, par exemple à 90&nbsp;% ou 99&nbsp;%. Le choix de l'intervalle de confiance et du seuil de significativité doivent être définis avant l'étude. Il doit s'appuyer sur les standards de la littérature du domaine étudié, du niveau de preuve attendu et de la quantité de données.
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-# Intervalle à 90%
+# Intervalle à 90 %
 cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .90)
-# Intervalle à 99%
+# Intervalle à 99 %
 cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .99)
 ```
 
@@ -494,14 +494,14 @@ corBootstraped <- boot(data=df, # nom du tableau
 plot(corBootstraped)
 # Corrélation "bootstrapée"
 corBootstraped
-# Intervalle de confiance du bootstrap à 95%
+# Intervalle de confiance du bootstrap à 95 %
 boot.ci(boot.out = corBootstraped, conf = 0.95, type = "all")
 # Comparaison de l'intervalle classique basé sur la valeur de T
 p <- cor.test(df$HabKm2, df$A65plus)
 cat(round(p$estimate,5), " [", round(p$conf.int[1],4), " ",round(p$conf.int[2],4), "]", sep="")
 ```
 
-Le _bootstrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Les intervalles de confiance obtenus à partir des différentes méthodes d'estimation (normale, basique, pourcentage et BCa) ne sont pas à cheval sur 0, indiquant que le coefficient est significatif à 5%.
+Le _bootstrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Les intervalles de confiance obtenus à partir des différentes méthodes d'estimation (normale, basique, pourcentage et BCa) ne sont pas à cheval sur 0, indiquant que le coefficient est significatif à 5&nbsp;%.
 
 ### Corrélation partielle {#sect0436} 
 
@@ -514,7 +514,7 @@ La corrélation partielle\index{corrélation partielle} permet d'évaluer la rel
 
 :::
 
-Le coefficient de corrélation partielle peut être calculé pour plusieurs mesures de corrélation (notamment, Pearson, Spearman et Kendall). Variant aussi de −1 à 1, il est calculé comme suit :
+Le coefficient de corrélation partielle peut être calculé pour plusieurs mesures de corrélation (notamment, Pearson, Spearman et Kendall). Variant aussi de −1 à 1, il est calculé comme suit&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -550,7 +550,7 @@ cat("Corr. partielle avec ppcor  = ",
 
 ### Mise en œuvre dans R {#sect0437}
 
-Comme vous l'aurez compris, il est possible d'arriver au même résultat par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test`. Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment :
+Comme vous l'aurez compris, il est possible d'arriver au même résultat par différents moyens. Pour calculer les corrélations, nous avons utilisé jusqu'à présent les fonctions de base `cor` et `cor.test`. Il est aussi possible de recourir à des fonctions d'autres _packages_, dont notamment&nbsp;:
 
 * **Hmisc** dont la fonction `rcorr` permet de calculer des corrélations de Pearson et Spearman (mais non celle de Kendall) avec les valeurs de _p_;
 * **psych** dont la fonction `corr.test` permet d'obtenir une matrice de corrélation (Pearson, Spearman et Kendall), les intervalles de confiance et les valeurs de _p_;
@@ -614,7 +614,7 @@ fig2 <- corrplot.mixed(p, lower="number", lower.col = "black",
 
 ### Comment rapporter des valeurs de corrélations? {#sect0438}
 
-Bien qu'il n'y ait pas qu'une seule manière de reporter des corrélations, voici quelques lignes directrices pour vous guider : 
+Bien qu'il n'y ait pas qu'une seule manière de reporter des corrélations, voici quelques lignes directrices pour vous guider&nbsp;: 
 
 * Signaler si la corrélation est faible, modérée ou forte.
 * Indiquer si la corrélation est positive ou négative. Toutefois, ce n'est pas une obligation, car l'on peut rapidement le constater avec le signe du coefficient.
@@ -623,14 +623,14 @@ Bien qu'il n'y ait pas qu'une seule manière de reporter des corrélations, voic
 * Trois décimales pour la valeur de *p*. Si elle est inférieure à 0,001, écrire plutôt *p* < 0,001.
 * Indiquer éventuellement le nombre de degrés de liberté, soit $r(dl)=...$
 
-Voici des exemples :
+Voici des exemples&nbsp;:
 
 * La corrélation entre les variables revenu médian des ménages et pourcentage de locataires est fortement négative (*r* = −0,78, *p* < 0,001).
 * La corrélation entre les variables revenu médian des ménages et pourcentage de locataires est forte (*r*(949) = −0,78, *p* < 0,001).
 * La corrélation entre les variables densité de population et pourcentage de logements de taille est modérée (*r* = 0,48, *p* < 0,001).
 * La corrélation entre les variables densité de population et pourcentage de 65 ans et plus n'est pas significative (*r* = −0,08, *p* = 0,07).
 
-Pour un texte en anglais, référez-vous à : [https://www.socscistatistics.com/tutorials/correlation/default.aspx](https://www.socscistatistics.com/tutorials/correlation/default.aspx){target="_blank"}.
+Pour un texte en anglais, référez-vous à&nbsp;: [https://www.socscistatistics.com/tutorials/correlation/default.aspx](https://www.socscistatistics.com/tutorials/correlation/default.aspx){target="_blank"}.
 
 ## Régression linéaire simple  {#sect044}
 
@@ -639,7 +639,7 @@ Pour un texte en anglais, référez-vous à : [https://www.socscistatistics.com/
 
 La régression linéaire simple se distingue ainsi de la **covariance** (section \@ref(sect042)) et de la **corrélation** (section \@ref(sect043)), relevant de la statistique bivariée descriptive et exploratoire. 
 
-Par exemple, la régression linéaire simple pourrait être utilisée pour expliquer les notes d'un groupe d'étudiant·e·s à un examen (variable dépendante *Y*) en fonction du nombre d'heures consacrées à la révision des notes de cours (variable indépendante *X*). Une fois l'équation de régression déterminée et si le modèle est efficace, nous pourrons prédire les notes des étudiant·e·s inscrit·e·s au cours la session suivante en fonction du temps qu'ils ou qu'elles prévoient de passer à étudier, et ce, avant l'examen. 
+Par exemple, la régression linéaire simple pourrait être utilisée pour expliquer les notes d'un groupe d'étudiant(e)s à un examen (variable dépendante *Y*) en fonction du nombre d'heures consacrées à la révision des notes de cours (variable indépendante *X*). Une fois l'équation de régression déterminée et si le modèle est efficace, nous pourrons prédire les notes des étudiant(e)s inscrit(e)s au cours la session suivante en fonction du temps qu'ils ou qu'elles prévoient de passer à étudier, et ce, avant l'examen. 
 
 Formulons un exemple d'application de la régression linéaire simple en études urbaines. Dans le cadre d'une étude sur les îlots de chaleur urbains, la température de surface (variable dépendante) pourrait être expliquée par la proportion de la superficie de l'îlot couverte par de la végétation (variable indépendante). On supposerait alors que plus cette proportion est importante, plus la température est faible et inversement, soit une relation linéaire négative. Si le modèle est efficace, nous pourrions prédire la température moyenne des îlots d'une autre municipalité pour laquelle nous ne disposons pas d'une carte de température, et repérer ainsi les îlots de chaleur potentiels. Bien entendu, il est peu probable que nous arrivions à prédire efficacement la température moyenne des îlots avec uniquement la couverture végétale comme variable explicative. En effet, bien d'autres caractéristiques de la forme urbaine peuvent influencer ce phénomène comme la densité du bâti, la couleur des toits, les occupations du sol présentes, l'effet des canyons urbains, etc. Il faudrait alors inclure non pas une, mais plusieurs variables explicatives (indépendantes).
 
@@ -649,21 +649,21 @@ Ainsi, on distinguera la **régression linéaire simple** (une seule variable in
 Dans cette section, nous décrirons succinctement la régression linéaire simple. Concrètement, nous verrons comment déterminer la droite de régression, interpréter ses différents paramètres du modèle et comment évaluer la qualité d'ajustement du modèle. Nous n'aborderons ni les hypothèses liées au modèle de régression linéaire des moindres carrés ordinaires (MCO) ni les conditions d'application. Ces éléments seront expliqués au chapitre \@ref(chap07), consacré à la régression linéaire multiple.
 
 ::: {.bloc_attention data-latex=""}
-**Corrélation, régression simple et causalité : attention aux raccourcis !**
+**Corrélation, régression simple et causalité&nbsp;: attention aux raccourcis !**
 
 Si une variable *X* explique et prédit efficacement une variable *Y*, cela ne veut pas dire pour autant qu'*X* cause *Y*. Autrement dit, la corrélation, l'association entre deux variables, ne signifie pas qu'il existe un lien de causalité entre elles.
 
 Premièrement, la variable explicative (*X*, indépendante) doit absolument précéder la variable à expliquer (*Y*, dépendante). Par exemple, l'âge (*X*) peut influencer le sentiment de sécurité (*Y*). Mais, le sentiment de sécurité ne peut en aucun cas influencer l'âge. Par conséquent, l'âge ne peut conceptuellement pas être la variable dépendante dans cette relation.
 
-Deuxièmement, bien qu'une variable puisse expliquer efficacement une autre variable, elle peut être un **facteur confondant**. Prenons deux exemples bien connus :
+Deuxièmement, bien qu'une variable puisse expliquer efficacement une autre variable, elle peut être un **facteur confondant**. Prenons deux exemples bien connus&nbsp;:
 
-* Avoir les doigts jaunes est associé au cancer du poumon. Bien entendu, les doigts jaunes ne causent pas le cancer : c'est un facteur confondant puisque fumer augmente les risques du cancer du poumon et jaunit aussi les doigts.
+* Avoir les doigts jaunes est associé au cancer du poumon. Bien entendu, les doigts jaunes ne causent pas le cancer&nbsp;: c'est un facteur confondant puisque fumer augmente les risques du cancer du poumon et jaunit aussi les doigts.
 
-* Dans un article intitulé *Chocolate Consumption, Cognitive Function, and Nobel Laureates*, Messerli [-@Messerli] a trouvé une corrélation positive entre la consommation de chocolat par habitant et le nombre de prix Nobel pour dix millions d'habitants pour 23 pays. Ce résultat a d'ailleurs été rapporté par de nombreux médias([Radio Canada](https://ici.radio-canada.ca/nouvelle/582457/chocolat-consommateurs-nobels){target="_blank"}, [La Presse](https://www.lapresse.ca/vivre/sante/nutrition/201210/11/01-4582347-etude-plus-un-pays-mange-de-chocolat-plus-il-a-de-prix-nobel.php){target="_blank"}, [Le Point](https://www.lepoint.fr/insolite/le-chocolat-dope-aussi-l-obtention-de-prix-nobel-12-10-2012-1516159_48.php){target="_blank"}, etc.), sans pour autant que Messerli [-@Messerli] et les journalistes concluent à un lien de causalité entre les deux variables. Les chercheur·e·s savent bien que la consommation de chocolat ne permet pas d'obtenir des résultats intéressants et de les publier dans des revues prestigieuses; c'est plutôt le café ! Plus sérieusement, il est probable que les pays les plus riches investissent davantage dans la recherche et obtiennent ainsi plus de prix Nobel. Dans les pays les plus riches, il est aussi probable que l'on consomme plus de chocolat, considéré comme un produit de luxe dans les pays les plus pauvres.
+* Dans un article intitulé *Chocolate Consumption, Cognitive Function, and Nobel Laureates*, Messerli [-@Messerli] a trouvé une corrélation positive entre la consommation de chocolat par habitant et le nombre de prix Nobel pour dix millions d'habitants pour 23 pays. Ce résultat a d'ailleurs été rapporté par de nombreux médias([Radio Canada](https://ici.radio-canada.ca/nouvelle/582457/chocolat-consommateurs-nobels){target="_blank"}, [La Presse](https://www.lapresse.ca/vivre/sante/nutrition/201210/11/01-4582347-etude-plus-un-pays-mange-de-chocolat-plus-il-a-de-prix-nobel.php){target="_blank"}, [Le Point](https://www.lepoint.fr/insolite/le-chocolat-dope-aussi-l-obtention-de-prix-nobel-12-10-2012-1516159_48.php){target="_blank"}, etc.), sans pour autant que Messerli [-@Messerli] et les journalistes concluent à un lien de causalité entre les deux variables. Les chercheur(e)s savent bien que la consommation de chocolat ne permet pas d'obtenir des résultats intéressants et de les publier dans des revues prestigieuses; c'est plutôt le café ! Plus sérieusement, il est probable que les pays les plus riches investissent davantage dans la recherche et obtiennent ainsi plus de prix Nobel. Dans les pays les plus riches, il est aussi probable que l'on consomme plus de chocolat, considéré comme un produit de luxe dans les pays les plus pauvres.
 
 Pour approfondir le sujet sur la confusion entre *corrélation, régression simple et causalité*, vous pouvez visionner cette courte [vidéo ludique](https://www.youtube.com/embed/A-_naeATJ6o){target="_blank"} de vulgarisation.
 
-L'association entre deux variables peut aussi être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du forage ou de la fouille de données (*data mining* en anglais), le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret, admettons que l'on ait collecté 100 variables et que l'on calcule les corrélations entre chaque paire de variables. On obtient une matrice de corrélation de 100 x 100, à laquelle on peut enlever la diagonale et une moitié de la matrice, ce qui nous laisse un total de 4950 corrélations différentes. Admettons que l'on choisisse un seuil de significativité de 5%, on doit alors s'attendre à ce que le hasard produise des résultats significatifs dans 5% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément l'illustrer avec la syntaxe  suivante :
+L'association entre deux variables peut aussi être simplement le fruit du hasard. Si l'on explore de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du forage ou de la fouille de données (*data mining* en anglais), le hasard fera que l'on risque d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret, admettons que l'on ait collecté 100 variables et que l'on calcule les corrélations entre chaque paire de variables. On obtient une matrice de corrélation de 100 x 100, à laquelle on peut enlever la diagonale et une moitié de la matrice, ce qui nous laisse un total de 4950 corrélations différentes. Admettons que l'on choisisse un seuil de significativité de 5&nbsp;%, on doit alors s'attendre à ce que le hasard produise des résultats significatifs dans 5&nbsp;% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément l'illustrer avec la syntaxe  suivante&nbsp;:
 
 ```{r corraleatoire, message=FALSE, warning=FALSE, out.width='60%', eval = FALSE}
 library("Hmisc")
@@ -712,7 +712,7 @@ knitr::include_graphics('images/bivariee/replication_hist.PNG', dpi = NA)
 :::
 
 ### Principe de base de la régression linéaire simple {#sect0441}
-La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*) :
+La régression linéaire simple vise à déterminer une droite (une fonction linéaire) qui résume le mieux la relation linéaire entre une variable dépendante (*Y*) et une variable indépendante (*X*)&nbsp;:
 \footnotesize
 \begin{equation}
 \widehat{y_i} = \beta_{0} + \beta_{1}x_{i}
@@ -720,9 +720,9 @@ La régression linéaire simple vise à déterminer une droite (une fonction lin
 \end{equation}
 \normalsize
 
-avec $\widehat{y_i}$ et $x_{i}$ qui sont respectivement la valeur prédite de la variable dépendante et la valeur de la variable indépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais) et représente la valeur prédite de la variable *Y* quand *X* est égale à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables : s’il est positif, la relation est positive; s’il est négatif, la relation est négative; s'il est proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la pente est forte et plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
+avec $\widehat{y_i}$ et $x_{i}$ qui sont respectivement la valeur prédite de la variable dépendante et la valeur de la variable indépendante pour l'observation $i$. $\beta_{0}$ est la constante (*intercept* en anglais) et représente la valeur prédite de la variable *Y* quand *X* est égale à 0. $\beta_{1}$ est le coefficient de régression pour la variable *X*, soit la pente de la droite. Ce coefficient nous informe sur la relation entre les deux variables&nbsp;: s’il est positif, la relation est positive; s’il est négatif, la relation est négative; s'il est proche de 0, la relation est nulle (la droite sera alors horizontale). Plus la valeur absolue de $\beta_{1}$ est élevée, plus la pente est forte et plus la variable *Y* varie à chaque changement d’une unité de la variable *X*.
 
-Considérons un exemple fictif de dix municipalités d'une région métropolitaine pour lesquelles nous disposons de deux variables : le pourcentage de personnes occupées se rendant au travail principalement à vélo et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
+Considérons un exemple fictif de dix municipalités d'une région métropolitaine pour lesquelles nous disposons de deux variables&nbsp;: le pourcentage de personnes occupées se rendant au travail principalement à vélo et la distance de la municipalité au centre-ville (tableau \@ref(tab:regfictives)).
 
 
 ```{r regfictives, echo=FALSE, message=FALSE, warning=FALSE, out.width='85%'}
@@ -736,11 +736,11 @@ show_table(list(df1, df2),
            )
 ```
 
-D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relation linéaire négative entre les deux variables : plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient de corrélation (*r* = −0,90). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit alors : **Vélo = 30,603 − 1,448 x KmCV**.
+D'emblée, à la lecture du nuage de points (figure \@ref(fig:figreg)), on décèle une forte relation linéaire négative entre les deux variables&nbsp;: plus la distance au centre-ville augmente, plus le pourcentage de cyclistes est faible, ce qui est confirmé par le coefficient de corrélation (*r* = −0,90). La droite de régression (en rouge à la figure \@ref(fig:figreg)) qui résume le mieux la relation entre `Vélo` (variable dépendante) et `KmCV` (variable indépendante) s'écrit alors&nbsp;: **Vélo = 30,603 − 1,448 x KmCV**.
 
 La valeur du coefficient de régression ($\beta_{1}$) est de −1,448. Le signe de ce coefficient décrit une relation négative entre les deux variables. Ainsi, à chaque ajout d'une unité de la distance au centre-ville (exprimée en kilomètres), le pourcentage de cyclistes diminue de 1,448. Retenez que l'unité de mesure de la variable dépendante est très importante pour bien interpréter le coefficient de régression. En effet, si la distance au centre-ville n'était pas exprimée en kilomètres, mais plutôt en mètres, $\beta_1$ sera égal à −0,001448. Dans la même optique, l'ajout de 10 km de distance entre une municipalité et le centre-ville fait diminuer le pourcentage de cyclistes de −14,48 points de pourcentage.
 
-Avec, cette équation de régression, il est possible de prédire le pourcentage de cyclistes pour n'importe quelle municipalité de la région métropolitaine. Par exemple, pour des distances de 5, 10 ou 20 kilomètres, les pourcentages de cyclistes seraient de :
+Avec, cette équation de régression, il est possible de prédire le pourcentage de cyclistes pour n'importe quelle municipalité de la région métropolitaine. Par exemple, pour des distances de 5, 10 ou 20 kilomètres, les pourcentages de cyclistes seraient de&nbsp;:
 
 * $\widehat{y_i} = 30,603 + (-1,448 \times \text{5 km}) = 23,363$
 * $\widehat{y_i} = 30,603 + (-1,448 \times \text{10 km}) = 8,883$
@@ -765,7 +765,7 @@ ggplot(df, aes(x=KmCV, y=Velo)) +
 
 
 ### Formulation de la droite de régression des moindres carrés ordinaires {#sect0442}
-Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre la valeur observée et la valeur prédite, dénommé résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle, et par extension moins bon est le modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$) :
+Reste à savoir comment sont estimés les différents paramètres de l'équation, soit $\beta_0$ et $\beta_1$. À la figure \@ref(fig:figreg2), les points noirs représentent les valeurs observées ($y_i$) et les points bleus les valeurs prédites ($\widehat{y_i}$) par l'équation du modèle. Les traits noirs verticaux représentent pour chaque observation $i$, l'écart entre la valeur observée et la valeur prédite, dénommé résidu ($\epsilon_i$, prononcez epsilon de _i_ ou plus simplement le résidu pour _i_, ou encore le terme d'erreur de _i_). Si un point est au-dessus de la droite de régression, la valeur observée sera alors supérieure à la valeur prédite ($y_i > \widehat{y_i}$) et inversement, si le point est au-dessous de la droite ($y_i < \widehat{y_i}$). Plus cet écart ($\epsilon_i$) est important, plus l'observation s'éloigne de la prédiction du modèle, et par extension moins bon est le modèle. Au tableau \@ref(tab:regfictives2), vous constaterez que la somme des résidus est égale à zéro. La méthode des moindres carrés ordinaires (MCO) vise à minimiser les écarts au carré entre les valeurs observées ($y_i$) et prédites ($\beta_0+\beta_1 x_i$, soit $\widehat{y_i}$)&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -830,7 +830,7 @@ ggplot(df) +
   annotate(geom="text", x =df[9,3]+2.2, y= df[9,2]+4,
            label="Valeurs observées pour la municipalité I", color="black", hjust = 0, size = 5)+
   annotate(geom="text", x =df[9,3]+2.2, y=df[9,2]+3,
-           label="y = 25,3% et x = 5,225 km", color="black", hjust = 0, size = 5)+
+           label="y = 25,3 % et x = 5,225 km", color="black", hjust = 0, size = 5)+
   annotate(geom="text", x =df[9,3]+2.2, df[9,2]-abs(df[9,5]/2)+.2,
            label="résidu = 25,3 - 23,038 = 2,262", color="black", hjust = 0, size = 5)+
   annotate(geom="text", x =df[9,3], y= df[9,4]-9.5,
@@ -859,7 +859,7 @@ show_table(df,
 ``` 
 
 ### Mesurer la qualité d'ajustement du modèle {#sect0443}
-Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (*root-mean-square error* en anglais, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit : 
+Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (*root-mean-square error* en anglais, *RMSE*), le coefficient de détermination ($R^2$) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -877,7 +877,7 @@ Y  = \underbrace{\beta_0 + \beta_1 X}_{\mbox{partie expliquée par le modèle}}+
 \end{equation}
 \normalsize
 
-Par exemple, pour la municipalité *A* au tableau \@ref(tab:regfictives2), nous avons : $y_A = \widehat{y}_A - \epsilon_A \Rightarrow 12.5 = 10.138+2.362$. Souvenez-vous que la variance d'une variable est la somme des écarts à la moyenne, divisée par le nombre d'observations. Par extension, il est alors possible de décomposer la variance de *Y* comme suit :
+Par exemple, pour la municipalité *A* au tableau \@ref(tab:regfictives2), nous avons&nbsp;: $y_A = \widehat{y}_A - \epsilon_A \Rightarrow 12.5 = 10.138+2.362$. Souvenez-vous que la variance d'une variable est la somme des écarts à la moyenne, divisée par le nombre d'observations. Par extension, il est alors possible de décomposer la variance de *Y* comme suit&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -887,7 +887,7 @@ SCT = SCE + SCR
 \end{equation}
 \normalsize
 
-avec :
+avec&nbsp;:
 
 * *SCT* est la somme des écarts au carré des valeurs observées à la moyenne (_total sum of squares_ en anglais)
 * *SCE* est la somme des écarts au carré des valeurs prédites à la moyenne (_regression sum of squares_ en anglais)
@@ -932,7 +932,7 @@ show_table(df,
 
 **Calcul de l'erreur quadratique moyenne**
 
-La somme des résidus au carré (*SCR*) divisée par le nombre d'observations représente donc le carré moyen des erreurs (en anglais, *mean square error - MSE*), soit la variance résiduelle du modèle ($52,26 / 10 = 5,23$). Plus sa valeur sera faible, plus le modèle sera efficace pour prédire la variable indépendante. L'erreur quadratique moyenne (en anglais, *root-mean-square error - RMSE*) est simplement la racine carrée de la somme des résidus au carré divisée par le nombre d'observations ($n$) :
+La somme des résidus au carré (*SCR*) divisée par le nombre d'observations représente donc le carré moyen des erreurs (en anglais, *mean square error - MSE*), soit la variance résiduelle du modèle ($52,26 / 10 = 5,23$). Plus sa valeur sera faible, plus le modèle sera efficace pour prédire la variable indépendante. L'erreur quadratique moyenne (en anglais, *root-mean-square error - RMSE*) est simplement la racine carrée de la somme des résidus au carré divisée par le nombre d'observations ($n$)&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -941,11 +941,11 @@ RMSE = \sqrt{\frac{\sum_{i=1}^n (y_{i}-\widehat{y})^2}{n}}
 \end{equation}
 \normalsize
 
-Elle représente ainsi une **mesure absolue des erreurs** qui est exprimée dans l'unité de mesure de la variable dépendante. Dans le cas présent, on a : $\sqrt{5,23}=2,29$. Cela signifie qu'en moyenne, l'écart absolu (ou erreur absolue) entre les valeurs observées et prédites est de 2,29 points de pourcentage. De nouveau, une plus faible valeur de **RMSE** indique un meilleur ajustement du modèle. Mais surtout, le RMSE permet d'évaluer avec quelle précision le modèle prédit la variable dépendante. Il est donc particulièrement important si l'objectif principal du modèle est de prédire des valeurs sur un échantillon d'observations pour lequel la variable dépendante est inconnue.
+Elle représente ainsi une **mesure absolue des erreurs** qui est exprimée dans l'unité de mesure de la variable dépendante. Dans le cas présent, on a&nbsp;: $\sqrt{5,23}=2,29$. Cela signifie qu'en moyenne, l'écart absolu (ou erreur absolue) entre les valeurs observées et prédites est de 2,29 points de pourcentage. De nouveau, une plus faible valeur de **RMSE** indique un meilleur ajustement du modèle. Mais surtout, le RMSE permet d'évaluer avec quelle précision le modèle prédit la variable dépendante. Il est donc particulièrement important si l'objectif principal du modèle est de prédire des valeurs sur un échantillon d'observations pour lequel la variable dépendante est inconnue.
 
 **Calcul du coefficient de détermination**
 
-Nous avons largement démontré que la variance totale est égale à la variance expliquée plus la variance non expliquée. La qualité du modèle peut donc être évaluée avec le coefficient de détermination ($R^2$), soit le rapport entre les variances expliquée et totale : 
+Nous avons largement démontré que la variance totale est égale à la variance expliquée plus la variance non expliquée. La qualité du modèle peut donc être évaluée avec le coefficient de détermination ($R^2$), soit le rapport entre les variances expliquée et totale&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -954,7 +954,7 @@ R^2 = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
 \end{equation}
 \normalsize
 
-Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence / est capable de prédire *Y*. Dans le cas présent, on a : $R^2 = 227.04 / 279.3 = 0.8129$, ce qui signale que 81,3% de la variance du pourcentage de cyclistes est expliquée par la distance au centre-ville. Tel que signalé dans la section \@ref(sect0432), la racine carrée du coefficient de détermination ($R^2$) est égale au coefficient de corrélation ($r$) entre les deux variables. 
+Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence / est capable de prédire *Y*. Dans le cas présent, on a&nbsp;: $R^2 = 227.04 / 279.3 = 0.8129$, ce qui signale que 81,3&nbsp;% de la variance du pourcentage de cyclistes est expliquée par la distance au centre-ville. Tel que signalé dans la section \@ref(sect0432), la racine carrée du coefficient de détermination ($R^2$) est égale au coefficient de corrélation ($r$) entre les deux variables. 
 
 **Calcul de la statistique _F_ de Fisher**
 
@@ -979,7 +979,7 @@ summary(modele)
 Dans le cas présent, $F = (10 - 2)\frac{0.8129}{1-0.8129} = (10-2)\frac{227.04}{52.26} = 34.75$ avec une valeur de $p < 0.001$. Par conséquent, le modèle est significatif.
 
 ### Mise en œuvre dans R {#sect0444}
-Comment calculer une régression linéaire simple dans ![](Images/Rlogo.png). Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
+Comment calculer une régression linéaire simple dans R. Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 df1 <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
@@ -995,7 +995,7 @@ cat("MSE=", round(MSE, 2), "; RMSE=", round(RMSE,2), sep="")
 
 ### Comment rapporter une régression linéaire simple {#sect0445}
 
-Nous avons calculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance au centre-ville (en kilomètres). Le modèle obtient un *F* de Fisher significatif (*F*(1,8)= 34,75, *p* < 0,001) et un $R^2$ de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante : 30,603 - 1,448 x (distance au centre-ville en km).
+Nous avons calculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance au centre-ville (en kilomètres). Le modèle obtient un *F* de Fisher significatif (*F*(1,8)= 34,75, *p* < 0,001) et un $R^2$ de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante&nbsp;: 30,603 - 1,448 x (distance au centre-ville en km).
 
 ## Quiz de révision du chapitre
 
