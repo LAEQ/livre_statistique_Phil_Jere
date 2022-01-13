@@ -206,13 +206,15 @@ brant.vglm <- function(model,by.var=F){
 #### parallel likelihood ratio test pour vglm ordinal ####
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-parallel.likelihoodtest.vglm <- function(model){
+parallel.likelihoodtest.vglm <- function(model, verbose = TRUE){
 
   ## recuperer les variable de l'equation
   formule <- as.formula(as.character(model@terms))
   xvars <- strsplit(as.character(formule)[[3]]," + ", fixed = T)[[1]]
 
-  pb <- txtProgressBar(min = 0, max = length(xvars), style = 3)
+  if(verbose){
+    pb <- txtProgressBar(min = 0, max = length(xvars), style = 3)
+  }
   i<-1
   test_results <- lapply(xvars,function(x){
     formule2 <- as.formula(paste(FALSE, "~ 1 +",x))
@@ -225,7 +227,10 @@ parallel.likelihoodtest.vglm <- function(model){
       "AIC" = round(AIC(model2)),
       "loglikelihood" = round(logLik(model2)),
       "p.val loglikelihood ratio test" = test$`Pr(>Chi)`[[2]])
-    setTxtProgressBar(pb, i)
+    if(verbose){
+      setTxtProgressBar(pb, i)
+    }
+
     i<<- i+1
     return(values)
   })
@@ -242,7 +247,7 @@ parallel.likelihoodtest.vglm <- function(model){
 #### Analyse de type 3, modele multinomial ####
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-AnalyseType3<-function(modele, data, fixed_vars = NULL){
+AnalyseType3<-function(modele, data, fixed_vars = NULL, verbose = TRUE){
   logModeleComplet <- -2*logLik(modele)          # valeur du loglikehood pour le mod?le complet
   results <- list()  # liste vide qui comprendra les resultats
   all_vars <- strsplit(as.character(modele@terms), split = " ~ ")
@@ -254,7 +259,10 @@ AnalyseType3<-function(modele, data, fixed_vars = NULL){
     testing_vars <- varsindep
   }
   i <- 1
-  pb <- txtProgressBar(min = 0, max = length(testing_vars), style = 3)
+  if(verbose){
+    pb <- txtProgressBar(min = 0, max = length(testing_vars), style = 3)
+  }
+
   for(x1 in testing_vars){
     # R?cup?ration de la liste des variables ind?pendantes moins chaque variable d?pendante
     listvarindep = ""
@@ -277,8 +285,10 @@ AnalyseType3<-function(modele, data, fixed_vars = NULL){
       "loglike" = round(-2* logLik(model2)),
       "sign" = round(test$`Pr(>Chi)`[[2]],4))
     results[[length(results) + 1]] <- values
-    setTxtProgressBar(pb, i)
-    i <- i + 1;
+    if(verbose){
+      setTxtProgressBar(pb, i)
+    }
+    i <- i + 1
   }
 
   cat("*************************************", "\n")
@@ -356,7 +366,7 @@ nice_confusion_matrix <- function(yreal, ypred){
 
   final_table <- rbind(cbind(precision,rappel,F1),macro_scores)
   final_table <- rbind(final_table, c(info[[3]][[2]],NA,NA), c(info[[3]][[6]],NA,NA))
-  rnames <- c(rownames(mat),"macro","Kappa","Valeur de p  (précision > NIR)")
+  rnames <- c(rownames(mat),"macro","Kappa","Valeur de p  (precision > NIR)")
   final_table <- cbind(rnames,round(final_table,2))
 
   #print(kable(final_table, row.names =F))
