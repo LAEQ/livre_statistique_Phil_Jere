@@ -33,7 +33,7 @@ question <- function(label, type, response, answers = NULL, section = NULL){
 
 quizz <- function(yml_file, quizz_id){
 
-  questions <- yaml::read_yaml(yml_file)
+  questions <- yaml::read_yaml(yml_file, fileEncoding = "UTF-8")
 
   return(
     list("questions" = questions,
