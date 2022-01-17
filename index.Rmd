@@ -304,6 +304,27 @@ show_as_png <- function(gplot, out, dpi = 250){
 }
 
 
+print_number <- function(x, digits = NULL){
+  if(is.null(digits) == FALSE){
+    x <- round(x, digits = digits)
+  }
+  parts <- strsplit(as.character(x), split = ".", fixed = TRUE)[[1]]
+  part1 <- strsplit(parts[[1]], "")[[1]]
+  i<-1
+  elems <- sapply(rev(part1), function(y){
+    if(i == 3){
+      i <<- 1
+      return(paste0(" ",y))
+    }else{
+      i <<- i+1
+      return(y)
+    }
+  })
+  part1 <- paste(rev(elems), collapse = "")
+  x2 <- paste0(part1, ",",parts[[2]])
+  cat(x2)
+}
+
 ```
 
 

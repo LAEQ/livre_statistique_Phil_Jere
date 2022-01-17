@@ -2,31 +2,31 @@
 
 **Les modèles linéaires généralisés**
 
-Dans ce chapitre, nous présenterons les modèles linéaires généralisés plus communément appelés GLM (*generalized linear models* en anglais). Il s’agit d’une extension directe du modèle de régression linéaire multiple (LM) basé sur la méthode des moindres carrés ordinaires, décrit dans le chapitre précédent. Pour aborder cette section sereinement, il est important d’avoir bien compris le concept de distribution présenté dans la section (section \@ref(sect024)). À la fin de cette section, vous serez en mesure de&nbsp;:
+Dans ce chapitre, nous présenterons les modèles linéaires généralisés plus communément appelés GLM (*generalized linear models* en anglais). Il s’agit d’une extension directe du modèle de régression linéaire multiple (LM) basé sur la méthode des moindres carrés ordinaires, décrit dans le chapitre précédent. Pour aborder cette section sereinement, il est important d’avoir bien compris le concept de distribution présenté dans la section \@ref(sect024). À la fin de cette section, vous serez en mesure de&nbsp;:
 
 * comprendre la distinction entre un modèle LM classique et un GLM;
 * identifier les composantes d’un GLM;
 *	interpréter les résultats d’un GLM;
-*	effectuer les diagnostics d’un GLM
+*	effectuer les diagnostics d’un GLM.
 
 
 ::: {.bloc_package data-latex=""}
 Dans cette section, nous utiliserons principalement les packages suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
-  - **ggplot2**, le seul, l'unique
-  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes
+  - **ggplot2**, le seul, l'unique;
+  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes.
   
 * Pour ajuster des modèles GLM&nbsp;:
-  - **VGAM** et **gamlss** offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent plusieurs manipulations manuelles
-  - **mgcv** offre moins de distributions que les deux précédents, mais est plus simple d'utilisation
+  - **VGAM** et **gamlss** offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent plusieurs manipulations manuelles;
+  - **mgcv** offre moins de distributions que les deux précédents, mais est plus simple d'utilisation.
 
  * Pour analyser des modèles GLM&nbsp;:
-  - **car** essentiellement pour la fonction `vif`
-  - **DHARMa** pour le diagnostic des résidus simulés 
-  - **DescTools** pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera
-  - **ROCR** et **caret** pour l'analyse de la qualité d'ajustement de modèles pour des variables qualitatives
-  - **sandwich** pour générer des erreurs standards robustes pour le modèle GLM logistique binomial
+  - **car** essentiellement pour la fonction `vif`;
+  - **DHARMa** pour le diagnostic des résidus simulés;
+  - **DescTools** pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera;
+  - **ROCR** et **caret** pour l'analyse de la qualité d'ajustement de modèles pour des variables qualitatives;
+  - **sandwich** pour générer des erreurs standards robustes pour le modèle GLM logistique binomial.
 :::
 
 ## Qu'est qu'un modèle GLM? {#sect081}
@@ -59,7 +59,7 @@ D'après cette formule, nous modélisons la variable *Y* avec une équation de r
 \end{equation}
 \normalsize
 
-Pas de panique ! Cette écriture se lit comme suit&nbsp;: La variable *Y* est issue d’une distribution normale $(Y \sim Normal)$ avec deux paramètres&nbsp;: $\mu$ (sa moyenne) et $\sigma$ (son écart type). $\mu$ varie en fonction d’une équation de régression linéaire ($\beta_0 + \beta X$) transformée par une fonction de lien *g* (détaillée plus loin). Dans ce cas précis, la fonction de lien est appelée fonction identitaire puisqu’elle n’applique aucune transformation ($g(x) = x$). Vous noterez ici que le second paramètre de la distribution normale $\sigma$ (paramètre de dispersion) a une valeur fixe et ne dépend donc pas des variables indépendantes à la différence de $\mu$. Dans ce modèle spécifiquement, les paramètres à estimer sont&nbsp;: $\sigma$, $\beta_0$, et $\beta$.
+Pas de panique ! Cette écriture se lit comme suit&nbsp;: la variable *Y* est issue d’une distribution normale $(Y \sim Normal)$ avec deux paramètres&nbsp;: $\mu$ (sa moyenne) et $\sigma$ (son écart type). $\mu$ varie en fonction d’une équation de régression linéaire ($\beta_0 + \beta X$) transformée par une fonction de lien *g* (détaillée plus loin). Dans ce cas précis, la fonction de lien est appelée fonction identitaire puisqu’elle n’applique aucune transformation ($g(x) = x$). Vous noterez ici que le second paramètre de la distribution normale $\sigma$ (paramètre de dispersion) a une valeur fixe et ne dépend donc pas des variables indépendantes à la différence de $\mu$. Dans ce modèle spécifiquement, les paramètres à estimer sont&nbsp;: $\sigma$, $\beta_0$, et $\beta$.
 Notez que dans la notation traditionnelle, la fonction de lien est appliquée au paramètre modélisé. Il est possible de renverser cette notation en utilisant la réciproque ($g'$) de la fonction de lien ($g$)&nbsp;:
 
 \footnotesize
@@ -73,8 +73,8 @@ g(\mu) = \beta_0 + \beta X \Longleftrightarrow \mu = g'(\beta_0 + \beta X)
 Dans un modèle GLM, la distribution attendue de la variable *Y* est déclarée de façon explicite ainsi que la façon dont nos variables indépendantes conditionnent cette distribution. Ici, c’est la moyenne ($\mu$) de la distribution qui est modélisée, on s’intéresse ainsi au changement moyen de *Y* provoqué par les variables *X*.
 
 Avec cet exemple, nous voyons les deux composantes supplémentaires d’un modèle GLM&nbsp;:
-;
-*	La distribution supposée de la variable *Y* (ici, la distribution normale)
+
+*	La distribution supposée de la variable *Y* (ici, la distribution normale).
 *	Une fonction de lien associant l’équation de régression formée par les variables indépendantes et un paramètre de la distribution retenue (ici la fonction identitaire et le paramètre $\mu$).
 
 Notez également que l’estimation des paramètres d’un modèle GLM (ici $\beta_0$, $\beta X$ et $\sigma$) ne se fait plus avec la méthode des moindres carrés ordinaires utilisée pour les modèles LM. À la place, la méthode par maximum de vraisemblance (*maximum likelihood*) est le plus souvent utilisée, mais certains *packages* utilisent également la méthode des moments (*method of moments*). Dans les deux cas, ces méthodes nécessitent des échantillons plus grands que la méthode des moindres carrés. Dans le cas spécifique d'un modèle GLM utilisant une distribution normale, la méthode des moindres carrés et la méthode par maximum de vraissemblance produisent les mêmes résultats.
@@ -94,7 +94,7 @@ Notez également que l’estimation des paramètres d’un modèle GLM (ici $\be
 \end{equation}
 \normalsize
 
-Toutefois, le résultat n’est pas entièrement satisfaisant. En effet, *p* est une probabilité et, par nature, ce paramètre devrait être compris entre 0 et 1 (entre 0 et 100% de « chances de décès », ni plus ni moins). L’équation de régression que nous utilisons actuellement peut produire des résultats compris en $-\infty$ et $+\infty$ pour *p* puisque rien ne contraint la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ à être comprise entre 0 et 1. Il est possible de visualiser le problème soulevé par cette situation avec les figures suivantes. Admettons que nous ayons observé une variable *Y* binaire et que nous savons qu’elle est influencée par une variable *X* qui, plus elle augmente, plus la chance que *Y* soit 1 augmente (figure \@ref(fig:linearbinom)).
+Toutefois, le résultat n’est pas entièrement satisfaisant. En effet, *p* est une probabilité et, par nature, ce paramètre devrait être compris entre 0 et 1 (entre 0 et 100% de « chances de décès », ni plus ni moins). L’équation de régression que nous utilisons actuellement peut produire des résultats compris entre $-\infty$ et $+\infty$ pour *p* puisque rien ne contraint la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ à être comprise entre 0 et 1. Il est possible de visualiser le problème soulevé par cette situation avec les figures suivantes. Admettons que nous ayons observé une variable *Y* binaire et que nous savons qu’elle est influencée par une variable *X* qui, plus elle augmente, plus la chance que *Y* soit 1 augmente (figure \@ref(fig:linearbinom)).
 
 ```{r linearbinom, echo=FALSE, fig.align='center', fig.cap="Exemple de données issues d'une distribution de Bernoulli", message=FALSE, warning=FALSE, out.width='70%'}
 x1 <- rnorm(150)
@@ -253,7 +253,7 @@ df <- data.frame(
               "$1-\\frac{\\sum_{i=1}^n(y_i-\\hat{y}_i)^2}{\\sum_{i=1}^n(y_i-\\bar{y}_i)^2}$",
               "$1-e^{-\\frac{2}{n}({loglike(M_e) - loglike(M_n))}}$",
               "$\\frac{1-e^{-\\frac{2}{n}({loglike(M_e) - loglike(M_n))}}}{1-e^{\\frac{2*loglike(M_n)}{n}}}$"),
-  Commentaire = c("Le rapport des loglikelihood, très proche de la déviance expliquée", "Version ajustée du R^2^ de McFadden tenant compte du nombre de paramètres (K) dans le modèle", "Rapport entre la somme des résidus classiques au carré (numérateur) et de la somme des écarts au carré à la moyenne (dénominateur). Notez que pour un GLM gaussien, ce pseudo R^2^ est identique au R^2^ classique", "Transformation de la déviance afin de la mettre sur une échelle de 0 à 1 (mais ne pouvant atteindre exactement 1)", "Ajustement du R^2^ de Cox et Snell pour que l’échelle de valeurs possibles puisse comporter 1 (attention, car les valeurs de ce R^2^ tendent à être toujours plus fortes que les autres)")
+  Commentaire = c("Le rapport des *loglikelihood*, très proche de la déviance expliquée", "Version ajustée du R^2^ de McFadden tenant compte du nombre de paramètres (K) dans le modèle", "Rapport entre la somme des résidus classiques au carré (numérateur) et de la somme des écarts au carré à la moyenne (dénominateur). Notez que pour un GLM gaussien, ce pseudo R^2^ est identique au R^2^ classique", "Transformation de la déviance afin de la mettre sur une échelle de 0 à 1 (mais ne pouvant atteindre exactement 1)", "Ajustement du R^2^ de Cox et Snell pour que l’échelle de valeurs possibles puisse comporter 1 (attention, car les valeurs de ce R^2^ tendent à être toujours plus fortes que les autres)")
 )
 show_table(df, 
       col.names = c("Nom","Formule", "Commentaire"),
@@ -278,7 +278,7 @@ AIC = D(M_e) + 2K
 
 Avec *K* le nombre de paramètres à estimer dans le modèle (coefficients, paramètres de distribution, etc.). 
 
-Le *AIC* n’a pas d’interprétation directe, mais permet de comparer deux modèles imbriqués (voir section \@ref(sect0732)). Plus le *AIC* est petit, mieux le modèle est ajusté. L’idée derrière cet indicateur est relativement simple. Si la déviance *D* est grande, alors le modèle est mal ajusté. Ajouter des paramètres (des coefficients pour de nouvelles variables *X* par exemple) ne peut que réduire *D*, mais cette réduction n’est pas forcément suffisamment grande pour justifier la complexification du modèle. Le *AIC* pondère donc *D* en lui ajoutant 2 fois le nombre de paramètres du modèle. Un modèle plus simple (avec moins de paramètres) parvenant à une même déviance est préférable à un modèle complexe (principe de parcimonie ou du rasoir d’Ockham), ce que permet de « quantifier » le *AIC*. Attention, le *AIC* **ne peut pas être utilisé pour comparer des modèles non imbriqués**. Notez que d’autres indicateurs similaires comme le *WAIC*, le *BIC* et le *DIC* sont utilisés dans un contexte d’inférence bayésienne. Retenez simplement que ces indicateurs sont conceptuellement proches du *AIC* et s’interprètent (à peu de choses près) de la même façon.
+Le *AIC* n’a pas d’interprétation directe, mais permet de comparer deux modèles imbriqués (voir section \@ref(sect0732)). Plus le *AIC* est petit, mieux le modèle est ajusté. L’idée derrière cet indicateur est relativement simple. Si la déviance *D* est grande, alors le modèle est mal ajusté. Ajouter des paramètres (des coefficients pour de nouvelles variables *X*, par exemple) ne peut que réduire *D*, mais cette réduction n’est pas forcément suffisamment grande pour justifier la complexification du modèle. Le *AIC* pondère donc *D* en lui ajoutant 2 fois le nombre de paramètres du modèle. Un modèle plus simple (avec moins de paramètres) parvenant à une même déviance est préférable à un modèle complexe (principe de parcimonie ou du rasoir d’Ockham), ce que permet de « quantifier » le *AIC*. Attention, le *AIC* **ne peut pas être utilisé pour comparer des modèles non imbriqués**. Notez que d’autres indicateurs similaires comme le *WAIC*, le *BIC* et le *DIC* sont utilisés dans un contexte d’inférence bayésienne. Retenez simplement que ces indicateurs sont conceptuellement proches du *AIC* et s’interprètent (à peu de choses près) de la même façon.
 
 #### Comparer les distributions originales et prédites {#compOrigPred}
 
@@ -553,7 +553,7 @@ model1 <- glm(y ~
 vif(model1)
 ```
 
-La seconde étape de vérification est le calcul des distances de Cook et l'identification d'éventuelles valeurs aberrantes.
+La seconde étape de vérification est le calcul des distances de Cook et l'identification d'éventuelles valeurs aberrantes (figure \@ref(cookdistGLMbinom)).
 
 ```{r, cookdistGLMbinom, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distances de Cook pour le modèle binomial avec toutes les observations", fig.align="center"}
 # calcul et représentation des distances de Cook
@@ -607,7 +607,7 @@ Après avoir retiré ces valeurs aberrantes, nous n'observons plus de nouveaux c
 
 La prochaine étape de vérification des conditions d'application est l'analyse des résidus simulés. Nous commençons donc par calculer ces résidus et afficher leur histogramme (figure \@ref(figresidsimbinomHistoUnif)).
 
-```{r figresidsimbinomHistoUnif, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distribution des résidus simulé pour le modèle binomial", fig.align="center"}
+```{r figresidsimbinomHistoUnif, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distribution des résidus simulé pour le modèle binomial", fig.align="center", fig.pos = "H"}
 library(DHARMa)
 #Extraire les probabilités prédites par le modèle
 probs <- predict(model2, type = "response")
@@ -641,15 +641,16 @@ plot(sim_res)
 ```
 
 ```{r figresidsimbinom, echo=FALSE, fig.align="center", fig.cap="Diagnostic des résidus simulés par le package DHARMa", fig.pos="H", message=FALSE, warning=FALSE, out.width='100%'}
-out <- "images/glm/figresidsimbinom.png"
+invisible(capture.output({
+  out <- "images/glm/figresidsimbinom.png"
 
-png(filename = out,
-    res = 300, width = 20, height = 10, units = "cm")
-
-plot(sim_res)
-
-dev.off()
-
+  png(filename = out,
+      res = 300, width = 20, height = 10, units = "cm")
+  
+  plot(sim_res)
+  
+  dev.off()
+}))
 knitr::include_graphics(out, dpi = 300)
 ```
 
@@ -842,7 +843,7 @@ ggplot(data = paysdf) +
 
 Dans la figure \@ref(fig:figpaysbinom), la barre horizontale pour chaque pays représente l’intervalle de confiance de son rapport de cotes (le point); plus cette ligne est longue, plus grande est l’incertitude autour de ce paramètre. Lorsque les lignes de deux pays se chevauchent, cela signifie qu’il n’y a pas de différence significative au seuil 0,05 entre les rapports de cotes des deux pays. La ligne rouge tracée à x = 1, représente le rapport de cotes du pays de référence (ici l’Allemagne). On constate ainsi que comparativement à un individu vivant en Allemagne, ceux vivant au Danemark et au Pays-Bas ont 2,4 fois plus de chance d’utiliser le vélo pour leur déplacement le plus fréquent. Les Pays de l’Ouest (France, Luxembourg, Royaume-Uni, Irlande) et du Sud (Grèce, Italie, Espagne, Portugal) ont en revanche des rapports de cotes plus faibles. En France, les chances qu’un individu utilise le vélo pour son trajet le plus fréquent sont 3,22 (1/0,31) fois plus faibles que si l’individu vivait en Allemagne.
 
-Pour le reste des coefficients et rapports de cotes, nous les rapportons dans le tableau \@ref(tab:tablcoeffbinom)).
+Pour le reste des coefficients et rapports de cotes, nous les rapportons dans le tableau \@ref(tab:tablcoeffbinom).
 
 ```{r tablcoeffbinom, echo=FALSE, fig.align="center",  warning=FALSE,  message=FALSE}
 tableau_comp <- build_table(model2, confid = T, sign = T, coef_digits = 3, std_digits = 3, z_digits = 3, p_digits = 3, OR_digits = 3, robust_se = "HC0")
@@ -1177,35 +1178,31 @@ for(name in  names(vars)){
 }
 ```
 
-```{r diagressimcumul2, echo=FALSE, fig.align="center", fig.cap="Diagnostic variable par variable des résidus simulés du modèle des cotes proportionnelles", fig.pos= "H", message=FALSE, warning=FALSE, out.width="100%"}
-
-png(file = "images/glm/diagressimcumul2.png", res = 300,
-    width = 50, height = 35 ,units = "cm")
-print("png set !")
-par(mfrow=c(3,4))
-vars <- c("nombre de lits" = "beds",
-          "couvert végétal" = "prt_veg_500m", 
-          "commercial" = "commercial_1km",
-          "nb logements hôte" = "host_total_listings_count",
-          "jardin" = "Garden_or_backyard",
-          "accueil" = "Host_greets_you",
-          "stationnement gratuit" = "Free_street_parking", 
-          "métro" = "has_metro_500m", 
-          "logement privé" = "private",
-          "évaluation" = "cat_review")
-
-for(name in  names(vars)){
-  v <- vars[[name]]
-  plotResiduals(sim_res, data_airbnb[[v]], rank = F, quantreg = F, main = "",
-                xlab = name)
-}
-print("plots generated")
-
-dev.off()
-print("dev off !")
-
+```{r diagressimcumul2, echo=FALSE, fig.align="center", fig.cap="Diagnostic des variables indépendantes et des résidus simulés du modèle des cotes proportionnelles", fig.pos= "H", message=FALSE, warning=FALSE, out.width="100%"}
+invisible(capture.output({
+  png(file = "images/glm/diagressimcumul2.png", res = 300,
+      width = 50, height = 35 ,units = "cm")
+  par(mfrow=c(3,4))
+  vars <- c("nombre de lits" = "beds",
+            "couvert végétal" = "prt_veg_500m", 
+            "commercial" = "commercial_1km",
+            "nb logements hôte" = "host_total_listings_count",
+            "jardin" = "Garden_or_backyard",
+            "accueil" = "Host_greets_you",
+            "stationnement gratuit" = "Free_street_parking", 
+            "métro" = "has_metro_500m", 
+            "logement privé" = "private",
+            "évaluation" = "cat_review")
+  
+  for(name in  names(vars)){
+    v <- vars[[name]]
+    plotResiduals(sim_res, data_airbnb[[v]], rank = F, quantreg = F, main = "",
+                  xlab = name)
+  }
+  
+  dev.off()
+}))
 knitr::include_graphics("images/glm/diagressimcumul2.png", dpi = 300)
-print("image added !")
 
 ```
 
@@ -1266,32 +1263,34 @@ for(name in  names(vars)){
                 xlab = name)
 }
 ```
-```{r diagressimcumul3, echo=FALSE, fig.align="center", fig.cap="Diagnostic variable par variable des résidus simulés du modèle des cotes proportionnelles (arpès correction)", fig.pos="H", message=FALSE, warning=FALSE, out.width="100%"}
+```{r diagressimcumul3, echo=FALSE, fig.align="center", fig.cap="Diagnostic des variables indépendantes et des résidus simulés du modèle des cotes proportionnelles (arpès correction)", fig.pos="H", message=FALSE, warning=FALSE, out.width="100%"}
 
+invisible(capture.output({
 out <- "images/glm/diagressimcumul3.png"
 
-png(filename = out,
-    res = 300, width = 50, height = 35, units = "cm")
-
-par(mfrow=c(3,4))
-vars <- c("nombre de lits" = "beds",
-          "couvert végétal" = "prt_veg_500m", 
-          "commercial" = "commercial_1km",
-          "nb logements hôte" = "host_total_listings_count",
-          "jardin" = "Garden_or_backyard",
-          "accueil" = "Host_greets_you",
-          "stationnement gratuit" = "Free_street_parking", 
-          "métro" = "has_metro_500m", 
-          "logement privé" = "private",
-          "évaluation" = "cat_review")
-
-for(name in  names(vars)){
-  v <- vars[[name]]
-  plotResiduals(sim_res, data_airbnb2[[v]], rank = F, quantreg = F, main = "",
-                xlab = name)
-}
-dev.off()
-
+  png(filename = out,
+      res = 300, width = 50, height = 35, units = "cm")
+  
+  par(mfrow=c(3,4))
+  vars <- c("nombre de lits" = "beds",
+            "couvert végétal" = "prt_veg_500m", 
+            "commercial" = "commercial_1km",
+            "nb logements hôte" = "host_total_listings_count",
+            "jardin" = "Garden_or_backyard",
+            "accueil" = "Host_greets_you",
+            "stationnement gratuit" = "Free_street_parking", 
+            "métro" = "has_metro_500m", 
+            "logement privé" = "private",
+            "évaluation" = "cat_review")
+  
+  for(name in  names(vars)){
+    v <- vars[[name]]
+    plotResiduals(sim_res, data_airbnb2[[v]], rank = F, quantreg = F, main = "",
+                  xlab = name)
+  }
+  dev.off()
+  
+}))
 knitr::include_graphics(out, dpi = 300)
 ```
 
@@ -1463,7 +1462,7 @@ tableau <- data.frame(
  C2 = c("Variable qualitative multinomiale avec *K* catégories", "Binomiale", model_formula , "logistique", "p", "$\\beta_{0k}$, $\\beta$k pour $k \\in [2,...,K]$", "Non-séparation complète, Absence de surdispersion ou sousdispersion, Indépendance des alternatives non pertinentes")
 )
 show_table(tableau, 
-    caption = "Carte d'identité du modèle probit binomial",
+    caption = "Carte d'identité du modèle logistique multinomial",
     col.names = NULL, 
     col.to.resize = c(2),
     col.width = "8cm",
@@ -1500,10 +1499,10 @@ Du fait de sa proximité avec les modèles à effets mixtes que nous aborderons 
 
 Pour cet exemple, nous reproduisons une partie de l'analyse effectuée dans l'étude de @mcfadden2016examining. Cet article s'intéresse aux écarts entre les croyances des individus et les connaissances scientifiques sur les sujets des OGM et du réchauffement climatique. Les auteurs utilisent pour cela des données issues d'une enquête auprès de 961 individus formant un échantillon représentatif de la population des États-Unis. Les données issues de cette enquête sont téléchargeables sur le [site de l'éditeur](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0166140), ce qui nous permet ici de reproduire l'analyse effectuée par les auteurs. Deux questions sont centrales dans l'enquête&nbsp;: 
 
-* Dans quelle mesure êtes-vous en accord ou en désaccord avec la phrase suivante&nbsp;: les plantations génétiquement modifiées sont sans danger pour la consommation;
-* Dans quelle mesure êtes-vous en accord ou en désaccord avec la phrase suivante&nbsp;: la Terre se réchauffe du fait des activités humaines". 
+* Dans quelle mesure êtes-vous en accord ou en désaccord avec la phrase suivante&nbsp;: les plantations génétiquement modifiées sont sans danger pour la consommation ?
+* Dans quelle mesure êtes-vous en accord ou en désaccord avec la phrase suivante&nbsp;: la Terre se réchauffe du fait des activités humaines. ?
 
-Pour ces deux questions les répondants devaient sélectionner leur degré d'accord sur une échelle de Likert allant de 1 (fortement en désaccord) à 5 (fortement en accord). Les réponses à ces deux questions ont été utilisées pour former une variable multinomiale à quatre modalités&nbsp;:
+Pour ces deux questions, les répondants devaient sélectionner leur degré d'accord sur une échelle de Likert allant de 1 (fortement en désaccord) à 5 (fortement en accord). Les réponses à ces deux questions ont été utilisées pour former une variable multinomiale à quatre modalités&nbsp;:
 
 * A. Les individus sont en accord avec les deux propositions;
 * B. Les individus sont en désaccord sur les OGM, mais en accord sur le réchauffement climatique;
@@ -1611,7 +1610,7 @@ modele2 <- vglm(Y ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
                family = multinomial(refLevel="A"), model = T)
 ```
 
-Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* **DHARMa** ne peut traiter que des variables quantitatives, binaires ou ordinales. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons utiliser à nouveau utiliser le *package* **DHARMa** pour analyser nos résidus. Veuillez noter que cette approche n'est pas forcément optimale que et cette section du livre peut être amenée à changer.
+Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* **DHARMa** ne peut traiter que des variables quantitatives, binaires ou ordinales. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons à nouveau utiliser le *package* **DHARMa** pour analyser nos résidus. Veuillez noter que cette approche n'est pas forcément optimale et que cette section du livre peut être amenée à changer.
 
 La figure \@ref(fig:residusmultinom) indique que les résidus suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
 ```{r residusmultinom, fig.align="center", fig.cap="Diagnostic général des résidus simulés pour le modèle multinomial", message=FALSE, warning=FALSE, out.width="100%", fig.pos="H"}
@@ -1708,23 +1707,23 @@ for(v in  vars){
 ```
 
 
-```{r residusmultinom2, echo=FALSE, fig.align="center", fig.cap="Diagnostic par variable des résidus simulés pour le modèle multinomial", fig.pos="H", message=FALSE, warning=FALSE, out.width="100%"}
-
-out <- "images/glm/residusmultinom2.png"
-
-png(filename = out,
-    res = 300, width = 50, height = 35, units = "cm")
-
-etend_data <- do.call(rbind, lapply(data_sims, function(i){i$data}))
-par(mfrow=c(3,3))
-vars <- c("PercepOGM", "PercepRechClim", "ConnaisOGM", 
-          "ConnaisRechClim", "CRT", "Parti", "Sexe")
-for(v in  vars){
-  plotResiduals(sim_res, etend_data[[v]], xlab= v)
-}
-
-dev.off()
-
+```{r residusmultinom2, echo=FALSE, fig.align="center", fig.cap="Diagnostic des variables indépendantes et des résidus simulés pour le modèle multinomial", fig.pos="H", message=FALSE, warning=FALSE, out.width="100%"}
+invisible(capture.output({
+  out <- "images/glm/residusmultinom2.png"
+  
+  png(filename = out,
+      res = 300, width = 50, height = 35, units = "cm")
+  
+  etend_data <- do.call(rbind, lapply(data_sims, function(i){i$data}))
+  par(mfrow=c(3,3))
+  vars <- c("PercepOGM", "PercepRechClim", "ConnaisOGM", 
+            "ConnaisRechClim", "CRT", "Parti", "Sexe")
+  for(v in  vars){
+    plotResiduals(sim_res, etend_data[[v]], xlab= v)
+  }
+  
+  dev.off()
+}))
 knitr::include_graphics(out, dpi = 300)
 ```
 
@@ -1790,22 +1789,22 @@ sim_res <- createDHARMa(simulatedResponse = matsim,
 
 etend_data <- do.call(rbind, lapply(data_sims, function(i){i$data}))
 
-
-out <- "images/glm/residusmultinom3.png"
-
-png(filename = out,
-    res = 300, width = 50, height = 35, units = "cm")
-
-par(mfrow=c(3,3))
-vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
-          "ConnaisRechClim", "CRT", "Parti", "Sexe")
-
-for(v in  vars){
-  plotResiduals(sim_res, etend_data[[v]], xlab= v)
-}
-
-dev.off()
-
+invisible(capture.output({
+  out <- "images/glm/residusmultinom3.png"
+  
+  png(filename = out,
+      res = 300, width = 50, height = 35, units = "cm")
+  
+  par(mfrow=c(3,3))
+  vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
+            "ConnaisRechClim", "CRT", "Parti", "Sexe")
+  
+  for(v in  vars){
+    plotResiduals(sim_res, etend_data[[v]], xlab= v)
+  }
+  
+  dev.off()
+}))
 knitr::include_graphics(out, dpi = 300)
 ```
 
@@ -2102,7 +2101,7 @@ Si nous augmentons $X_1$ d’une unité, nous obtenons alors&nbsp;:
 
 $\lambda = exp(1,8 + (0,5\times 2) + (-1,5\times1)) = 3,670$
 
-En ayant augmenté d’une unité $X_1$, nous avons multiplié notre résultat par 1,649 ($2,225 \times 1,649 = 3,670$)
+En ayant augmenté d’une unité $X_1$, nous avons multiplié notre résultat par 1,649 ($2,225 \times 1,649 = 3,670$).
 
 Notez que ces effets se multiplient entre eux. Si nous augmentons à la fois $X_1$ et $X_2$ d'une unité chacune, nous obtenons&nbsp;: $\lambda = exp(1,8 + (0,5 \times 2) + (-1,5 \times 2)) = 0,818$, ce qui correspond bien à $2,225 \times 1,649 \text{ (effet de  }X_1\text{)} \times 0,223 \text{ (effet de }X_2\text{)} = 0,818$.
 
@@ -2425,16 +2424,18 @@ for(v in  vars){
 ```
 
 ```{r simrespoiss2, echo=FALSE, fig.align="center", fig.cap="Comparaison des résidus simulés et de chaque variable indépendante", message=FALSE, warning=FALSE, out.width="100%"}
-out <- "images/glm/simrespoiss2.png"
-png(file = out, res = 300, width = 50, height = 30, units = "cm")
-par(mfrow=c(3,4))
-vars <- c("Feux_auto", "Feux_piet", "Pass_piet", "Terreplein", "Apaisement",
-                "LogEmploi", "Densite_pop", "Entropie", "DensiteInter",
-                "Long_arterePS", "Artere", "NB_voies5")
-for(v in  vars){
-  plotResiduals(sim_res, data2[[v]], xlab = v, main = "")
-}
-dev.off()
+invisible(capture.output({
+  out <- "images/glm/simrespoiss2.png"
+  png(file = out, res = 300, width = 50, height = 30, units = "cm")
+  par(mfrow=c(3,4))
+  vars <- c("Feux_auto", "Feux_piet", "Pass_piet", "Terreplein", "Apaisement",
+                  "LogEmploi", "Densite_pop", "Entropie", "DensiteInter",
+                  "Long_arterePS", "Artere", "NB_voies5")
+  for(v in  vars){
+    plotResiduals(sim_res, data2[[v]], xlab = v, main = "")
+  }
+  dev.off()
+}))
 knitr::include_graphics(out, dpi = 300)
 ```
 
@@ -2529,7 +2530,7 @@ Il s'agit donc d'un modèle hétéroscédastique, sa variance n'est pas fixe, ma
 
 #### Exemple appliqué dans R
 
-Dans l’exemple précédent avec le modèle de Poisson, nous avions observé une certaine surdispersion que nous avions contournée en utilisant un modèle de quasi-Poisson. Dans l’article original, les auteurs avaient opté pour un modèle négatif binomial, ce que proposons de faire ici. Les variables utilisées sont les mêmes que pour le modèle de Poisson. Nous utilisons le *package* **mgcv** et sa fonction `gam` pour ajuster le modèle.
+Dans l’exemple précédent avec le modèle de Poisson, nous avions observé une certaine surdispersion que nous avions contournée en utilisant un modèle de quasi-Poisson. Dans l’article original, les auteurs avaient opté pour un modèle négatif binomial, ce que nous proposons de faire ici. Les variables utilisées sont les mêmes que pour le modèle de Poisson. Nous utilisons le *package* **mgcv** et sa fonction `gam` pour ajuster le modèle.
 
 **Vérification des conditions d'application**
 
@@ -2709,7 +2710,7 @@ rsqs(loglike.full = logLik(modelnb),
 sqrt(mean((predict(modelnb, type = "response") - data2$Nbr_acci)**2))
 ```
 
-Le modèle parvient à expliquer 45% de la déviance, il obtient un R^2^ ajusté de McFadden de 0.14 et un R^2^ de Nagelkerke de 0.42. L’erreur moyenne quadratique de la prédiction est de 1,9, ce qui est identique au modèle de Poisson ajusté précédemment.
+Le modèle parvient à expliquer 45% de la déviance, il obtient un R^2^ ajusté de McFadden de 0.14 et un R^2^ de Nagelkerke de 0.42. L’erreur moyenne quadratique de la prédiction est de `r print_number(sqrt(mean((predict(modelnb, type = "response") - data2$Nbr_acci)**2)),1)`, ce qui est identique au modèle de Poisson ajusté précédemment.
 
 **Interprétation des résultats**
 
@@ -2746,7 +2747,7 @@ Dans cette formulation, *p* est fixé. Nous n’avons donc aucune information su
 
 #### Interprétation des paramètres
 
-L’interprétation des paramètres est identique à celle d’un modèle de Poisson. Le paramètre *p* représente la proportion de faux zéros dans la variable *Y* une fois que sont contrôlées les variables indépendantes.
+L’interprétation des paramètres est identique à celle d’un modèle de Poisson. Le paramètre *p* représente la proportion de faux zéros dans la variable *Y* une fois que les variables indépendantes sont contrôlées.
 
 #### Exemple appliqué dans R
 
@@ -2804,9 +2805,9 @@ Nous avions vu dans l’exemple précédent que l’utilisation du modèle avec 
 
 **Vérification des conditions d'application**
 
-Pour un modèle de Poisson avec excès de zéros, il n'est pas possible de calculer de distances de Cook. Nous devons donc directement passer à l'analyse des résidus simulés
+Pour un modèle de Poisson avec excès de zéros, il n'est pas possible de calculer de distances de Cook. Nous devons donc directement passer à l'analyse des résidus simulés.
 
-```{r diagzip, fig.cap="Diagnostic général des résidus simulés du modèle de Poisson avec excès de zéros ajusté", fig.align='center', out.width = '100%',message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Ajuster une première version du modèle
 modelza <- gamlss(formula = Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                     Terreplein + Apaisement + LogEmploi + Densite_pop + 
@@ -2834,8 +2835,21 @@ sim_res <- createDHARMa(simulatedResponse = mat_sims,
                             observedResponse = data_accidents$Nbr_acci,
                             fittedPredictedResponse = preds,
                             integerResponse = T)
+```
+```{r message=FALSE, warning=FALSE, eval = FALSE}
 plot(sim_res)
 ```
+
+```{r diagzip, echo=FALSE, fig.align='center', fig.cap="Diagnostic général des résidus simulés du modèle de Poisson avec excès de zéros ajusté", message=FALSE, warning=FALSE, out.width='100%'}
+invisible(capture.output({
+  out <- "images/glm/diagzip.png"
+  png(file = out, res = 300, width = 50, height = 30, units = "cm")
+  plot(sim_res)
+  dev.off()
+}))
+knitr::include_graphics(out, dpi = 300)
+```
+
 
 La figure \@ref(fig:diagzip) indique deux problèmes importants dans le modèle&nbsp;: la présence de valeurs aberrantes ainsi qu'un potentiel problème de dispersion. Nous commençons donc par identifier ces valeurs aberrantes.
 
@@ -2949,7 +2963,7 @@ rsqs(loglike.full = logLik(modelza),
 sqrt(mean((preds - data2$Nbr_acci)**2))
 ```
 
-Le modèle avec excès de zéro ajusté ne parvient à expliquer que 11% de la déviance totale. Il obtient cependant des valeurs de R^2^ assez hautes (McFadden ajusté&nbsp;: 0,36, Nagerlkerke&nbsp;: 0,82). Son RMSE est cependant très élevé (2,6), comparativement à celui que nous avions obtenu avec le modèle négatif binomial (1,9). Considérant ces éléments, ce modèle est nettement moins informatif que le modèle négatif binomial et ne devrait pas être retenu. Nous allons cependant montrer ici comment interpréter ces résultats.
+Le modèle avec excès de zéro ajusté ne parvient à expliquer que 11% de la déviance totale. Il obtient toutefois des valeurs de R^2^ assez hautes (McFadden ajusté&nbsp;: 0,36, Nagerlkerke&nbsp;: 0,82). Son RMSE est très élevé (2,6), comparativement à celui que nous avions obtenu avec le modèle négatif binomial (1,9). Considérant ces éléments, ce modèle est nettement moins informatif que le modèle négatif binomial et ne devrait pas être retenu. Nous allons tout de même montrer ici comment interpréter ces résultats.
 
 **Interprétation des résultats**
 
@@ -3035,7 +3049,7 @@ knitr::include_graphics('images/glm/poisson_workflow.png', dpi = NA)
 ::: {.bloc_aller_loin data-latex=""}
 **Modèle de Hurdle *versus* modèle avec excès de zéro**
 
-Les modèle de Hurdle sont une autre catégorie de modèle GLM. Ils peuvent être décrit avec la formulation suivante&nbsp;: 
+Les modèles de Hurdle sont une autre catégorie de modèle GLM. Ils peuvent être décris avec la formulation suivante&nbsp;: 
 
 \footnotesize
 \begin{equation}\left\{\begin{array}{c}
@@ -3221,7 +3235,7 @@ ggplot() +
        y = "valeurs réelles")
 ```
 
-À nouveau, on constate que le modèle s'attendrait à trouver des valeurs négatives pour la concentration de végétation, ce qui n'est pas possible dans notre cas. En revanche, il semblerait que la variance soit bien homogène puisque la dispersion des observations semble à peu près suivre la dispersion attendue par le modèle (en noir).
+À nouveau, on constate à la figure \@ref(fig:gausssim2) que le modèle s'attendrait à trouver des valeurs négatives pour la concentration de végétation, ce qui n'est pas possible dans notre cas. En revanche, il semblerait que la variance soit bien homogène puisque la dispersion des observations semble à peu près suivre la dispersion attendue par le modèle (en noir).
 
 Malgré ces différents constats indiquant clairement qu'un modèle gaussien est un choix sous-optimal pour ces données, nous allons poursuivre l'analyse de ce modèle.
 
@@ -3403,7 +3417,8 @@ Il semble que nous obtenions des résultats similaires à ceux du modèle gaussi
 
 ```{r studentresid2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distribution des résidus simulés du modèle GLM avec distribution de Student", out.width = "95%"}
 ggplot()+
-  geom_histogram(aes(x = residuals(sim_res)), bins = 50, color = "white")
+  geom_histogram(aes(x = residuals(sim_res)), bins = 50, color = "white") + 
+  labs(x = "effectifs", y = "résidus simulés")
 ```
 
 Pour cet exercice, il est intéressant de comparer les formes des simulations issues du modèle gaussien et du modèle de Student pour bien distinguer la différence entre les deux.
@@ -3503,7 +3518,7 @@ Avec ces propriétés, il est possible de redéfinir la fonction de densité de 
 
 On observe donc que la variance dans un modèle Gamma augmente de façon quadratique avec la moyenne, mais est tempérée par le paramètre de forme. On en conclut qu'un paramètre de forme plus grand produira une distribution moins étalée.
 
-Dans ce contexte, $\mu$ doit être strictement positif&nbsp;: la valeur attendue moyenne d'une distribution Gamma doit être positive par définition puisque qu'une distribution Gamma ne peut pas produire de valeurs négatives. Il est donc logique d’utiliser la fonction logarithmique comme fonction de lien, puisque sa contrepartie (la fonction exponentielle) ne produit que des résultats positifs.
+Dans ce contexte, $\mu$ doit être strictement positif&nbsp;: la valeur attendue moyenne d'une distribution Gamma doit être positive par définition puisqu'une distribution Gamma ne peut pas produire de valeurs négatives. Il est donc logique d’utiliser la fonction logarithmique comme fonction de lien, puisque sa contrepartie (la fonction exponentielle) ne produit que des résultats positifs.
 :::
 
 Pour résumer, nous nous retrouvons donc avec un modèle qui prédit, sur une échelle logarithmique, l'espérance (~moyenne) d’une distribution Gamma. Notez qu’il existe d’autres façons de spécifier un modèle GLM avec une distribution Gamma, mais celle-ci est la plus intuitive.
@@ -3694,12 +3709,12 @@ sim_res <- createDHARMa(simulatedResponse = mat_sims,
 ggplot() + 
   geom_histogram(aes(x = residuals(sim_res)), bins = 100, color = "white") + 
   labs(x = "résidus simulés",
-        y = "")
+        y = "effectifs")
 ```
 
 Nul besoin d'un test statistique pour constater que ces résidus (figure \@ref(fig:gammaresids)) ne suivent pas une distribution uniforme. Nous observons une nette surreprésentation de résidus à 1 et une nette sous-représentation de résidus à 0. Il y a donc de nombreuses observations dans notre modèle pour lesquelles les simulations sont systématiquement trop fortes et pas assez pour lesquelles les simulations seraient systématiquement trop faibles.
 
-```{r gammaresids2, message=FALSE, warning=FALSE, out.width='100%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE}
+```{r gammaresids2, message=FALSE, warning=FALSE, out.width='100%', fig.cap = "Diagnostic général des résidus simulés du modèle Gamma", fig.align = "center", echo = TRUE, fig.pos = "H"}
 plot(sim_res)
 ```
 
@@ -4140,20 +4155,22 @@ plotResiduals(sim_res, dataset3[["prt_veg"]]**2, xlab = "prt_veg^2", main = "")
 
 ```{r residsimbeta2, echo=FALSE, fig.align="center", fig.cap="Relation entre chaque variable indépendante et les résidus simulés du modèle Beta", fig.pos="H", message=FALSE, warning=FALSE, out.width="100%"}
 
-out <- "images/glm/residsimbeta2.png"
-png(filename = out, res = 300, width = 50, height = 30, units = "cm")
-
-par(mfrow=c(2,3))
-vars <- c("A65Pct", "A014Pct", "PopFRPct", "PopMVPct", "prt_veg")
-for(v in vars){
-  plotResiduals(sim_res, dataset3[[v]], main = "", xlab = v)
-}
-plotResiduals(sim_res, dataset3[["prt_veg"]]**2, xlab = "prt_veg^2", main = "")
-dev.off()
+invisible(capture.output({
+  out <- "images/glm/residsimbeta2.png"
+  png(filename = out, res = 300, width = 50, height = 30, units = "cm")
+  
+  par(mfrow=c(2,3))
+  vars <- c("A65Pct", "A014Pct", "PopFRPct", "PopMVPct", "prt_veg")
+  for(v in vars){
+    plotResiduals(sim_res, dataset3[[v]], main = "", xlab = v)
+  }
+  plotResiduals(sim_res, dataset3[["prt_veg"]]**2, xlab = "prt_veg^2", main = "")
+  dev.off()
+}))
 knitr::include_graphics(out, dpi = 300)
 ```
 
-La figure \@ref(fig:residsimbeta2) indique des relations marginales et négligeables entre nos variables indépendantes et nos résidus simulés. Concernant la variable `Arrond` (figure \@ref(fig:residsimbeta3)), nous observons une situation plus particulière. Pour quelques arrondissements, les résidus simulés sont nettement plus forts ou plus faibles. Notre hypothèse est que cet effet est provoqué par l'introduction de cette variable dans notre modèle comme un effet fixe alors que sa nature devrait nous inciter à l'introduire comme un effet aléatoire. Nous n'avons pas encore présenté ces concepts ici, mais nous le ferons dans le chapitre \@ref(chap06). En attendant, nous conservons le modèle tel quel et passons à l'analyse de sa qualité d'ajustement.
+La figure \@ref(fig:residsimbeta2) indique des relations marginales et négligeables entre nos variables indépendantes et nos résidus simulés. Concernant la variable `Arrond` (figure \@ref(fig:residsimbeta3)), nous observons une situation plus particulière. Pour quelques arrondissements, les résidus simulés sont nettement plus forts ou plus faibles. Notre hypothèse est que cet effet est provoqué par l'introduction de cette variable dans notre modèle comme un effet fixe alors que sa nature devrait nous inciter à l'introduire comme un effet aléatoire. Nous n'avons pas encore présenté ces concepts ici, mais nous le ferons dans le chapitre \@ref(chap09). En attendant, nous conservons le modèle tel quel et passons à l'analyse de sa qualité d'ajustement.
 
 ```{r residsimbeta3, message=FALSE, warning=FALSE, fig.cap = "Relation entre la variable Arrondissement et les résidus simulés du modèle Beta", fig.align = "center", out.width = "70%", fig.pos = "H"}
 df <- data.frame(
@@ -4180,7 +4197,8 @@ ggplot() +
   geom_histogram(aes(x = hot, y = ..density..),
                  data = dataset3, bins = 100, color = "black", fill = "white") +
   geom_density(aes(x = value, y=..density.., group = variable), data = df3,
-               fill = rgb(0,0,0,0), color = rgb(0.2,0.2,0.2,0.3), size = 1)
+               fill = rgb(0,0,0,0), color = rgb(0.2,0.2,0.2,0.3), size = 1) + 
+  labs(x = "résidus simulés", y = "densité")
 ```
 
 Nous constatons à la figure \@ref(fig:residsimbeta4) que le modèle est parvenu à reproduire la forme générale de la distribution originale&nbsp;: un plus grand nombre de valeurs proches de zéro, suivies d’une répartition presque homogène dans les valeurs comprises entre 0,15 et 0,8, suivies par un plus faible nombre de valeurs quand *Y* est supérieur à 0,8. Il semble en revanche manquer un certain nombre de valeurs extrêmes proches de 0 (absence d'îlot de chaleur) et proches de 1 (couverture à 100% par des îlots de chaleur).
@@ -4229,7 +4247,7 @@ ggplot(data = df) +
        y = 'Arrondissement')
 ```
 
-Nous constatons ainsi que seuls quelques arrondissements ont une différence d'exposition aux îlots de chaleurs significative au seuil de 0,05 comparativement à Ahuntsic-Cartierville. Pour l'essentiel il s'agit d'arrondissements pour lesquels on observe des rapports de cotes supérieurs à 1. Verdun, Lasalle et le Plateau Mont-Royal sont les arrondissements les plus touchés avec des chances d'observer des niveaux supérieurs de densité d'îlots de chaleur multipliés par 3,19, 2,89 et 2,74. Le reste des coefficients sont affichés dans le tableau \@ref(tab:coeffsbeta). 
+Nous constatons ainsi que seuls quelques arrondissements ont une différence d'exposition aux îlots de chaleurs significative au seuil de 0,05 comparativement à Ahuntsic-Cartierville (figure \@ref(fig:betaArrond)). Pour l'essentiel il s'agit d'arrondissements pour lesquels on observe des rapports de cotes supérieurs à 1. Verdun, Lasalle et le Plateau Mont-Royal sont les arrondissements les plus touchés avec des chances d'observer des niveaux supérieurs de densité d'îlots de chaleur multipliés par 3,19, 2,89 et 2,74. Le reste des coefficients sont affichés dans le tableau \@ref(tab:coeffsbeta). 
 
 Nous notons ainsi que le seul groupe associé avec une augmentation significative des chances d'observer une augmentation de la densité d'îlot de chaleur est le groupe des personnes à faible revenu (1,4% de chance supplémentaire à chaque augmentation d'un point de pourcentage de la variable indépendante). Pour mieux cerner la taille de cet effet, nous pouvons représenter l'effet marginal de ce coefficient en maintenant toutes les autres variables à leur moyenne. Nous allons également calculer ces effets marginaux pour trois arrondissements différents&nbsp;: Verdun (RC le plus fort), Ahuntsic-Cartierville (la référence) et Dollard-des-Ormeaux (RC le plus faible). Nous réalisons également un second graphique pour visualiser l'effet non linéaire de la variable *pourcentage de végétation*. La figure \@ref(fig:betaFR) nous indique ainsi que le rôle de l'arrondissement est plus important que celui du pourcentage de personnes à faible revenu. Cependant, on constate que passer de 0% de personnes à faible revenu dans un AD à 75% est associé avec une multiplication de la surface couverte par des îlots de chaleur par environ 1,5 (toutes choses égales par ailleurs). Le rôle de la végétation dans la réduction de la surface des îlots de chaleur est très net et non linéaire. L'essentiel de la réduction est observé entre 0 et 50% de végétation dans un AD, au-delà de ce seuil, la réduction des îlots de chaleur par la végétation est moins flagrante. Il semblerait donc exister à Montréal une forme d’iniquité systématique pour les populations à faible revenu, qui serait davantage exposées aux îlots de chaleur. Cependant, compte tenu de la dépendance spatiale et de l’hétéroscésadicité observée plus haut, des ajustements devraient être apportés au modèle pour confirmer ou infirmer ce résultat.
 
@@ -4296,7 +4314,7 @@ ggarrange(P1,P2, common.legend = T)
 
 ## 	Conclusion sur les modèles linéaires généralisés
 
-Comme vous avez dû le remarquer, les modèles linéaires généralisés constituent un monde à part entière et tout un livre pourrait être rédigé à leur sujet. Leur grande flexibilité les rend extrêmement utiles dans de nombreux contextes, mais complique leur mise en œuvre, chaque modèle ayant ses propres spécificités théoriques. Ils partagent cependant tous une base commune&nbsp;: le choix d’une distribution et d’une fonction de lien, l’ensemble de leurs spécificités découle directement de ces deux choix.
+Comme vous avez dû le remarquer, les modèles linéaires généralisés constituent un monde à part entière et tout un livre pourrait être rédigé à leur sujet. Leur grande flexibilité les rend extrêmement utiles dans de nombreux contextes, mais complique leur mise en œuvre, chaque modèle ayant ses propres spécificités théoriques. Ils partagent cependant tous une base commune&nbsp;: le choix d’une distribution et d’une fonction de lien. L’ensemble de leurs spécificités découle directement de ces deux choix.
 
 La figure \@ref(fig:GLMfinal) résume les choix de modèles présentés au cours de ce chapitre pour des variables qualitatives, de comptage et continues. Notez bien qu'il ne s'agit que de la partie émergée de l'iceberg car il existe de nombreuses autres distributions plus ou moins complexes (skew-normale, log-normal, beta-binomiale, Box-Cox, Gumbel etc.). D'autres pistes pourraient aussi être explorées pour aller plus loin avec les GLM, notamment les modèles Hurdle (combinant un modèle binomial et un modèle avec une distribution continue), le modèle tronqués ou censurés (tenant compte d'une limite nette dans la variable dépendante) ou encore les modèles distributionnels ajustant une équation de régression pour chaque paramètre de la distribution utilisée. 
 
@@ -4308,7 +4326,7 @@ knitr::include_graphics("images/glm/guide_GLM.png", dpi = 300)
 
 Voici un court quizz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
 
-```{r quizClassif, results = "asis", warning=FALSE}
+```{r quizClassif, echo=FALSE, warning=FALSE, results="asis"}
 quizz_classif <- quizz("quizzs/GLM.yml", "quizz_classif")
 render_quizz(quizz_classif)
 ```

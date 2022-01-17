@@ -155,7 +155,7 @@ render_quizz_pdf <- function(myquizz){
   final_string <- paste0(
     "**Questions**\n",
     questions,"\n\n",
-    "**R?ponses**\n",
+    "**Réponses**\n",
     responses
   )
   return(final_string)
