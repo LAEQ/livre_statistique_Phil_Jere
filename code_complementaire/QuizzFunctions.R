@@ -33,7 +33,7 @@ question <- function(label, type, response, answers = NULL, section = NULL){
 
 quizz <- function(yml_file, quizz_id){
 
-  questions <- yaml::read_yaml(yml_file)
+  questions <- yaml::read_yaml(yml_file, fileEncoding = "UTF-8")
 
   return(
     list("questions" = questions,
@@ -155,7 +155,7 @@ render_quizz_pdf <- function(myquizz){
   final_string <- paste0(
     "**Questions**\n",
     questions,"\n\n",
-    "**R?ponses**\n",
+    "**Réponses**\n",
     responses
   )
   return(final_string)
