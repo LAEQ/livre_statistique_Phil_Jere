@@ -1,6 +1,31 @@
 # Régressions à effets mixtes (GLMM) {#chap09}
 
-Dans les deux chapitres précédents, nous avons consécutivement présenté la méthode de la régression linéaire simple (LM) ainsi qu'une de ses extensions, soit les modèles linéaires généralisés (GLM). Dans ce chapitre, nous poursuivons sur cette voie avec une nouvelle extension&nbsp;: les modèles généralisés à effet mixtes (GLMM).
+Dans les deux chapitres précédents, nous avons consécutivement présenté la méthode de la régression linéaire simple (LM) ainsi qu'une de ses extensions, soit les modèles linéaires généralisés (GLM). Dans ce chapitre, nous poursuivons sur cette voie avec une nouvelle extension&nbsp;: les modèles généralisés à effet mixtes (GLMM). À la fin de cette section, vous serez en mesure de&nbsp;:
+
+* comprendre la distinction entre un modèle GLM et un modèle GLMM;
+* distinguer un effet fixe d'un effet aléatoire;
+*	formuler des modèles GLMM avec des constantes et ou pentes aléatoires;
+*	effectuer les diagnostics d’un GLMM.
+
+::: {.bloc_package data-latex=""}
+Dans ce chapitre, nous utiliserons principalement les packages suivants&nbsp;: 
+
+* Pour créer des graphiques&nbsp;:
+  - **ggplot2**, le seul, l'unique!
+  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes.
+  - **ellipse** pour représenter des ellipses sur certains graphiques.
+  
+* Pour ajuster des modèles GLMM&nbsp;:
+  - **lme4**, offrant une interface simple pour ajuster des GLMM.
+
+ * Pour analyser des modèles GLM&nbsp;:
+  - **car** essentiellement pour la fonction `vif`.
+  - **DHARMa** pour le diagnostic des résidus simulés.
+  - **merTools** permet d'explorer les résultats d'un GLMM.
+  - **lmerTest** fourni des tests de significativité pour les coefficients d'un GLMM.
+  - **MuMin** pour calculer les R^2^ conditionel et marginal.
+  - **performance** pour calculer le ICC et d'autres mesures d'ajustement.
+:::
 
 ## Introduction {#sect091}
 
@@ -87,7 +112,7 @@ ggplot(data = df3)+
   labs(y = "Note à l'examen (%)", x = "Temps de travail (heures)", color = "Classe")
 ```
 
-On constate que notre modèle semble bien identifier la relation positive entre le temps de travail et le niveau de performance, mais la droite de régression est très éloignée de chaque point; nous avons ainsi énormément d'erreurs de prédiction et donc des résidus importants. Jusqu'ici nous avons vu que nous pouvions ajouter un prédicteur et intégrer l'effet des classes comme un effet fixe (figure \@ref(randominter2)).
+On constate que notre modèle semble bien identifier la relation positive entre le temps de travail et le niveau de performance, mais la droite de régression est très éloignée de chaque point; nous avons ainsi énormément d'erreurs de prédiction et donc des résidus importants. Jusqu'ici nous avons vu que nous pouvions ajouter un prédicteur et intégrer l'effet des classes comme un effet fixe (figure \@ref(fig:randominter2)).
 
 ```{r randominter2, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves en tenant compte de l'effet de leur classe (effet fixe)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 model <- lm(Y2 ~ X + group, data = df3)
@@ -155,7 +180,7 @@ ggplot(data = df3)+
   labs(y = "Note à l'examen sur 100", x = "Temps de travail (heures)", color = "Classe")
 ```
 
-En comparant les deux figures \@ref(randominter2) et \@ref(randominter3), la différence ne saute pas aux yeux; vous pourriez alors légitimement vous demander pourquoi tous ces efforts et cette complexité théorique pour une différence d'ajustement minime? Trois arguments permettent de justifier l'utilisation de constantes aléatoires plutôt que d'effets fixes dans notre cas.
+En comparant les deux figures \@ref(fig:randominter2) et \@ref(fig:randominter3), la différence ne saute pas aux yeux; vous pourriez alors légitimement vous demander pourquoi tous ces efforts et cette complexité théorique pour une différence d'ajustement minime? Trois arguments permettent de justifier l'utilisation de constantes aléatoires plutôt que d'effets fixes dans notre cas.
 
 #### Resserrement (*shrinkage*) et mutualisation (*partial pooling*) {#sect09221}
 
@@ -1079,7 +1104,7 @@ p3 <- ggplot(df) +
 ggarrange(p1,p2, p3, ncol = 2, nrow = 2)
 ```
 
-Nous constatons ainsi à la figure \@ref(glmmvarboot) que la variance des constantes aléatoires est significativement différente de zéro (cette valeur n'est pas dans l'intervalle de confiance à 95% représenté par les lignes verticales bleues) et une médiane de `r tofr(round(median(df$vari_const),3))` (ligne verticale rouge). Pour les pentes, zéro est également à la limite de l'intervalle de confiance et la distribution asymétrique et étalée nous indique que ce paramètre est fortement incertain dans le modèle. Enfin, la corrélation entre les pentes et les constantes est de loin le paramètre le plus incertain et son intervalle de confiance est franchement à cheval sur zéro, ce qui devrait nous amener à privilégier un modèle sans ce paramètre.
+Nous constatons ainsi à la figure \@ref(fig:glmmvarboot) que la variance des constantes aléatoires est significativement différente de zéro (cette valeur n'est pas dans l'intervalle de confiance à 95% représenté par les lignes verticales bleues) et une médiane de `r tofr(round(median(df$vari_const),3))` (ligne verticale rouge). Pour les pentes, zéro est également à la limite de l'intervalle de confiance et la distribution asymétrique et étalée nous indique que ce paramètre est fortement incertain dans le modèle. Enfin, la corrélation entre les pentes et les constantes est de loin le paramètre le plus incertain et son intervalle de confiance est franchement à cheval sur zéro, ce qui devrait nous amener à privilégier un modèle sans ce paramètre.
 
 Pour terminer, nous pouvons calculer les R^2^ marginal et conditionnel du modèle afin de mieux cerner le rôle joué par les effets fixes et les effets aléatoires.
 
@@ -1092,7 +1117,7 @@ Les valeurs des R^2^ marginal et conditionnel du modèle sont similaires à ceux
 
 Pour analyser facilement les constantes et pentes aléatoires de chaque pays, nous pouvons représenter graphiquement leurs intervalles de confiances construits à partir des simulations tirées de la distribution a posteriori du modèle.
 
-```{r randomconstantes2b, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par pays (intervalles de confiance obtenus par simulations)"}
+```{r randomconstantes2b, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par pays (intervalles de confiance obtenus par simulations)", fig.align="center"}
 # simulations et extraction des effets aléatoires
 library(merTools)
 simsRE <- REsim(modele3,n.sims = 1000, oddsRatio = F)
@@ -1226,7 +1251,7 @@ Les deux autres options envisageables sont&nbsp;: effectuer une analyse de type 
 
 Voici un court quizz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
 
-```{r quizClassif, echo=FALSE, warning=FALSE, results="asis"}
+```{r quizGLMM, echo=FALSE, warning=FALSE, results="asis"}
 quizz_glmm <- quizz("quizzs/glmm.yml", "quizz_classif")
 render_quizz(quizz_glmm)
 ```

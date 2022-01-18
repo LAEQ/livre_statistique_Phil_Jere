@@ -788,8 +788,8 @@ xlim <- c(0,25)
 generate_plot(dexp,parametres,real_names,xlim,colors)
 ```
 
-#### La distribution Gamma {#sect024315}
-La distribution Gamma est une généralisation d’un grand nombre de distributions. Elle regroupe ainsi la distribution exponentielle et du Chi<sup>2</sup>. En d’autres termes, les distributions du chi<sup>2</sup> et exponentielles sont des cas particuliers de la distribution de Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
+#### La distribution de Gamma {#sect024315}
+La distribution de Gamma est une généralisation d’un grand nombre de distributions. Elle regroupe ainsi la distribution exponentielle et du Chi<sup>2</sup>. En d’autres termes, les distributions du chi<sup>2</sup> et exponentielles sont des cas particuliers de la distribution de Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
 
 \footnotesize
 \begin{equation} f(x ; \alpha; \beta)=\frac{\beta^{\alpha} x^{\alpha-1} e^{-\beta x}}{\Gamma(\alpha)}
@@ -799,7 +799,7 @@ La distribution Gamma est une généralisation d’un grand nombre de distributi
 
 Elle comprend donc deux paramètres : $\alpha$ et $\beta$. Le premier est le paramètre de forme et le second un paramètre d’échelle (à l’inverse d’un paramètre de dispersion, plus sa valeur est petite, plus la distribution sera dispersée). Notez que cette distribution ne dispose pas d’un paramètre de localisation. Du fait de sa flexibilité, cette distribution est largement utilisée, que ce soit dans la modélisation des temps d’attente avant un évènement, la taille des réclamations d’assurance, les quantités de précipitations, etc.
 
-```{r fig267, echo=FALSE, fig.align='center', fig.cap="La distribution Gamma", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r fig267, echo=FALSE, fig.align='center', fig.cap="La distribution de Gamma", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape = c(1,2,6),
                   rate = c(1,0.4,0.8))
 real_names <- c("alpha","beta")
@@ -808,9 +808,8 @@ xlim <- c(0,25)
 generate_plot(dgamma,parametres,real_names,xlim,colors)
 ```
 
-#### La distribution Beta {#sect024316}
-
-La distribution Beta est définie sur l’intervalle [0 ; 1], elle est donc énormément utilisée pour représenter des variables étant des proportions ou des probabilités. Elle a aussi une utilité pratique en statistique, car en combinaison avec d’autres distributions, elle permet de modéliser leurs paramètres de probabilité (distribution beta-binomial, beta-negative-binomial, etc.). Un autre usage plus rare, mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Ceci est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2*, suit une distribution beta. Un exemple concret serait par exemple la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante : 
+#### La distribution de Beta {#sect024316}
+La distribution de Beta est définie sur l’intervalle [0 ; 1], elle est donc énormément utilisée pour représenter des variables étant des proportions ou des probabilités. Elle a aussi une utilité pratique en statistique, car en combinaison avec d’autres distributions, elle permet de modéliser leurs paramètres de probabilité (distribution beta-binomial, beta-negative-binomial, etc.). Un autre usage plus rare, mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Ceci est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2*, suit une distribution beta. Un exemple concret serait par exemple la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante : 
 
 \footnotesize
 \begin{equation} f(x;\alpha;\beta) = \frac{1}{\mathrm{B}(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
@@ -818,9 +817,9 @@ La distribution Beta est définie sur l’intervalle [0 ; 1], elle est donc éno
 \end{equation}
 \normalsize
 
-Elle a donc deux paramètres $\alpha$ et $\beta$ contrôlant tous les deux la forme de la distribution. Cette caractéristique lui permet d’avoir une très grande flexibilité et même d’adopter des formes bimodales. $B$ correspondant à la fonction mathématique Beta, à ne pas confondre avec la distribution Beta et le paramètre Beta ($\beta$) de cette même distribution.
+Elle a donc deux paramètres $\alpha$ et $\beta$ contrôlant tous les deux la forme de la distribution. Cette caractéristique lui permet d’avoir une très grande flexibilité et même d’adopter des formes bimodales. $B$ correspondant à la fonction mathématique Beta, à ne pas confondre avec la distribution de Beta et le paramètre Beta ($\beta$) de cette même distribution.
 
-```{r fig268, echo=FALSE, fig.align='center', fig.cap="La distribution Beta", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r fig268, echo=FALSE, fig.align='center', fig.cap="La distribution de Beta", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape1 = c(0.5,5,2,2),
                   shape2 = c(0.5,1,2,5))
 real_names <- c("alpha","beta")
@@ -829,9 +828,9 @@ xlim <- c(0,1)
 generate_plot(dbeta,parametres,real_names,xlim,colors)
 ```
 
-#### La distribution Weibull
+#### La distribution de Weibull
 
-La distribution Weibull est directement liée à la distribution exponentielle, cette dernière étant en fait un cas particulier de distribution Weibull. Elle sert donc à représenter une quantité *x* (souvent le temps) à accumuler pour qu’un évènement se produise. La distribution de Weibull est définie sur l’intervalle [0 ; +$\infty$[ et a la fonction de densité suivante : 
+La distribution de Weibull est directement liée à la distribution exponentielle, cette dernière étant en fait un cas particulier de distribution de Weibull. Elle sert donc à représenter une quantité *x* (souvent le temps) à accumuler pour qu’un évènement se produise. La distribution de Weibull est définie sur l’intervalle [0 ; +$\infty$[ et a la fonction de densité suivante : 
 
 \footnotesize
 \begin{equation} f(x;\lambda) = \frac{k}{\lambda} (\frac{x}{\lambda})^{k-1} e^{-(\frac{x}{\lambda})^k}
@@ -850,9 +849,8 @@ xlim <- c(0,15)
 generate_plot(dweibull,parametres,real_names,xlim,colors)
 ```
 
-#### La distribution Pareto
-
-La distribution Pareto est à la distribution exponentielle ce que la distribution log-normal est à la distribution gaussienne : la distribution de l’exponentiel (e) de cette distribution originale. Elle est définie sur l’intervalle  $[x_m ; +\infty[$ avec la fonction de densité suivante : 
+#### La distribution de Pareto
+La distribution de Pareto est à la distribution exponentielle ce que la distribution log-normal est à la distribution gaussienne : la distribution de l’exponentiel (e) de cette distribution originale. Elle est définie sur l’intervalle  $[x_m ; +\infty[$ avec la fonction de densité suivante : 
 
 \footnotesize
 \begin{equation} f(x;x_m;k) = (\frac{x_m}{x})^k
@@ -874,7 +872,6 @@ generate_plot(VGAM::dpareto,parametres,real_names,xlim,colors)
 Originalement, le mathématicien Pareto a utilisé cette fonction pour décrire la répartition du capital parmi la population puisqu’une large partie du capital est détenue par une petite fraction de la population. Elle peut également être utilisée pour décrire la répartition de la taille des villes [@William_pareto_ville], [la popularité des hommes sur tinder](https://medium.com/@worstonlinedater/tinder-experiments-ii-guys-unless-you-are-really-hot-you-are-probably-better-off-not-wasting-your-2ddf370a6e9a){target="_blank"} ou la taille des fichiers échangés sur internet [@William_pareto]. Pour ces trois exemples, nous avons une situation avec : de nombreuses petites villes, profils peu attractifs, petits fichiers échangés et à l'inverse très peu de grandes villes, profils très attractifs, gros fichiers échangés.
 
 #### Cas particuliers
-
 Sachez également qu’il existe des formes « plus exotiques » de distributions que nous n’abordons pas ici, mais auxquelles vous pourriez être confrontés un jour :
 
 * Les distributions sphériques, servant à décrire des données dont le 0 est équivalent à la valeur maximale. Par exemple, des angles puisque 0 et 360 degrés sont identiques.

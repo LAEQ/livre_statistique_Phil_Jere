@@ -11,21 +11,23 @@ Dans ce chapitre, nous présenterons les modèles linéaires généralisés plus
 
 
 ::: {.bloc_package data-latex=""}
-Dans cette section, nous utiliserons principalement les packages suivants&nbsp;: 
+Dans ce chapitre, nous utiliserons principalement les packages suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
-  - **ggplot2**, le seul, l'unique;
+  - **ggplot2**, le seul, l'unique!
   - **ggpubr** pour combiner des graphiques et réaliser des diagrammes.
   
 * Pour ajuster des modèles GLM&nbsp;:
-  - **VGAM** et **gamlss** offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent plusieurs manipulations manuelles;
+  - **VGAM** et **gamlss** offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent plusieurs manipulations manuelles.
   - **mgcv** offre moins de distributions que les deux précédents, mais est plus simple d'utilisation.
 
  * Pour analyser des modèles GLM&nbsp;:
-  - **car** essentiellement pour la fonction `vif`;
-  - **DHARMa** pour le diagnostic des résidus simulés;
-  - **DescTools** pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera;
-  - **ROCR** et **caret** pour l'analyse de la qualité d'ajustement de modèles pour des variables qualitatives;
+  - **car** essentiellement pour la fonction `vif`.
+  - **DHARMa** pour le diagnostic des résidus simulés.
+  - **ROCR** et **caret** pour l'analyse de la qualité d'ajustement de modèles pour des variables qualitatives.
+  - **AER** pour des tests de surdispersion.
+  - **fitdistrplus** pour ajuster des distributions à des données.
+  - **LaplacesDemon** pour manipuler certaines distributions.
   - **sandwich** pour générer des erreurs standards robustes pour le modèle GLM logistique binomial.
 :::
 
@@ -553,9 +555,9 @@ model1 <- glm(y ~
 vif(model1)
 ```
 
-La seconde étape de vérification est le calcul des distances de Cook et l'identification d'éventuelles valeurs aberrantes (figure \@ref(cookdistGLMbinom)).
+La seconde étape de vérification est le calcul des distances de Cook et l'identification d'éventuelles valeurs aberrantes (figure \@ref(fig:cookdistGLMbinom)).
 
-```{r, cookdistGLMbinom, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distances de Cook pour le modèle binomial avec toutes les observations", fig.align="center"}
+```{r, eval = FALSE}
 # calcul et représentation des distances de Cook
 cookd <- data.frame(
   dist = cooks.distance(model1),
@@ -569,7 +571,23 @@ ggplot(cookd) +
         axis.ticks.x = element_blank())
 ```
 
-Le calcul de la distance de Cook révèle un ensemble d'observations se démarquant nettement des autres (délimitées dans la figure \@ref(cookdistGLMbinom) par la ligne rouge). Nous les isolons dans un premier temps pour les analyser.
+```{r cookdistGLMbinom, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle binomial avec toutes les observations", warning=FALSE, message=FALSE, out.width='60%'}
+# calcul et représentation des distances de Cook
+cookd <- data.frame(
+  dist = cooks.distance(model1),
+  oid = 1:nrow(dfenquete)
+)
+tplot <- ggplot(cookd) + 
+  geom_point(aes(x = oid, y = dist ), color = rgb(0.1,0.1,0.1,0.4), size = 1)+
+  geom_hline(yintercept = 0.002, color = "red")+
+  labs(x = "observations", y = "distance de Cook") + 
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+show_as_png(tplot, out = "images/glm/cookdistGLMbinom.png", dpi = 300)
+```
+
+Le calcul de la distance de Cook révèle un ensemble d'observations se démarquant nettement des autres (délimitées dans la figure \@ref(fig:cookdistGLMbinom) par la ligne rouge). Nous les isolons dans un premier temps pour les analyser.
 
 ```{r message=FALSE, warning=FALSE, out.width='80%'}
 # Isoler les observations avec de très fortes valeurs de Cook
@@ -581,7 +599,7 @@ print(cas_etranges)
 
 À la lecture des valeurs pour ces 19 cas étranges, nous remarquons que la plupart des observations proviennent de Malte et de Chypre. Ces deux petites îles constituent des cas particuliers en Europe et devraient vraisemblablement faire l'objet d'une analyse séparée. Nous décidons donc de les retirer du jeu de données. Deux autres observations étranges sont observables en Slovaquie et au Luxembourg. Dans les deux cas, les répondants ont renseigné des temps de trajet fantaisistes de respectivement 775 et 720 minutes. Nous les retirons donc également de l'analyse.
 
-```{r, cookdistGLMbinom2, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distances de Cook pour le modèle binomial sans les valeurs aberrantes", fig.align="center"}
+```{r message=FALSE, warning=FALSE}
 # Retirer les observations aberrantes
 dfenquete2 <- subset(dfenquete, (dfenquete$Pays %in% c("Malta", "Cyprus")) == F & 
                   dfenquete$Duree < 400)
@@ -591,6 +609,8 @@ model2 <- glm(y ~
               Residence + Duree + ConsEnv,
             family = binomial(link="logit"),
             data = dfenquete2)
+```
+```{r eval = FALSE}
 # Recalculer la distance de Cook
 cookd <- data.frame(
   dist = cooks.distance(model2),
@@ -603,9 +623,24 @@ ggplot(cookd) +
         axis.ticks.x = element_blank())
 ```
 
-Après avoir retiré ces valeurs aberrantes, nous n'observons plus de nouveaux cas singuliers avec les distances de Cook (figure \@ref(cookdistGLMbinom2)).
+```{r cookdistGLMbinom2, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle binomial sans les valeurs aberrantes", warning=FALSE, message=FALSE, out.width='60%'}
+# Recalculer la distance de Cook
+cookd <- data.frame(
+  dist = cooks.distance(model2),
+  oid = 1:nrow(dfenquete2)
+)
+tplot <- ggplot(cookd) + 
+  geom_point(aes(x = oid, y = dist ), color = rgb(0.1,0.1,0.1,0.4), size = 1)+
+  labs(x = "observations", y = "distance de Cook") + 
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
 
-La prochaine étape de vérification des conditions d'application est l'analyse des résidus simulés. Nous commençons donc par calculer ces résidus et afficher leur histogramme (figure \@ref(figresidsimbinomHistoUnif)).
+show_as_png(tplot, "images/glm/cookdistGLMbinom2.png",300)
+```
+
+Après avoir retiré ces valeurs aberrantes, nous n'observons plus de nouveaux cas singuliers avec les distances de Cook (figure \@ref(fig:cookdistGLMbinom2)).
+
+La prochaine étape de vérification des conditions d'application est l'analyse des résidus simulés. Nous commençons donc par calculer ces résidus et afficher leur histogramme (figure \@ref(fig:figresidsimbinomHistoUnif)).
 
 ```{r figresidsimbinomHistoUnif, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distribution des résidus simulé pour le modèle binomial", fig.align="center", fig.pos = "H"}
 library(DHARMa)
@@ -1087,7 +1122,7 @@ modele <- vglm(fac_price_cat ~ beds +
 
 Notez que puisque la variable *Y* a trois catégories différentes et que nous modélisons la probabilité de passer à une catégorie supérieure, chaque observation a alors deux (3-1) valeurs de résidus différentes. Par conséquent, nous calculons deux distances de Cook différentes que nous devons analyser conjointement. Malheureusement, la fonction `cook.distance` ne fonctionne pas avec les objets `vglm`, nous devons donc les calculer manuellement.
 
-```{r message=FALSE, warning=FALSE, fig.align="center", fig.cap = "Distances de Cook pour le modèle logistique des cotes proportionnelles", out.width = "80%"}
+```{r message=FALSE, warning=FALSE}
 # Extraction des résidus
 res <- residuals(modele, type = "pearson")
 # Extraction de la hat matrix (nécessaire pour calculer la distance de Cook)
@@ -1113,10 +1148,18 @@ plot2 <- ggplot(data = matcook) +
   labs(x = "", y = "", subtitle = "distance de Cook P(Y>=3)")+
   theme(axis.ticks.x = element_blank(),
         axis.text.x = element_blank())
+```
+
+```{r eval = FALSE}
 ggarrange(plot1, plot2, ncol = 2, nrow = 1)
 ```
 
-Les distances de Cook nous permettent d'identifier quelques observations potentiellement trop influentes, mais elles semblent être différentes d'un graphique à l'autre. Nous décidons donc de ne pas retirer d'observations à ce stade et de passer à l'analyse des résidus simulés. Pour effectuer des simulations à partir de ce modèle, nous nous basons sur les probabilités d'appartenance prédites par le modèle.
+```{r CookdCotePropor, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle logistique des cotes proportionnelles", message=FALSE, warning=FALSE, out.width="65%"}
+tplot <- ggarrange(plot1, plot2, ncol = 2, nrow = 1)
+show_as_png(tplot, "images/glm/CookdCotePropor.png",300)
+```
+
+Les distances de Cook (figure \@ref(fig:CookdCotePropor)) nous permettent d'identifier quelques observations potentiellement trop influentes, mais elles semblent être différentes d'un graphique à l'autre. Nous décidons donc de ne pas retirer d'observations à ce stade et de passer à l'analyse des résidus simulés. Pour effectuer des simulations à partir de ce modèle, nous nous basons sur les probabilités d'appartenance prédites par le modèle.
 
 ```{r message=FALSE, warning=FALSE}
 # extraire les probabilités prédites
@@ -1143,7 +1186,7 @@ table(matsim[1,])
 
 À partir de ces simulations de prédiction, nous pouvons réaliser un diagnostic des résidus simulés grâce au *package* **DHARMa**.
 
-```{r diagressimcumul, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle des cotes proportionnelles", out.width="85%", fig.align = "center"}
+```{r diagressimcumul, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle des cotes proportionnelles", out.width="100%", fig.align = "center"}
 # Extraction de la prédiction moyenne du modèle
 pred_cat <- unique(data_airbnb$fac_price_cat)[max.col(predicted)]
 # Préparer les données avec le package DHARMa
@@ -1174,7 +1217,7 @@ vars <- c("nombre de lits" = "beds",
 for(name in  names(vars)){
   v <- vars[[name]]
   plotResiduals(sim_res, data_airbnb[[v]], rank = F, quantreg = F, main = "",
-                xlab = name)
+                xlab = name, ylab = "résidus")
 }
 ```
 
@@ -1197,7 +1240,7 @@ invisible(capture.output({
   for(name in  names(vars)){
     v <- vars[[name]]
     plotResiduals(sim_res, data_airbnb[[v]], rank = F, quantreg = F, main = "",
-                  xlab = name)
+                  xlab = name, ylab = "résidus")
   }
   
   dev.off()
@@ -1208,7 +1251,7 @@ knitr::include_graphics("images/glm/diagressimcumul2.png", dpi = 300)
 
 La fonction `plotResiduals` du *package* **DHARMa** produit des graphiques peu esthétiques, mais pratiques pour effectuer ce type de diagnostic.
 
-La figure \@ref(fig:diagressimcumul2) indique qu'aucune relation marquée n'existe entre nos variables indépendante et nos résidus simulés, sauf pour la variable nombre de lits. En effet, nous pouvons constater que les résidus ont tendance à être toujours plus faible quand le nombre de lit augmente. Cet effet est sûrement lié au fait qu'au-delà de cinq lits, le logement en question est vraisemblablement un dortoir. Il pourrait être judicieux de retirer ces observations de l'analyse, considérant qu'elles sont peu nombreuses et constituent une forme de logement particulière.
+La figure \@ref(fig:diagressimcumul2) indique qu'aucune relation marquée n'existe entre nos variables indépendantes et nos résidus simulés, sauf pour la variable nombre de lits. En effet, nous pouvons constater que les résidus ont tendance à être toujours plus faible quand le nombre de lit augmente. Cet effet est sûrement lié au fait qu'au-delà de cinq lits, le logement en question est vraisemblablement un dortoir. Il pourrait être judicieux de retirer ces observations de l'analyse, considérant qu'elles sont peu nombreuses et constituent une forme de logement particulière.
 
 ```{r message=FALSE, warning=FALSE}
 data_airbnb2 <- subset(data_airbnb, data_airbnb$beds <=5)
@@ -1222,7 +1265,7 @@ modele2 <- vglm(fac_price_cat ~ beds  +
              data = data_airbnb2, model = T)
 ```
 
-Nous pouvons ensuite recalculer les résidus simulés pour observer si cette tendance a été corrigée. La figure \@ref(fig:diagressimcumul3) montre qu'une bonne partie du problème a été corrigé, cependant il semble tout de même que les résidus soient plus fort pour les logements avec un seul lit.
+Nous pouvons ensuite recalculer les résidus simulés pour observer si cette tendance a été corrigée. La figure \@ref(fig:diagressimcumul3) montre qu'une bonne partie du problème a été corrigée, cependant il semble tout de même que les résidus soient plus forts pour les logements avec un seul lit.
 
 ```{r message=FALSE, warning=FALSE}
 # Nous effectuerons 1000 simulations
@@ -1260,7 +1303,7 @@ vars <- c("nombre de lits" = "beds",
 for(name in  names(vars)){
   v <- vars[[name]]
   plotResiduals(sim_res, data_airbnb2[[v]], rank = F, quantreg = F, main = "",
-                xlab = name)
+                xlab = name, ylab = "résidus")
 }
 ```
 ```{r diagressimcumul3, echo=FALSE, fig.align="center", fig.cap="Diagnostic des variables indépendantes et des résidus simulés du modèle des cotes proportionnelles (arpès correction)", fig.pos="H", message=FALSE, warning=FALSE, out.width="100%"}
@@ -1286,7 +1329,7 @@ out <- "images/glm/diagressimcumul3.png"
   for(name in  names(vars)){
     v <- vars[[name]]
     plotResiduals(sim_res, data_airbnb2[[v]], rank = F, quantreg = F, main = "",
-                  xlab = name)
+                  xlab = name, ylab = "résidus")
   }
   dev.off()
   
@@ -1334,7 +1377,7 @@ modele3 <- vglm(fac_price_cat ~ beds +
 
 **Vérifier l'ajustement du modèle**
 
-Maintenant que toutes les conditions d'application ont été passée en revue, nous pouvons passer à la vérification de l'ajustement du modèle
+Maintenant que toutes les conditions d'application ont été passées en revue, nous pouvons passer à la vérification de l'ajustement du modèle
 
 ```{r message=FALSE, warning=FALSE}
 modelenull <- vglm(fac_price_cat ~ 1,
@@ -1451,7 +1494,7 @@ On constate sur la figure \@ref(fig:predpricecatveg) que les probabilités d’a
 ### Le modèle logistique multinomial {#sect0824}
 
 La régression logistique multinomiale est utilisée pour modéliser une variable *Y* qualitative multinomiale, c’est-à-dire une variable dont les catégories ne peuvent pas être ordonnées. Dans le modèle précédent, nous avons vu qu’il était possible de modéliser une variable ordinale avec une distribution binomiale en formulant l’hypothèse de la proportionnalité des cotes. Avec une variable multinomiale, cette hypothèse ne tient plus, car les catégories ne sont plus ordonnées. Il faut donc formuler le modèle différemment.
-L’idée derrière un modèle multinomial est de choisir une catégorie de référence, puis de modéliser les probabilités d’appartenir à chaque autre catégorie plutôt qu’à cette catégorie de référence (tableau \@ref(multinomdentity)). Si nous avons *K* catégories possibles dans notre variable *Y*, nous obtenons *K*-1 comparaisons. Chaque comparaison est modélisée avec sa propre équation ce qui génère de nombreux paramètres. Par exemple, admettons que notre variable *Y* ait cinq catégories et que nous disposons de six variables *X* prédictives. Nous avons ainsi 4 (5-1) équations de régression avec 7 paramètres (6 coefficients et une constante), soit 28 coefficients à analyser. 
+L’idée derrière un modèle multinomial est de choisir une catégorie de référence, puis de modéliser les probabilités d’appartenir à chaque autre catégorie plutôt qu’à cette catégorie de référence (tableau \@ref(tab:multinomdentity)). Si nous avons *K* catégories possibles dans notre variable *Y*, nous obtenons *K*-1 comparaisons. Chaque comparaison est modélisée avec sa propre équation ce qui génère de nombreux paramètres. Par exemple, admettons que notre variable *Y* ait cinq catégories et que nous disposons de six variables *X* prédictives. Nous avons ainsi 4 (5-1) équations de régression avec 7 paramètres (6 coefficients et une constante), soit 28 coefficients à analyser. 
 
 Considérant cette tendance à la multiplication des coefficients, il est fréquent de recourir à une méthode appelée *Analyse de type 3* pour limiter au maximum le nombre de variables indépendantes (VI) dans le modèle. L'idée de cette méthode est de recalculer plusieurs versions du modèle dans lesquelles une variable indépendante est retirée, puis de réaliser un test de rapport de vraisemblance en comparant ce nouveau modèle (complet moins une VI) au modèle complet (toutes les VI) pour vérifier si la variable en question améliore significativement le modèle. Il est alors possible de retirer toutes les variables dont l'apport est négligeable si elles étaient également peu intéressantes du point de vue théorique.
 
@@ -1702,7 +1745,7 @@ par(mfrow=c(3,3))
 vars <- c("PercepOGM", "PercepRechClim", "ConnaisOGM", 
           "ConnaisRechClim", "CRT", "Parti", "Sexe")
 for(v in  vars){
-  plotResiduals(sim_res, etend_data[[v]], xlab= v)
+  plotResiduals(sim_res, etend_data[[v]], xlab= v, ylab = "résidus")
 }
 ```
 
@@ -1719,7 +1762,7 @@ invisible(capture.output({
   vars <- c("PercepOGM", "PercepRechClim", "ConnaisOGM", 
             "ConnaisRechClim", "CRT", "Parti", "Sexe")
   for(v in  vars){
-    plotResiduals(sim_res, etend_data[[v]], xlab= v)
+    plotResiduals(sim_res, etend_data[[v]], xlab= v, ylab = "résidus")
   }
   
   dev.off()
@@ -1800,7 +1843,7 @@ invisible(capture.output({
             "ConnaisRechClim", "CRT", "Parti", "Sexe")
   
   for(v in  vars){
-    plotResiduals(sim_res, etend_data[[v]], xlab= v)
+    plotResiduals(sim_res, etend_data[[v]], xlab= v, ylab = "résidus")
   }
   
   dev.off()
@@ -2419,7 +2462,7 @@ vars <- c("Feux_auto", "Feux_piet", "Pass_piet", "Terreplein", "Apaisement",
                 "LogEmploi", "Densite_pop", "Entropie", "DensiteInter",
                 "Long_arterePS", "Artere", "NB_voies5")
 for(v in  vars){
-  plotResiduals(sim_res, data2[[v]], xlab = v, main = "")
+  plotResiduals(sim_res, data2[[v]], xlab = v, main = "", ylab = "résidus")
 }
 ```
 
@@ -2432,7 +2475,7 @@ invisible(capture.output({
                   "LogEmploi", "Densite_pop", "Entropie", "DensiteInter",
                   "Long_arterePS", "Artere", "NB_voies5")
   for(v in  vars){
-    plotResiduals(sim_res, data2[[v]], xlab = v, main = "")
+    plotResiduals(sim_res, data2[[v]], xlab = v, main = "", ylab = "résidus")
   }
   dev.off()
 }))
@@ -2517,7 +2560,7 @@ show_table(tableau,
 
 #### Conditions d'application
 
-Les conditions d'application d'un modèle négatif binomial sont presque les mêmes que celle d'un modèle de Poisson. La seule différence est que la condition d'absence de sur ou sousdispersion est remplacée par une condition de respect du lien moyenne-variance. En effet, dans un modèle binomial, le paramètre de dispersion $\theta$ est combiné avec $\mu$ (l'espérance) pour exprimer la dispersion de la distribution. Dans le *package* **mgcv** que nous utilisons dans l'exemple, le lien entre $\mu$, $\theta$ et la variance est le suivant&nbsp;: 
+Les conditions d'application d'un modèle négatif binomial sont presque les mêmes que celles d'un modèle de Poisson. La seule différence est que la condition d'absence de sur ou sousdispersion est remplacée par une condition de respect du lien moyenne-variance. En effet, dans un modèle binomial, le paramètre de dispersion $\theta$ est combiné avec $\mu$ (l'espérance) pour exprimer la dispersion de la distribution. Dans le *package* **mgcv** que nous utilisons dans l'exemple, le lien entre $\mu$, $\theta$ et la variance est le suivant&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -3058,7 +3101,7 @@ Y \sim \text {Binomial}(p) \text { si } y=0 \\
 Y \sim \text { TrPoisson}(\lambda) \text { si } y>0 \\
 \log (\lambda)=\beta_{b} X_{b}
 \end{array}\right.
-(\#eq:glm17)
+(\#eq:glm172)
 \end{equation}
 \normalsize
 
@@ -3122,7 +3165,7 @@ vif(glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
 
 Puisque l'ensemble des valeurs de VIF sont inférieures à deux, nos données ne sont pas marquées par une multicolinéarité problématique. La seconde étape du diagnostic consiste à  calculer et afficher les distances de Cook.
 
-```{r gausscook, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distances de Cook pour le modèle gaussien", out.width = "50%"}
+```{r message=FALSE, warning=FALSE}
 # Ajustement du modèle
 modele <- glm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
@@ -3133,9 +3176,19 @@ df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
+```
+
+```{r eval = FALSE}
 ggplot(data = df) + 
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
+```
+
+```{r gausscook, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle gaussien", message=FALSE, warning=FALSE, out.width= "65%"}
+tplot <- ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+show_as_png(tplot, "images/glm/gausscook.png",300)
 ```
 
 La figure \@ref(fig:gausscook) indique clairement que quatre observations sont très influentes dans le modèle. 
@@ -3148,7 +3201,7 @@ print(cas_etranges)
 
 Il s'agit de quatre îlots dans Montréal avec des logements très anciens&nbsp;: plus de 200 ans, alors que la moyenne est de 52 ans pour le reste de la zone d'étude. Le fait que nous ayons dans le modèle une polynomiale d'ordre 2 pour cette variable intensifie l'impact de ces valeurs extrêmes. Par conséquent, nous décidons de simplement les supprimer. Nous verrons plus tard qu'une alternative envisageable est de changer la distribution du modèle pour une distribution de Student (plus robuste aux valeurs extrêmes).
 
-```{r gausscook2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distances de Cook pour le modèle gaussien après suppression des observations influentes", out.width = "50%"}
+```{r message=FALSE, warning=FALSE}
 # Retirer les cas étranges
 DataFinal2 <- subset(DataFinal, cooksd < 0.03)
 # Ajustement du modèle
@@ -3162,9 +3215,18 @@ df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
+```
+```{r eval = FALSE}
 ggplot(data = df) + 
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
+```
+
+```{r gausscook2, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle gaussien après suppression des observations influentes", message=FALSE, warning=FALSE, out.width="65%"}
+tplot <- ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+show_as_png(tplot, "images/glm/gausscook2.png")
 ```
 
 Une fois ces observations retirées, les nouvelles distances de Cook (figure \@ref(fig:gausscook2)) ne révèlent plus d'observations fortement influentes. Nous pouvons passer à l'analyse des résidus simulés. La figure \@ref(fig:gaussresid) démontre que la ditribution des résidus est significativement différente d'une distribution uniforme, que des valeurs aberrantes sont encore présentes et qu'il existe un lien entre résidus et prédiction dans le modèle.
@@ -3205,7 +3267,7 @@ ggplot() +
 
 Il est également possible de vérifier si la condition d'homogénéité de la variance s'applique bien aux données.
 
-```{r gausssim2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Comparaison de la distribution originale de la variable et des simulations issues du modèle", out.width = "75%"}
+```{r message=FALSE, warning=FALSE}
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = "response")
 sigma_model <- sigma(modele)
@@ -3222,6 +3284,9 @@ df2 <- data.frame(
   lower = qnorm(p = 0.025, mean = seqa, sd = sigma_model),
   upper = qnorm(p = 0.975, mean = seqa, sd = sigma_model)
 )
+
+```
+```{r eval = FALSE}
 # Affichage des valeurs réelles et prédites (en rouge)
 # et de leur variance selon le modèle (en noir)
 ggplot() + 
@@ -3234,7 +3299,18 @@ ggplot() +
   labs(x = 'valeurs prédites',
        y = "valeurs réelles")
 ```
-
+```{r gausssim2, echo=FALSE, fig.align="center", fig.cap="Comparaison de la distribution originale de la variable et des simulations issues du modèle", message=FALSE, warning=FALSE, out.width="65%"}
+tplot <- ggplot() + 
+  geom_point(data = df1, 
+             mapping = aes(x = mus, y = reals),
+             color ="red", size = 0.5) + 
+  geom_errorbar(data = df2,
+                mapping = aes(x = mus, ymin = lower, ymax = upper),
+                width = 0.2, color = rgb(0.4,0.4,0.4)) + 
+  labs(x = 'valeurs prédites',
+       y = "valeurs réelles")
+show_as_png(tplot, "images/glm/gausssim2.png")
+```
 À nouveau, on constate à la figure \@ref(fig:gausssim2) que le modèle s'attendrait à trouver des valeurs négatives pour la concentration de végétation, ce qui n'est pas possible dans notre cas. En revanche, il semblerait que la variance soit bien homogène puisque la dispersion des observations semble à peu près suivre la dispersion attendue par le modèle (en noir).
 
 Malgré ces différents constats indiquant clairement qu'un modèle gaussien est un choix sous-optimal pour ces données, nous allons poursuivre l'analyse de ce modèle.
@@ -3348,13 +3424,15 @@ L’interprétation des paramètres est la même que pour un modèle gaussien pu
 Nous proposons ici de simplement réajuster le modèle gaussien présenté dans la section précédente en utilisant une distribution de Student. Nous utilisons pour cela la fonction `gam` du *package* **mgcv** avec le paramètre `family=scat` pour utiliser une distribution de Student. Les valeurs de VIF ont déjà été calculées dans l'exemple précédent, nous pouvons donc passer directement au calcul des distances de Cook.
 
 
-```{r stucookdist, fig.align = "center", out.width = "50%", fig.cap = "Distances de Cook pour un modèle GLM avec une distribution de Student", message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Chargement des données
 load("data/lm/DataVegetation.RData")
 # Ajustement du modèle
 modele <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal,
               family = scat)
+```
+```{r eval = FALSE}
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
 # Affichage des valeurs
@@ -3366,16 +3444,32 @@ ggplot(data = df) +
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
 ```
+```{r stucookdist, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour un modèle GLM avec une distribution de Student", message=FALSE, warning=FALSE, out.width="50%"}
+# Calcul des distances de Cook
+cooksd <- cooks.distance(modele)
+# Affichage des valeurs
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+tplot <- ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+show_as_png(tplot, "images/glm/stucookdist.png")
+```
 
 Nous retrouvons les quatre observations avec des distances de Cook très fortes que nous avions identifiées dans le modèle gaussien. Nous décidons donc de les enlever pour les mêmes raisons que précédemment.
 
-```{r stucookdist2, fig.align = "center", out.width = "50%", fig.cap = "Distances de Cook pour un modèle GLM avec une distribution de Student, après suppression des valeurs fortement influentes", message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Chargement des données
 DataFinal2 <- subset(DataFinal, cooksd<0.1)
 # Ajustement du modèle
 modele <- gam(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
                        Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal2,
               family = scat)
+```
+
+```{r eval = FALSE}
 # Calcul des distances de Cook
 cooksd <- cooks.distance(modele)
 # Affichage des valeurs
@@ -3386,6 +3480,19 @@ df <- data.frame(
 ggplot(data = df) + 
   geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
   labs(x="", y = "distance de Cook")
+```
+```{r stucookdist2, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour un modèle GLM avec une distribution de Student, warning=FALSE, après suppression des valeurs fortement influentes", message=FALSE, out.width="50%"}
+# Calcul des distances de Cook
+cooksd <- cooks.distance(modele)
+# Affichage des valeurs
+df <- data.frame(
+  cook = cooksd,
+  oid = 1:length(cooksd)
+)
+tplot <- ggplot(data = df) + 
+  geom_point(aes(x = oid, y = cook), color = rgb(0.4,0.4,0.4,0.7), size = 1) + 
+  labs(x="", y = "distance de Cook")
+show_as_png(tplot, "images/glm/stucookdist2.png")
 ```
 
 Nous pouvons à présent vérifier si les résidus simulés se comportent tel qu'attendu.
@@ -3556,7 +3663,7 @@ Pour cet exemple, nous nous intéressons à la durée de déplacements en milieu
 * les trajets de plus de deux heures (cas rares, considérés comme des données aberrantes);
 * les trajets dont le point de départ est à moins de 100 mètres du point d’arrivée (formant des boucles plutôt que des déplacements).
 
-Nous arrivons ainsi à un total de 24&nbsp;969 observations. Pour modéliser ces durées de déplacement, nous utilisons les prédicteurs présentés dans le tableau \@ref(variablegamma)
+Nous arrivons ainsi à un total de 24&nbsp;969 observations. Pour modéliser ces durées de déplacement, nous utilisons les prédicteurs présentés dans le tableau \@ref(tab:variablegamma)
 
 ```{r variablegamma, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 df <- data.frame(
@@ -3622,7 +3729,7 @@ vif(glm(Duree ~ Mode + Motif + HeureDep + LogDist +
 
 L'ensemble des valeurs de VIF sont inférieures à trois, indiquant donc l'absence de multicolinéarité excessive. Nous pouvons donc ajuster une première version du modèle (ici avec le *package* **VGAM** et la fonction `vglm`) et calculer les distances de Cook.
 
-```{r cookdistgamma, message=FALSE, warning=FALSE, out.width='50%', fig.cap = "Distances de Cook pour le modèle Gamma", fig.align = "center"}
+```{r message=FALSE, warning=FALSE}
 # Calcul du modèle avec VGAM
 modele <- vglm(Duree ~ Mode + Motif + HeureDep + LogDist +
                  ArrondDep+ MemeArrond + Semaine,
@@ -3638,11 +3745,21 @@ df <- data.frame(
   cook = cooksd,
   oid = 1:length(cooksd)
 )
+```
+```{r eval = FALSE}
 # Représentation des distances de Cook
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4,0.4)) + 
   geom_hline(yintercept = 0.003, color = "red") +
   labs(x = "", y = "distance de Cook")
+```
+```{r cookdistgamma, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle Gamma", message=FALSE, warning=FALSE, out.width='50%'}
+# Représentation des distances de Cook
+tplot <- ggplot(data = df)+
+  geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4,0.4)) + 
+  geom_hline(yintercept = 0.003, color = "red") +
+  labs(x = "", y = "distance de Cook")
+show_as_png(tplot, "images/glm/cookdistgamma.png")
 ```
 Puisque nous disposons d'un (très) grand nombre d'observations, nous pouvons nous permettre de retirer les quelques observations fortement influentes (distance de Cook > 0,003 dans notre cas) qui apparaissent dans la figure \@ref(fig:cookdistgamma). Nous retirons ainsi 28 observations et réajustons le modèle.
 
@@ -3670,10 +3787,12 @@ df <- data.frame(
   oid = 1:length(cooksd)
 )
 # Représentation des distances de Cook
-ggplot(data = df)+
+tplot <- ggplot(data = df)+
   geom_point(aes(x = oid, y = cook), size = 0.5, color = rgb(0.4,0.4,0.4,0.4)) +
   labs(x = "", y = "distance de Cook")
+show_as_png(tplot, "images/glm/cookdistgamma2.png")
 ```
+
 
 ```{r simdistribgamma, message=FALSE, warning=FALSE, out.width='60%', fig.cap = "Comparaison de la distribution originale et de simulations issues du modèle Gamma", fig.align = "center", echo = TRUE}
 # Extraction des prédictions du modèle (mu)
@@ -3763,7 +3882,7 @@ La figure \@ref(fig:gammaresids3) indique que les résidus simulés ne suivent t
 
 D'un point de vue purement pédagogique, nous pouvons comparer graphiquement la variance observée dans les données et la variance attendue par le modèle. La figure \@ref(fig:dispgamma) montre clairement que la variance des données tend à être plus grande qu'attendue quand les temps de trajet sont courts, mais diminue trop vite quand les temps de trajet augmentent. D'autres distributions pourraient être envisagées pour ajuster notre modèle&nbsp;: Lognormal, Weibull, etc.
 
-```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle Gamma", out.width = "50%"}
+```{r warning = FALSE, message=FALSE}
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = "response")[,1]
 # Création d'un dataframe pour contenir la prédiction et les vraies valeurs
@@ -3780,6 +3899,8 @@ df2 <- data.frame(
   lower = qgamma(p = 0.025, shape = shape, scale = seqa/shape),
   upper = qgamma(p = 0.975, shape = shape, scale = seqa/shape)
 )
+```
+```{r eval = FALSE}
 # Affichage des valeurs réelles et prédites (en rouge)
 # et de leur variance selon le modèle (en noir)
 ggplot() + 
@@ -3791,6 +3912,18 @@ ggplot() +
                 width = 0.2, color = rgb(0.4,0.4,0.4)) + 
   labs(x = 'valeurs prédites',
        y = "valeurs réelles")
+```
+```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle Gamma", out.width = "50%"}
+tplot <- ggplot() + 
+  geom_point(data = df1, 
+             mapping = aes(x = mus, y = reals),
+             color =rgb(0.9,0.22,0.27,0.4), size = 0.5) + 
+  geom_errorbar(data = df2,
+                mapping = aes(x = mus, ymin = lower, ymax = upper),
+                width = 0.2, color = rgb(0.4,0.4,0.4)) + 
+  labs(x = 'valeurs prédites',
+       y = "valeurs réelles")
+show_as_png(tplot, "images/glm/dispgamma.png", 300)
 ```
 À ce stade, nous disposons de suffisamment d’éléments pour douter des résultats du modèle. Nous allons tout de même poursuivre notre analyse afin d'illustrer l'estimation de la qualité d'ajustement d'un tel modèle et son interprétation.
 
@@ -4048,7 +4181,7 @@ vif(glm(hot ~
 
 La seule variable semblant poser un problème de multicolinéarité est la variable `Arrond`. Cependant, du fait de sa nature multinomiale, elle regroupe en réalité 32 coefficients (voir la colonne `Df`). Il faut donc utiliser la règle habituelle de 5 sur le carré de la troisième colonne (`GVIF^(1/(2*Df))`) du tableau [@fox1992generalized], soit `1,032820^2 = 1.066717`, ce qui est bien inférieur à la limite de 5. Nous n'avons donc pas de problème de multicolinéarité excessive. Nous pouvons passer au calcul des distances de Cook. Pour ajuster notre modèle, nous utilisons le *package* **MGCV** et la fonction `gam` avec le paramètre `family = betar(link = "logit")`.
 
-```{r cookdistbeta, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta", fig.align = "center", out.width = "50%"}
+```{r message=FALSE, warning=FALSE}
 # Ajustement d'une première version du modèle
 modele <- gam(hot ~
                 A65Pct + A014Pct + PopFRPct + PopMVPct +
@@ -4059,11 +4192,21 @@ df <- data.frame(
   cooksd = cooks.distance(modele),
   oid = 1:nrow(dataset)
 )
+```
+```{r eval = FALSE}
 # Affichage des distances de Cook
 ggplot(data = df)+
   geom_point(aes(x = oid, y = cooksd),
              color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
   labs(x = "", y = "Distance de Cook")
+```
+```{r cookdistbeta, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle GLM Beta", message=FALSE, warning=FALSE, out.width="65%"}
+# Affichage des distances de Cook
+tplot <- ggplot(data = df)+
+  geom_point(aes(x = oid, y = cooksd),
+             color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
+  labs(x = "", y = "Distance de Cook")
+show_as_png(tplot, "images/glm/cookdistbeta.png",300)
 ```
 
 Nous pouvons observer à la figure \@ref(fig:cookdistbeta) que seulement deux observations se distinguent très nettement des autres. Nous les isolons donc dans un premier temps.
@@ -4075,7 +4218,7 @@ print(cas_etranges[,23:ncol(cas_etranges)])
 
 Ces deux observations n'ont pas de points communs marqués, et ne semblent pas avoir de valeurs particulièrement fortes sur les différentes variables indépendantes ou la variable dépendante. Nous décidons donc de les supprimer et de recalculer les distances de Cook.
 
-```{r cookdistbeta2, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta (suppression de deux observations influentes)", fig.align = "center", out.width = "50%"}
+```{r message=FALSE, warning=FALSE}
 # Suppression des deux observations très influentes
 dataset2 <- subset(dataset, df$cooksd < 0.01)
 modele2 <- gam(hot ~
@@ -4087,16 +4230,26 @@ df2 <- data.frame(
   cooksd = cooks.distance(modele2),
   oid = 1:nrow(dataset2)
 )
+```
+```{r eval = FALSE}
 # Affichage des distances de Cook
 ggplot(data = df2)+
   geom_point(aes(x = oid, y = cooksd),
              color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
   labs(x = "", y = "Distance de Cook")
 ```
+```{r cookdistbeta2, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle GLM Beta (suppression de deux observations influentes)", message=FALSE, warning=FALSE, out.width="65%"}
+# Affichage des distances de Cook
+tplot <- ggplot(data = df2)+
+  geom_point(aes(x = oid, y = cooksd),
+             color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
+  labs(x = "", y = "Distance de Cook")
+show_as_png(tplot, "images/glm/cookdistbeta2.png")
+```
 
 Après réajustement (figure \@ref(fig:cookdistbeta2)) nous constatons à nouveau qu'une observation est **extrêmement** éloignée des autres. Nous la retirons également, car cette différence est si forte qu'elle risque de polluer le modèle.
 
-```{r cookdistbeta3, message=FALSE, warning=FALSE, fig.cap = "Distances de Cook pour le modèle GLM Beta (suppression de trois observations influentes)", fig.align = "center", out.width = "50%"}
+```{r message=FALSE, warning=FALSE}
 # Suppression de l'observation très étonnante
 dataset3 <- subset(dataset2, df2$cooksd<max(df2$cooksd))
 # Réajustement du modèle
@@ -4109,11 +4262,21 @@ df3 <- data.frame(
   cooksd = cooks.distance(modele3),
   oid = 1:nrow(dataset3)
 )
+```
+```{r eval = FALSE}
 # Affichage des distances de Cook
 ggplot(data = df3)+
   geom_point(aes(x = oid, y = cooksd),
              color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
   labs(x = "", y = "Distance de Cook")
+```
+```{r cookdistbeta3, echo=FALSE, fig.align="center", fig.cap="Distances de Cook pour le modèle GLM Beta (suppression de trois observations influentes)", message=FALSE, warning=FALSE, out.width="65%"}
+# Affichage des distances de Cook
+tplot <- ggplot(data = df3)+
+  geom_point(aes(x = oid, y = cooksd),
+             color = rgb(0.4,0.4,0.4,0.4), size = 0.5)+
+  labs(x = "", y = "Distance de Cook")
+show_as_png(tplot, "images/glm/cookdistbeta3.png")
 ```
 
 Tout semble aller pour le mieux après ce second passage (figure \@ref(fig:cookdistbeta3)). Si nous avions continué à observer des valeurs aussi influentes, nous aurions dû commencer à sérieusement questionner nos données ou notre modèle. La prochaine étape du diagnostic est donc l'analyse des résidus simulés.
@@ -4326,7 +4489,7 @@ knitr::include_graphics("images/glm/guide_GLM.png", dpi = 300)
 
 Voici un court quizz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
 
-```{r quizClassif, echo=FALSE, warning=FALSE, results="asis"}
-quizz_classif <- quizz("quizzs/GLM.yml", "quizz_classif")
-render_quizz(quizz_classif)
+```{r quizGLM, echo=FALSE, warning=FALSE, results="asis"}
+quizz_glm <- quizz("quizzs/GLM.yml", "quizz_classif")
+render_quizz(quizz_glm)
 ```
