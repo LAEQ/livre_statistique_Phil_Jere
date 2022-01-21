@@ -1,6 +1,31 @@
 # Régressions à effets mixtes (GLMM) {#chap09}
 
-Dans les deux chapitres précédents, nous avons consécutivement présenté la méthode de la régression linéaire simple (LM) ainsi qu'une de ses extensions, soit les modèles linéaires généralisés (GLM). Dans ce chapitre, nous poursuivons sur cette voie avec une nouvelle extension&nbsp;: les modèles généralisés à effet mixtes (GLMM).
+Dans les deux chapitres précédents, nous avons consécutivement présenté la méthode de la régression linéaire simple (LM) ainsi qu'une de ses extensions, soit les modèles linéaires généralisés (GLM). Dans ce chapitre, nous poursuivons sur cette voie avec une nouvelle extension&nbsp;: les modèles généralisés à effet mixtes (GLMM). À la fin de cette section, vous serez en mesure de&nbsp;:
+
+* comprendre la distinction entre un modèle GLM et un modèle GLMM;
+* distinguer un effet fixe d'un effet aléatoire;
+*	formuler des modèles GLMM avec des constantes et ou pentes aléatoires;
+*	effectuer les diagnostics d’un GLMM.
+
+::: {.bloc_package data-latex=""}
+Dans ce chapitre, nous utiliserons principalement les packages suivants&nbsp;: 
+
+* Pour créer des graphiques&nbsp;:
+  - **ggplot2**, le seul, l'unique!
+  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes.
+  - **ellipse** pour représenter des ellipses sur certains graphiques.
+  
+* Pour ajuster des modèles GLMM&nbsp;:
+  - **lme4**, offrant une interface simple pour ajuster des GLMM.
+
+ * Pour analyser des modèles GLM&nbsp;:
+  - **car** essentiellement pour la fonction `vif`.
+  - **DHARMa** pour le diagnostic des résidus simulés.
+  - **merTools** permet d'explorer les résultats d'un GLMM.
+  - **lmerTest** fourni des tests de significativité pour les coefficients d'un GLMM.
+  - **MuMin** pour calculer les R^2^ conditionel et marginal.
+  - **performance** pour calculer le ICC et d'autres mesures d'ajustement.
+:::
 
 ## Introduction {#sect091}
 
@@ -1092,7 +1117,7 @@ Les valeurs des R^2^ marginal et conditionnel du modèle sont similaires à ceux
 
 Pour analyser facilement les constantes et pentes aléatoires de chaque pays, nous pouvons représenter graphiquement leurs intervalles de confiances construits à partir des simulations tirées de la distribution a posteriori du modèle.
 
-```{r randomconstantes2b, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par pays (intervalles de confiance obtenus par simulations)"}
+```{r randomconstantes2b, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par pays (intervalles de confiance obtenus par simulations)", fig.align="center"}
 # simulations et extraction des effets aléatoires
 library(merTools)
 simsRE <- REsim(modele3,n.sims = 1000, oddsRatio = F)
