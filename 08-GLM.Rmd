@@ -40,7 +40,7 @@ Puisqu’un modèle GLM est une extension des modèles LM, il est possible de tr
 \footnotesize
 \begin{equation}
 Y = \beta_0 + X\beta + \epsilon
-(\#eq:regmultiple5)
+(\#eq:regmultiple5B)
 \end{equation}
 \normalsize
 
@@ -553,7 +553,7 @@ model1 <- glm(y ~
 vif(model1)
 ```
 
-La seconde étape de vérification est le calcul des distances de Cook et l'identification d'éventuelles valeurs aberrantes (figure \@ref(cookdistGLMbinom)).
+La seconde étape de vérification est le calcul des distances de Cook et l'identification d'éventuelles valeurs aberrantes (figure \@ref(fig:cookdistGLMbinom)).
 
 ```{r, cookdistGLMbinom, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distances de Cook pour le modèle binomial avec toutes les observations", fig.align="center"}
 # calcul et représentation des distances de Cook
@@ -569,7 +569,7 @@ ggplot(cookd) +
         axis.ticks.x = element_blank())
 ```
 
-Le calcul de la distance de Cook révèle un ensemble d'observations se démarquant nettement des autres (délimitées dans la figure \@ref(cookdistGLMbinom) par la ligne rouge). Nous les isolons dans un premier temps pour les analyser.
+Le calcul de la distance de Cook révèle un ensemble d'observations se démarquant nettement des autres (délimitées dans la figure \@ref(fig:cookdistGLMbinom) par la ligne rouge). Nous les isolons dans un premier temps pour les analyser.
 
 ```{r message=FALSE, warning=FALSE, out.width='80%'}
 # Isoler les observations avec de très fortes valeurs de Cook
@@ -603,9 +603,9 @@ ggplot(cookd) +
         axis.ticks.x = element_blank())
 ```
 
-Après avoir retiré ces valeurs aberrantes, nous n'observons plus de nouveaux cas singuliers avec les distances de Cook (figure \@ref(cookdistGLMbinom2)).
+Après avoir retiré ces valeurs aberrantes, nous n'observons plus de nouveaux cas singuliers avec les distances de Cook (figure \@ref(fig:cookdistGLMbinom2)).
 
-La prochaine étape de vérification des conditions d'application est l'analyse des résidus simulés. Nous commençons donc par calculer ces résidus et afficher leur histogramme (figure \@ref(figresidsimbinomHistoUnif)).
+La prochaine étape de vérification des conditions d'application est l'analyse des résidus simulés. Nous commençons donc par calculer ces résidus et afficher leur histogramme (figure \@ref(fig:figresidsimbinomHistoUnif)).
 
 ```{r figresidsimbinomHistoUnif, message=FALSE, warning=FALSE, out.width='60%', fig.cap="Distribution des résidus simulé pour le modèle binomial", fig.align="center", fig.pos = "H"}
 library(DHARMa)
@@ -1451,7 +1451,7 @@ On constate sur la figure \@ref(fig:predpricecatveg) que les probabilités d’a
 ### Le modèle logistique multinomial {#sect0824}
 
 La régression logistique multinomiale est utilisée pour modéliser une variable *Y* qualitative multinomiale, c’est-à-dire une variable dont les catégories ne peuvent pas être ordonnées. Dans le modèle précédent, nous avons vu qu’il était possible de modéliser une variable ordinale avec une distribution binomiale en formulant l’hypothèse de la proportionnalité des cotes. Avec une variable multinomiale, cette hypothèse ne tient plus, car les catégories ne sont plus ordonnées. Il faut donc formuler le modèle différemment.
-L’idée derrière un modèle multinomial est de choisir une catégorie de référence, puis de modéliser les probabilités d’appartenir à chaque autre catégorie plutôt qu’à cette catégorie de référence (tableau \@ref(multinomdentity)). Si nous avons *K* catégories possibles dans notre variable *Y*, nous obtenons *K*-1 comparaisons. Chaque comparaison est modélisée avec sa propre équation ce qui génère de nombreux paramètres. Par exemple, admettons que notre variable *Y* ait cinq catégories et que nous disposons de six variables *X* prédictives. Nous avons ainsi 4 (5-1) équations de régression avec 7 paramètres (6 coefficients et une constante), soit 28 coefficients à analyser. 
+L’idée derrière un modèle multinomial est de choisir une catégorie de référence, puis de modéliser les probabilités d’appartenir à chaque autre catégorie plutôt qu’à cette catégorie de référence (tableau \@ref(tab:multinomdentity)). Si nous avons *K* catégories possibles dans notre variable *Y*, nous obtenons *K*-1 comparaisons. Chaque comparaison est modélisée avec sa propre équation ce qui génère de nombreux paramètres. Par exemple, admettons que notre variable *Y* ait cinq catégories et que nous disposons de six variables *X* prédictives. Nous avons ainsi 4 (5-1) équations de régression avec 7 paramètres (6 coefficients et une constante), soit 28 coefficients à analyser. 
 
 Considérant cette tendance à la multiplication des coefficients, il est fréquent de recourir à une méthode appelée *Analyse de type 3* pour limiter au maximum le nombre de variables indépendantes (VI) dans le modèle. L'idée de cette méthode est de recalculer plusieurs versions du modèle dans lesquelles une variable indépendante est retirée, puis de réaliser un test de rapport de vraisemblance en comparant ce nouveau modèle (complet moins une VI) au modèle complet (toutes les VI) pour vérifier si la variable en question améliore significativement le modèle. Il est alors possible de retirer toutes les variables dont l'apport est négligeable si elles étaient également peu intéressantes du point de vue théorique.
 
@@ -3058,7 +3058,7 @@ Y \sim \text {Binomial}(p) \text { si } y=0 \\
 Y \sim \text { TrPoisson}(\lambda) \text { si } y>0 \\
 \log (\lambda)=\beta_{b} X_{b}
 \end{array}\right.
-(\#eq:glm17)
+(\#eq:glmHurdle)
 \end{equation}
 \normalsize
 
@@ -3556,7 +3556,7 @@ Pour cet exemple, nous nous intéressons à la durée de déplacements en milieu
 * les trajets de plus de deux heures (cas rares, considérés comme des données aberrantes);
 * les trajets dont le point de départ est à moins de 100 mètres du point d’arrivée (formant des boucles plutôt que des déplacements).
 
-Nous arrivons ainsi à un total de 24&nbsp;969 observations. Pour modéliser ces durées de déplacement, nous utilisons les prédicteurs présentés dans le tableau \@ref(variablegamma)
+Nous arrivons ainsi à un total de 24&nbsp;969 observations. Pour modéliser ces durées de déplacement, nous utilisons les prédicteurs présentés dans le tableau \@ref(tab:variablegamma)
 
 ```{r variablegamma, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 df <- data.frame(
@@ -4326,7 +4326,7 @@ knitr::include_graphics("images/glm/guide_GLM.png", dpi = 300)
 
 Voici un court quizz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
 
-```{r quizClassif, echo=FALSE, warning=FALSE, results="asis"}
-quizz_classif <- quizz("quizzs/GLM.yml", "quizz_classif")
-render_quizz(quizz_classif)
+```{r quizGLM, echo=FALSE, warning=FALSE, results="asis"}
+quizz_glm <- quizz("quizzs/GLM.yml", "quizz_classif")
+render_quizz(quizz_glm)
 ```

@@ -87,7 +87,7 @@ ggplot(data = df3)+
   labs(y = "Note à l'examen (%)", x = "Temps de travail (heures)", color = "Classe")
 ```
 
-On constate que notre modèle semble bien identifier la relation positive entre le temps de travail et le niveau de performance, mais la droite de régression est très éloignée de chaque point; nous avons ainsi énormément d'erreurs de prédiction et donc des résidus importants. Jusqu'ici nous avons vu que nous pouvions ajouter un prédicteur et intégrer l'effet des classes comme un effet fixe (figure \@ref(randominter2)).
+On constate que notre modèle semble bien identifier la relation positive entre le temps de travail et le niveau de performance, mais la droite de régression est très éloignée de chaque point; nous avons ainsi énormément d'erreurs de prédiction et donc des résidus importants. Jusqu'ici nous avons vu que nous pouvions ajouter un prédicteur et intégrer l'effet des classes comme un effet fixe (figure \@ref(fig:randominter2)).
 
 ```{r randominter2, echo=FALSE, fig.align='center', fig.cap="Influence du temps de travail sur la performance scolaire d'élèves en tenant compte de l'effet de leur classe (effet fixe)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 model <- lm(Y2 ~ X + group, data = df3)
@@ -155,7 +155,7 @@ ggplot(data = df3)+
   labs(y = "Note à l'examen sur 100", x = "Temps de travail (heures)", color = "Classe")
 ```
 
-En comparant les deux figures \@ref(randominter2) et \@ref(randominter3), la différence ne saute pas aux yeux; vous pourriez alors légitimement vous demander pourquoi tous ces efforts et cette complexité théorique pour une différence d'ajustement minime? Trois arguments permettent de justifier l'utilisation de constantes aléatoires plutôt que d'effets fixes dans notre cas.
+En comparant les deux figures \@ref(fig:randominter2) et \@ref(fig:randominter3), la différence ne saute pas aux yeux; vous pourriez alors légitimement vous demander pourquoi tous ces efforts et cette complexité théorique pour une différence d'ajustement minime? Trois arguments permettent de justifier l'utilisation de constantes aléatoires plutôt que d'effets fixes dans notre cas.
 
 #### Resserrement (*shrinkage*) et mutualisation (*partial pooling*) {#sect09221}
 
@@ -640,7 +640,7 @@ Nous avions vu pour les modèles LM et GLM que les valeurs de *P* étaient calcu
 
 #### Rapports de vraisemblance  {#sect09412}
 
-Si le modèle comprend suffisamment d'observations (par suffisamment, comprenez au moins une centaine d'observations par paramètre), il est également possible d'utiliser une série de tests de rapports de vraisemblance pour vérifier si l'apport de chaque variable indépendante contribue à améliorer significativement le modèle. Cette approche correspond à une analyse de type 3 comme nous l'avions mentionné dans la section \@ref(sect08214) pour le modèle logistique multinomial.
+Si le modèle comprend suffisamment d'observations (par suffisamment, comprenez au moins une centaine d'observations par paramètre), il est également possible d'utiliser une série de tests de rapports de vraisemblance pour vérifier si l'apport de chaque variable indépendante contribue à améliorer significativement le modèle. Cette approche correspond à une analyse de type 3 comme nous l'avions mentionné dans la section \@ref(sect0824) pour le modèle logistique multinomial.
 
 #### Bootstrapping {#sect09413}
 
@@ -1079,7 +1079,7 @@ p3 <- ggplot(df) +
 ggarrange(p1,p2, p3, ncol = 2, nrow = 2)
 ```
 
-Nous constatons ainsi à la figure \@ref(glmmvarboot) que la variance des constantes aléatoires est significativement différente de zéro (cette valeur n'est pas dans l'intervalle de confiance à 95% représenté par les lignes verticales bleues) et une médiane de `r tofr(round(median(df$vari_const),3))` (ligne verticale rouge). Pour les pentes, zéro est également à la limite de l'intervalle de confiance et la distribution asymétrique et étalée nous indique que ce paramètre est fortement incertain dans le modèle. Enfin, la corrélation entre les pentes et les constantes est de loin le paramètre le plus incertain et son intervalle de confiance est franchement à cheval sur zéro, ce qui devrait nous amener à privilégier un modèle sans ce paramètre.
+Nous constatons ainsi à la figure \@ref(fig:glmmvarboot) que la variance des constantes aléatoires est significativement différente de zéro (cette valeur n'est pas dans l'intervalle de confiance à 95% représenté par les lignes verticales bleues) et une médiane de `r tofr(round(median(df$vari_const),3))` (ligne verticale rouge). Pour les pentes, zéro est également à la limite de l'intervalle de confiance et la distribution asymétrique et étalée nous indique que ce paramètre est fortement incertain dans le modèle. Enfin, la corrélation entre les pentes et les constantes est de loin le paramètre le plus incertain et son intervalle de confiance est franchement à cheval sur zéro, ce qui devrait nous amener à privilégier un modèle sans ce paramètre.
 
 Pour terminer, nous pouvons calculer les R^2^ marginal et conditionnel du modèle afin de mieux cerner le rôle joué par les effets fixes et les effets aléatoires.
 
@@ -1226,7 +1226,7 @@ Les deux autres options envisageables sont&nbsp;: effectuer une analyse de type 
 
 Voici un court quizz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
 
-```{r quizClassif, echo=FALSE, warning=FALSE, results="asis"}
+```{r quizGLMM, echo=FALSE, warning=FALSE, results="asis"}
 quizz_glmm <- quizz("quizzs/glmm.yml", "quizz_classif")
 render_quizz(quizz_glmm)
 ```
