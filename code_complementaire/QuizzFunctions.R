@@ -152,10 +152,13 @@ render_quizz_pdf <- function(myquizz){
   questions <- string
   responses <- build_pdf_responses(myquizz)
 
+  el2 <- "**Réponses**\n"
+  Encoding(el2) <- "UTF-8"
+
   final_string <- paste0(
     "**Questions**\n",
     questions,"\n\n",
-    "**Réponses**\n",
+    el2,
     responses
   )
   return(final_string)
