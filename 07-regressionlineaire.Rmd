@@ -933,7 +933,7 @@ Puisque l'interprétation du coefficient de régression de $log(\beta_k)$ est pl
 * **Comparez les mesures d'ajustement des deux modèles (surtout les R^2^ ajustés)**. Si le R^2^ ajusté du modèle avec $log(\beta_k)$ est plus élevé que celui avec $\beta_k$ alors la transformation logarithmique fait de votre variable indépendante un meilleur prédicteur, toutes choses étant égales par ailleurs. 
 * **Construisez les graphiques des effets marginaux** de votre variable afin de vérifier si la relation qu'elle partage avec votre VD est plutôt logarithmique que linéaire (figure \@ref(fig:EffetMarginalVariableLogEtNon)). Notez que cette approche graphique peut aussi ne donner aucune indication lorsque vos données sont très dispersées ou que la relation est faible entre votre variable dépendante et indépendante.
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
+```{r EffetMarginalVariableLogEtNon, echo=TRUE, fig.align='center', fig.cap="Effet marginal de la densité de population", message=FALSE, warning=FALSE, out.width='75%', dev="png", dpi=300}
 library(ggpubr)
 library(ggplot2)
 library(ggeffects)
@@ -974,12 +974,6 @@ G1b <- ggplot(fit1b, aes(x, predicted)) +
 G1aG1b <- ggarrange(G1a, G1b, nrow = 1)
 G1aG1b
 ```
-
-```{r EffetMarginalVariableLogEtNon, echo=FALSE, fig.align='center', fig.cap="Effet marginal de la densité de population", message=FALSE, warning=FALSE, out.width='75%'}
-show_as_png(G1aG1b, out = "images/lm/EffetMarginalVariableLogEtNon.png", dpi = 300)
-
-```
-
 
 ### Variable indépendante qualitative dichotomique {#sect0752}
 
@@ -1247,7 +1241,7 @@ tabreg <- build_table(modele6, confid = F, std_digits = 3, coef_digits = 3, z_di
 
 On constate ainsi que le modèle prédit des valeurs de végétation les plus faibles lorsque le pourcentage de personnes à faible revenu est élevé et que la distance au centre-ville est élevée (en haut à droite à la figure \@ref(fig:ModeleInteraction2heat)). En revanche, les valeurs les plus élevées de végétation sont atteintes lorsque la distance au centre-ville est élevée et que le pourcentage de personnes à faible revenu est faible (en bas à droite). Il semble donc que l'éloignement au centre-ville soit associé avec une augmentation de la densité végétale, mais que cette augmentation puisse être mitigée par l'augmentation parallèle du pourcentage de personnes à faible revenu.
 
-```{r ModeleInteraction2heat, echo=FALSE, fig.cap="Effet marginal de l'interaction entre deux variables continues", message=FALSE, warning=FALSE, out.width='95%'}
+```{r ModeleInteraction2heat, echo=FALSE, fig.cap="Effet marginal de l'interaction entre deux variables continues", message=FALSE, warning=FALSE, out.width='95%', dev="png", dpi=300}
 
 library(metR) # pour ajouter des labels aux contours
 library(viridis) # pour les jolies couleurs
@@ -1299,14 +1293,12 @@ P3 <- ggplot(data = df) +
        fill = "",
        subtitle = "IC 97,5 %")
 
-P1P2P3 <- ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
-show_as_png(P1P2P3, out = "images/lm/ModeleInteraction2heat.png", dpi = 300)
-
+ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
 ```
 
 Notez que dans la figure \@ref(fig:ModeleInteraction2heat), la relation entre les deux variables indépendantes et la variable dépendante apparaît non linéaire du fait de l'interaction. À titre de comparaison, si nous utilisons les prédictions du modèle 5 (sans interaction), nous obtenons des prédictions présentées à la figure \@ref(fig:ModeleInteraction2heat2). Vous pouvez constater sur cette figure sans interaction que les deux effets des variables indépendantes sont linéaires puisque toutes les lignes sont parallèles.
 
-```{r ModeleInteraction2heat2, fig.cap = "Effets marginaux de deux variables continues en cas d'absence d'interaction", echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
+```{r ModeleInteraction2heat2, fig.cap = "Effets marginaux de deux variables continues en cas d'absence d'interaction", echo=FALSE, message=FALSE, warning=FALSE, out.width='75%', dev="png", dpi=300}
 
 df <- expand.grid(
   DistCBDkm = seq(0,33,0.1),
@@ -1325,7 +1317,7 @@ df$pred_se <- pred$se.fit
 df$lower <- df$pred - 1.96 * df$pred_se
 df$upper <- df$pred + 1.96 * df$pred_se
 
-P1 <- ggplot(data = df) + 
+ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = pred)) +
   stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), )+
@@ -1334,8 +1326,6 @@ P1 <- ggplot(data = df) +
        y = "Pers à faible revenu (%)",
        fill = "",
        subtitle = "Prédiction de la densité de végétation (%)")
-
-show_as_png(P1, out = "images/lm/ModeleInteraction2heat2.png", dpi = 300)
 ```
 
 #### Variable d'interaction entre une variable continue et une variable dichotomique {#sect07542}
@@ -1374,7 +1364,7 @@ tabreg <- build_table(modele7, confid = F, std_digits = 3, coef_digits = 3, z_di
 
 L'interaction entre une variable qualitative et une variable quantitative peut être représentée par un graphique des effets marginaux. La pente (coefficient) de la variable quantitative varie en fonction des deux catégories de la variable qualitative dichotomique.
 
-```{r ModeleInteractionBinaireFIG, echo=FALSE, fig.cap="Graphique de l’effet marginal de l’interaction entre une variable quantitative et qualitative", message=FALSE, warning=FALSE, out.width='75%', fig.align='center'}
+```{r ModeleInteractionBinaireFIG, echo=FALSE, fig.cap="Graphique de l’effet marginal de l’interaction entre une variable quantitative et qualitative", message=FALSE, warning=FALSE, out.width='75%', fig.align='center', dev="png", dpi=300}
 
 df <- expand.grid(
   VilleMtl = c(0,1),
@@ -1397,7 +1387,7 @@ DataFinal$VilleMtl_str <- ifelse(DataFinal$VilleMtl==0,"Autre municipalité","Vi
 
 cols <- c("Autre municipalité" ="#1d3557" ,"Ville de Montréal"="#e63946")
 
-Myplot <- ggplot(data = df) + 
+ggplot(data = df) + 
   geom_point(data = DataFinal, mapping = aes(x = Pct_FR, y = VegPct, color = VilleMtl_str), size = 0.2, alpha = 0.2)+
   geom_ribbon(aes(x = Pct_FR, ymin = lower, ymax = upper, group = VilleMtl_str), fill = rgb(0.1,0.1,0.1,0.4))+
   geom_path(aes(x = Pct_FR, y = pred, color = VilleMtl_str), size = 1) + 
@@ -1405,8 +1395,6 @@ Myplot <- ggplot(data = df) +
   labs(x = "Personnes à faible revenu (%)",
        y = "Densité de végétation prédite (%)",
        color = "")
-
-show_as_png(Myplot, out = "images/lm/ModeleInteractionBinaireFIG.png", dpi = 300)
 
 ```
 
@@ -1518,20 +1506,17 @@ ggarrange(Ghisto, Gqqplot, ncol=2, nrow=1)
 Un modèle est efficace si la dispersion des résidus est homogène sur tout le spectre des valeurs prédites de la variable dépendante. Dans le cas d’une absence d’homoscédasticité – appelée problème d'hétéroscédasticité –, le nuage de points construit à partir des résidus et des valeurs prédites (figure \@ref(fig:VerifierHomoscedasticiteFig)) prend la forme d’une trompette ou d'un entonnoir&nbsp;: les résidus seront alors faibles quand les valeurs prédites sont faibles et seront de plus en plus élevés au fur et à mesure que les valeurs prédites augmentent.
 
 
-```{r VerifierHomoscedasticiteFig, echo=FALSE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
+```{r VerifierHomoscedasticiteFig, echo=FALSE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%', dev="png", dpi=300}
 residus <-  modele3$residuals
 ypredits <- modele3$fitted.values
 
-Plot1 <- ggplot() +
+ggplot() +
   geom_point(aes(x = ypredits, y = residus),
                  color = "#343a40", fill = "#a8dadc",
                  alpha = 0.2, size = 0.8) +
   geom_smooth(aes(x = ypredits, y = residus), 
               method = lm, color = "red")+
   labs(x="Valeurs prédites", y = "Résidus")
-
-show_as_png(Plot1, out = "images/lm/VerifierHomoscedasticiteFig.png", dpi = 300)
-
 ```
 
 Le test de Breusch-Pagan est souvent utilisé pour vérifier l'homoscédasticité des résidus. Il est construit avec les hypothèses suivantes&nbsp;:
@@ -1661,7 +1646,7 @@ cat("Nombre d'observations =", nobs, "(100 %)",
 Le critère de $4/n$ étant plutôt sévère, on privilégie généralement celui de $8/n$, voire $16/n$. Il est aussi possible de construire un nuage de points pour les repérer (figure \@ref(fig:GraphCookLev)).
 
 
-```{r GraphCookLev, echo=FALSE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%'}
+```{r GraphCookLev, echo=FALSE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%', dev="png", dpi=300}
 library(car)
 library(ggpubr)
 DistanceCook <- cooks.distance(modele3)
@@ -1685,8 +1670,7 @@ G2 <-  ggplot()+
        title = 'Repérer les valeurs influentes',
        subtitle = '(agrandissement)')
 
-G1G2 <- ggarrange(G1,G2, nrow=1, ncol=2)
-show_as_png(G1G2, out = "images/lm/GraphCookLev.png", dpi = 300)
+ggarrange(G1,G2, nrow=1, ncol=2)
 
 ```
 
@@ -1959,15 +1943,14 @@ ggplot() +
 ```
 
 
-```{r DiaHomoscedasticite, echo=FALSE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%'}
-G1 <- ggplot() +
+```{r DiaHomoscedasticite, echo=FALSE, fig.align='center', fig.cap="Distribution des résidus en fonction des valeurs prédites", message=FALSE, warning=FALSE, out.width='75%', dev="png", dpi=300}
+ggplot() +
         geom_point(aes(x = ypredits, y = residus),
                        color = "#343a40", fill = "#a8dadc",
                        alpha = 0.2, size = 0.8) +
         geom_smooth(aes(x = ypredits, y = residus), 
                     method = lm, color = "red")+
         labs(x="Valeurs prédites", y = "Résidus")
-show_as_png(G1, out = "images/lm/DiaHomoscedasticite.png", dpi = 300)
 
 ```
 
@@ -2010,7 +1993,7 @@ cat("Nombre d'observations =", nobs, "(100 %)",
 
 Vous pouvez également construire un nuage de points avec la distance de Cook et l'effet de levier (*leverage value*) pour repérer visuellement les observations très influentes.
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
+```{r DiaGraphCookLev, echo=TRUE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%', dev="png", dpi=300}
 library(car)
 library(ggpubr)
 DistanceCook <- cooks.distance(modele3)
@@ -2039,11 +2022,6 @@ ggarrange(G1,G2, nrow=1, ncol=2)
 ```
 
 
-```{r DiaGraphCookLev, echo=FALSE, fig.align='center', fig.cap="Repérer graphiquement les valeurs influentes du modèle", message=FALSE, warning=FALSE, out.width='75%'}
-G1G2 <- ggarrange(G1,G2, nrow=1, ncol=2)
-show_as_png(G1G2, out = "images/lm/DiaGraphCookLev.png", dpi = 300)
-
-```
 #### Construite un nouveau modèle en supprimant les observations très influentes du modèle {#sect07736}
 
 Dans un premier temps, il convient de construire un nouveau modèle sans les valeurs influentes du modèle de départ.
@@ -2168,7 +2146,7 @@ ggarrange(G1, G2, ncol=2, nrow=1)
 
 ```
 
-```{r HomosComp, echo=FALSE, fig.align='center', fig.cap="Amélioration de l'homoscédasticité des résidus", message=FALSE, warning=FALSE, out.width='65%'}
+```{r HomosComp, echo=FALSE, fig.align='center', fig.cap="Amélioration de l'homoscédasticité des résidus", message=FALSE, warning=FALSE, out.width='65%', dev="png", dpi=300}
 resmodele3  <- residuals(modele3)
 resmodele3b <- residuals(modele3b)
 ypredits3 <- modele3$fitted.values
@@ -2186,8 +2164,7 @@ G2 <- ggplot() +
   geom_smooth(aes(x = ypredits3b, y = resmodele3b),  method = lm, color = "red")+
   labs(title="Modèle après suppression",x="Valeurs prédites", y = "Résidus studentisés")
 
-G1G2 <- ggarrange(G1, G2, ncol=2, nrow=1)
-show_as_png(G1G2, out = "images/lm/HomosComp.png", dpi = 300)
+ggarrange(G1, G2, ncol=2, nrow=1)
 ```
 
 
@@ -2312,7 +2289,7 @@ Graphique + coord_flip()
 
 #### Effet marginal pour une variable d'interaction (deux VI continues) {#sect07746}
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
+```{r ModeleInteraction2heatex, echo=TRUE, fig.align='center', fig.cap="Effet marginal de l'interaction entre deux variables continues", message=FALSE, warning=FALSE, out.width='95%', dev="png", dpi=300}
 
 library(metR) # pour ajouter des labels aux contours
 
@@ -2369,20 +2346,9 @@ ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
 
 ```
 
-
-
-```{r ModeleInteraction2heatex, echo=FALSE, fig.align='center', fig.cap="Effet marginal de l'interaction entre deux variables continues", message=FALSE, warning=FALSE, out.width='95%'}
-
-library(metR) # pour ajouter des labels aux contours
-
-P1P2P3 <- ggarrange(P1,P2,P3,common.legend = F, ncol = 2, nrow = 2)
-show_as_png(P1P2P3, out = "images/lm/ModeleInteraction2heatex.png", dpi = 300)
-
-```
-
 #### Effet marginal pour une variable d'interaction (une VI continue et une VI dichotomique) {#sect07747}
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, results="hide", fig.show="hide"}
+```{r ModeleInteractionBinaireeffectex, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Graphique de l’effet marginal de l’interaction entre une variable quantitative et qualitative", dev="png", dpi=300}
 
 df <- expand.grid(
   VilleMtl = c(0,1),
@@ -2419,21 +2385,6 @@ ggplot(data = df) +
        color = "")
 ```
 
-
-```{r ModeleInteractionBinaireeffectex, echo=FALSE, fig.align='center', fig.cap="Graphique de l’effet marginal de l’interaction entre une variable quantitative et qualitative", message=FALSE, warning=FALSE, out.width='75%'}
-plot1 <- ggplot(data = df) + 
-  geom_point(data = DataFinal, mapping = aes(x = Pct_FR, y = VegPct, color = VilleMtl_str), 
-             size = 0.2, alpha = 0.2)+
-  geom_ribbon(aes(x = Pct_FR, ymin = lower, ymax = upper, group = VilleMtl_str), 
-              fill = rgb(0.1,0.1,0.1,0.4))+
-  geom_path(aes(x = Pct_FR, y = pred, color = VilleMtl_str), size = 1) + 
-  scale_colour_manual(values = cols)+
-  labs(x = "Personnes à faible revenu (%)",
-       y = "Densité de végétation prédite (%)",
-       color = "")
-
-show_as_png(plot1, out = "images/lm/ModeleInteractionBinaireeffectex.png", dpi = 300)
-```
 
 ## Quiz de révision du chapitre
 

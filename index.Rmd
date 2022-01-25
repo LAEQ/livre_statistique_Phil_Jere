@@ -1,22 +1,11 @@
 --- 
-title: "Introduction aux méthodes quantitatives en sciences sociales avec R"
+title: "Méthodes quantitatives en sciences sociales avec R"
 author: "Philippe Apparicio et Jérémy Gelb"
 date: "`r Sys.Date()`"
 colorlinks: yes
 cover-image: images/cover.png
 bibliography: book.bib
-description: Ce livre propose une introduction aux méthodes quantitatives en sciences
-  sociales basée sur le logiciel ouvert R. Le contenu est pensé pour être accessible
-  même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les
-  personnes plus expérimentées y découvriront également des sections sur des méthodes
-  poussées comme les modèles généralisés additifs à effets mixtes ou les méthodes
-  factorielles mixtes. Celles cherchant à passer à R et délaisser progressivement SPSS, SAS ou STATA trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie
-  de se livre est de donner toutes les clefs de compréhension et de mise en œuvre
-  des méthodes abordées afin de faciliter l'assimilation par les lecteur·trices. La présentation
-  des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique
-  sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre
-  boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et
-  bonne lecture !
+description: Ce livre vise à décrire une panoplie de méthodes quantitatives en sciences sociales avec le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec rmarkdown. Le contenu est pensé pour être accessible à tous et toutes, même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront des sections sur des méthodes plus avancées comme les modèles à effets mixtes, les modèles multiniveaux, les modèles généralisés additifs, ainsi que les méthodes factorielles et de classification. Celles et ceux cherchant à migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées dans R. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique, sans pour autant que la rigueur statistique ne soit négligée.
 documentclass: book
 fontsize: 11pt
 github-repo: LAEQ/livre_statistique_Phil_Jere
@@ -41,46 +30,36 @@ lang: fr
 
 ```{asis, echo=identical(knitr:::pandoc_to(), 'html')}
 
-Ce livre propose une introduction aux méthodes quantitatives en sciences sociales basée sur le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec **rmarkdown**. Le contenu est pensé pour être accessible même à ceux n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront également des sections sur des méthodes plus avancées comme les modèles généralisés additifs à effets mixtes ou les méthodes factorielles. Ceux cherchant à migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées afin de facilité l'assimilation par le lecteur. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et bonne lecture !
+Ce livre vise à décrire une panoplie de méthodes quantitatives en sciences sociales avec le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec [rmarkdown](https://rmarkdown.rstudio.com/). Le contenu est pensé pour être accessible à tous et toutes, même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront des sections sur des méthodes plus avancées comme les modèles à effets mixtes, les modèles multiniveaux, les modèles généralisés additifs, ainsi que les méthodes factorielles et de classification. Celles et ceux cherchant à migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées dans R. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique, sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et bonne lecture!
 
-
-::: {.bloc_notes data-latex=""}
-
-**Ce livre est un projet en cours d'écriture !**
-
-Il sert de matériel pour le cours **Méthodes quantitatives appliquées aux études urbaines** (EUR8219), offert au Centre Urbanisation Culture Société de l'INRS. Son contenu est amené à changer et des erreurs peuvent encore être présentes. À terme, nous espérons le publier. Par conséquent, **son contenu ne peut donc en aucun cas être partagé en dehors du cours**. Vos commentaires et suggestions sur le contenu et la forme sont bienvenus ! Si certains passages vous semblent peu clairs, n'hésitez pas à nous en faire part.
-
-:::
-
-```
 
 ## Comment lire ce livre {-}
 
-Si vous googlez l'expression « comment lire un livre ? », vous trouverez une multitude de conseils et astuces. Pour ce livre, nous vous conseillons de le lire de gauche à droite et page par page! Plus sérieusement, le livre comprend plusieurs types de blocs de texte qui, on l'espère, faciliteront la lecture.
+Si vous googlez l'expression «&nbsp;comment lire un livre?&nbsp;», vous trouverez une multitude de conseils et astuces. Pour ce livre, nous vous conseillons de le lire de gauche à droite et page par page! Plus sérieusement, le livre comprend plusieurs types de blocs de texte qui, on l'espère, faciliteront la lecture.
 
 
 ::: {.bloc_package data-latex=""}
-**Bloc packages**: habituellement localisé en début du chapitre, il comprend la liste des *packages* R utilisés pour un chapitre.
+**Bloc packages**. Habituellement localisé en début du chapitre, il comprend la liste des *packages* R utilisés pour un chapitre.
 :::
 
 ::: {.bloc_objectif data-latex=""}
-**Bloc objectif**: comprend une description des objectifs d'un chapitre ou d'une section.
+**Bloc objectif**. Il comprend une description des objectifs d'un chapitre ou d'une section.
 :::
 
 ::: {.bloc_notes  data-latex=""}
-**Bloc notes**: comprend une information secondaire sur une notion, un élément, une idée abordée dans une section.
+**Bloc notes**. Il comprend une information secondaire sur une notion, un élément, une idée abordée dans une section.
 :::
 
 ::: {.bloc_aller_loin data-latex=""}
-**Bloc pour aller plus loin** : peut comprendre des références ou des extensions d'une méthode statistique abordée dans une section.
+**Bloc pour aller plus loin**. Il peut comprendre des références ou des extensions d'une méthode statistique abordée dans une section.
 :::
 
 ::: {.bloc_astuce data-latex=""}
-**Bloc astuce**: décrit un élément qui vous facilera le vie : une propriété statistique, un *package*, une fonction, une syntaxe R.
+**Bloc astuce**. Il décrit un élément qui vous facilitera le vie&nbsp;: une propriété statistique, un *package*, une fonction, une syntaxe R.
 :::
 
 ::: {.bloc_attention data-latex=""}
-**Bloc attention**:  comprend une notion ou un élément important à bien maîtriser.
+**Bloc attention**. Il comprend une notion ou un élément important à bien maîtriser.
 :::
 
 ## Structure du livre {-}
@@ -99,31 +78,31 @@ Le livre est organisé autour de cinq grandes parties.
 knitr::include_graphics('images/bivariee/figure1.jpg', dpi = NA)
 ```
 
-**Partie 4. Modèles de régression**. Dans cette partie, sont présentées les principales méthodes de statistique inférentielle utilisées en sciences sociales : la **régression linéaire multiple** (chapitre \@ref(chap07)), les régressions linéaires généralisées (chapitre \@ref(chap08)), les régressions à effets mixtes (chapitre \@ref(chap09)), les régressions à effets mixtes (chapitre \@ref(chap10)), les régressions multiniveaux (chapitre \@ref(chap11)) et les modèles généralisés additifs (chapitre \@ref(chap12)).
+**Partie 4. Modèles de régression**. Dans cette partie, sont présentées les principales méthodes de statistique inférentielle utilisées en sciences sociales&nbsp;: la **régression linéaire multiple** (chapitre \@ref(chap07)), les régressions linéaires généralisées (chapitre \@ref(chap08)), les régressions à effets mixtes (chapitre \@ref(chap09)), les régressions à effets mixtes (chapitre \@ref(chap10)), les régressions multiniveaux (chapitre \@ref(chap11)) et les modèles généralisés additifs (chapitre \@ref(chap12)).
 
 **Partie 5. Analyses exploratoires multidimensionnelles**. Dans cette cinquième partie, sont abordées les méthodes de statistique exploratoire et descritive permettant de décrire des tableaux de données comprenant plusieurs variables. Nous décrirons d'abord les méthodes de réduction de données — les méthodes factorielles  (analyses de composantes principales, analyses factorielles de correspondances, analyses factorielles de correspondances multiples et analyses factorielles de correspondances mixte) dans le chapitre \@ref(chap12); puis, les méthodes de classification dans le chapitre \@ref(chap13) (classification ascendantes hiérachiques, k-means, k-median et leurs extensions en logique floue comme le c-means et c-median).
 
 
-## Pourquoi faut-il programmer en sciences sociales ? {-}
+## Pourquoi faut-il programmer en sciences sociales? {-}
 
-Vous contrasterez rapidement que R est un véritable langage de programmation. Il est donc légitime de se questionner à savoir si l'apprentissage d'un tel langage est pertinent pour un·e étudiant·e ou un·e chercheur·e en sciences sociales. Il est vrai que la programmation n'est pas la compétence qui vient tout de suite à l'esprit lorsque l'on pense aux sciences sociales. Pourtant, cette compétence est de plus en plus importante, et ce, pour plusieurs raisons :
+Vous contrasterez rapidement que R est un véritable langage de programmation. Il est donc légitime de se questionner à savoir si l'apprentissage d'un tel langage est pertinent pour un étudiant ou une étudiante en sciences sociales. Il est vrai que la programmation n'est pas une compétence qui vient d'emblée à l'esprit lorsque l'on s'intéresse à la recherche aux sciences sociales. Pourtant, elle est de plus en plus importante, et ce, pour plusieurs raisons&nbsp;:
 
-* Une part toujours plus grande des phénomènes sociaux se produisent ou peuvent s'observer au travers d'environnements numériques. Être capable d'exploiter efficacement ces outils permet d'extraire des données riches sur des phénomènes complexes, tels qu’en témoigne des études récentes sur la propagation de la désinformation sur les réseaux sociaux [@allcott2017social], la migration des personnes [@spyratos2019quantifying], la propagation et les risques de contamination de la COVID19 [@boulos2020geographical], etc. Le plus souvent, les interfaces (API par exemple) permettant d'accéder à ces données nécessitent une base en programmation.
+* Une part toujours plus grande des phénomènes sociaux se produisent ou peuvent s'observer au travers d'environnements numériques. Être capable d'exploiter efficacement ces outils permet d'extraire des données riches sur des phénomènes complexes, tel qu’en témoignent des études récentes sur la propagation de la désinformation sur les réseaux sociaux [@allcott2017social], la migration des personnes [@spyratos2019quantifying], la propagation et les risques de contamination de la COVID19 [@boulos2020geographical]. Le plus souvent, les interfaces (API par exemple) permettant d'accéder à ces données nécessitent des habiletés en programmation.
 * La quantité de données numériques ouvertes et accessibles en ligne croit chaque année sur des sujets très divers. La plupart des villes et des gouvernements ont maintenant leurs portails de données ouvertes auxquels s'ajoutent les données produites par des projets collaboratifs comme [OpenStreetMap](https://www.openstreetmap.org) ou [NoisePlanet](https://noise-planet.org/map_noisecapture/index.html). Récupérer ces données et les structurer pour les utiliser à des fins de recherche nécessite le plus souvent des compétences en programmation.
-* Les méthodes d'analyse quantitative connaissent également un développement très important. Les logiciels propriétaires peinent à suivre la cadence de ce développement contrairement aux logiciels à code source ouvert qui permettent d'avoir accès aux dernières méthodes. Il est souvent long et coûteux de développer une interface graphique pour un logiciel, ce qui explique que la plupart de ces programmes en sont dépourvus et nécessitent alors de savoir programmer pour les utiliser.
-* Savoir programmer donne une liberté considérable en recherche. Cette compétence permet notamment de ne plus être limité aux fonctionnalités proposées par des logiciels spécifiques. Il devient possible d'innover tant en matière de structuration, d'analyses que de représentations des résultats en écrivant vos propres fonctions. Cette flexibilité contribue directement à la production d'une recherche de meilleure qualité et plus diversifiée.
-* Programmer permet également d'automatiser des tâches qui autrement seraient extrêmement répétitives. Déplacer et renommer une centaine de fichiers ? Retirer les lignes inutiles dans un ensemble de fichiers CSV et les compiler dans une seule base de données ? Tester parmi des milliers d'adresses lesquelles sont valides ? Récupérer chaque jour les messages postés sur un forum ? Autant de tâches faciles à automatiser si l'on sait programmer.
-* Dans un logiciel avec une interface graphique, il est compliqué de conserver un historique des opérations effectuées. Programmer permet au contraire de garder une trace de l'ensemble des actions effectuées au cours d'un projet de recherche. En effet, le code utilisé reste disponible et permet de reproduire la méthode et les résultats obtenus ce qui est essentiel dans le monde de la recherche. À cela s'ajoute le fait que chaque ligne de code que vous écrivez vient s'ajouter à un capital de code que vous possédez, car elles pourront être réutilisées dans d'autres projets !
+* Les méthodes quantitatives connaissent également un développement très important. Les logiciels propriétaires peinent à suivre la cadence de ce développement, contrairement aux logiciels à code source ouvert (comme R) qui permettent d'avoir accès aux dernières méthodes. Il est souvent long et coûteux de développer une interface graphique pour un logiciel, ce qui explique que la plupart de ces programmes en sont dépourvus et nécessitent alors de savoir programmer pour les utiliser.
+* Savoir programmer donne une liberté considérable en recherche. Cette compétence permet notamment de ne plus être limité(e) aux fonctionnalités proposées par des logiciels spécifiques. Il devient possible d'innover tant en matière de structuration, d'exploration et d'analyse des données que de représentations des résultats en écrivant vos propres fonctions. Cette flexibilité contribue directement à la production d'une recherche de meilleure qualité et plus diversifiée.
+* Programmer permet également d'automatiser des tâches qui autrement seraient extrêmement répétitives comme&nbsp;: déplacer et renommer une centaine de fichiers; retirer les lignes inutiles dans un ensemble de fichiers et les compiler dans une seule base de données; vérifier parmi des milliers d'adresses lesquelles sont valides; récupérer chaque jour les messages postés sur un forum. Autant de tâches faciles à automatiser si l'on sait programmer.
+* Dans un logiciel avec une interface graphique, il est compliqué de conserver un historique des opérations effectuées. Programmer permet au contraire de garder une trace de l'ensemble des actions effectuées au cours d'un projet de recherche. En effet, le code utilisé reste disponible et permet de reproduire (ou d'adapter) la méthode et les résultats obtenus ce qui est essentiel dans le monde de la recherche. À cela, s'ajoute le fait que chaque ligne de code que vous écrivez vient s'ajouter à un capital de code que vous possédez, car elles pourront être réutilisées dans d'autres projets!
 
 
 ## Remerciements {-}
 
-Ce livre est dédié au beau Cargo (chien Mira) qui nous a tant supporté dans l'écriture du livre !
+Ce livre est dédié au beau Cargo (chien Mira) qui nous a tant supporté dans l'écriture du livre!
 
 Nous tenons aussi à remercier sincérement les étudiant·e·s du cours **Méthodes quantitatives appliquées aux études urbaines (EUR8219)** du programme de maîtrise en études urbaines de l'INRS. À compléter plus tard.
 
-```{r cargo, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo, le plus beau",  out.width='50%'}
-knitr::include_graphics('images/Cargo.jpg', dpi = NA)
+```{r cargo, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo et Ambré",  out.width='50%'}
+knitr::include_graphics('images/CargoAmbre.png', dpi = NA)
 ```
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
