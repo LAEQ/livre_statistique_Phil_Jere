@@ -124,7 +124,7 @@ clean_text <- function(string){
   if(string == ""){
     return("")
   }
-  string <- gsub("\\$", "+DOLLAR+", string)
+  string <- gsub("\\$", "+DOLLAR+", string, fixed = TRUE)
   changes <- list(
      c("`", "", F),
       c("\\^([^\"]*?)\\^","\\\\textsuperscript{\\1}",F),
@@ -176,7 +176,7 @@ clean_text <- function(string){
     }
   })
   fullstring <- paste(new_strings, collapse = "")
-  fullstring <- gsub("+DOLLAR+", "$" , fullstring, fixed = TRUE)
+  fullstring <- gsub("+DOLLAR+", "\\$" , fullstring, fixed = TRUE)
   return (fullstring)
   
 }
