@@ -549,7 +549,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
 
   })
 
-  params_names <- c("Intercept",params_names)
+  params_names <- c("Constante",params_names)
   params_types <- c("numeric", params_types)
 
   ## creation d'un beau tableau
@@ -578,7 +578,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
       return(new_table)
     }
     if(ptype %in% c("integer", "double", "numeric")){
-      if(pname == "Intercept"){
+      if(pname == "Constante"){
         row <- base_table[rn=="(Intercept)",]
       }else if(grepl("poly(",pname,fixed=T)){
         part <- strsplit(pname,",",fixed=T)[[1]][[1]]
@@ -729,9 +729,9 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
     params_types2 <- sapply(params_names2, function(i){
       class(model$model[[i]])
     })
-    params_names <- c("Intercept",params_names)
+    params_names <- c("Constante",params_names)
     params_types <- c("numeric", params_types)
-    params_names2 <- c("Intercept",params_names2)
+    params_names2 <- c("Constante",params_names2)
     params_types2 <- c("numeric", params_types2)
 
   }else{
@@ -743,7 +743,7 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
       class(model$model[[i]])
     })
     params_names2 <- NULL
-    params_names <- c("Intercept",params_names)
+    params_names <- c("Constante",params_names)
     params_types <- c("numeric", params_types)
   }
 
@@ -770,7 +770,7 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
       return(new_table)
     }
     if(ptype %in% c("integer", "double", "numeric")){
-      if(pname == "Intercept"){
+      if(pname == "Constante"){
         row <- base_table[rn=="(Intercept)",]
       }else{
         row <- base_table[rn==pname,]
@@ -804,7 +804,7 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
         return(new_table)
       }
       if(ptype %in% c("integer", "double", "numeric")){
-        if(pname == "Intercept"){
+        if(pname == "Constante"){
           row <- base_table[rn=="(Intercept).1",]
         }else{
           row <- base_table[rn==paste(pname,".1",sep=""),]
@@ -966,7 +966,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
     params_types <- params_types[test]
 
   }else{
-    params_names <- c("Intercept",params_names)
+    params_names <- c("Constante",params_names)
     params_types <- c("numeric", params_types)
   }
 
@@ -1002,7 +1002,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
         return(new_table)
       }
       if(ptype %in% c("integer", "double", "numeric")){
-        if(pname == "Intercept"){
+        if(pname == "Constante"){
           row <- base_table[rn=="(Intercept)",]
         }else{
           row <- base_table[rn==pname,]
@@ -1135,7 +1135,7 @@ basetable.multinom <- function(model,base_table,params_names,params_types){
     terms <- as.character(fixedformula[[3]])
     terms <- terms[terms!="+"]
     if("1" %in% terms){
-      terms[terms == "1"] <- "Intercept"
+      terms[terms == "1"] <- "Constante"
     }
     test <- params_names %in% terms
     terms_types <- params_types[match(terms,params_names)]
@@ -1175,7 +1175,7 @@ basetable.multinom <- function(model,base_table,params_names,params_types){
         return(new_table)
       }
       if(ptype %in% c("integer", "double", "numeric")){
-        if(pname == "Intercept"){
+        if(pname == "Constante"){
           row <- base_table[rn==paste("(Intercept)",idpart,sep=""),]
         }else{
           row <- base_table[rn==paste(pname,idpart,sep=""),]
@@ -1211,7 +1211,7 @@ basetable.multinom <- function(model,base_table,params_names,params_types){
         return(new_table)
       }
       if(ptype %in% c("integer", "double", "numeric")){
-        if(pname == "Intercept"){
+        if(pname == "Constante"){
           row <- base_table[rn=="(Intercept)",]
         }else{
           row <- base_table[rn==pname,]

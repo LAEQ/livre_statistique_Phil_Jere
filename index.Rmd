@@ -124,6 +124,7 @@ clean_text <- function(string){
   if(string == ""){
     return("")
   }
+  string <- gsub("\\$", "+DOLLAR+", string, fixed = TRUE)
   changes <- list(
      c("`", "", F),
       c("\\^([^\"]*?)\\^","\\\\textsuperscript{\\1}",F),
@@ -139,7 +140,8 @@ clean_text <- function(string){
       c("\\(\\%\\)", "(\\\\%)", F),
       c("_", "\\_", TRUE),
       c("beta\\_", "beta_", TRUE),
-      c("alpha\\_", "alpha_", TRUE)
+      c("alpha\\_", "alpha_", TRUE),
+      c("\\&nbsp;", "\\\\&nbsp;", TRUE)
       )
   parts <- strsplit(string, "$", fixed = T)[[1]]
   new_strings <- sapply(1:length(parts), function(i){
@@ -174,6 +176,7 @@ clean_text <- function(string){
     }
   })
   fullstring <- paste(new_strings, collapse = "")
+  fullstring <- gsub("+DOLLAR+", "\\$" , fullstring, fixed = TRUE)
   return (fullstring)
   
 }
