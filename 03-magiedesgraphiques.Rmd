@@ -83,7 +83,7 @@ Lorsque l'on combine des données, leur assignation a des dimensions, un type de
 
 Prenons un premier exemple très simple et construisons un nuage de points à partir du jeu de données *iris* fourni de base dans R. Nous allons représenter la relation qui existe entre la longueur et la largeur des sépales de ces fleurs. Pour commencer, nous devons charger le *package* **ggplot2** et instancier un graphique avec la fonction `ggplot`.
 
-```{r fig31, fig.align='center', auto_pdf = TRUE, fig.cap="Base d'un graphique",  out.width='65%'}
+```{r fig31, fig.align='center', auto_pdf = TRUE, fig.cap="Base d'un graphique",  out.width='65%', dev = "png", dpi = 300}
 library(ggplot2)
 data(iris)
 names(iris)
@@ -93,21 +93,21 @@ ggplot()
 
 Pour le moment, le graphique est vide (figure \@ref(fig:fig31)). La seconde étape consiste à lui ajouter des données (au travers du paramètre `data`) et à définir les dimensions à associer aux données (avec le paramètre `mapping` et la fonction `aes()`). Dans notre cas, nous voulons utiliser les coodonnées *X* pour représenter la largeur des sépales, et les coordonnées *Y* pour représenter la longueur des sépales. Enfin, nous souhaitons représenter les observations par des points, nous utiliserons donc la géométrie `geom_point`.
 
-```{r fig32, fig.align='center', auto_pdf = TRUE, fig.cap="Ajout des dimensions au graphique",  out.width='65%'}
+```{r fig32, fig.align='center', auto_pdf = TRUE, fig.cap="Ajout des dimensions au graphique",  out.width='65%', dev = "png", dpi = 300}
 ggplot(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   geom_point()
 ```
 
 Ce graphique ne comprend qu'un seul calque avec une géométrie de type point (figure \@ref(fig:fig32)). Chaque calque est ajouté avec l'opérateur `+` qui permet de superposer des calques, le dernier apparaissant au-dessus des autres. Les arguments `mapping` et `data` sont définis ici dans la fonction `ggplot` et sont donc appliqués à tous les calques qui composeraient le graphique. Il est aussi possible de définir `mapping` et `data` au sein des fonctions des géométries&nbsp;: 
 
-```{r fig33, fig.align='center', auto_pdf = TRUE, fig.cap="Autre spécification des arguments mapping et data",  out.width='65%'}
+```{r fig33, fig.align='center', auto_pdf = TRUE, fig.cap="Autre spécification des arguments mapping et data",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris)
 ```
 
 La troisième étape consiste à ajouter au graphique des annotations. Pour notre cas, il faudrait ajouter un titre, un sous-titre et des intitulés plus clairs pour les axes *X* et *Y*, ce qu'il est possible de faire avec la fonction `labs` (figure \@ref(fig:fig34)).
 
-```{r fig34, fig.align='center', auto_pdf = TRUE, fig.cap="Ajout de titres",  out.width='65%'}
+```{r fig34, fig.align='center', auto_pdf = TRUE, fig.cap="Ajout de titres",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -129,6 +129,7 @@ df <- data.frame(
 show_table(df,
            col.names = c("Géométrie","Fonction"),
            caption = 'Principales géométries proposées par **ggplot2**',
+           position = "HOLD_position"
            )
 ```
 
@@ -137,7 +138,7 @@ show_table(df,
 
 Dans le premier exemple, nous avons montré comment rajouter le titre, le sous-titre et les titres des axes sur un graphique. Il est aussi possible d'ajouter du texte sous le graphique (généralement la source des données avec l'argument `caption`) et des annotations textuelles (`annotate`). Pour ces dernières, il convient de spécifier leur localisation (coordonnées `x` et `y`) et le texte à intégrer (`label`); elles sont ensuite ajoutées au graphique avec l'opérateur `+`. Ajoutons deux annotations pour identifier deux fleurs spécifiques.
 
-```{r fig35, fig.align='center', auto_pdf = TRUE, fig.cap="Ajouter des annotations textuelles",  out.width='65%'}
+```{r fig35, fig.align='center', auto_pdf = TRUE, fig.cap="Ajouter des annotations textuelles",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -158,7 +159,7 @@ Comme vous pouvez le constater, de nombreux paramètres permettent de contrôler
 
 En plus des annotations de type texte, il est possible d'ajouter des annotations de type géométrique. Nous pourrions ainsi délimiter une boîte encadrant les fleurs de l'espère setosa.
 
-```{r fig36, fig.align='center', auto_pdf = TRUE, fig.cap="Ajouter des annotations géométriques",  out.width='65%'}
+```{r fig36, fig.align='center', auto_pdf = TRUE, fig.cap="Ajouter des annotations géométriques",  out.width='65%', dev = "png", dpi = 300}
 
 setosas <- subset(iris, iris$Species == "setosa")
 sepal.length_extent <- c(min(setosas$Sepal.Length),max(setosas$Sepal.Length))
@@ -189,7 +190,7 @@ ggplot() +
 
 Vous noterez que comme le dernier calque ajouté au graphique est le rectangle, il recouvre tous les calques existant, y compris les précédentes annotations. Pour corriger cela, il suffit de changer l'ordre des calques.
 
-```{r fig37, fig.align='center', auto_pdf = TRUE, fig.cap="Gérer l'ordre des annotations",  out.width='65%'}
+```{r fig37, fig.align='center', auto_pdf = TRUE, fig.cap="Gérer l'ordre des annotations",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   annotate("rect", 
            ymin = sepal.width_extent[[1]],
@@ -219,7 +220,7 @@ ggplot() +
 De nombreux autres éléments peuvent être modifiés dans un graphique comme les paramètres des polices, l'arrière-plan, la grille de repères, etc. Il peut être fastidieux de paramétrer tous ces éléments. Une alternative intéressante est d'utiliser des thèmes déjà préconstruits. Le *package* **ggplot2** propose une dizaine de thèmes, constatons leur impact sur le graphique précédent.
 
 * Le thème classique
-```{r fig38, fig.align='center', auto_pdf = TRUE, fig.cap="Thème classique",  out.width='65%'}
+```{r fig38, fig.align='center', auto_pdf = TRUE, fig.cap="Thème classique",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -230,7 +231,7 @@ ggplot() +
 ```
 
 * Le thème gris (figure \@ref(fig:fig39))
-```{r fig39, fig.align='center', auto_pdf = TRUE, fig.cap="Thème gris",  out.width='65%'}
+```{r fig39, fig.align='center', auto_pdf = TRUE, fig.cap="Thème gris",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -241,7 +242,7 @@ ggplot() +
 ```
 
 * Le thème noir et blanc (figure \@ref(fig:fig310))
-```{r fig310, fig.align='center', auto_pdf = TRUE, fig.cap="Thème noir et blanc",  out.width='65%'}
+```{r fig310, fig.align='center', auto_pdf = TRUE, fig.cap="Thème noir et blanc",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -252,7 +253,7 @@ ggplot() +
 ```
 
 * Le thème minimal (figure \@ref(fig:fig311))
-```{r fig311, fig.align='center', auto_pdf = TRUE, fig.cap="Thème minimal",  out.width='65%'}
+```{r fig311, fig.align='center', auto_pdf = TRUE, fig.cap="Thème minimal",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -265,7 +266,7 @@ ggplot() +
 Il est aussi possible d'utiliser le *package* **ggthemes** qui apporte des thèmes complémentaires intéressants dont&nbsp;: 
 
 * Le thème `tufte` (à l'ancienne...) (figure \@ref(fig:fig312))
-```{r fig312, fig.align='center', auto_pdf = TRUE, fig.cap="Thème tufte",  out.width='65%'}
+```{r fig312, fig.align='center', auto_pdf = TRUE, fig.cap="Thème tufte",  out.width='65%', dev = "png", dpi = 300}
 library(ggthemes)
 
 ggplot() +
@@ -278,7 +279,7 @@ ggplot() +
 ```
 
 * Le thème `economist` (inspiré de la revue du même nom) (figure \@ref(fig:fig313))
-```{r fig313, fig.align='center', auto_pdf = TRUE, fig.cap="Thème economist",  out.width='65%'}
+```{r fig313, fig.align='center', auto_pdf = TRUE, fig.cap="Thème economist",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -289,7 +290,7 @@ ggplot() +
 ```
 
 * Le thème `solarized` (plus original) (figure \@ref(fig:fig314))
-```{r fig314, fig.align='center', auto_pdf = TRUE, fig.cap="Thème solarized",  out.width='65%'}
+```{r fig314, fig.align='center', auto_pdf = TRUE, fig.cap="Thème solarized",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -313,7 +314,7 @@ Il est très fréquent de vouloir combiner plusieurs graphiques dans une même f
 
 Nous pourrions souhaiter réaliser une figure composite avec le jeu de données Iris et séparer notre nuage de points en trois graphiques distincts selon les espèces des iris (figure \@ref(fig:fig315)). Pour cela, il faut au préalable convertir la variable espèce en facteur.
 
-```{r fig315, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique à facettes",  out.width='65%'}
+```{r fig315, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique à facettes",  out.width='65%', dev = "png", dpi = 300}
 iris$Species_fac <- as.factor(iris$Species)
 
 ggplot() +
@@ -327,7 +328,7 @@ ggplot() +
 ```
 Notez que le nom de la variable (ici `Species_fac`) doit être spécifié au sein d'une sous-fonction `vars`&nbsp;: `vars(Species_fac)`. Nous aurions aussi pu réaliser le graphique sur une seule ligne en spécifiant `ncol = 3` (figure \@ref(fig:fig316)).
 
-```{r fig316, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique à facette en une ligne",  out.width='65%'}
+```{r fig316, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique à facette en une ligne",  out.width='65%', dev = "png", dpi = 300}
 ggplot() +
   geom_point(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
   labs(title = "Morphologie des sépales des iris", subtitle = "n = 150",
@@ -341,7 +342,7 @@ ggplot() +
 
 La solution avec les facettes est très pratique, mais également très limitée puisqu'elle ne permet pas de créer une figure avec des graphiques combinant plusieurs types de géométries. `ggarrange` du *package* **ggpubr** permet tout simplement de combiner des graphiques déjà existant. Créons deux nuages de points comparant plusieurs variables en fonction de l'espèce des iris, puis combinons-les (figure \@ref(fig:fig317)). Nous allons également attribuer aux points une couleur en fonction de l'espèce des fleurs, afin de mieux les distinguer en associant la variable `Species` au paramètre `color`.
 
-```{r fig317, fig.align='center', auto_pdf = TRUE, fig.cap="Figure avec plusieurs graphiques avec ggarrange",  out.width='65%'}
+```{r fig317, fig.align='center', auto_pdf = TRUE, fig.cap="Figure avec plusieurs graphiques avec ggarrange",  out.width='65%', dev = "png", dpi = 300}
 library(ggpubr)
 
 plot1 <- ggplot(data = iris) +
@@ -395,7 +396,7 @@ knitr::include_graphics('images/magie_graphiques/all_colors.png', dpi = NA)
 
 Le choix des couleurs est un problème plus complexe que la manière de les spécifier. Il existe d'ailleurs tout un pan de la sémiologie graphique dédié à la question du choix et de l'association des couleurs. Une première ressource intéressante est  [ColorBrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3){target="_blank"}. Il s'agit d'une sélection de palettes de couleurs particulièrement efficaces et dont certaines sont même adaptées pour les personnes daltoniennes (figure \@ref(fig:figcolorBrewer)). Il est possible d'accéder directement aux palettes dans R grâce au *package* **RColorBrewer** et la fonction `brewer.pal`&nbsp;: 
 
-```{r figcolorBrewer, fig.align='center', auto_pdf = TRUE, fig.cap="Palette de couleurs de ColorBrewer",  out.width='85%'}
+```{r figcolorBrewer, fig.align='center', auto_pdf = TRUE, fig.cap="Palette de couleurs de ColorBrewer",  out.width='85%', dev = "png", dpi = 300}
 library(RColorBrewer)
 
 display.brewer.all()
@@ -417,7 +418,7 @@ L'histogramme permet de décrire graphiquement la forme de la distribution d'une
 
 Générons quatre variables ayant respectivement une distribution gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables et combinons les avec la fonction `ggarrange` (figure \@ref(fig:fig318)).
 
-```{r fig318, fig.align='center', fig.cap="Histogrammes", message=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig318, fig.align='center', fig.cap="Histogrammes", message=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 
 distribs <- data.frame(
   gaussien = rnorm(1000, mean = 5, sd = 1.5),
@@ -450,11 +451,11 @@ ggarrange(plotlist = histogrammes, ncol = 2, nrow = 2)
 
 Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable empiler nos données, ce qui signifie changer la forme du *dataframe* actuel qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* **reshape2**.
 
-```{r fig319, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Empiler les données d'un dataframe",  out.width='30%'}
+```{r fig319, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Empiler les données d'un dataframe",  out.width='30%', dev = "png", dpi = 300}
 knitr::include_graphics('images/magie_graphiques/melting.png', dpi = NA)
 ```
 
-```{r fig320, fig.align='center', fig.cap="Histogrammes en facettes", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig320, fig.align='center', fig.cap="Histogrammes en facettes", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 library(reshape2)
 
 #faire fondre le jeu de données
@@ -479,7 +480,7 @@ ggplot(data = melted_distribs)+
 
 Les histogrammes que nous venons de construire utilisent les fréquences des observations pour délimiter la hauteur des barres. Il est possible de changer ce comportement pour plutôt utiliser la densité. L'intérêt est notamment de se rapprocher encore de la définition d'une distribution puisqu'avec cette configuration la somme totale de la surface de l'histogramme est égale à 1. La hauteur de chaque barre représente alors la probabilité d'obtenir l'étendue de valeurs représentées par cette barre. Prenons pour exemple la variable avec la distribution normale que nous venons de voir.
 
-```{r fig321, fig.align='center', auto_pdf = TRUE, fig.cap="Histogrammes de densité",  out.width='65%'}
+```{r fig321, fig.align='center', auto_pdf = TRUE, fig.cap="Histogrammes de densité",  out.width='65%', dev = "png", dpi = 300}
 plot1 <- ggplot(data = distribs) +
   geom_histogram(aes(x = gaussien, y = ..density..),
                  bins = 30, color = "#343a40", fill = "#1d3557")+
@@ -499,7 +500,7 @@ Le graphique de droite (fréquence) nous indique donc que plus de 100 observatio
 
 Les histogrammes sont souvent utilisés pour vérifier graphiquement si une distribution empirique s'approche d'une courbe normale. Pour cela, on rajoute sur l'histogramme de la variable empirique la forme qu'aurait une distribution normale parfaite en utilisant la moyenne et l'écart type de la distribution empirique. Pour créer cette figure dans **ggplot2**, il suffit d'utiliser la fonction `stat_function` pour créer un nouveau calque. Il est aussi possible d'ajouter une ligne verticale (`geom_vline`) pour indiquer la moyenne de la distribution.
 
-```{r fig322, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme et courbe normale",  out.width='65%'}
+```{r fig322, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme et courbe normale",  out.width='65%', dev = "png", dpi = 300}
 moyenne <- mean(distribs$gaussien)
 ecart_type <- sd(distribs$gaussien)
 
@@ -521,7 +522,7 @@ Dans notre cas, nous savons que notre variable est normalement distribuée (car 
 
 Il peut être nécessaire d'attirer le regard sur certaines parties de l'histogramme, comme par exemple des valeurs extrêmes. Si nous reprenons notre distribution de Student, nous pouvons clairement distinguer un ensemble de valeurs fortes à droite de la distribution. On pourrait dans notre cas considérer que des valeurs au delà de&nbsp;50 constituent des cas extrêmes que nous souhaitons représenter dans une autre couleur. Pour cela, nous devons créer une variable catégorielle nous permettant de distinguer ces cas particuliers.
 
-```{r fig323, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme coloré",  out.width='65%'}
+```{r fig323, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme coloré",  out.width='65%', dev = "png", dpi = 300}
 distribs$cas_extreme <- ifelse(distribs$student >=50, "extrême", "normale")
 
 ggplot(data = distribs) +
@@ -536,7 +537,7 @@ ggplot(data = distribs) +
 
 L'histogramme est utilisé pour approximer graphiquement la distribution d'une variable. Sa principale limite est de représenter la variable de façon discontinue. Une alternative intéressante est d'utiliser une version lissée de l'histogramme, soit le graphique de densité. Cette opération de lissage est réalisée le plus souvent à partir de fonctions *kernel*. Reconstruisons notre figure avec les quatre distributions, mais en utilisant cette fois-ci des graphiques de densité.
 
-```{r fig324, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques de densité en facette",  out.width='65%'}
+```{r fig324, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques de densité en facette",  out.width='65%', dev = "png", dpi = 300}
 ggplot(data = melted_distribs)+
   geom_density(aes(x = valeur, fill = distribution), color = "#343a40") +
   scale_fill_manual(values = c("#e63946","#f1faee","#a8dadc","#1d3557"))+
@@ -546,7 +547,7 @@ ggplot(data = melted_distribs)+
 
 Les graphiques de densité sont souvent utilisés pour comparer la distribution d'une variable pour plusieurs sous-groupes d'une population. Si nous reprenons le jeu de données Iris, nous pouvons comparer les longueurs de sépales en fonction des espèces. On constate ainsi que les setosas ont une nette tendance à avoir des sépales plus courts et qu'à l'inverse, les virginicas ont les sépales généralement les plus longs.
 
-```{r fig325, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques de densité superposés",  out.width='65%'}
+```{r fig325, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques de densité superposés",  out.width='65%', dev = "png", dpi = 300}
 ggplot(data = iris)+
   geom_density(aes(x = Sepal.Length, fill = Species), 
                color = "#343a40", alpha = 0.4)+
@@ -578,7 +579,7 @@ ggplot(data = data_co2)+
 ```
 
 
-```{r fig326, echo=FALSE, fig.align='center', fig.cap="Nuage de points simple", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig326, echo=FALSE, fig.align='center', fig.cap="Nuage de points simple", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 graphique <- ggplot(data = data_co2)+
   geom_point(aes(x = Urbanisation, y = CO2t_hab))+
   labs(x = "Niveau d'urbanisation (%)",
@@ -604,42 +605,22 @@ data_co2 <- subset(data_co2, data_co2$CO2t_hab <= 150)
 
 Reconstruisons le nuage de points maintenant que ces données aberrantes ont été retirées.
 
-```{r eval=FALSE}
-ggplot(data = data_co2)+
-  geom_point(aes(x = Urbanisation, y = CO2t_hab))+
-  labs(x = "Niveau d'urbanisation (%)",
-       y = 'Tonnes de CO2 annuelle / habitant',
-       title = 'Relation entre urbanisation et production de CO2 par habitant')
-```
-
-```{r fig327, echo=FALSE, fig.align='center', fig.cap="Nuage de points simple sans données aberrantes", warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig327, fig.align='center', fig.cap="Nuage de points simple sans données aberrantes", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 graphique <-  ggplot(data = data_co2)+
   geom_point(aes(x = Urbanisation, y = CO2t_hab))+
   labs(x = "Niveau d'urbanisation (%)",
        y = 'Tonnes de CO2 annuelle / habitant',
        title = 'Relation entre urbanisation et production de CO2 par habitant')
-
-show_as_png(graphique, out = "images/magie_graphiques/fig327.png", dpi = 300)
 ```
 
 Voilà qui est mieux! Cependant, le grand nombre de points restant rend la lecture du graphique assez difficile puisqu'ils se superposent. Une première option à envisager, dans ce cas, est à la fois d'ajouter de la transparence aux points et de réduire leur taille&nbsp;: 
 
-```{r eval = FALSE}
+```{r fig328, fig.align='center', fig.cap="Nuage de points simple avec transparence", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2)+
   geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.5)+
   labs(x = "Niveau d'urbanisation (%)",
        y = 'Tonnes de CO2 annuelle / habitant',
        title = 'Relation entre urbanisation et production de CO2 par habitant')
-```
-
-```{r fig328, echo=FALSE, fig.align='center', fig.cap="Nuage de points simple avec transparence", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
-graphique <- ggplot(data = data_co2)+
-  geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.5)+
-  labs(x = "Niveau d'urbanisation (%)",
-       y = 'Tonnes de CO2 annuelle / habitant',
-       title = 'Relation entre urbanisation et production de CO2 par habitant')
-
-show_as_png(graphique, out = "images/magie_graphiques/fig328.png")
 ```
 
 
@@ -647,7 +628,7 @@ show_as_png(graphique, out = "images/magie_graphiques/fig328.png")
 
 Bien que la transparence nous aide un peu à distinguer les secteurs du graphique avec le plus de points, il serait plus efficace d'abandonner la géométrie des points pour la remplacer par une géométrie de densité en deux dimensions. Une première approche consiste à diviser l'espace du graphique en petits carrés et à compter le nombre de points tombant dans chaque carré (en somme, un histogramme en deux dimensions).
 
-```{r , eval=FALSE}
+```{r fig329, fig.align='center', fig.cap="Nuage de points simple", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2)+
   geom_bin2d(aes(x = Urbanisation, y = CO2t_hab), bins = 50) +
   scale_fill_continuous(type = "viridis") +
@@ -657,22 +638,9 @@ ggplot(data = data_co2)+
        title = 'Relation entre urbanisation et production de CO2 par habitant')
 ```
 
-
-```{r fig329, echo=FALSE, fig.align='center', fig.cap="Nuage de points simple", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
-graphique <- ggplot(data = data_co2)+
-  geom_bin2d(aes(x = Urbanisation, y = CO2t_hab), bins = 50) +
-  scale_fill_continuous(type = "viridis") +
-  labs(x = "Niveau d'urbanisation (%)",
-       y = 'Tonnes de CO2 annuelle / habitant',
-       fill = "Effectif",
-       title = 'Relation entre urbanisation et production de CO2 par habitant')
-
-show_as_png(graphique, out = "images/magie_graphiques/fig329.png", dpi = 300)
-```
-
 On observe ainsi une forte concentration dans le bas du graphique, les pays avec des rejets annuels de CO~2~  supérieurs à 15 tonnes par habitant sont relativement rares. Pour les personnes préférant les représentations plus élaborées, il est aussi possible de diviser l'espace du graphique avec des hexagones en utilisant le *package* **hexbin**.
 
-```{r fig330, fig.align='center', fig.cap="Densité en deux dimensions par hexagones", warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig330, fig.align='center', fig.cap="Densité en deux dimensions par hexagones", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2)+
   geom_hex(aes(x = Urbanisation, y = CO2t_hab), bins = 50) +
   scale_fill_continuous(type = "viridis") +
@@ -684,7 +652,7 @@ ggplot(data = data_co2)+
 
 Enfin, il est aussi possible de réaliser une version lissée de ces graphiques avec une fonction *kernel* en deux dimensions (`stat_density_2d`)&nbsp;: 
 
-```{r fig331, fig.align='center', fig.cap="Densité en deux dimensions lissée", warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig331, fig.align='center', fig.cap="Densité en deux dimensions lissée", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2)+
   stat_density_2d(aes(x = Urbanisation, y = CO2t_hab, fill = ..density..), 
                   geom = "raster", n = 50, contour = FALSE) +
@@ -700,28 +668,20 @@ ggplot(data = data_co2)+
 
 Afin de faire ressortir une éventuelle relation entre les variables représentées sur les deux axes, il est possible d'afficher la droite de régression sur le graphique entre X et Y. Cette opération s'effectue avec la fonction `geom_smooth`.
 
-```{r eval = FALSE}
-ggplot(data = data_co2)+
-  geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.5)+
-  geom_smooth(aes(x = Urbanisation, y = CO2t_hab), method = lm, color = "red")+
-  labs(x = "Niveau d'urbanisation (%)",
-       y = 'Tonnes de CO2 annuelle / habitant',
-       title = 'Relation entre urbanisation et production de CO2 par habitant')
-```
 
-```{r fig332, echo=FALSE, fig.align='center', fig.cap="Nuage de points avec droite de régression", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig332, fig.align='center', fig.cap="Nuage de points avec droite de régression", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 graphique <- ggplot(data = data_co2)+
   geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.5)+
   geom_smooth(aes(x = Urbanisation, y = CO2t_hab), method = lm, color = "red")+
   labs(x = "Niveau d'urbanisation (%)",
        y = 'Tonnes de CO2 annuelle / habitant',
        title = 'Relation entre urbanisation et production de CO2 par habitant')
-show_as_png(graphique, out = "images/magie_graphiques/fig332.png")
 ```
 
 Notez que l'argument `method = lm` permet d'indiquer que nous souhaitons utiliser une régression linéaire (*linear model*) pour tracer la géométrie (une droite de régression). La droite semble bien indiquer une relation positive entre les deux variables&nbsp;: une augmentation de l'urbanisation serait associée avec une augmentation de la production annuelle de CO~2~ par habitant. On pourrait également vérifier si une relation non linéaire serait plus adaptée au jeu de données. Dans notre cas, une relation quadratique pourrait produire un meilleur ajustement.
 
-```{r eval = FALSE}
+
+```{r fig333, fig.align='center', fig.cap="Nuage de points avec droite de régression quadratique", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2)+
   geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.7)+
   geom_smooth(aes(x = Urbanisation, y = CO2t_hab), method = lm, 
@@ -729,32 +689,12 @@ ggplot(data = data_co2)+
   labs(x = "Niveau d'urbanisation (%)",
        y = 'Tonnes de CO2 annuelle / habitant',
        title = 'Relation entre urbanisation et production de CO2 par habitant')
-```
-
-```{r fig333, echo=FALSE, fig.align='center', fig.cap="Nuage de points avec droite de régression quadratique", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
-graphique <- ggplot(data = data_co2)+
-  geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.7)+
-  geom_smooth(aes(x = Urbanisation, y = CO2t_hab), method = lm, 
-              color = "red", formula = y ~ I(x**2))+
-  labs(x = "Niveau d'urbanisation (%)",
-       y = 'Tonnes de CO2 annuelle / habitant',
-       title = 'Relation entre urbanisation et production de CO2 par habitant')
-show_as_png(graphique, out = "images/magie_graphiques/fig333.png")
 ```
 
 La régression quadratique (avec *x* au carré) nous indique ainsi que l'impact du niveau d'urbanisation est plus important à mesure que le niveau d'urbanisation augmente. Vous pouvez également constater que la courbe ne prédit pas de valeurs négatives comparativement à la droite précédente. Il est égalemment possible d'ajuster une courbe sans choisir au préalable sa forme (dans le cas précédent $x^2$) en utilisant une méthode d'ajustement local appelée *loess*.
 
-```{r eval = FALSE}
-ggplot(data = data_co2)+
-  geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.5)+
-  geom_smooth(aes(x = Urbanisation, y = CO2t_hab), method = loess, 
-              color = "red")+
-  labs(x = "Niveau d'urbanisation (%)",
-       y = 'Tonnes de CO2 annuelle / habitant',
-       title = 'Relation entre urbanisation et production de CO2 par habitant')
-```
 
-```{r fig334, echo=FALSE, fig.align='center', fig.cap="Nuage de points avec droite de régression non linéaire", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig334, fig.align='center', fig.cap="Nuage de points avec droite de régression non linéaire", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 graphique <- ggplot(data = data_co2)+
   geom_point(aes(x = Urbanisation, y = CO2t_hab), alpha = 0.2, size = 0.5)+
   geom_smooth(aes(x = Urbanisation, y = CO2t_hab), method = loess, 
@@ -762,7 +702,6 @@ graphique <- ggplot(data = data_co2)+
   labs(x = "Niveau d'urbanisation (%)",
        y = 'Tonnes de CO2 annuelle / habitant',
        title = 'Relation entre urbanisation et production de CO2 par habitant')
-show_as_png(graphique, out = "images/magie_graphiques/fig334.png")
 ```
 
 La relation non linéaire révèle davantage d'informations&nbsp;: l'augmentation de l'urbanisation est associée à une augmentation de l'émission de CO~2~ par habitant uniquement jusqu'à 75% d'urbanisation; au-delà de ce seuil, la relation ne tient plus. Ces résultats semblent cohérents avec l'évolution classique de l'économie d'un pays passant progressivement d'une économie agricole, à une économie industrialisée et finalement une économie de services.
@@ -771,7 +710,7 @@ La relation non linéaire révèle davantage d'informations&nbsp;: l'augmentatio
 
 Un graphique en ligne permet de représenter l'évolution d'une variable, généralement dans le temps. Dans le jeu de données précédent, nous disposons des émissions de CO~2~ par habitant de nombreux pays sur plusieurs années. Nous pouvons ainsi représenter l'évolution des émissions pour chaque pays avec un graphique en ligne. Pour éviter de le surcharger, cet exercice est réalisé uniquement sur les pays de l'Europe de l'Ouest.
 
-```{r fig335, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne",  out.width='65%'}
+```{r fig335, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne",  out.width='65%', dev = "png", dpi = 300}
 # conversion de la variable year textuelle en variable numérique
 data_co2$an <- as.numeric(data_co2$year)
 # extraction des données d'Europe de l'Ouest
@@ -796,7 +735,7 @@ On remarque notamment qu'aucune donnée avant 2005 n'est disponible pour le Liec
 
 Sur un graphique, il est souvent pertinent de représenter l'incertitude que nous avons sur nos données. Cela peut être fait à l'aide de barres d'erreur ou à l'aide de polygones délimitant les marges d'incertitude. En guise d'exemple, admettons que les données précédentes sont fiables à plus ou moins 10&nbsp;%. En d'autres termes, la valeur d'émission de CO~2~ annuelle serait relativement incertaine et pourrait se situer dans un intervalle de 10&nbsp;% autour de la valeur fournie par la Banque Mondiale. Nous obtenons ainsi une borne inférieure (valeur donnée - 10&nbsp;%) et une borne supérieure (valeur donnée + 10&nbsp;%). Nous pouvons facilement calculer ces bornes et les faire apparaître dans notre graphique précédent.
 
-```{r fig336, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne avec barres d'erreur",  out.width='65%'}
+```{r fig336, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne avec barres d'erreur",  out.width='65%', dev = "png", dpi = 300}
 
 data_europe$borne_basse <- data_europe$CO2t_hab - 0.1 * data_europe$CO2t_hab
 data_europe$borne_haute <- data_europe$CO2t_hab + 0.1 * data_europe$CO2t_hab
@@ -814,7 +753,7 @@ ggplot(data = data_europe)+
 
 Ces barres d'erreurs indiquent notamment qu'il n'y a finalement aucun écart significatif entre la Belgique, les Pays-Bas et l'Allemagne à partir des années 1990. Une autre option de représentation est d'utiliser des polygones avec la fonction `geom_ribbon`.
 
-```{r fig337, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne avec marge d'erreur",  out.width='65%'}
+```{r fig337, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne avec marge d'erreur",  out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_europe)+
   geom_path(aes(x = an, y = CO2t_hab, color = Country.Name), size = 0.7)+
   geom_ribbon(aes(x = an, ymin = borne_basse, ymax = borne_haute, fill = Country.Name), alpha = 0.4)+
@@ -833,7 +772,7 @@ Le message du graphique est le même. Notez que nous avons utilisé ici la fonct
 
 Les boîtes à moustaches (*box plot* en anglais) sont des graphiques permettant de comparer les moyennes et les intervalles interquartiles d'une variable continue selon plusieurs groupes d'une population. Si l'on reprend notre exemple précédent, nous pourrions comparer, en fonction de la région du monde, la moyenne de production annuelle de CO~2~ par habitant. Pour cela, il suffit d'utiliser la fonction `geom_boxplot`.
 
-```{r fig338, fig.align='center', auto_pdf = TRUE, fig.cap="Boîtes à moustaches",  out.width='65%'}
+```{r fig338, fig.align='center', auto_pdf = TRUE, fig.cap="Boîtes à moustaches",  out.width='65%', dev = "png", dpi = 300}
 #retirer les observations n'étant pas associées à une région
 data_co2_comp <- subset(data_co2, is.na(data_co2$region7) == F)
 
@@ -844,7 +783,7 @@ ggplot(data = data_co2_comp)+
 
 La barre centrale d'une boîte représente la moyenne. Les extrémités de la boîte représentent le premier et le troisième quartile. Plus une boîte est allongée, plus les situations sont diversifiées pour les observations appartenant au groupe représenté par la boîte. Au contraire, une boîte étroite indique un groupe homogène. Notez qu'en inversant les variables dans les axes *X* et *Y*, on obtiendrait des boîtes à moustaches verticales. Cependant, les noms des régions étant assez longs, cela nécessiterait d'avoir un graphique très large. Améliorons quelque peu le rendu de ce graphique en ajoutant des titres.
 
-```{r fig339, fig.align='center', fig.cap="Boîtes à moustaches améliorées", warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig339, fig.align='center', fig.cap="Boîtes à moustaches améliorées", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2_comp)+
   geom_boxplot(aes(y = region7, x = CO2t_hab))+
   xlim(c(0,50))+
@@ -854,7 +793,7 @@ ggplot(data = data_co2_comp)+
 
 Les points noirs sur le graphique représentent des valeurs extrêmes, soit des observations situées à plus de 1,5 intervalle interquartile d'une extrémité de la boîte. Pour mieux rendre compte de la densité d'observations le long de chaque boîte à moustaches, il est possible de les représenter directement avec la fonction `geom_jitter`.
 
-```{r eval = FALSE}
+```{r fig340, echo=FALSE, fig.align='center', fig.cap="Boîtes à moustaches avec observations", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2_comp)+
   geom_boxplot(aes(y = region7, x = CO2t_hab), outlier.shape = NA)+
   geom_jitter(aes(y = region7, x = CO2t_hab), size = 0.2, alpha = 0.2)+
@@ -862,24 +801,13 @@ ggplot(data = data_co2_comp)+
   labs(x = "Tonnes de CO2 annuelle par habitant",
        y = 'Région')
 ```
-
-```{r fig340, echo=FALSE, fig.align='center', fig.cap="Boîtes à moustaches avec observations", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
-graphique <- ggplot(data = data_co2_comp)+
-  geom_boxplot(aes(y = region7, x = CO2t_hab), outlier.shape = NA)+
-  geom_jitter(aes(y = region7, x = CO2t_hab), size = 0.2, alpha = 0.2)+
-  xlim(c(0,50))+
-  labs(x = "Tonnes de CO2 annuelle par habitant",
-       y = 'Région')
-
-show_as_png(graphique, out = "images/magie_graphiques/fig340.png")
-```
 Notez que pour éviter que les valeurs extrêmes identifiées par la fonction `geom_boxplot` se superposent avec les points représentant les observations, nous les avons supprimées avec l'argument `outlier.shape = NA`.
 
 ### Graphique en violons {#sect0326}
 
 Les boîtes à moustaches donnent des informations pertinentes sur le centre et la dispersion d'une variable en fonction de sous groupes de la population. Cependant, une grande partie de l'information reste masquée par la représentation sous forme de boîte. Une alternative est de  remplacer la simple boîte par la distribution de la variable étudiée. On obtient ainsi des graphiques en violon (`geom_violin`). Considérant les très grands écarts entre les régions que nous avons observés avec les boîtes à moustaches, il est préférable de tracer les graphiques en violon en excluant les régions Afrique Sub-Saharienne et Asie du Sud.
 
-```{r fig341, fig.align='center', fig.cap="Graphiques en violon", warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig341, fig.align='center', fig.cap="Graphiques en violon", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 # retirons les observations de régions que nous ne souhaitons par garder
 data_co2_comp <- subset(data_co2, (! data_co2$region7 %in% c("Sub-Saharan Africa", "South Asia")) 
                         & is.na(data_co2$region7)==FALSE)
@@ -894,7 +822,7 @@ ggplot(data = data_co2_comp)+
 
 Ces distributions permettent notamment de souligner que deux groupes distincts se retrouvent en Amérique du Nord. L'un dont les émissions annuelles de CO~2~ par habitant sont inférieures à 12 tonnes (ligne bleue) et un autre groupe pour lequel elles sont supérieures. En explorant les données, on constate que les Bermudes appartiennent au groupe Amérique du Nord, mais ont des niveaux d'émission inférieurs à ceux du Canada et des États-Unis, ce qui explique cette distribution bimodale. Cette information était masquée avec les boîtes à moustaches. Finalement, il est aussi possible de superposer graphique en violon et boîte à moustaches pour bénéficier des avantages des deux.
 
-```{r fig342, fig.align='center', fig.cap="Graphiques en violon et boîtes à moustaches", warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig342, fig.align='center', fig.cap="Graphiques en violon et boîtes à moustaches", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2_comp)+
   geom_violin(aes(y = region7,x = CO2t_hab))+
   geom_boxplot(aes(y = region7,x = CO2t_hab), width = 0.15)+
@@ -913,17 +841,17 @@ knitr::include_graphics('images/magie_graphiques/carte_secteurs.jpg', dpi = NA)
 
 Nous représentons pour chaque secteur le nombre déplacements moyen entrant et sortant un jour de semaine en heures de pointe. Les données sont présentées sous forme d'une matrice carrée (avec autant de lignes que de colonnes). L'intersection de la ligne A et de la colonne C indique le nombre de personnes partant du secteur A pour se rendre dans le secteur C. À l'inverse, l'intersection de la ligne C et de la colonne A indique le nombre de personnes partant du secteur C pour se rendre dans le secteur A. En sommant les valeurs de chaque ligne, on obtient le nombre total de départs par secteur tandis que le nombre d'arrivées est la somme de chaque colonne. Ces opérations peuvent simplement être effectuées avec les fonctions `rowSums` et `colSums`.
 
-```{r fig344, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques en barres simples",  out.width='75%'}
+```{r fig344, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques en barres simples",  out.width='75%', dev = "png", dpi = 300}
 
-# chargement des donneées
+# Chargement des donneées
 matriceOD <- read.csv('data/graphique/Quebec_2017_OD_MJ.csv',
                  header = FALSE, sep = ';') # fichier csv sans entête
 
-# calcul des sommes en lignes et en colonnes
+# Calcul des sommes en lignes et en colonnes
 tot_depart <- rowSums(matriceOD)
 tot_arrivee <- colSums(matriceOD)
 
-# création d'un DataFrame avec les valeurs et les noms des secteurs
+# Création d'un DataFrame avec les valeurs et les noms des secteurs
 df <- data.frame(depart = tot_depart,
                  arrivee = tot_arrivee, 
                  secteur = c('Arr. de Beauport (Québec)',
@@ -940,7 +868,7 @@ df <- data.frame(depart = tot_depart,
                             'Hors Territoire'),
                  code = c('A','B','C','D','E','F','G','H','I','J','K','X'))
 
-# création des deux graphiques en barres
+# Création des deux graphiques en barres
 plot1 <- ggplot(data = df)+
   geom_bar(aes(x = code, weight = depart))+
   labs(subtitle = 'Départs',
@@ -953,11 +881,11 @@ plot2 <- ggplot(data = df)+
        x = 'total',
        y = '')
 
-# stocker les graphiques dans une liste et composer une figure
+# Stocker les graphiques dans une liste et composer une figure
 list_plot <- list(plot1, plot2)
 tot_plot <- ggarrange(plotlist = list_plot, ncol = 1)
 
-# création d'une légende pour associer le code de chaque secteur 
+# Création d'une légende pour associer le code de chaque secteur 
 # à son nom. Pour cela on concatène en premier les lettres et les noms, 
 # on fusionne ensuite le tout en les séparant par le symbole \n représentant 
 # un saut de ligne.
@@ -965,7 +893,7 @@ nom_secteurs <- paste(df$code, df$secteur, sep= ' : ')
 string_names <- paste(nom_secteurs, collapse = '\n')
 
 titre <- "Déplacements journaliers moyens en heures de pointe de la région de Québec"
-# production finale de la figure
+# Production finale de la figure
 annotate_figure(tot_plot,
                 top = text_grob(titre, face = "bold", size = 11, just = "left"),
                 right = text_grob(string_names, face = "italic", size = 8,
@@ -976,18 +904,18 @@ annotate_figure(tot_plot,
 
 Plutôt que de représenter les arrivées et les départs dans deux graphiques séparés, il est possible de les empiler dans un même graphique en barres. Nous devons au préalable «&nbsp;faire fondre nos données&nbsp;» avec la fonction `melt`.
 
-```{r fig345, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en barres empilées",  out.width='65%'}
-# faire fondre le jeu de données (empiler les colonnes depart et arrivee)
+```{r fig345, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en barres empilées",  out.width='65%', dev = "png", dpi = 300}
+# Faire fondre le jeu de données (empiler les colonnes depart et arrivee)
 melted_df <- melt(df, id.vars = c('code'), measure.vars = c('depart','arrivee'))
 names(melted_df) <- c('code','deplacement','effectif')
-# ajouter les accents dans la colonne déplacement
+# Ajouter les accents dans la colonne déplacement
 melted_df$deplacement <- ifelse(melted_df$deplacement == 'depart', 'départs', 'arrivées')
 
-# comparaison du format original et du format "fondu"
+# Comparaison du format original et du format "fondu"
 head(df)
 head(melted_df)
 
-# réalisation du graphique
+# Réalisation du graphique
 plot1 <- ggplot(data = melted_df)+
   geom_bar(aes(x = code,weight = effectif, fill = deplacement),color = '#e3e3e3')+
   scale_fill_manual(values = c("#e63946","#1d3557"))+
@@ -1004,31 +932,31 @@ annotate_figure(plot1,right = text_grob(string_names, face = "italic", size = 7,
 
 Une alternative directe au graphique en barre est le graphique ou diagramme circulaire, appelé aussi graphique en pointes de tarte (pour les personnes à la dent sucrée) ou en camembert (pour celles amatrices de fromage). Il est suffissamment connu et utilisé pour qu'aucune présentation ne s'impose. Pour être exact, un graphique en pointes de tarte n'est rien d'autre qu'un graphique en barres dont le système de coordonnées a été modifié. Cela impose cependant de calculer à l'avance la position des étiquettes que l'on souhaite ajouter sur le graphique. Reprenons les données de production mondiale de CO~2~ et calculons les productions totales par région géographique en 2015.
 
-```{r fig346, fig.align='center', fig.cap="Graphique en pointes de tarte", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
+```{r fig346, fig.align='center', fig.cap="Graphique en pointes de tarte", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 library(dplyr)
 
-# extraire les données de 2018 pour lesquelles on connait la région
+# Extraire les données de 2018 pour lesquelles on connait la région
 data_co2_2015 <- subset(data_co2,data_co2$year == "2015" & ! is.na(data_co2$region7))
 
-# effectuer la somme du CO2 par région
+# Effectuer la somme du CO2 par région
 co2_2015 <- data_co2_2015 %>% 
   group_by(region7) %>% 
   summarise(total_co2 = sum(CO2_kt,na.rm = TRUE))
 
-# attribuer un code à chaque région pour faciliter la lecture
+# Attribuer un code à chaque région pour faciliter la lecture
 co2_2015$code <- c("A","B","C","D","E","F","G")
 
-# modifier l'ordre des données, calculer les proportions et la position des labels
+# Modifier l'ordre des données, calculer les proportions et la position des labels
 df <- co2_2015 %>% 
   arrange(desc(code)) %>%
   mutate(prop = total_co2 / sum(co2_2015$total_co2) *100) %>%
   mutate(ypos = cumsum(prop)- 0.5*prop )
 
-# préparer la légende (pourcentages et vrais noms)
+# Préparer la légende (pourcentages et vrais noms)
 nom_region <- rev(paste(df$code, " : ", df$region7, "(", round(df$prop,1),"%)"))
 string_region <- paste(nom_region, collapse = '\n')
 
-# construire le graphique
+# Construire le graphique
 plot1 <- ggplot(df, aes(x="", y=prop, fill=code)) +
   geom_bar(stat="identity", width=1, color="white") +
   coord_polar("y", start=0) +
@@ -1038,7 +966,7 @@ plot1 <- ggplot(df, aes(x="", y=prop, fill=code)) +
   scale_fill_grey()+
   labs(title = "Proportion du CO2 émis en 2015")
 
-# ajouter la légende
+# Ajouter la légende
 annotate_figure(plot1,right = text_grob(string_region, face = "italic", size = 9,
                                   just = "left", x = 0.05)) # position du texte)
 
@@ -1046,12 +974,12 @@ annotate_figure(plot1,right = text_grob(string_region, face = "italic", size = 9
 
 Si à la place de la géométrie `geom_bar`, vous utilisez `geom_rect`, vous pouvez convertir votre graphique en pointes de tarte en graphique en anneau (ou en beigne, pour les personnes à la dent sucrée)&nbsp;: 
 
-```{r fig347, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%'}
-# calculer la limite inférieure et supérieure du beigne
+```{r fig347, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%', dev = "png", dpi = 300}
+# Calculer la limite inférieure et supérieure du beigne
 df$ymax <- cumsum(df$prop)
 df$ymin <-  c(0, head(df$ymax, n=-1))
 
-# construire le graphique
+# Construire le graphique
 plot1 <- ggplot(df, aes(ymax=ymax, ymin=ymin, 
                         xmax=4, xmin=3,
                         y=prop, fill=code)) +
@@ -1064,7 +992,7 @@ plot1 <- ggplot(df, aes(ymax=ymax, ymin=ymin,
   xlim(c(2,4))+
   labs(title = "Proportion du CO2 émis en 2015")
 
-# ajouter la légende
+# Ajouter la légende
 annotate_figure(plot1,right = text_grob(string_region, face = "italic", size = 8,
                                   just = "left", x = 0.05)) # position du texte)
 
@@ -1078,19 +1006,19 @@ Dans cette dernière section, nous allons aborder des graphiques plus rarement u
 
 Les graphiques en radar (ou en toile d'araignée) sont utilisés pour comparer une série de variables continues pour plusieurs observations ou groupes d'observations. Chaque variable est associée à un axe et chaque observation est représentée avec un polygone. Prenons l'exemple de données relatives aux logements par secteur de recensement dans la région métropolitaine de Montréal en 2016. On pourrait souhaiter comparer la moyenne des pourcentages des différents types de logements pour les régions des Laurentides, de la Montérégie, de Laval, de Longueuil et de Montréal. Malheureusement, **ggplot2** ne permet pas de dessiner des graphiques en radar satisfaisants, nous devrons donc utiliser le *package* **fmsb**.
 
-```{r fig348, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%'}
+```{r fig348, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%', dev = "png", dpi = 300}
 library(fmsb)
 
 data <- read.csv('data/bivariee/sr_rmr_mtl_2016.csv', header = T, encoding = 'UTF-8')
 
-# agréger les données au niveau des régions en calculant la moyenne des pourcentages
+# Agréger les données au niveau des régions en calculant la moyenne des pourcentages
 variables <- c("MaisonIndi","App5Plus","MaisRangee","AppDuplex","Proprio","Locataire")
 
 data_region <- data[c("Region",variables)] %>% 
   group_by(Region) %>%
   summarise_all(.funs = list(mean))
 
-# gérer le nom des colonnes pour ajuster les données aux besoins de 
+# Gérer le nom des colonnes pour ajuster les données aux besoins de 
 # la fonction radachart
 new_names <- c("Region",paste(variables,"_mean",sep=""))
 names(data_region) <- new_names
@@ -1098,7 +1026,7 @@ data_region <- data.frame(data_region)
 rownames(data_region) <- data_region$Region
 data_region$Region <- NULL
 
-# ajouter deux lignes aux données avec les valeurs maximales et minimales 
+# Ajouter deux lignes aux données avec les valeurs maximales et minimales 
 # de chaque colonne. Ces informations aideront la fonction radachart à
 # dessiner chacun des axes du radar
 data_chart <- rbind(apply(data_region,MARGIN = 2, FUN = max),
@@ -1106,7 +1034,7 @@ data_chart <- rbind(apply(data_region,MARGIN = 2, FUN = max),
                     data_region
                     )
 
-# choisir les couleurs pour l'intérieur des polygones (avec transparence)
+# Choisir les couleurs pour l'intérieur des polygones (avec transparence)
 couleurs <- c(
   rgb(0.94, 0.28, 0.44, 0.25),
   rgb(1.00, 0.82, 0.40, 0.25),
@@ -1115,7 +1043,7 @@ couleurs <- c(
   rgb(0.03, 0.23, 0.30, 0.25)
 )
 
-# choisir les couleurs pour l'intérieur des polygones (sans transparence)
+# Choisir les couleurs pour l'intérieur des polygones (sans transparence)
 couleurs_contour <- c(
   rgb(0.94, 0.28, 0.44),
   rgb(1.00, 0.82, 0.40),
@@ -1124,7 +1052,7 @@ couleurs_contour <- c(
   rgb(0.03, 0.23, 0.30)
 )
 
-# dessiner du graphique
+# Dessiner du graphique
 radarchart(data_chart,
            title = "Comparaison des types de logements dans la RMR",
            pcol = couleurs_contour, pfcol = couleurs,
@@ -1136,7 +1064,7 @@ radarchart(data_chart,
                        "propriétaire", "locataire")
            )
 
-# ajouter une légende
+# Ajouter une légende
 legend(x=1.3, y=1, legend = rownames(data_chart[-c(1,2),]), bty = "n", 
        pch=20 , col=couleurs , text.col = "black", cex=0.9, pt.cex=1.5)
 ```
@@ -1158,11 +1086,11 @@ devtools::install_github('mattflor/chorddiag')
 ```{r fig349, fig.align='center', fig.cap="Diagramme d'accord", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%'}
 library(chorddiag)
 
-# chargement des données
+# Chargement des données
 matriceOD <- read.csv('data/graphique/Quebec_2017_OD_MJ.csv',
                  header = FALSE, sep = ';') # fichier csv sans entête
 
-# transformation du dataframe en matrice
+# Transformation du dataframe en matrice
 matriceOD <- as.matrix(matriceOD)
 codes <- c('A','B','C','D','E','F','G','H','I','J','K','X')
 secteurs <- c('Arr. de Beauport',
@@ -1178,29 +1106,29 @@ secteurs <- c('Arr. de Beauport',
             'Ceinture Sud',
             'Hors Territoire')
 
-# ajout de noms aux colonnes et aux lignes de la matrice
+# Ajout de noms aux colonnes et aux lignes de la matrice
 rownames(matriceOD) <- secteurs
 colnames(matriceOD) <- secteurs
 
-#on supprime les trois secteurs Ceinture Nord, Sud et Hors territoire 
-#qui comprennent de toute façon peu de déplacements
+# On supprime les trois secteurs Ceinture Nord, Sud et Hors territoire 
+# qui comprennent de toute façon peu de déplacements
 mat <- matriceOD[1:8,1:8]
 
-# choix aléatoire de couleurs pour les lignes
+# Choix aléatoire de couleurs pour les lignes
 # col <- sample(colors(),nrow(mat),replace = F)
 
-# choix de couleurs 
+# Choix de couleurs 
 col <- c("#a491d3", "#818aa3", "#C5DCA0", "#F5F2B8",
          "#F9DAD0", "#F45B69", "#22181C", "#5A0001")
 
-# réalisation du graphique : sortie HTLM
+# Réalisation du graphique : sortie HTLM
 if(knitr::is_html_output()){
   chorddiag(mat, groupColors = col, showTicks = F,
         type = 'bipartite', chordedgeColor = 'white',
         groupnameFontsize = 12, groupnamePadding = 5)
 }
 
-# pour la sortie PDF
+# Pour la sortie PDF
 if(knitr::is_latex_output()){
   knitr::include_graphics('images/magie_graphiques/chord_diagramme.png', dpi = NA)
 }
@@ -1278,7 +1206,7 @@ stats_mtl <- textrank_keywords(df_mtl$lemma,
 
 # Étape 7 : nettoyer les coquilles dans les mots clefs 
 # Note : nous faisons ici le choix de garder des mots clefs uniques (ngram == 1)
-# il serait aussi possible de garder des associations de plusieurs mots
+# Il serait aussi possible de garder des associations de plusieurs mots
 dfstats_qc <- subset(stats_qc$keywords, stats_qc$keywords$ngram == 1 &
                        nchar(stats_qc$keywords$keyword)>2)
 dfstats_qc$keyword <- gsub("d’","",dfstats_qc$keyword,fixed = T)
@@ -1314,7 +1242,7 @@ Notez qu'à chaque génération du nuage de mots, vous obtiendrez une dispositio
 
 Une carte proportionnelle ou carte à cases (*treemap* en anglais) est un graphique permettant de représenter une quantité partagée entre plusieurs observations structurées dans une hiérarchie de groupe. Le jeu de données portant sur les émissions de CO~2~ se prête tout à fait à une représentation par *treemaps*. La variable de quantité est bien sûr les émissions de CO~2~ par pays; ces pays sont regroupés dans un premier ensemble de régions (découpage en 23 régions), qui elles-mêmes sont regroupées dans des régions plus larges (découpage en sept régions). Pour construire un *treemap*, nous allons utiliser le *package* **treemap**.
 
-```{r fig352, fig.align='center', fig.cap="Treemap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
+```{r fig352, fig.align='center', fig.cap="Treemap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%', dev = "png", dpi = 300}
 library(treemap)
 library(RColorBrewer)
 
@@ -1351,7 +1279,7 @@ Créons une carte thématique à partir des données de densité de végétation
 
 Avec **ggplot2**, nous aurons aussi besoin des *packages* **classInt** pour calculer les intervalles des classes et de **ggsn** pour afficher une échelle.
 
-```{r fig353, fig.align='center', fig.cap="Carte thématique avec ggplot2", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='85%'}
+```{r fig353, fig.align='center', fig.cap="Carte thématique avec ggplot2", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='85%', dev = "png", dpi = 300}
 library(sf)
 library(classInt)
 library(ggsn)
@@ -1388,7 +1316,7 @@ ggplot(data = spatialdf) +
 
 Il est possible d'arriver à un résultat similaire avec **tmap** avec moins de code! 
 
-```{r fig354, fig.align='center', fig.cap="Carte thématique avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='85%'}
+```{r fig354, fig.align='center', fig.cap="Carte thématique avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='85%', dev = "png", dpi = 300}
 library(tmap)
 
 colors <- brewer.pal(7,"Greens")
@@ -1404,7 +1332,7 @@ tm_shape(spatialdf) +
 
 Les graphiques créés par **tmap** ne peuvent malheureusement pas être combinés avec la fonction `ggarrange`, mais **tmap** dispose de sa propre fonction `tmap_arrange` si vous souhaitez combiner plusieurs cartes.
 
-```{r fig355, fig.align='center', fig.cap="Combiner des cartes avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='85%'}
+```{r fig355, fig.align='center', fig.cap="Combiner des cartes avec tmap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='85%', dev = "png", dpi = 300}
 library(tmap)
 
 colors <- brewer.pal(7,"Greens")
