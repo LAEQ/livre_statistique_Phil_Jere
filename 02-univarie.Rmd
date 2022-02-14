@@ -204,17 +204,19 @@ Dans cette section, nous abordons un concept central de la statistique : les dis
 
 ### Définitions générales
 
-En statistique, on s’intéresse aux résultats d’expériences. Lancer un dé, mesurer la pollution atmosphérique, compter le nombre de collisions à une intersection, demander à une personne d’évaluer son sentiment de sécurité sur une échelle de 1 à 10 sont autant d’expériences pouvant produire des résultats.
+En probabilité, on s’intéresse aux résultats d’expériences. Du point de vue de la théorie des probabilités, Lancer un dé, mesurer la pollution atmosphérique, compter le nombre de collisions à une intersection, demander à une personne d’évaluer son sentiment de sécurité sur une échelle de 1 à 10 sont autant d’expériences pouvant produire des résultats.
 
-**Une distribution est une fonction permettant d’associer pour chaque résultat possible d’une expérience la probabilité d’obtenir ce résultat**. En d’autres termes, il s’agit d’une fonction indiquant par exemple que pour l’expérience : « mesurer la concentration d’ozone à Montréal à 13h en été », la probabilité de mesurer une valeur inférieure à 15 μg/m<sup>3</sup> est de seulement 2%.
+**Une distribution est un modèle mathématique permettant d’associer pour chaque résultat possible d’une expérience la probabilité d’obtenir ce résultat**. D'un point de vue pratique, si nous disposions de la distribution régissant l’expérience : « mesurer la concentration d’ozone à Montréal à 13h en été », nous pourrions calculer la probabilité de mesurer une valeur inférieure à 15 μg/m<sup>3</sup>.
 
-Les distributions sont toujours définies dans un intervalle en dehors duquel elles sont indéfinies; les valeurs dans cet intervalle sont appelées **l’espace d’échantillonnage**. Il s’agit donc des valeurs possibles que peut produire l’expérience. La somme des probabilités de l’ensemble des valeurs de l’espace d’échantillonnage est 1 (100%). Intuitivement, cela signifie que si l’on réalise l’expérience, on est obligé d’obtenir un résultat, et que cette probabilité totale est répartie entre tous les résultats possibles de l’expérience. En langage mathématique, on dit que l’intégrale des fonctions de distribution est 1 dans leur intervalle de définition.
+Notez que l'utilisation que nous faisons ici du terme « distribution » est un anglicisme. En effet, en français, la définition précédente est plus proche du terme de « loi de probabilité ». Cependant, la quasi-totalité de la documentation sur R est en anglais, et dans la pratique, ces deux termes ont tendance à se confondre. Nous avons donc fait le choix de poursuivre avec ce terme dans le reste du livre.
+
+Une distribution est toujours définies dans un intervalle en dehors duquel elle n'est définie; les valeurs dans cet intervalle sont appelées **l’espace d’échantillonnage**. Il s’agit donc des valeurs possibles que peut produire l’expérience. La somme des probabilités de l’ensemble des valeurs de l’espace d’échantillonnage est 1 (100%). Intuitivement, cela signifie que si l’on réalise l’expérience, on obtient nécessairement un résultat, et que la somme des probabilités est répartie entre tous les résultats possibles de l’expérience. En langage mathématique, on dit que l’intégrale de la fonction de densité d'une distribution est 1 dans son intervalle de définition.
 
 Prenons un exemple concret avec l’expérience suivante : tirer à pile ou face avec une pièce de monnaie non truquée. Si l’on souhaite décrire la probabilité d’obtenir pile ou face, on peut utiliser une distribution qui aura comme espace d’échantillonnage [pile ; face] et ces deux valeurs auront chacune comme probabilité 0,5. Il est facile d’étendre cet exemple au cas d’un dé à six faces. La distribution de probabilité décrivant l’expérience « lancer le dé » a pour espace d’échantillonnage [1,2,3,4,5,6], chacune de ces valeurs étant associée à la probabilité 1/6.
 
-Les deux distributions précédentes appartiennent à la famille des distributions **discrètes**. Elles servent à décrire des expériences dont le nombre de valeurs possibles est fini. Par opposition, la seconde famille de distributions regroupe les distributions **continues**, décrivant des expériences dont le nombre de résultats possibles est infini. Par exemple, mesurer la taille d’une personne adulte sélectionnée au hasard peut produire un nombre infini de valeurs comprises entre 50 cm et 280 cm. Les distributions sont utiles pour décrire les résultats attendus d’une expérience. Reprenons notre exemple du dé. Nous savons que chaque face a une chance sur six d’être tirée au hasard. Nous pouvons représenter cette distribution avec un graphique (figure \@ref(fig:fig251)). 
+Chacune des deux expériences précédentes est régie par une distribution appartenant à la famille des distributions **discrètes**. Elles servent à représenter des expériences dont le nombre de valeurs possibles est fini. Par opposition, la seconde famille de distributions regroupe les distributions **continues**, décrivant des expériences dont le nombre de résultats possibles est en principe infini. Par exemple, mesurer la taille d’une personne adulte sélectionnée au hasard peut produire en principe un nombre infini de valeurs. Les distributions sont utiles pour décrire les résultats potentiels d’une expérience. Reprenons notre exemple du dé. Nous savons que chaque face a une chance sur six d’être tirée au hasard. Nous pouvons représenter cette distribution avec un graphique (figure \@ref(fig:fig251)). 
 
-```{r fig251, echo=FALSE, fig.align='center', fig.cap="Distribution théorique d'un lancé de dé", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
+```{r fig251, echo=FALSE, fig.align='center', fig.cap="Distribution théorique d'un lancer de dé", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
 library(ggplot2)
 df <- data.frame(
   face = 1:6,
@@ -228,9 +230,10 @@ ggplot(mapping = aes(x = face, weight = prob_theorique), data = df) +
   scale_x_continuous(breaks = c(1,2,3,4,5,6))+
   ylim(c(0,0.5))
 ```
-Nous avons donc sous les yeux un modèle statistique décrivant le comportement attendu d’un dé, nous l’appelons la distribution **théorique**. Cependant, si nous effectuons l’expérience 10 fois (nous collectons donc un échantillon), nous obtiendrons une distribution différente de cette distribution théorique (figure \@ref(fig:fig252)).
 
-```{r fig252, echo=FALSE, fig.align='center', fig.cap="Distribution empirique d'un lancé de dé (n=10)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
+Nous avons donc sous les yeux un modèle statistique décrivant le comportement attendu d’un dé, soit sa distribution **théorique**. Cependant, si nous effectuons l’expérience 10 fois (nous collectons donc un échantillon), nous obtiendrons une distribution différente de cette distribution théorique (figure \@ref(fig:fig252)).
+
+```{r fig252, echo=FALSE, fig.align='center', fig.cap="Distribution empirique d'un lancer de dé (n=10)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
 n <- 10
 results <- sample(c(1,2,3,4,5,6),size = n,replace = T)
 counts <- table(results) / n
@@ -245,7 +248,10 @@ ggplot(mapping = aes(x = face, weight = prob_exp10), data = df) +
   scale_x_continuous(breaks = c(1,2,3,4,5,6))+
   ylim(c(0,0.5))
 ```
-Nous appelons cette distribution la distribution **empirique**. Chaque échantillon aura sa propre distribution empirique. Cependant, comme le prédit la loi des grands nombres (ou théorème de Bernoulli) : si une expérience est répétée un grand nombre de fois, la probabilité empirique d’un résultat se rapproche de la probabilité théorique à mesure que le nombre de répétitions augmente. Pour nous en convaincre, collectons trois échantillons de lancer de dé de respectivement 30, 100 et 1000 observations (figure \@ref(fig:fig253)).
+
+Il s'agit de la distribution **empirique**. Chaque échantillon aura sa propre distribution empirique. Cependant, comme le prédit la loi des grands nombres : si une expérience est répétée un grand nombre de fois, la probabilité empirique d’un résultat se rapproche de la probabilité théorique à mesure que le nombre de répétitions augmente. Du point de vue de la théorie des probabilités, chaque échantillon correspond à un ensemble de tirages aléatoires effectués à partir de la distribution théorique du phénomène étudié. 
+
+Pour nous en convaincre, collectons trois échantillons de lancer de dé de respectivement 30, 100 et 1000 observations (figure \@ref(fig:fig253)). Comme nous avons pu le montrer avec la figure \@ref(fig:fig252), nous connaissons la distribution théorique qui régit cette expérience.
 
 ```{r fig253, echo=FALSE, fig.align='center', fig.cap="Distribution empirique d'un lancé de dé (n=10)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(reshape2)
@@ -294,18 +300,20 @@ ggplot(mapping = aes(x = face, weight = value), data = df_melt)+
   scale_x_continuous(breaks = c(1,2,3,4,5,6))+
   facet_wrap(vars(f_exp), ncol=2)
 ```
-On constate bien qu’au fur et à mesure que la taille de l’échantillon augmente, on tend vers la distribution théorique. Ces dernières sont donc utilisées pour modéliser des phénomènes réels et sont à la base de presque tous les tests statistiques d'inférence fréquentiste ou bayésienne.
+On constate bien qu’au fur et à mesure que la taille de l’échantillon augmente, on tend vers la distribution théorique.
 
-En pratique, la question que l’on se pose le plus souvent est : quelle distribution théorique peut le mieux décrire le phénomène empirique à l’étude ? Pour répondre à cette question, deux approches sont possibles :
+Cette relation a été étudiée pour la première fois au XVIII^e^ siècle par le mathématicien Daniel Bernoulli qui a montré que la probabilité que la moyenne d’une distribution empirique soit éloignée de la moyenne de la distribution théorique dont elle est tirée diminuait lorsqu’on augmente le nombre des tirages et donc la taille de l’échantillon. Un autre mathématicien, Siméon-Denis Poisson, l’a fait connaître sous le nom de « loi des grands nombres  ».
 
-* Considérant la littérature existante sur le sujet, les connaissances accumulées et la nature de la variable étudiée, il est possible de sélectionner des distributions théoriques pouvant vraisemblablement correspondre à la variable.
+Les distributions théoriques sont utilisées pour modéliser des phénomènes réels et sont à la base de presque tous les tests statistiques d'inférence fréquentiste ou bayésienne. En pratique, la question que l’on se pose le plus souvent est : quelle distribution théorique peut le mieux décrire le phénomène empirique à l’étude ? Pour répondre à cette question, deux approches sont possibles :
+
+* Considérant la littérature existante sur le sujet, les connaissances accumulées et la nature de la variable étudiée, il est possible de sélectionner des distributions théoriques pouvant vraisemblablement correspondre au phénomène mesuré.
 * Comparer visuellement ou à l’aide de tests statistiques la distribution empirique de la variable et diverses distributions théoriques pour trouver la plus adaptée.
 
 Idéalement, le choix d’une distribution théorique devrait reposer sur ces deux méthodes combinées.
 
 ### Anatomie d'une distribution
 
-Puisqu’une distribution est une fonction, il est possible de la représenter à l’aide d’une formule mathématique (appelée **fonction de masse** pour les distributions discrètes et **fonction de densité** pour les distributions continues). Prenons un premier exemple concret avec la distribution théorique associée au lancer de pièce de monnaie : la distribution de **Bernoulli**. Sa formule est la suivante :
+Une distribution (ou loi de probabilité) est une fonction. Il est possible de la représenter à l’aide d’une formule mathématique (appelée **fonction de masse** pour les distributions discrètes et **fonction de densité** pour les distributions continues) associant chaque résultat possible de l'expérience régie par la distribution à la probabilité d'observer ce résultat. Prenons un premier exemple concret avec la distribution théorique associée au lancer de pièce de monnaie : la distribution de **Bernoulli**. Sa formule est la suivante :
 
 \footnotesize
 \begin{equation} f(x ; p)=\left\{\begin{array}{ll}
@@ -316,7 +324,7 @@ p & \text { si } x=1
 \end{equation}
 \normalsize
 
-avec *p* la probabilité d’obtenir $x = 1$ (pile), et $1 – p$ la probabilité d’avoir $x = 0$ (face). La distribution de Bernoulli ne dépend que d’un paramètre : *p*. Avec différentes valeurs de *p*, on peut obtenir différentes formes pour la distribution de Bernoulli. Si *p* = 1/2, la distribution de Bernoulli décrit parfaitement l’expérience : obtenir pile à un lancer de pièce de monnaie. Si *p* = 1/6, elle décrit alors l’expérience : obtenir 4 (tout comme n’importe quelle valeur de 1 à 6) à un lancer de dé. Pour un exemple plus appliqué, la distribution de Bernoulli est utilisée en analyse spatiale pour étudier la concentration d’accidents de la route ou de crimes en milieu urbain. En chaque endroit du territoire, il est possible de calculer la probabilité qu’un tel évènement ait lieu ou non en se basant sur les données observées et cette distribution.
+avec *p* la probabilité d’obtenir $x = 1$ (pile), et $1 – p$ la probabilité d’avoir $x = 0$ (face). La distribution de Bernoulli ne dépend que d’un paramètre : *p*. Avec différentes valeurs de *p*, on peut obtenir différentes formes pour la distribution de Bernoulli. Si *p* = 1/2, la distribution de Bernoulli décrit parfaitement l’expérience : obtenir pile à un lancer de pièce de monnaie. Si *p* = 1/6, elle décrit alors l’expérience : obtenir 4 (tout comme n’importe quelle valeur de 1 à 6) à un lancer de dé. Pour un exemple plus appliqué, la distribution de Bernoulli est utilisée en analyse spatiale pour étudier la concentration d’accidents de la route ou de crimes en milieu urbain. En chaque endroit du territoire, il est possible de calculer la probabilité qu’un tel évènement ait lieu ou non en modélisant les données observées au moyen de la loi de Bernoulli.
 La distribution continue la plus simple à décrire est certainement la distribution **uniforme**. Il s’agit d’une distribution un peu spéciale puisqu’elle attribue la même probabilité à toutes ses valeurs dans son espace d’échantillonnage. Elle est définie sur l’intervalle [-Inf ; +Inf] et a la fonction de densité suivante : 
 
 \footnotesize
@@ -328,7 +336,7 @@ La distribution continue la plus simple à décrire est certainement la distribu
 \end{equation}
 \normalsize
 
-La fonction uniforme a donc deux paramètres, *a* et *b*, représentant respectivement les valeurs maximale et minimale au-delà desquelles les valeurs ont une probabilité 0 d’être obtenues. Pour avoir une meilleure intuition de ce que décrit une fonction de densité, il est intéressant de la représenter avec un graphique (figure \@ref(fig:fig254)). Notez que sur ce graphique, l'axe des ordonnées n'indique pas précisément la probabilité associée à chaque valeur car celle-ci serait infinidécimale. Il sert uniquement à représenter la densité de la fonction de distribution.
+La fonction de densité de la distribution uniforme a donc deux paramètres, *a* et *b*, représentant respectivement les valeurs maximale et minimale au-delà desquelles les valeurs ont une probabilité 0 d’être obtenues. Pour avoir une meilleure intuition de ce que décrit une fonction de densité, il est intéressant de la représenter avec un graphique (figure \@ref(fig:fig254)). Notez que sur ce graphique, l'axe des ordonnées n'indique pas précisément la probabilité associée à chaque valeur car celle-ci serait infinitésimale. Il sert uniquement à représenter la valeur de la fonction de densité de la distribution pour chaque valeur de x.
 
 ```{r fig254, echo=FALSE, fig.align='center', fig.cap="Distributions uniformes continues", auto_pdf=TRUE, out.width='60%'}
 ggplot()+
@@ -368,6 +376,22 @@ punif(30, min = -60, max = 50,lower.tail = F)
 
 Les paramètres permettent donc d’ajuster la fonction de masse ou de densité d’une distribution afin de lui permettre de prendre des formes différentes. Certains paramètres vont changer la localisation de la distribution (la déplacer vers la droite ou la gauche de l’axe des X), d’autres son degré de dispersion (distribution pointue ou aplatie) ou encore sa forme (symétrie). Les différents paramètres d’une distribution correspondent donc à sa carte d’identité et donnent une idée précise sur sa nature.
 
+::: {.bloc_aller_loin data-latex=""}
+**Fonction de répartition, de survie et d'intensité** : 
+
+Si la fonction de densité ou de densité d'une distribution sont le plus souvent utilisées pour décrire une distribution, d'autres types de fonctions peuvent également être employées et disposent de propriétés intéressantes.
+
+1. La fonction de répartition : il s'agit d'une fonction décrivant le cumul de probabilités d'une distribution. Cette fonction a un minimum de zéro qui est obtenu pour la plus petite valeur de l'espace d'échantillonnage de la distribution, et un maximum de un pour la plus grande valeur de ce même espace. Formellement, la fonction de répartition ($F$) est l’intégrale de la fonction de densité ($f$). Elle est appelée.
+
+$$F(x) = \int_{-\infty}^{x}f(u)du$$
+2. La fonction de survie : soit l'inverse additif de la fonction de répartition ($R$)
+
+$$R(x) = 1-F(x)$$
+3. La fonction de d'intensité, soit le quotient de la fonction de densité et de la fonction de survie ($D$).
+$$D(x) = \frac{f(x)}{D(x)}$$
+Ces fonctions jouent notamment un rôle central dans dans la modélisation des phénomènes qui régissent la survenue des événements, par exemple la mort, les accidents de la route ou les bris d’équipement.
+:::
+
 ### Principales distributions
 
 Il existe un très grand nombre de distributions théoriques et parmi elles, de nombreuses sont en fait des cas spéciaux d’autres distributions. Pour un petit aperçu du bestiaire, vous pouvez faire un saut à la page [Univariate Distribution Relationships](http://www.math.wm.edu/~leemis/chart/UDR/UDR.html){target='_blank'}, qui liste près de 80 distributions. 
@@ -398,7 +422,8 @@ p & \text { si } x=1
 avec *p*, la probabilité d’obtenir $x = 1$ (réussite) et donc $1 – p$, la probabilité d’avoir $x = 0$ (échec). La distribution de Bernoulli ne dépend que d’un paramètre : *p* contrôlant la probabilité de réussite de l’expérience. Notez que si $p = 1/2$, alors la distribution de Bernoulli est également une distribution uniforme.  Un exemple d’application de la distribution de Bernoulli en études urbaines serait la modélisation de la survie d’un·e cycliste (1 pour survie, 0 pour décès) lors d’une collision avec une voiture selon une vitesse donnée.
 
 #### La distribution binomiale
-La distribution binomiale est utilisée pour caractériser une somme de distributions de Bernoulli. Un exemple simple serait l’accumulation des lancers d’une pièce de monnaie. Si l’on compte le nombre de fois où l’on fait pile, cette expérience est décrite par une distribution binomiale. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers). Sa fonction de masse est la suivante : 
+
+La distribution binomiale est utilisée pour caractériser la somme de variables aléatoires (expériences) suivant chacune une distribution de Bernoulli. Un exemple simple serait l’accumulation des lancers d’une pièce de monnaie. Si l’on compte le nombre de fois où l’on fait pile, cette expérience est décrite par une distribution binomiale. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers). Sa fonction de masse est la suivante : 
 
 \footnotesize
 \begin{equation} 
@@ -437,7 +462,8 @@ ggplot(df) +
 ```
 
 #### La distribution géométrique
-La distribution géométrique permet de représenter le nombre de tirages nécessaires avec une distribution de Bernoulli avant d’obtenir une réussite. Par exemple, avec un lancer de dé, l’idée serait de compter le nombre de lancers nécessaires avant de tomber sur un 6. Son espace d’échantillonnage est donc $[1 ; +\infty[$ (limité aux nombres entiers). Sa distribution de masse est la suivante : 
+
+La distribution géométrique permet de représenter le nombre de tirages qu'il faut faire avec une distribution de Bernoulli avant d’obtenir une réussite. Par exemple, avec un lancer de dé, l’idée serait de compter le nombre de lancers nécessaires avant de tomber sur un 6. Son espace d’échantillonnage est donc $[1 ; +\infty[$ (limité aux nombres entiers). Sa distribution de masse est la suivante : 
 
 \footnotesize
 \begin{equation} f(x ; p)= (1-p)^xp
@@ -476,6 +502,7 @@ ggplot(df) +
 ```
 
 #### La distribution binomiale négative
+
 La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre *n* de réussites $[1 ; +\infty[$ (limité aux nombres entiers positifs). Sa formule est la suivante : 
 
 \footnotesize
@@ -518,7 +545,8 @@ ggplot(df) +
 ```
 
 #### La distribution de poisson
-La distribution de poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un·e cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de poisson à une fonction de densité avec un seul paramètre $\lambda$ (lambda) et est décrite par la formule suivante : 
+
+La distribution de Poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un·e cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de Poisson a une fonction de densité avec un seul paramètre généralement noté $\lambda$ (lambda) et est décrite par la formule suivante : 
 
 \footnotesize
 \begin{equation} f(x ; \lambda)=\frac{\lambda^{x}}{x !} e^{-\lambda}
@@ -556,7 +584,8 @@ ggplot(df) +
 ```
 
 #### La distribution de poisson avec excès de zéros {#sectpoissonzero}
-Il arrive régulièrement qu’une variable de comptage mesurée produise un très grand nombre de zéros. Prenons pour exemple le nombre de seringues de drogue injectable par tronçon de rue ramassées sur une période d’un mois. À l’échelle de toute une ville, un très grand nombre de tronçons n’auront tout simplement aucune seringue et dans ce contexte, la distribution classique de poisson n’est pas adaptée. On lui préfère alors sa version avec une inflation de zéros qui inclut un paramètre contrôlant la forte présence de zéros. Sa fonction de densité est la suivante : 
+
+Il arrive régulièrement qu’une variable de comptage mesurée produise un très grand nombre de zéros. Prenons pour exemple le nombre de seringues de drogue injectable par tronçon de rue ramassées sur une période d’un mois. À l’échelle de toute une ville, un très grand nombre de tronçons n’auront tout simplement aucune seringue et dans ce contexte, la distribution classique de Poisson n’est pas adaptée. On lui préfère alors une autre distribution : la distribution de Poisson avec excès de zéros (ou distribution de Pólya) qui inclut un paramètre contrôlant la forte présence de zéros. Sa fonction de densité est la suivante : 
 
 \footnotesize
 \begin{equation} f(x ; \lambda; p)=(1-p)\frac{\lambda^{x}}{x !} e^{-\lambda}
@@ -564,10 +593,10 @@ Il arrive régulièrement qu’une variable de comptage mesurée produise un tr�
 \end{equation}
 \normalsize
 
-Plus exactement, la distribution de poisson avec excès de zéro (zero-inflated en anglais) est une combinaison de deux processus générant des zéros. En effet, un zéro peut être produit par la distribution de poisson originale (aussi appelé vrai zéro) ou alors par le processus menant à la surreprésentation des 0 dans le jeu de données, capturée par la probabilité *p* (faux zéro). *p* est donc le paramètre contrôlant la probabilité d’obtenir un zéro, indépendamment du phénomène étudié.
+Plus exactement, la distribution de poisson avec excès de zéro (zero-inflated en anglais) est une combinaison de deux processus générant des zéros. En effet, un zéro peut être produit par la distribution de Poisson proprement dite (aussi appelé vrai zéro) ou alors par le processus générant les zéros exédentaires dans le jeu de données, capturé par la probabilité *p* (faux zéro). *p* est donc le paramètre contrôlant la probabilité d’obtenir un zéro, indépendamment du phénomène étudié.
 
 ```{r fig259b, echo=FALSE, fig.align='center', fig.cap="La distribution de poisson avec excès de zéros", auto_pdf=TRUE, out.width='95%'}
-library(VGAM)
+library(VGAM, quietly = TRUE)
 data <- data.frame(y1 = dzipois(0:20, lambda = 1, pstr0 = 0.2),
                    y2 = dzipois(0:20, lambda = 3, pstr0 = 0.4),
                    y3 = dzipois(0:20, lambda = 5, pstr0 = 0.1),
@@ -600,7 +629,7 @@ ggplot(df) +
 ```
 
 #### La distribution gaussienne
-Plus communément appelée la distribution normale, la distribution gaussienne est utilisée pour représenter des variables continues centrées sur leur moyenne. Son espace d’échantillonnage est ]-$\infty$ ; +$\infty$[. Cette distribution joue un rôle central en statistique. Le théorème central limite stipule que la somme d’un grand nombre de distributions tend généralement vers une distribution normale. Autrement dit, lorsque nous répétons une même expérience et que nous conservons les résultats de ces expériences, la distribution du résultat de ces expériences tend vers la normalité. Ceci s’explique par le fait qu’en moyenne, chaque répétition de l’expérience produit le même résultat, mais qu’un ensemble de petits facteurs aléatoires viennent rajouter de la variabilité dans les données collectées. Prenons un exemple concret, si l’on plante une centaine d’arbres simultanément dans un parc avec un degré d’ensoleillement identique et qu’on leur apporte les mêmes soins pendant dix ans, la distribution de leurs tailles suivra une distribution normale. Un ensemble de facteurs aléatoires (composition du sol, exposition au vent, aléas génétiques, passage de nuages, etc.) auront affecté différemment chaque arbre, ajoutant ainsi un peu de hasard dans leurs tailles finales. Ces dernières seront cependant davantage affectées par des paramètres centraux (espèces, ensoleillement, arrosage, etc.), et seront donc centrées autour d’une moyenne.
+Plus communément appelée la distribution normale, la distribution gaussienne est utilisée pour représenter des variables continues centrées sur leur moyenne. Son espace d’échantillonnage est ]-$\infty$ ; +$\infty$[. Cette distribution joue un rôle central en statistique. Selon la formule consacrée, cette distribution résulte de la superposition d’un très grand nombre de petits effets fortuits indépendants. C’est ce qu’exprime formellement le théorème central limite qui montre que la somme d’un grand nombre de variables aléatoires tend généralement vers une distribution normale. Autrement dit, lorsque nous répétons une même expérience et que nous conservons les résultats de ces expériences, la distribution du résultat de ces expériences tend vers la normalité. Ceci s’explique par le fait qu’en moyenne, chaque répétition de l’expérience produit le même résultat, mais qu’un ensemble de petits facteurs aléatoires viennent rajouter de la variabilité dans les données collectées. Prenons un exemple concret, si l’on plante une centaine d’arbres simultanément dans un parc avec un degré d’ensoleillement identique et qu’on leur apporte les mêmes soins pendant dix ans, la distribution de leurs tailles suivra une distribution normale. Un ensemble de facteurs aléatoires (composition du sol, exposition au vent, aléas génétiques, passage de nuages, etc.) auront affecté différemment chaque arbre, ajoutant ainsi un peu de hasard dans leurs tailles finales. Ces dernières seront cependant davantage affectées par des paramètres centraux (espèces, ensoleillement, arrosage, etc.), et seront donc centrées autour d’une moyenne.
 La fonction de densité de la distribution normale est la suivante :
 
 \footnotesize
@@ -609,13 +638,13 @@ La fonction de densité de la distribution normale est la suivante :
 \end{equation}
 \normalsize
 
-avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa probabilité, $\mu$ (mu) la moyenne de la distribution normale (paramètre de localisation) et $\sigma$ (sigma) son écart-type (paramètre de dispersion). La courbe normale suit une forme de cloche. Notez que :
+avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa probabilité, $\mu$ (mu) la moyenne de la distribution normale (paramètre de localisation) et $\sigma$ (sigma) son écart-type (paramètre de dispersion). Cette fonction suit ce que l'on appelle la courbe normale ayant une forme de cloche. Notez que :
 
 * 68,2% de la masse de la distribution normale est comprise dans l’intervalle $[\mu- \sigma≤x≤ \mu+ \sigma]$ 
 * 95,4% dans l’intervalle $[\mu- 2\sigma≤x≤ \mu+ 2\sigma]$
 * 99,7% dans l’intervalle $[\mu- 3\sigma≤x≤ \mu+ 3\sigma]$
 
-Autrement dit, dans le cas d’une distribution normale, il est très invraisemblable d’observer des données situées à plus de trois écarts types de la moyenne.
+Autrement dit, dans le cas d’une distribution normale, il est très invraisemblable d’observer des données situées à plus de trois écarts types de la moyenne. Ces différentes égalités sont vraies **quelques soient les valeur de la moyenne et de l'écart-type**.
 Notez ici que lorsque $\mu = 0$ et $\sigma = 1$, on obtient la loi normale générale (ou centrée-réduite) (section \@ref(sect02552)).
 
 ```{r fig260, echo=FALSE, fig.align='center', fig.cap="La distribution Gaussienne", auto_pdf=TRUE, out.width='70%'}
@@ -662,7 +691,8 @@ generate_plot(dnorm,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution gaussienne asymétrique
-La distribution normale asymétrique (skew-normal) est une extension de la distribution gaussienne permettant de modifier la forme de la distribution normale pour qu’elle ne soit plus symétrique. Son espace d’échantillonnage est donc ]-$\infty$ ; +$\infty$[. Sa fonction de densité est la suivante :
+
+La distribution normale asymétrique (skew-normal) est une extension de la distribution gaussienne permettant lever la contrainte de symétrie de la simple distribution gaussienne. Son espace d’échantillonnage est donc ]-$\infty$ ; +$\infty$[. Sa fonction de densité est la suivante :
 
 \footnotesize
 \begin{equation} f(x;\xi;\omega;\alpha) = \frac{2}{\omega \sqrt{2 \pi}} e^{-\frac{(x-\xi)^{2}}{2 \omega^{2}}} \int_{-\infty}^{\alpha\left(\frac{x-\xi}{\omega}\right)} \frac{1}{\sqrt{2 \pi}} e^{-\frac{t^{2}}{2}} d t
@@ -670,7 +700,7 @@ La distribution normale asymétrique (skew-normal) est une extension de la distr
 \end{equation}
 \normalsize
 
-avec $\xi$ (xi) le paramètre de localisation, $\omega$ (omega) le paramètre de dispersion (ou d’échelle) et $\alpha$ (alpha) le paramètre de forme (contrôlant le degré de symétrie). Si  $\alpha = 0$, alors la distribution skew-normal est une simple distribution normale. Ce type de distribution est très utile lorsque que l’on souhaite modéliser une variable pour laquelle on sait que des valeurs plus extrêmes s’observeront d’un côté ou de l’autre de la distribution. Les revenus totaux annuels des personnes ou des ménages sont de très bons exemples puisqu’ils sont distribués généralement avec une asymétrie positive : bien qu’une moyenne existe, il y a généralement plus de personnes ou de ménages avec des revenus très faibles, que de personnes ou de ménages avec des revenus très élevés.
+avec $\xi$ (xi) le paramètre de localisation, $\omega$ (omega) le paramètre de dispersion (ou d’échelle) et $\alpha$ (alpha) le paramètre de forme (contrôlant le degré de symétrie). Si  $\alpha = 0$, alors la distribution skew-normal est une distribution normale ordinaire. Ce type de distribution est très utile lorsque que l’on souhaite modéliser une variable pour laquelle on sait que des valeurs plus extrêmes s’observeront d’un côté ou de l’autre de la distribution. Les revenus totaux annuels des personnes ou des ménages sont de très bons exemples puisqu’ils sont distribués généralement avec une asymétrie positive : bien qu’une moyenne existe, il y a généralement plus de personnes ou de ménages avec des revenus très faibles, que de personnes ou de ménages avec des revenus très élevés.
 
 ```{r fig261, echo=FALSE, fig.align='center', fig.cap="La distribution skew-Gaussienne", auto_pdf=TRUE, out.width='70%'}
 parametres <- list(location = c(-10,-5,10),
@@ -683,7 +713,8 @@ generate_plot(dskewnorm,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution log-normale
-Au même titre que la distribution skew-normal, la distribution log-normal est une version asymétrique de la distribution normale. Son espace d’échantillonnage est ]0 ; +$\infty$[. Cela signifie que cette distribution ne peut décrire que des données continues et positives. Sa fonction de densité est la suivante : 
+
+Au même titre que la distribution skew-normal, la distribution log-normale est une version asymétrique de la distribution normale. Son espace d’échantillonnage est ]0 ; +$\infty$[. Cela signifie que cette distribution ne peut décrire que des données continues et positives. Sa fonction de densité est la suivante : 
 \footnotesize
 \begin{equation} f(x ; \mu ; \sigma)=\frac{1}{x \sigma \sqrt{2 \pi}} e^{-\left(\frac{(\ln x-\mu)^{2}}{2 \sigma^{2}}\right)}
 (\#eq:loggaussien)
@@ -701,8 +732,11 @@ xlim <- c(0,30)
 generate_plot(dlnorm,parametres,real_names,xlim,colors)
 ```
 
+Plus spécifiquement, la distribution log-normale est une transformation de la distribution normale. Comme son nom l'indique, elle permet de décrire le logarithme d'une variable aléatoire suiviant une distribution normale.
+
 #### La distribution de Student {#sect024311}
-La distribution de Student joue un rôle important en statistique, elle est par exemple utilisée lors du test *t* pour calculer le degré de significativité du test. Comme la distribution gaussienne, la distribution de Student a une forme de cloche, est centrée sur sa moyenne et définie sur ]-$\infty$ ; +$\infty$[. Elle a cependant des « queues plus lourdes » (*heavy tails* en anglais). Entendez par-là que les valeurs extrêmes ont une plus grande probabilité d’occurrence dans une distribution de Student que dans une distribution gaussienne. Sa fonction de densité est la suivante : 
+
+La distribution de Student joue un rôle important en statistique, elle est par exemple utilisée lors du test *t* pour calculer le degré de significativité du test. Comme la distribution gaussienne, la distribution de Student a une forme de cloche, est centrée sur sa moyenne et définie sur ]-$\infty$ ; +$\infty$[. Elle se distingue de la distribution normale principalement par le rôle que joue son troisième paramètre, $\nu$ : le nombre de degré de liberté, contrôlant le poids des queues de la distribution. Une petite valeur de $\nu$ signifie que la distribution a des « queues plus lourdes » (*heavy tails* en anglais). Entendez par-là que les valeurs extrêmes ont une plus grande probabilité d’occurrence : 
 
 \footnotesize
 \begin{equation} p(x ; \nu ; \hat{\mu} ; \hat{\sigma})=\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right) \sqrt{\pi \nu} \hat{\sigma}}\left(1+\frac{1}{\nu}\left(\frac{x-\hat{\mu}}{\hat{\sigma}}\right)^{2}\right)^{-\frac{\nu+1}{2}}
@@ -710,7 +744,7 @@ La distribution de Student joue un rôle important en statistique, elle est par 
 \end{equation}
 \normalsize
 
-avec $\mu$ le paramètre de localisation, $\sigma$ le paramètre de dispersion (qui n’est cependant pas un écart-type comme pour la distribution normale) et $\nu$ le nombre de degré de liberté. Plus $\nu$ est grand, plus la distribution de Student tend vers une distribution normale. $\Gamma$ représente la fonction mathématique gamma (à ne pas confondre avec la distribution de Gamma). Un exemple d’application en études urbaines serait l’exposition au bruit environnemental de cyclistes. Cette distribution s’approcherait certainement d’une distribution normale, mais les cyclistes croisent régulièrement des secteurs peu bruyants (parcs, rues résidentielles, etc.) et des secteurs très bruyants (artères majeures, zones industrielles, etc.), ce qui conduit vers une distribution de Student.
+avec $\mu$ le paramètre de localisation, $\sigma$ le paramètre de dispersion (qui n’est cependant pas un écart-type comme pour la distribution normale) et $\nu$ le nombre de degré de liberté. Plus $\nu$ est grand, plus la distribution de Student tend vers une distribution normale. Ici, la lettre grecque $\Gamma$ représente la fonction mathématique gamma (à ne pas confondre avec la distribution Gamma). Un exemple d’application en études urbaines serait l’exposition au bruit environnemental de cyclistes. Cette distribution s’approcherait certainement d’une distribution normale, mais les cyclistes croisent régulièrement des secteurs peu bruyants (parcs, rues résidentielles, etc.) et des secteurs très bruyants (artères majeures, zones industrielles, etc.), plus souvent que ce que prévoit une distribution normale, justifiant le choix d'une distribution de Student.
 
 ```{r fig263, echo=FALSE, fig.align='center', fig.cap="La distribution de Student", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(LaplacesDemon)
@@ -725,7 +759,8 @@ generate_plot(dst,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution de Cauchy
-La distribution de Cauchy est également une distribution symétrique définie sur l’intervalle ]-$\infty$ ; +$\infty$[. Elle a comme particularité d’avoir des queues potentiellement plus lourdes que la distribution de Student. Elle est notamment utilisée pour modéliser des phénomènes extrêmes comme les précipitations maximales annuelles, les niveaux d’inondations maximaux annuels ou les *values at risk* pour les portefeuilles financiers. Il est également intéressant de noter que le quotient de deux variables indépendantes normalement distribuées suit une distribution de Cauchy. Sa fonction de densité est la suivante : 
+
+La distribution de Cauchy est également une distribution symétrique définie sur l’intervalle ]-$\infty$ ; +$\infty$[. Elle a comme particularité d'être plus applatie que la distribution de Student (d’avoir des queues potentiellement plus lourdes). Elle est notamment utilisée pour modéliser des phénomènes extrêmes comme les précipitations maximales annuelles, les niveaux d’inondations maximaux annuels ou les seuils critiques de perte pour les portefeuilles financiers. Il est également intéressant de noter que le quotient de deux variables indépendantes normalement distribuées suit une distribution de Cauchy. Sa fonction de densité est la suivante : 
 
 \footnotesize
 \begin{equation} \frac{1}{\pi \gamma}\left[\frac{\gamma^{2}}{\left(x-x_{0}\right)^{2}+\gamma^{2}}\right]
@@ -745,9 +780,10 @@ xlim <- c(-25,25)
 generate_plot(dcauchy,parametres,real_names,xlim,colors)
 ```
 
-#### La distribution du Chi-carré
+#### La distribution du Khi-carré
 
-La distribution du Chi<sup>2</sup> est utilisée dans de nombreux tests statistiques. Spécifiquement, le test du Chi<sup>2</sup> de Pearson est utilisé pour comparer les écarts au carré entre des fréquences attendues et observées de deux variables qualitatives. La distribution du Chi<sup>2</sup> décrit donc les sommes des carrés d’un nombre *k* de variables indépendantes normalement distribuées. Il est assez rare de modéliser un phénomène à l’aide d’une distribution du Chi<sup>2</sup>, mais son omniprésence dans les tests statistiques justifie qu’elle soit mentionnée ici. Cette distribution est définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité : 
+La distribution du Khi<sup>2</sup> est utilisée dans de nombreux tests statistiques. Par exemple, le test du Khi<sup>2</sup> de Pearson est utilisé pour comparer les écarts au carré entre des fréquences attendues et observées de deux variables qualitatives.
+La distribution du Khi<sup>2</sup> décrit plus généralement la sommes des carrés d’un nombre *k* de variables indépendantes normalement distribuées. Il est assez rare de modéliser un phénomène à l’aide d’une distribution du Chi<sup>2</sup>, mais son omniprésence dans les tests statistiques justifie qu’elle soit mentionnée ici. Cette distribution est définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité : 
 
 \footnotesize
 \begin{equation} f(x;k) = \frac{1}{2^{k / 2} \Gamma(k / 2)} x^{k / 2-1} e^{-x / 2}
@@ -755,7 +791,7 @@ La distribution du Chi<sup>2</sup> est utilisée dans de nombreux tests statisti
 \end{equation}
 \normalsize
 
-Cette fonction n’a qu’un paramètre *k*, représentant donc le nombre de variables au carré sommées pour obtenir la distribution du Chi<sup>2</sup>
+La distribution du Khi<sup>2</sup> n’a qu’un paramètre *k*, représentant donc le nombre de variables mises au carré et dont on fait la somme pour obtenir la distribution du Khi<sup>2</sup>.
 
 ```{r fig265, echo=FALSE, fig.align='center', fig.cap="La distribution du Chi<sup>2</sup>", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(df = c(2,5,10))
@@ -766,7 +802,8 @@ generate_plot(dchisq,parametres,real_names,xlim,colors)
 ```
 
 #### La distribution exponentielle
-La distribution exponentielle est une version continue de la distribution géométrique. Pour cette dernière, on s’intéresserait au nombre de tentatives nécessaires pour obtenir un résultat positif, soit une dimension discrète. Pour la distribution exponentielle, cette dimension discrète est remplacée par une dimension continue. L’exemple le plus intuitif est sûrement le cas du temps. Dans ce cas, la distribution exponentielle servirait à décrire le temps d’attente nécessaire pour qu’un évènement se produise. Il pourrait aussi s’agir d’une force que l’on applique jusqu’à ce qu’un matériau cède. Cette distribution est donc définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité :
+
+La distribution exponentielle est une version continue de la distribution géométrique. Pour cette dernière, on s’intéresserait au nombre de tentatives nécessaires pour obtenir un résultat positif, soit une dimension discrète. Pour la distribution exponentielle, cette dimension discrète est remplacée par une dimension continue. L’exemple le plus intuitif est sûrement le cas du temps. Dans ce cas, la distribution exponentielle servirait à modéliser le temps d’attente nécessaire pour qu’un évènement se produise. Il pourrait aussi s’agir d’une force que l’on applique jusqu’à ce qu’un matériau cède. Cette distribution est donc définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité :
 
 \footnotesize
 \begin{equation} f(x;\lambda) = \lambda e^{-\lambda x}
@@ -783,8 +820,11 @@ xlim <- c(0,25)
 generate_plot(dexp,parametres,real_names,xlim,colors)
 ```
 
+La distribution exponentielle est conceptuellement proche de la distribution de Poisson. La distribution de Poisson régit le nombre des événements qui surviennent au cours d’un laps de temps donné. La distribution exponentielle peur servir à modéliser le temps qui s’écoule entre deux événements. 
+
 #### La distribution Gamma {#sect024315}
-La distribution Gamma est une généralisation d’un grand nombre de distributions. Elle regroupe ainsi la distribution exponentielle et du Chi<sup>2</sup>. En d’autres termes, les distributions du chi<sup>2</sup> et exponentielles sont des cas particuliers de la distribution de Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
+
+La distribution Gamma peut être vue comme la généralisation d’un grand nombre de distributions. Ainsi la distribution exponentielle et du Khi<sup>2</sup> peuvent être vues comme des cas particuliers de la distribution Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
 
 \footnotesize
 \begin{equation} f(x ; \alpha; \beta)=\frac{\beta^{\alpha} x^{\alpha-1} e^{-\beta x}}{\Gamma(\alpha)}
@@ -803,9 +843,11 @@ xlim <- c(0,25)
 generate_plot(dgamma,parametres,real_names,xlim,colors)
 ```
 
-#### La distribution Beta {#sect024316}
+#### La distribution Bêta {#sect024316}
 
-La distribution Beta est définie sur l’intervalle [0 ; 1], elle est donc énormément utilisée pour représenter des variables étant des proportions ou des probabilités. Elle a aussi une utilité pratique en statistique, car en combinaison avec d’autres distributions, elle permet de modéliser leurs paramètres de probabilité (distribution beta-binomial, beta-negative-binomial, etc.). Un autre usage plus rare, mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Ceci est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2*, suit une distribution beta. Un exemple concret serait par exemple la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante : 
+La distribution Bêta est définie sur l’intervalle [0 ; 1], elle est donc énormément utilisée pour modéliser des variables étant des proportions ou des probabilités.
+
+La distribution Bêta a été élaborée pour modéliser la superposition d’un très grand nombre de petits effets fortuits qui ne sont pas indépendants et notamment pour étudier l’effet de la réalisation d’un événement aléatoire sur la probabilité des tirages subséquents. Elle a aussi une utilité pratique en statistique, car elle peut être combinée avec d’autres distributions (distribution beta-binomial, beta-negative-binomial, etc.). Un autre usage plus rare, mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Ceci est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2*, suit une distribution beta. Un exemple concret serait par exemple la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante : 
 
 \footnotesize
 \begin{equation} f(x;\alpha;\beta) = \frac{1}{\mathrm{B}(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
@@ -824,9 +866,9 @@ xlim <- c(0,1)
 generate_plot(dbeta,parametres,real_names,xlim,colors)
 ```
 
-#### La distribution Weibull
+#### La distribution de Weibull
 
-La distribution Weibull est directement liée à la distribution exponentielle, cette dernière étant en fait un cas particulier de distribution Weibull. Elle sert donc à représenter une quantité *x* (souvent le temps) à accumuler pour qu’un évènement se produise. La distribution de Weibull est définie sur l’intervalle [0 ; +$\infty$[ et a la fonction de densité suivante : 
+La distribution de Weibull est directement liée à la distribution exponentielle, cette dernière étant en fait un cas particulier de distribution Weibull. Elle sert donc souvent à modéliser une quantité *x* (souvent le temps) à accumuler pour qu’un évènement se produise. La distribution de Weibull est définie sur l’intervalle [0 ; +$\infty$[ et a la fonction de densité suivante : 
 
 \footnotesize
 \begin{equation} f(x;\lambda) = \frac{k}{\lambda} (\frac{x}{\lambda})^{k-1} e^{-(\frac{x}{\lambda})^k}
@@ -834,7 +876,7 @@ La distribution Weibull est directement liée à la distribution exponentielle, 
 \end{equation}
 \normalsize
 
-$\lambda$ est le paramètre de dispersion (analogue a celui d’une distribution exponentielle classique) et *k* le paramètre de forme. Pour bien comprendre le rôle de *k*, prenons un exemple : la propagation d’un champignon d’un arbre à son voisin. Si $k<1$, cela signifie que la probabilité que l’évènement modélisé se produise diminue avec le temps. En d’autres termes, dans de nombreux cas la contamination se fait rapidement. Si $k=1$, alors la probabilité que l’évènement se produise reste stable dans le temps. Si $k > 1$, alors la probabilité que l’évènement se produisent augmente avec le temps, ce qui signifie une augmentation des risques de contamination à mesure que les deux arbres restent à proximité. La distribution de Weibull est très utilisée en analyse de survie, en météorologie, en ingénierie des matériaux et dans la théorie des valeurs extrêmes.
+$\lambda$ est le paramètre de dispersion (analogue a celui d’une distribution exponentielle classique) et *k* le paramètre de forme. Pour bien comprendre le rôle de *k*, prenons un exemple : la propagation d’un champignon d’un arbre à son voisin. Si $k<1$, cela signifie que le risque instantané que l’évènement modélisé se produise diminue avec le temps (en d’autres termes, plus le temps passe, plus petite devient la probabilité d’être contaminé si on ne l’a pas déjà été). Si $k=1$, alors le risque instantané que l’évènement se produise reste identique dans le temps (la loi de Weibull se résume alors à une loi exponentielle). Si $k > 1$, alors la risque instantané que l’évènement se produisent augmente avec le temps (la probabilité pour un arbre d'être contaminé s'il ne l’a pas déjà été — pas seulement le risque cumulé — augmente en fonction du temps). La distribution de Weibull est très utilisée en analyse de survie, en météorologie, en ingénierie des matériaux et dans la théorie des valeurs extrêmes.
 
 ```{r fig269, echo=FALSE, fig.align='center', fig.cap="La distribution de Weibull", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape = c(1,0.5,5),
@@ -847,7 +889,7 @@ generate_plot(dweibull,parametres,real_names,xlim,colors)
 
 #### La distribution Pareto
 
-La distribution Pareto est à la distribution exponentielle ce que la distribution log-normal est à la distribution gaussienne : la distribution de l’exponentiel (e) de cette distribution originale. Elle est définie sur l’intervalle  $[x_m ; +\infty[$ avec la fonction de densité suivante : 
+Cette distribution a été élaborée par Vilfredo Pareto pour donner une forme mathématique à ce qui porte aujourd’hui le nom de principe de Pareto et qu’on exprime souvent de manière imagée — dans une société donnée, 20 % des individus possèdent 80 % de la richesse —, mais qui est plus justement exprimée en écrivant que, de manière générale, dans toute société, la plus grande partie du capital est détenue par une petite fraction de la population. Elle est définie sur l’intervalle  $[x_m ; +\infty[$ avec la fonction de densité suivante : 
 
 \footnotesize
 \begin{equation} f(x;x_m;k) = (\frac{x_m}{x})^k
@@ -866,17 +908,23 @@ xlim <- c(0,15)
 generate_plot(VGAM::dpareto,parametres,real_names,xlim,colors)
 ```
 
-Originalement, le mathématicien Pareto a utilisé cette fonction pour décrire la répartition du capital parmi la population puisqu’une large partie du capital est détenue par une petite fraction de la population. Elle peut également être utilisée pour décrire la répartition de la taille des villes [@William_pareto_ville], [la popularité des hommes sur tinder](https://medium.com/@worstonlinedater/tinder-experiments-ii-guys-unless-you-are-really-hot-you-are-probably-better-off-not-wasting-your-2ddf370a6e9a){target="_blank"} ou la taille des fichiers échangés sur internet [@William_pareto]. Pour ces trois exemples, nous avons une situation avec : de nombreuses petites villes, profils peu attractifs, petits fichiers échangés et à l'inverse très peu de grandes villes, profils très attractifs, gros fichiers échangés.
+Au-delà de la question de la répartition des richesse, la distribution de Pareto peut également être utilisée pour décrire la répartition de la taille des villes [@William_pareto_ville], [la popularité des hommes sur tinder](https://medium.com/@worstonlinedater/tinder-experiments-ii-guys-unless-you-are-really-hot-you-are-probably-better-off-not-wasting-your-2ddf370a6e9a){target="_blank"} ou la taille des fichiers échangés sur internet [@William_pareto]. Pour ces trois exemples, nous avons une situation avec : de nombreuses petites villes, profils peu attractifs, petits fichiers échangés et à l'inverse très peu de grandes villes, profils très attractifs, gros fichiers échangés.
+
+La loi de Pareto est liée à la loi exponentielle. Si une variable aléatoire suit une loi de Pareto, le logarithme du quotient de cette variable et de son paramètre de localisation est une variable aléatoire qui suit une loi exponentielle.
 
 #### Cas particuliers
 
-Sachez également qu’il existe des formes « plus exotiques » de distributions que nous n’abordons pas ici, mais auxquelles vous pourriez être confrontés un jour :
+Sachez également qu’il existe des distributions « plus exotiques » que nous n’abordons pas ici, mais auxquelles vous pourriez être confrontés un jour :
 
 * Les distributions sphériques, servant à décrire des données dont le 0 est équivalent à la valeur maximale. Par exemple, des angles puisque 0 et 360 degrés sont identiques.
-* Les mixtures de distributions, décrivant des combinaisons de distributions. Par exemple, la distribution de la taille de tous les humains est en réalité un mixte entre deux distributions gaussiennes, une pour chaque sexe, puisque ces deux sous-distributions n’ont pas la même moyenne ni le même écart-type.
-* Les distributions multivariées, permettant de décrire des phénomènes multidimensionnels. Par exemple, la réussite des élèves en français et en mathématique pourrait être modélisée comme une distribution gaussienne bivariée plutôt que deux distributions distinctes.
-* Les distributions censurées décrivant des variables pour lesquels des valeurs sont possibles au-delà d’une certaine limite mais que l’on est incapable de mesurer. Un bon exemple serait la mesure de la pollution sonore avec un capteur incapable de détecter des niveaux sonores en dessous de 55 décibels. Il arrive parfois en ville que les niveaux sonores soient si faibles, mais les données collectées ne le montrent pas. Dans ce contexte, il est important d’utiliser des versions censurées des distributions présentées précédemment. Les observations au-delà de la limite sont conservées dans l’analyse, mais nous ne disposons que d’une information partielle à leur égard.
-* Les distributions tronquées, souvent confondues avec les distributions censurées, décrivent des situations ou des données qui au-delà d’une certaine limite sont retirées simplement de l’analyse.
+
+* Les distributions composés (*mixture distributions*), permettant de modéliser des phénomènes issus de la superposition de plusieurs distributions. Par exemple, la distribution de la taille de l'ensemble des êtres humains est en réalité une superposition de deux distributions gaussiennes, une pour chaque sexe, puisque ces deux distributions n’ont pas la même moyenne ni le même écart-type.
+
+* Les distributions multivariées qui permettent de décrire des phénomènes multidimensionnels. Par exemple, la réussite des élèves en français et en mathématique pourrait être modélisée par une distribution gaussienne bivariée plutôt que deux distributions distinctes. Ce choix serait pertinent si l'on présume que ces deux variables sont corrélées plutôt qu'indépendantes.
+
+* Les distributions censurées décrivant des variables pour lesquels les données sont issues d'un tirage « censuré ». En d'autres termes, la variable étudiée varie sur une certaines étendue, mais du fait du processus de tirage (collecte des données), les valeurs au-delà de certaines limites sont censurées. Un bon exemple serait la mesure de la pollution sonore avec un capteur incapable de détecter des niveaux sonores en dessous de 55 décibels. Il arrive parfois en ville que les niveaux sonores descendent plus bas que ce seuil, mais les données collectées ne le montrent pas. Dans ce contexte, il est important d’utiliser des versions censurées des distributions présentées précédemment. Les observations au-delà de la limite sont conservées dans l’analyse, mais nous ne disposons que d’une information partielle à leur égard (elles sont au-delà de la limite).
+
+* Les distributions tronquées, souvent confondues avec les distributions censurées, décrivent des situations où des données  au-delà d’une certaine limite sont impossibles à collecter et retirées simplement de l’analyse.
 
 ### Conclusion sur les distributions
 
