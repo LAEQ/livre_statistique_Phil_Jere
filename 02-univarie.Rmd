@@ -208,7 +208,7 @@ En probabilité, on s’intéresse aux résultats d’expériences. Du point de 
 
 **Une distribution est un modèle mathématique permettant d’associer pour chaque résultat possible d’une expérience la probabilité d’obtenir ce résultat**. D'un point de vue pratique, si nous disposions de la distribution régissant l’expérience : « mesurer la concentration d’ozone à Montréal à 13h en été », nous pourrions calculer la probabilité de mesurer une valeur inférieure à 15 μg/m<sup>3</sup>.
 
-Notez que l'utilisation que nous faisons ici du terme « distribution » est un anglicisme. En effet, en français, la définition précédente est plus proche du terme de « loi de probabilité ». Cependant, la quasi-totalité de la documentation sur R est en anglais, et dans la pratique, ces deux termes ont tendance à se confondre. Nous avons donc fait le choix de poursuivre avec ce terme dans le reste du livre.
+Notez que l'utilisation que nous faisons ici du terme « distribution » est un anglicisme (éhonté diront certain(e)s). En effet, en français, la définition précédente est plus proche du terme de « loi de probabilité ». Cependant, la quasi-totalité de la documentation sur R est en anglais, et dans la pratique, ces deux termes ont tendance à se confondre. Nous avons donc fait le choix de poursuivre avec ce terme dans le reste du livre.
 
 Une distribution est toujours définies dans un intervalle en dehors duquel elle n'est définie; les valeurs dans cet intervalle sont appelées **l’espace d’échantillonnage**. Il s’agit donc des valeurs possibles que peut produire l’expérience. La somme des probabilités de l’ensemble des valeurs de l’espace d’échantillonnage est 1 (100%). Intuitivement, cela signifie que si l’on réalise l’expérience, on obtient nécessairement un résultat, et que la somme des probabilités est répartie entre tous les résultats possibles de l’expérience. En langage mathématique, on dit que l’intégrale de la fonction de densité d'une distribution est 1 dans son intervalle de définition.
 
@@ -544,7 +544,7 @@ ggplot(df) +
    facet_wrap(vars(f_prob), ncol=2)
 ```
 
-#### La distribution de poisson
+#### La distribution de Poisson
 
 La distribution de Poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un·e cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de Poisson a une fonction de densité avec un seul paramètre généralement noté $\lambda$ (lambda) et est décrite par la formule suivante : 
 
