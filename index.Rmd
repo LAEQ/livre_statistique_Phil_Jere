@@ -30,39 +30,59 @@ lang: fr
 
 Ce livre vise à décrire une panoplie de méthodes quantitatives en sciences sociales avec le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec [rmarkdown](https://rmarkdown.rstudio.com/). Le contenu est pensé pour être accessible à tous et toutes, même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront des sections sur des méthodes plus avancées comme les modèles à effets mixtes, les modèles multiniveaux, les modèles généralisés additifs, ainsi que les méthodes factorielles et de classification. Ceux et celles souhaitant migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées dans R. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique, sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite, installez-vous dans votre meilleur fauteuil et bonne lecture!
 
+## Un manuel sous la forme d'une ressource éducative libre {-#sect001}
 
+**Pourquoi un manuel de statistique en sciences sociales sous licence libre?** Les logiciels libres sont aujourd'hui très répandus. Comparativement aux logiciels propriétaires, l’accès au code source permet à quiconque de l’utiliser, de le modifier, de le dupliquer et de le partager. Le logiciel R, dans lequel sont mises en œuvre les méthodes quantitatives décrites dans ce livre, est d’ailleurs à la fois un langage de programmation et un logiciel libre (sous la licence publique générale [GNU GLPv2](https://fr.wikipedia.org/wiki/Licence_publique_g%C3%A9n%C3%A9rale_GNU)). Par analogie aux logiciels libres, il existe aussi des **ressources éducatives libres (REL)** «&nbsp;dont la licence accorde les permissions désignées par les 5R (**Retenir — Réutiliser — Réviser — Remixer — Redistribuer**) et donc permet nécessairement la modification&nbsp;» ([**_fabriqueREL_**](https://fabriquerel.org/rel/)). La licence de ce livre, CC BY-SA (figure \@ref(fig:Licence)), permet donc de&nbsp;:
 
-## Un manuel sous la forme d'une ressource éducative libre {-}
+- **Retenir**&nbsp;: c'est-à-dire télécharger et d'imprimer gratuitement le livre. Notez qu'il aurait été plutôt surprenant d'écrire un livre payant sur un logiciel libre et donc gratuit... Aussi, nous aurions été très embarrassés que des personnes étudiantes avec des ressources financières limitées doivent payer pour avoir accès au livre, sans pour autant savoir préalablement si le contenu est réellement adapté à leurs besoins.
+- **Réutiliser** c'est-à-dire utiliser la totalité ou une section du livre sans limitation et sans compensation financière. Cela permet ainsi à d'autres personnes enseignantes de l'utiliser dans le cadre d'activités pédagogiques.
+- **Réviser**&nbsp;: c'est-à-dire modifier, adapter et traduire le contenu en fonction d'un besoin pédagogique précis puisqu'aucun manuel n’est parfait, tant s’en faut! Rappelons que le livre a d'ailleurs été écrit intégralement dans R avec [rmarkdown](https://rmarkdown.rstudio.com/). Quiconque peut ainsi télécharger gratuitement le code source du livre sur [github](https://LAEQ.github.io/livre_statistique_Phil_Jere/) et le modifier à sa guise (voir l’encadré intitulé *Suggestions d'adaptation du manuel*).
+- **Remixer**&nbsp;: c'est-à-dire «&nbsp;de combiner la ressource avec d’autres ressources dont la licence le permet aussi pour créer une nouvelle ressource intégrée&nbsp;» ([**_fabriqueREL_**](https://fabriquerel.org/rel/)).
+- **Redistribuer**&nbsp;: c'est-à-dire distribuer en totalité ou partiellement le manuel ou une version révisée sur d'autres canaux que le site Web du livre (par exemple, sur le site Moodle de votre université ou en faire une version imprimée).
 
-**Pourquoi un manuel de statistique en sciences sociales sous licence libre?** Les logiciels libres sont aujourd'hui très répandus. Comparativement aux logiciels propriétaires, l’accès au code source permet à quiconque de l’utiliser, de le modifier, de le dupliquer et de le partager. Le logiciel R, dans lequel sont mises en œuvre les méthodes quantitatives décrites dans ce livre, est d’ailleurs à la fois un langage de programmation et un logiciel libre (sous la licence publique générale GNU GLPv2). Par analogie aux logiciels libres, il existe aussi des **ressources éducatives libres (REL)** «&nbsp;dont la licence accorde les permissions désignées par les 5R (**Retenir — Réutiliser — Réviser — Remixer — Redistribuer**) et donc permet nécessairement la modification&nbsp;» ([**_fabriqueREL_**](https://fabriquerel.org/rel/)). La licence de ce livre (figure \@ref(fig:Licence)) permet donc de :
-
-- **Retenir** c'est-à-dire télécharger et d'imprimer gratuitement le livre. Notez qu'il aurait été plutôt surprenant d'écrire un livre payant sur un logiciel libre et donc gratuit... Aussi, nous aurions été très embarrassés que des étudiant(e)s avec des ressources financières limitées doivent payer pour avoir accès au livre, sans pour autant savoir préalablement si le contenu est réellement adapté à leurs besoins.
-- **Réutiliser** c'est-à-dire utiliser la totalité ou une section du livre sans limitation et sans compensation financière. Cela permet ainsi à d'autres professeur(e)s de l'utiliser dans le cadre d'activités pédagogiques.
-- **Réviser** c'est-à-dire modifier, adapter et traduire le contenu en fonction de vos besoins pédagogiques puisqu'aucun manuel n’est parfait, tant s’en faut! Rappelons que le livre a d'ailleurs été écrit intégralement dans R avec [rmarkdown](https://rmarkdown.rstudio.com/). Quiconque peut ainsi télécharger le code source du livre sur [github](https://LAEQ.github.io/livre_statistique_Phil_Jere/) et le modifier à sa guise. Notez que pour chaque méthode statistique abordée dans le livre sont disponibles une description détaillée et une mise en œuvre dans R. Par conséquent, les enseignant(e)s souhaitant aborder une méthode statistique décrite dans le livre peuvent télécharger le code source, modifier au besoin la description de la méthode et surtout utiliser leurs propres jeux de données. Aussi, nous verrons que souvent, plusieurs *packages* R peuvent être utilisés pour mettre en œuvre telle ou telle méthode statistique. Ces derniers évoluent aussi très vite et de nouveaux *packages* sont proposés fréquemment! Par conséquent, il peut être judicieux de modifier une syntaxe R du livre en fonction de vos habitudes de programmation dans R (utilisation d'autres *packages* que ceux utilisés dans le manuel par exemple) ou de bien mettre à jour une syntaxe suite à la parution d'un nouveau *package* plus performant ou intéressant.
-- **Remixer** c'est-à-dire «&nbsp;de combiner la ressource avec d’autres ressources dont la licence le permet aussi pour créer une nouvelle ressource intégrée&nbsp;» ([**_fabriqueREL_**](https://fabriquerel.org/rel/)).
-- **Redistribuer** c'est-à-dire distribuer en totalité ou partiellement le manuel ou une version révisée sur d'autres canaux que le site Web du livre (par exemple, sur le site Moodle de votre université).
-
-```{r Licence, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="La licence Creative Commons du livre",  out.width='70%'}
+```{r Licence, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="La licence Creative Commons du livre",  out.width='100%'}
 knitr::include_graphics('images/Licence.jpg', dpi = NA)
 ```
 
 
-## Un manuel conçu comme un projet collaboratif {-}
+La licence de ce livre, CC BY-SA (figure \@ref(fig:Licence)), oblige donc de&nbsp;:
 
-Il existe actuellement de nombreux livres sous licence libre écrits avec [rmarkdown](https://rmarkdown.rstudio.com/) avec le *package* `bookdown` [@xie2016bookdown], répertoriés sur le site de [https://bookdown.org/](https://bookdown.org/). Sans surprise, R étant un logiciel libre dédié aux méthodes statistiques et à la sciences des données, plusieurs abordent les méthodes quantitatives, notamment&nbsp;:
+- Attribuer la paternité de l’auteur dans vos versions dérivées, ainsi qu’une mention concernant les grandes modifications apportées, en utilisant la formulation suivante&nbsp;:
+Apparicio, Philippe et Jérémy Gelb. 2022. *Méthodes quantitatives en sciences sociales avec R*. Institut national de la recherche scientifique. CC BY-SA (4.0).
+- Utiliser la même licence ou une licence similaire à toutes versions dérivées.
 
-- [Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R](https://bookdown.org/roback/bookdown-BeyondMLR/) [@roback2021beyond].
-- [Introduction to Econometrics with R](https://www.econometrics-with-r.org/) [@hanck2019introduction].
-- [Statistical Inference via Data Science: A ModernDive into R and the Tidyverse](https://moderndive.com/) [@ismay2019statistical].
-- [R Graphics Cookbook, 2nd edition](https://r-graphics.org/) [@Chang2018].
+::: {.bloc_astuce data-latex=""}
+**Suggestions d'adaptation du manuel**. 
+
+Notez que pour chaque méthode statistique abordée dans le livre sont disponibles une description détaillée et une mise en œuvre dans R. Par conséquent, plusieurs adaptations du manuel sont possibles&nbsp;:
+
+- Conserver uniquement les chapitres sur les méthodes statistiques ciblées dans votre cours.
+- En faire une version imprimée et la distribuer aux personnes étudiantes.
+- Modifier la description d'une ou plusieurs méthodes en effectuant les mises à jour directement dans les chapitres.
+- Insérer ses propres jeux de données dans les sections intitulées *Mise en œuvre dans R*.
+- Modifier les tableaux et figures.
+- Ajouter une série d'exercices.
+- Rédiger un nouveau chapitre.
+- Modifier des syntaxes R. Plusieurs *packages* R peuvent être utilisés pour mettre en œuvre telle ou telle méthode statistique. Ces derniers évoluent aussi très vite et de nouveaux *packages* sont proposés fréquemment! Par conséquent, il peut être judicieux de modifier une syntaxe R du livre en fonction de ses habitudes de programmation dans R (utilisation d'autres *packages* que ceux utilisés dans le manuel par exemple) ou de bien mettre à jour une syntaxe suite à la parution d'un nouveau *package* plus performant ou intéressant.
+- Toute autre adaptation qui permet de répondre au mieux à un besoin pédagogique.
+:::
+
+## Un manuel conçu comme un projet collaboratif {-#sect002}
+
+Il existe actuellement de nombreux livres sous licence ouverte écrits avec [rmarkdown](https://rmarkdown.rstudio.com/) avec le *package* `bookdown` [@xie2016bookdown], répertoriés sur le site de [https://bookdown.org/](https://bookdown.org/). Sans surprise, R étant un logiciel libre dédié aux méthodes statistiques et à la sciences des données, plusieurs abordent les méthodes quantitatives, notamment&nbsp;:
+
+- [Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R](https://bookdown.org/roback/bookdown-BeyondMLR/) [@roback2021beyond], CC BY-NC-SA.
+- [Introduction to Econometrics with R](https://www.econometrics-with-r.org/) [@hanck2019introduction], CC BY-NC-SA.
+- [Statistical Inference via Data Science: A ModernDive into R and the Tidyverse](https://moderndive.com/) [@ismay2019statistical], CC BY-NC-SA.
+- [R Graphics Cookbook, 2nd edition](https://r-graphics.org/) [@Chang2018], CC BY.
 
 Par contre, la grande majorité de ces livres numériques rédigés avec `bookdown` sont en anglais. À notre connaissance, ce projet constitue le premier manuel numérique en français sur les méthodes quantitatives appliquées aux sciences sociales réalisé avec `bookdown`. La première version du livre étant lancée, il est grand temps de planifier les suivantes! Pour ce faire, nous considérons ce livre comme un **projet collaboratif visant à mobiliser la communauté universitaire francophone qui enseigne les statistiques en sciences sociales avec R**. Plusieurs raisons motivent cette vision collaborative&nbsp;:
 
 - **Rien n'est parfait!** Cette première version comprend sûrement des coquilles et certaines sections mériteraient d'être améliorées. Les commentaires et suggestions visant à améliorer le contenu existant sont les bienvenus.
-- **La table des matières doit être impérativement extensible!** De nombreuses méthodes statistiques très utilisées en sciences sociales ne sont pas abordées dans ce livre et mériteraient d'être ajoutés dans une version ultérieure&nbsp;: certaines extensions des régressions linéaires (régressions Rigge et Lasso, Tobit, quantile, etc.), les modèles d'équations simultanées, les analyses de données longitudinales (entre autres, modèles de survie, régression par panel), les modèles d'équations structurelles et bien d'autres! Par conséquent, si vous êtes intéressé(e)s, à ajouter un nouveau chapitre ou partie du livre, nous invitons vivement à communiquer avec nous. L'objectif étant que les futures versions soient corédigées par une communauté d'auteur(e)s spécialistes en méthodes quantitatives.
+- **La table des matières doit être impérativement extensible!** De nombreuses méthodes statistiques très utilisées en sciences sociales ne sont pas abordées dans ce livre et mériteraient d'être ajoutés dans une version ultérieure&nbsp;: certaines extensions des régressions linéaires (régressions Rigge et Lasso, Tobit, quantile, etc.), les modèles d'équations simultanées, les analyses de données longitudinales (entre autres, modèles de survie, régression par panel), les modèles d'équations structurelles et bien d'autres! Par conséquent, si vous êtes intéressé(e)s, à ajouter un nouveau chapitre ou partie du livre, nous invitons vivement à communiquer avec nous ou à diffuser sous une licence similaire votre version dérivée. L’objectif étant de continuer à faire tourner la roue du libre et, idéalement, que les futures versions soient corédigées par une communauté d’auteur(e)s spécialistes en méthodes quantitatives.
 
 
-## Comment lire ce livre? {-}
+## Comment lire ce livre? {-#sect003}
 
 Si vous googlez l'expression «&nbsp;comment lire un livre?&nbsp;», vous trouverez une multitude de conseils et astuces. Pour ce livre, nous vous conseillons de le lire de gauche à droite et page par page! Plus sérieusement, le livre comprend plusieurs types de blocs de texte qui, on l'espère, faciliteront la lecture.
 
@@ -91,7 +111,7 @@ Si vous googlez l'expression «&nbsp;comment lire un livre?&nbsp;», vous trouve
 **Bloc attention**. Il comprend une notion ou un élément important à bien maîtriser.
 :::
 
-## Structure du livre {-}
+## Structure du livre {-#sect004}
 
 Le livre est organisé autour de cinq grandes parties.
 
@@ -110,7 +130,7 @@ Dans le chapitre \@ref(chap03), nous illustrons les incroyables capacités graph
 **Partie 5. Analyses exploratoires multivariées**. Dans cette cinquième partie, sont abordées les méthodes de statistique exploratoire et descriptive permettant de décrire des tableaux de données comprenant plusieurs variables. Nous décrivons d'abord les méthodes de réduction de données&nbsp;: les méthodes factorielles dans le chapitre \@ref(chap12) (analyses de composantes principales, analyses factorielles de correspondances, analyses factorielles de correspondances multiples) et les méthodes de classification non supervisées dans le chapitre \@ref(chap13) (classification ascendante hiérarchique, k-moyennes, k-médianes, k-médoïdes et leurs extensions en logique floue comme le c-moyennes et c-médianes).
 
 
-## Pourquoi faut-il programmer en sciences sociales? {-}
+## Pourquoi faut-il programmer en sciences sociales? {-#sect005}
 
 Vous contrasterez rapidement que R est un véritable langage de programmation. L'apprentissage de ce language de programmation est-il pour autant pertinent pour les étudiants et étudiantes en sciences sociales? Il est vrai que la programmation n'est pas une compétence qui vient d'emblée à l'esprit lorsque l'on s'intéresse à la recherche aux sciences sociales. Pourtant, elle est de plus en plus importante, et ce, pour plusieurs raisons&nbsp;:
 
@@ -122,9 +142,9 @@ Vous contrasterez rapidement que R est un véritable langage de programmation. L
 * Dans un logiciel avec une interface graphique, il est compliqué de conserver un historique des opérations effectuées. Programmer permet au contraire de garder une trace de l'ensemble des actions effectuées au cours d'un projet de recherche. En effet, le code utilisé reste disponible et permet de reproduire (ou d'adapter) la méthode et les résultats obtenus ce qui est essentiel dans le monde de la recherche. À cela, s'ajoute le fait que chaque ligne de code que vous écrivez vient s'ajouter à un capital de code que vous possédez, car elles pourront être réutilisées dans d'autres projets!
 
 
-## Remerciements {-}
+## Remerciements {-#sect006}
 
-De nombreuses personnes ont contribué à l'élaboration de ce manuel. Comme signalé plus haut, ce projet a bénéficié du support financier de la [**_fabriqueREL_**](https://fabriquerel.org/) (ressources éducatives libres). Les différentes rencontres avec le comité de suivi nous ont permis de comprendre l'univers des ressources éducatives libres (REL) et notamment leurs [fameux 5R](https://fabriquerel.org/rel/) (Retenir — Réutiliser — Réviser — Remixer — Redistribuer), de mieux définir le besoin pédagogique visé par ce manuel, d'identifier des outils et ressources pédagogiques pertinentes pour son élaboration. Ainsi, nous remercions chaleureusement les membres de suivi de la *fabriqueREL* pour leur support inconditionnel&nbsp;: 
+De nombreuses personnes ont contribué à l'élaboration de ce manuel. Ce projet a bénéficié du support pédagogique et financier de la [**_fabriqueREL_**](https://fabriquerel.org/) (ressources éducatives libres). Les différentes rencontres avec le comité de suivi nous ont permis de comprendre l'univers des ressources éducatives libres (REL) et notamment leurs [fameux 5R](https://fabriquerel.org/rel/) (Retenir — Réutiliser — Réviser — Remixer — Redistribuer), de mieux définir le besoin pédagogique visé par ce manuel, d'identifier des outils et ressources pédagogiques pertinents pour son élaboration. Ainsi, nous remercions chaleureusement les membres de suivi de la *fabriqueREL* pour leur support inconditionnel&nbsp;: 
 
 - Myriam Beaudet, bibliothécaire à l'Université de Sherbrooke.
 - Marianne Dubé, conseillère pédagogique à l'Université de Sherbrooke et coordonnatrice de la fabriqueREL.
@@ -145,12 +165,12 @@ Finalement, nous remercions les membres du comité de révision pour leurs comme
 
 
 
-## Dédicace toute spéciale à Cargo et Ambrée{-}
+## Dédicace toute spéciale à Cargo et Ambrée  {-#sect007}
 
-Fait cocasse, l'écriture de ce livre a démarré lorsque Philippe Apparicio était famille d'accueil d'un chiot de la [Fondation Mira](https://www.mira.ca/fr/), un organisme à but non lucratif qui forme des chiens-guides et d’assistance pour accroître l’autonomie et l’inclusion sociale des personnes vivant avec un handicap visuel ou moteur, ainsi que des jeunes présentant un trouble du spectre de l’autisme (TSA). En fin de rédaction du livre, ce fût au tour de Jérémy Gelb d'être famille d'accueil d'un autre chiot Mira. Nous remercions chaleureusement la [Fondation Mira](https://www.mira.ca/fr/) pour nous avoir donné l'occasion de vivre cette expérience incroyable. Ce livre est donc dédié au beau Cargo et à la belle Ambrée qui nous ont tant supportés dans l'écriture du livre (). Il n’y a rien de plus relaxant que d’écrire un livre de statistique avec un chiot qui dort à vos pieds!
+Fait cocasse, l'écriture de ce livre a démarré lorsque Philippe Apparicio était famille d'accueil d'un chiot de la [Fondation Mira](https://www.mira.ca/fr/), un organisme à but non lucratif qui forme des chiens-guides et d’assistance pour accroître l’autonomie et l’inclusion sociale des personnes vivant avec un handicap visuel ou moteur, ainsi que des jeunes présentant un trouble du spectre de l’autisme (TSA). En fin de rédaction du livre, ce fût au tour de Jérémy Gelb d'être famille d'accueil d'un autre chiot Mira. Nous remercions chaleureusement la [Fondation Mira](https://www.mira.ca/fr/) pour nous avoir donné l'occasion de vivre cette expérience incroyable. Ce livre est donc dédié au beau Cargo et à la belle Ambrée qui nous ont tant supportés dans l'écriture du livre (figure \@ref(fig:CargoAmbre)). Il n’y a rien de plus relaxant que d’écrire un livre de statistique avec un chiot qui dort à vos pieds!
 
 
-```{r cargo, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo et Ambrée, chiots de la Fondation Mira",  out.width='70%'}
+```{r CargoAmbre, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo et Ambrée, chiots de la Fondation Mira",  out.width='70%'}
 knitr::include_graphics('images/CargoAmbre.png', dpi = NA)
 ```
 
