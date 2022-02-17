@@ -819,7 +819,7 @@ gam.vcomp(model4)
 
 On constate donc que l'écart-type de l'effet aléatoire des arrondissements est de 0.39, ce qui signifie que les effets de chaque arrondissement seront compris à 95% entre -1,17 et 1,17 (`1.17 = 3*0.39`) sur l'échelle du prédicteur linéaire. En effet, rappelons que les effets aléatoires sont modélisés comme des distributions normales et que 95% de la densité d'une distribution normale se situe entre -3 et +3 écarts-types. Pour extraire les interceptes spécifiques de chaque arrondissement, on peut utiliser la fonction `get_random` du *package* `itsadug.`
 
-```{r randomconstGAM, message=FALSE, warning=FALSE, dev = "png", dpi = 300}
+```{r randomconstGAM, message=FALSE, warning=FALSE, dev = "png", dpi = 300, fig.cap = "Constantes aléatoires pour les arrondissements"}
 library(itsadug)
 values <- get_random(model4)[[1]]
 df <- data.frame(
@@ -847,7 +847,7 @@ source("code_complementaire/gam_functions.R")
 
 On peut ensuite procéder à l'extraction des effets aléatoires et les représenter à nouveau (figure \@ref(fig:randomconstGAM2)).
 
-```{r randomconstGAM2, message=FALSE, warning=FALSE, dev = "png", dpi = 300}
+```{r randomconstGAM2, message=FALSE, warning=FALSE, dev = "png", dpi = 300, fig.cap = "Constantes aléatoires pour les arrondissements avec intervalle de confiance"}
 df_re <- extract_random_effects.gam(model4, re = "Arrond")
 
 ggplot(df_re) + 
@@ -859,7 +859,7 @@ ggplot(df_re) +
 
 Cela permet de distinguer quels écarts sont significativement différents de 0 au seuil de 95%. À titre de rappel, pour être significatif à ce seuil, un intervalle représenté par une ligne noire horizontale ne doit pas intersecter la ligne rouge verticale. Puisque nous utilisons ici la distribution *beta* et une fonction de lien logistique, nous devons utiliser des prédictions pour simplifier l'interprétation des coefficients. Nous allons ici fixer toutes les variables à leur moyenne respective sauf l'arrondissement et calculer les prédictions dans l'échelle originale (0 à 1).
 
-```{r randomconstGAM3, message=FALSE, warning=FALSE, dev = "png", dpi = 300}
+```{r randomconstGAM3, message=FALSE, warning=FALSE, dev = "png", dpi = 300, fig.cap = "Prédictions pour les différents arrondissements pour une AD fictive moyenne"}
 dfpred <- data.frame(
   A65Pct = mean(dataset$A65Pct),
   A014Pct = mean(dataset$A014Pct),
@@ -918,7 +918,7 @@ AIC(model4, model5)
 
 Ce dernier modèle présente une valeur d'*AIC* plus faible et serait donc ainsi mieux ajusté que notre modèle avec seulement un intercepte aléatoire. Nous pouvons donc extraire les coefficients aléatoires et les représenter à la figure \@ref(fig:randomconstcoefGAM).
 
-```{r randomconstcoefGAM, message=FALSE, warning=FALSE, dev = 'png', dpi = 300}
+```{r randomconstcoefGAM, message=FALSE, warning=FALSE, dev = 'png', dpi = 300, fig.cap = "Pentes et constantes aléatoires pour les arrondissements"}
 df_re <- extract_random_effects.gam(model5)
 df_re <- subset(df_re, df_re$effect == 'PopFRPct')
 
