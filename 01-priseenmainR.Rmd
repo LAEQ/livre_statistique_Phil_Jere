@@ -701,6 +701,7 @@ Bravo! Vous venez de faire le tour des bases du langage R. Vous allez apprendre 
 
 Dans cette section, vous apprendrez à charger et manipuler des *DataFrames* en vue d'effectuer des opérations classiques de gestion de données.
 
+
 ### Charger un *DataFrame* depuis un fichier {#sect0141}
 
 Il sera rarement nécessaire de créer vos *DataFrames* manuellement. Le plus souvent, vous disposerez de fichiers contenant vos données et utiliserez des fonctions pour les importer dans R sous forme d'un *DataFrame*. Les formats à importer les plus répandus sont&nbsp;:  
@@ -1490,7 +1491,6 @@ df3 <- merge(livres, auteurs, #les deux DataFrames
 print(df3)
 ```
 
-
 ## Bien structurer un code R {#sect016}
 
 Terminons ici avec quelques conseils sur la rédaction d’un code R. Bien rédiger son code est essentiel pour trois raisons&nbsp;:
@@ -1608,7 +1608,7 @@ save.image(file = 'chemin/vers/mon/fichier/session.RData', compress = TRUE)
 
 Vous pouvez aussi utiliser dans RStudio le bouton d'enregistrement dans l'onglet *Environnement* (figure \@ref(fig:saveobj)).
 
-```{r saveobj, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Image de la session avec RStudio",  out.width='50%'}
+```{r saveobj, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Bouton enregistrer la session",  out.width='50%'}
 knitr::include_graphics('images/introduction/save_session.png', dpi = NA)
 ```
 
@@ -1626,12 +1626,46 @@ load(file = 'chemin/vers/mon/fichier/mes_objet.RData')
 
 ou alors le bouton *ouvrir* de l'onglet *Environnement* dans Rstudio (figure \@ref(fig:loadobj)).
 
-```{r loadobj, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Image de la session avec RStudio",  out.width='50%'}
+```{r loadobj, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Bouton charger un fichier RDA",  out.width='50%'}
 knitr::include_graphics('images/introduction/load_session.png', dpi = NA)
 ```
 
+## Travailler dans une session {#sect018}
 
-## Conclusion et ressources pertinentes  {#sect018}
+Comme vous avez pu le constater dans les sections \@ref(sect017) et \@ref(sect0141), il est nécessaire de connaître les chemins vers les fichiers que vous souhaitez utiliser dans votre code R. Si tous ces fichiers sont organisés dans un même dossier (ce que nous vous recommandons à la figure \@ref(fig:structFolder)), il est possible de définir son répertoire de travail avec la fonction `setwd`.
+Il est recommandé d'effectuer cette étape au début de votre code R, après le chargement des *packages*. Ainsi, vous n'aurez pas besoin de réécrire à chaque fois les chemins complets pour accéder à vos fichiers.
+
+```{r eval= FALSE}
+# Chemin complet
+mes_donnes <- read.csv("C:/projets/articles/2022/mon_projet/data/mes_donnes.csv")
+
+# Utilisation de setwd
+setwd("C:/projets/articles/2022/mon_projet")
+mes_donnes <- read.csv("data/mes_donnes.csv")
+```
+
+La fonction `getwd` permet d'afficher le répertoir de travail utilisé actuellement par R.
+
+Si vous utilisez *RStudio*, il est possible d'utiliser une petite astuce pour définir comme répertoir de travail le dossier dans lequel se trouve le fichier de code R que vous utilisez actuellement&nbsp;:
+
+```{r eval= FALSE}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+
+Admettons que votre code R se trouve dans un sous dossier appelé *CodeR* de votre répertoire de travail, vous pouvez remonter d'un niveau dans votre arborescence en utilisant la syntaxe suivante&nbsp;:
+
+```{r eval= FALSE}
+setwd(paste0(dirname(rstudioapi::getActiveDocumentContext()$path), "/.."))
+```
+
+Le double point (`..`) indique que l'on souhaite remonter dans le dossier parent du dossier dans lequel on se trouve acutellement.
+
+Il existe deux alternatives à l'utilisation de `setwd` que certains jugent un peu démodé.
+
+* La première est le package `here` permettant de spécifier plus facilement des chemins relatifs et de définir un *top-level directory* pour votre projet.
+* La seconde est l'utilisation de la fonctionnalité [projects](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) de *Rstudio*.
+
+## Conclusion et ressources pertinentes  {#sect019}
 
 Voilà qui conclut ce chapitre sur les bases du langage R. Vous avez maintenant les connaissances nécessaires pour commencer à travailler. N'hésitez pas à revenir sur les différentes sous-sections au besoin ! Pour aller plus loin dans l'apprentissage du langage, vous pouvez également vous plonger dans le chapitre R AVANCÉ. Cependant, nous vous recommandons de faire vos premiers pas avec cette base avant de vous lancer dans cette partie davantage orientée vers la programmation. Quelques ressources pertinentes qui pourraient vous être utiles sont aussi reportées au tableau \@ref(tab:tableRessources). 
 
@@ -1659,3 +1693,11 @@ if(knitr::is_latex_output()){
 }
 ```
 
+## Quiz final sur la prise en main de R {#sect0110}
+
+Voici un court quiz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
+
+```{r quizIntro, echo=FALSE, warning=FALSE, results="asis"}
+quizz_intro <- quizz("quizzs/Chapitre1_manipulerdesdonnees.yml", "quizz_intro")
+render_quizz(quizz_intro)
+```
