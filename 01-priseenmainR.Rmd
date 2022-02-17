@@ -8,19 +8,19 @@ Dans ce chapitre, nous reviendrons brièvement sur l’histoire de R et la philo
 Dans ce chapitre, nous utiliserons principalement les *packages* suivants&nbsp;: 
 
 * Pour importer des fichiers externes&nbsp;:
-  - **foreign** pour entre autres les fichiers *dbase* et ceux des logiciels SPSS et Stata
-  - **sas7bdat** pour les fichiers du logiciel SAS.
-  - **xlsx** pour les fichiers Excel.
+  - `foreign` pour entre autres les fichiers *dbase* et ceux des logiciels SPSS et Stata
+  - `sas7bdat` pour les fichiers du logiciel SAS.
+  - `xlsx` pour les fichiers Excel.
 * Pour manipuler des chaînes de caractères et des dates&nbsp;: 
-  - **stringr** pour les chaînes de caractères.
-  - **lubridate** pour les dates.
+  - `stringr` pour les chaînes de caractères.
+  - `lubridate` pour les dates.
 * Pour manipuler des données&nbsp;:
-  - **dplyr ** du **tidyverse** propose une grammaire pour manipuler et structurer des données.
+  - `dplyr` du `tidyverse` propose une grammaire pour manipuler et structurer des données.
 :::
 
 ## Histoire et philosophie de R{#sect011}
 
-R est à la fois un langage de programmation et un logiciel libre (sous la licence publique générale GNU) dédié à l'analyse statistique et soutenu par une fondation&nbsp;: _R Roundation for Statistical Computing_. Il est principalement écrit en C et Fortran, deux langages de programmation de « bas niveau », proches du langage machine. À l'inverse, R est un langage de « haut niveau » car plus proche du langage humain.
+R est à la fois un langage de programmation et un logiciel libre (sous la licence publique générale GNU) dédié à l'analyse statistique et soutenu par une fondation&nbsp;: _R Roundation for Statistical Computing_. Il est principalement écrit en C et Fortran, deux langages de programmation de «&nbsp;bas niveau&nbsp;», proches du langage machine. À l'inverse, R est un langage de «&nbsp;haut niveau&nbsp;» car plus proche du langage humain.
 
 
 R a été créé par Ross Ihaka et Robert Gentleman à l'Université d'Auckland en Nouvelle-Zélande. Si vous avez un jour l'occasion de passer dans le coin, une plaque est affichée dans le département de statistique de l'université, ça mérite le détour (figure \@ref(fig:fig01)). Une version expérimentale a été publiée en 1996, mais la première version stable ne date que de 2000. Il s'agit donc d'un logiciel relativement récent si on le compare à ses concurrents SPSS (1968), SAS (1976) et Stata (1984).
@@ -45,7 +45,7 @@ Les nombreux atouts de R justifient largement sa popularité sans cesse croissan
 * R dispose de nombreuses interfaces lui permettant de communiquer, notamment avec des systèmes de bases de données SQL et non SQL (MySQL, PostgresSQL, MongoDB, etc.), avec des systèmes de *big data* (Spark, Hadoop), avec des systèmes d'information géographique (QGIS, ArcGIS) et même avec des services en ligne comme Microsoft Azure ou Amazon AWS.
 * R est un langage de programmation à part entière, ce qui lui donne plus de flexibilité que ses concurrents commerciaux (SPSS, SAS, STATA). Avec R vous pouvez accomplir de nombreuses tâches&nbsp;: monter un site web, créer un robot collectant des données en ligne, combiner des fichiers PDF, composer des diapositives pour une présentation ou même éditer un livre (comme celui-ci), mais aussi, et surtout, réaliser des analyses statistiques.
 
-Un des principaux attraits de R est la quantité astronomique de *packages* actuellement disponibles. **Un *package* est un ensemble de nouvelles fonctionnalités développées par un(e) ou plusieurs utilisateur(trice)s de R et mises à disposition de l'ensemble de la communauté**. Par exemple, le *package* **ggplot2** est dédié à la réalisation de graphiques; les *packages* **data.table** et **plyr** permettent de manipuler des tableaux de données; le *package* **car** apporte de nombreux outils pour faciliter l'analyse de modèles de régressions, etc. Ce partage des *packages* rend accessible à tous des méthodes d'analyses complexes et récentes et favorise grandement la reproductibilité de la recherche. Cependant, ce fonctionnement implique quelques désavantages&nbsp;: 
+Un des principaux attraits de R est la quantité astronomique de *packages* actuellement disponibles. **Un *package* est un ensemble de nouvelles fonctionnalités développées par un(e) ou plusieurs utilisateur(trice)s de R et mises à disposition de l'ensemble de la communauté**. Par exemple, le *package* `ggplot2` est dédié à la réalisation de graphiques; les *packages* `data.table` et `plyr` permettent de manipuler des tableaux de données; le *package* `car` apporte de nombreux outils pour faciliter l'analyse de modèles de régressions, etc. Ce partage des *packages* rend accessible à tous des méthodes d'analyses complexes et récentes et favorise grandement la reproductibilité de la recherche. Cependant, ce fonctionnement implique quelques désavantages&nbsp;: 
 
 * il existe généralement plusieurs *packages* pour effectuer le même type d'analyse, ce qui peut devenir une source de confusion;
 * certains *packages* cessent d'être mis à jour au fil des années, ce qui nécessite de leur trouver d'autres alternatives (et ainsi apprendre la syntaxe des nouveaux *packages*);
@@ -131,7 +131,7 @@ Pour conclure cette section, nous vous invitons à enregistrer votre première s
 
 ### Installer et charger un *package*{#sect0123}
 
-Dans la section sur la Philosophie de R, nous avons souligné la place centrale jouée par les *packages*. Notez que les termes *paquet* et plus rarement *librairie* sont parfois utilisés en français. Voyons ensemble comment installer un *package*, par exemple celui intitulé **lubridate**, qui nous permettra plus tard de manipuler des données temporelles.
+Dans la section sur la Philosophie de R, nous avons souligné la place centrale jouée par les *packages*. Notez que les termes *paquet* et plus rarement *librairie* sont parfois utilisés en français. Voyons ensemble comment installer un *package*, par exemple celui intitulé `lubridate`, qui nous permettra plus tard de manipuler des données temporelles.
 
 #### Installer un *package* depuis CRAN{#sect01231}
 
@@ -145,13 +145,13 @@ Notez qu'une fois que le *package* est installé, vous n'aurez plus besoin de le
 
 #### Installer un *package* depuis GitHub{#sect01232}
 
-*CRAN* est le répertoire officiel des *packages* de R. Vous pouvez cependant télécharger des *packages* provenant d'autres sources. Très souvent, les *packages* sont disponibles sur le site web [GitHub](https://github.com/){target="_blank"} et l'on peut même y trouver des versions en développement avec des fonctionnalités encore non intégrées dans la version sur *CRAN*. Reprenons le cas de **lubridate**, mais sur GitHub (il est disponible  [ici](https://github.com/tidyverse/lubridate){target="_blank"}). Pour l'installer, nous devons d'abord installer un autre *package* appelé **remotes** (depuis *CRAN*).
+*CRAN* est le répertoire officiel des *packages* de R. Vous pouvez cependant télécharger des *packages* provenant d'autres sources. Très souvent, les *packages* sont disponibles sur le site web [GitHub](https://github.com/){target="_blank"} et l'on peut même y trouver des versions en développement avec des fonctionnalités encore non intégrées dans la version sur *CRAN*. Reprenons le cas de `lubridate`, mais sur GitHub (il est disponible  [ici](https://github.com/tidyverse/lubridate){target="_blank"}). Pour l'installer, nous devons d'abord installer un autre *package* appelé `remotes` (depuis *CRAN*).
 
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
 install.packages("remotes")
 ```
 
-Maintenant que nous disposons de **remotes**, nous pouvons utiliser la fonction d'installation `remotes::install_github` pour directement télécharger **lubridate** depuis GitHub.
+Maintenant que nous disposons de `remotes`, nous pouvons utiliser la fonction d'installation `remotes::install_github` pour directement télécharger `lubridate` depuis GitHub.
 
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
 remotes::install_github("tidyverse/lubridate")
@@ -159,7 +159,7 @@ remotes::install_github("tidyverse/lubridate")
 
 #### Charger un *package* {#sect01233}
 
-Maintenant que **lubridate** est installé, nous pouvons le charger dans notre session actuelle de R et accéder aux fonctions qu'il propose. Pour cela, il suffit d'utiliser la fonction `library`. Conventionnellement, l'appel des *packages* se fait au tout début du script que vous rédigez. Rien ne vous empêche de le faire au fur et à mesure de votre code, mais ce dernier perd alors en lisibilité. Notez que pour chaque nouvelle session (redémarrage de R), il faudra recharger les *packages* dont vous avez besoin avec la fonction `library`.
+Maintenant que `lubridate` est installé, nous pouvons le charger dans notre session actuelle de R et accéder aux fonctions qu'il propose. Pour cela, il suffit d'utiliser la fonction `library`. Conventionnellement, l'appel des *packages* se fait au tout début du script que vous rédigez. Rien ne vous empêche de le faire au fur et à mesure de votre code, mais ce dernier perd alors en lisibilité. Notez que pour chaque nouvelle session (redémarrage de R), il faudra recharger les *packages* dont vous avez besoin avec la fonction `library`.
 
 ```{r message=FALSE, warning=FALSE}
 library(lubridate)
@@ -185,7 +185,7 @@ Vous pouvez également accéder à ces informations en utilisant la syntaxe suiv
 help(package = 'lubridate')
 ```
 
-Souvent, vous aurez besoin d'accéder à la documentation d'une fonction spécifique d'un *package*. Affichons la documentation de la fonction `now` de **lubridate**&nbsp;: 
+Souvent, vous aurez besoin d'accéder à la documentation d'une fonction spécifique d'un *package*. Affichons la documentation de la fonction `now` de `lubridate`&nbsp;: 
 
 ```{r eval = FALSE}
 help(now, package = 'lubridate')
@@ -208,7 +208,7 @@ Si  vous ne vous souvenez plus à quel *package* la fonction appartient, lancez 
 ??now
 ```
 
-Vous découvrirez ainsi que la fonction `now` n'existe pas que dans **lubridate**, ce qui souligne l'importance de bien connaître les *packages* que l'on installe et que l'on charge dans notre session ! 
+Vous découvrirez ainsi que la fonction `now` n'existe pas que dans `lubridate`, ce qui souligne l'importance de bien connaître les *packages* que l'on installe et que l'on charge dans notre session ! 
 
 Maintenant que nous avons fait le tour de l'environnement de travail, nous pouvons passer aux choses sérieuses, soit les bases du langage R.
 
@@ -237,7 +237,7 @@ Dans R, nous passons notre temps à manipuler des **objets** à l'aide d'**expre
 
 Cette expression est correcte, R comprend vos indications et effectue le calcul.
 
-Il est possible d'enregistrer le résultat d'une expression et de la conserver dans un nouvel objet. On appelle cette opération&nbsp;: « déclarer une variable ».
+Il est possible d'enregistrer le résultat d'une expression et de la conserver dans un nouvel objet. On appelle cette opération&nbsp;: «&nbsp;déclarer une variable&nbsp;».
 
 ```{r}
 ma_somme <- 4 + 3
@@ -716,7 +716,7 @@ Plus rarement, il se peut que vous ayez à charger des fichiers provenant de log
 * *.sav* (SPSS);
 * *.dta* (STATA).
 
-Pour lire la plupart de ces fichiers, nous allons utiliser le *package* **foreign** dédié à l'importation d'une multitude de formats. Commencez donc par l'installer (`install.packages("foreign")`). Nous allons charger cinq fois le même jeu de données enregistré dans des formats différents (*csv*, *dbf*, *dta*, *sas7bdat* et *xlsx*). Aussi, nous mesurerons le temps nécessaire pour importer chacun de ces fichiers avec la fonction `Sys.time`.
+Pour lire la plupart de ces fichiers, nous allons utiliser le *package* `foreign` dédié à l'importation d'une multitude de formats. Commencez donc par l'installer (`install.packages("foreign")`). Nous allons charger cinq fois le même jeu de données enregistré dans des formats différents (*csv*, *dbf*, *dta*, *sas7bdat* et *xlsx*). Aussi, nous mesurerons le temps nécessaire pour importer chacun de ces fichiers avec la fonction `Sys.time`.
 
 #### Lire un fichier *csv* {#sect01411}
 
@@ -743,7 +743,7 @@ Rien de bien compliqué! Notez tout de même que&nbsp;:
 
 #### Lire un fichier *dbase* {#sect01412}
 
-Pour lire un fichier *dbase* (.dbf), nous utilisons la fonction `read.dbf` du *package* **foreign** installé précédemment&nbsp;: 
+Pour lire un fichier *dbase* (.dbf), nous utilisons la fonction `read.dbf` du *package* `foreign` installé précédemment&nbsp;: 
 
 ```{r message=FALSE, warning=FALSE}
 library(foreign)
@@ -761,7 +761,7 @@ Comme vous pouvez le constater, nous obtenons les mêmes résultats qu'avec le f
 
 #### Lire un fichier *dta* (Stata) {#sect01413}
 
-Si vous travaillez avec des collègues utilisant le logiciel Stata, il se peut que ces derniers vous partagent des fichiers *dta*. Toujours en utilisant le *package* **foreign**, vous serez en mesure de les charger directement dans R.
+Si vous travaillez avec des collègues utilisant le logiciel Stata, il se peut que ces derniers vous partagent des fichiers *dta*. Toujours en utilisant le *package* `foreign`, vous serez en mesure de les charger directement dans R.
 
 ```{r message=FALSE, warning=FALSE}
 t1 <- Sys.time()
@@ -776,7 +776,7 @@ cat("le dataframe df3 a ",nrow(df3)," observations ",
 
 #### Lire un fichier *sav* (SPSS) {#sect01414}
 
-Pour importer un fichier *sav* provenant du logiciel statistique SPSS, utilisez la fonction `read.spss` du *package* **foreign**.
+Pour importer un fichier *sav* provenant du logiciel statistique SPSS, utilisez la fonction `read.spss` du *package* `foreign`.
 
 ```{r message=FALSE, warning=FALSE}
 t1 <- Sys.time()
@@ -790,7 +790,7 @@ cat("le dataframe df4 a ",nrow(df4)," observations ",
 
 #### Lire un fichier *sas7bdat* (SAS) {#sect01415}
 
-Pour importer un fichier *sas7bdat* provenant du logiciel statistique SAS, utilisez la fonction `read.sas7bdat` du *package* **sas7bdat**. Installez préalablement le *package* (`install.packages("sas7bdat")`) et chargez le (`library(sas7bdat)`).
+Pour importer un fichier *sas7bdat* provenant du logiciel statistique SAS, utilisez la fonction `read.sas7bdat` du *package* `sas7bdat`. Installez préalablement le *package* (`install.packages("sas7bdat")`) et chargez le (`library(sas7bdat)`).
 
 ```{r message=FALSE, warning=FALSE}
 library(sas7bdat)
@@ -809,7 +809,7 @@ cat("le dataframe df5 a ",nrow(df5)," observations ",
 
 Lire un fichier Excel dans R n'est pas toujours une tâche facile. Généralement, nous recommandons d'exporter les fichiers en question au format *csv* dans un premier temps, puis de le lire avec la fonction `read.csv` dans un second temps (section \@ref(sect01411)). 
 
-Il est néanmoins possible de lire directement un fichier *xlsx* avec le *package* **xlsx**. Ce dernier requiert que le logiciel JAVA soit installé sur votre ordinateur (Windows, Mac ou Linux). Si vous utilisez la version 64 bit de R, vous devrez télécharger et installer la version 64 bit de JAVA. Une fois que ce logiciel tiers est installé, il ne vous restera plus qu'à installer (`install.packages("xlsx")`) et charger (`library(xlsx)`) le *package* **xlsx**. Sous windows, il est possible que vous deviez également installer manuellement le *package* `rJava` et indiquer à R où se trouve JAVA sur votre ordinateur. La procédure est détaillée [ici](https://cimentadaj.github.io/blog/2018-05-25-installing-rjava-on-windows-10/installing-rjava-on-windows-10/).
+Il est néanmoins possible de lire directement un fichier *xlsx* avec le *package* `xlsx`. Ce dernier requiert que le logiciel JAVA soit installé sur votre ordinateur (Windows, Mac ou Linux). Si vous utilisez la version 64 bit de R, vous devrez télécharger et installer la version 64 bit de JAVA. Une fois que ce logiciel tiers est installé, il ne vous restera plus qu'à installer (`install.packages("xlsx")`) et charger (`library(xlsx)`) le *package* `xlsx`. Sous windows, il est possible que vous deviez également installer manuellement le *package* `rJava` et indiquer à R où se trouve JAVA sur votre ordinateur. La procédure est détaillée [ici](https://cimentadaj.github.io/blog/2018-05-25-installing-rjava-on-windows-10/installing-rjava-on-windows-10/).
 
 ```{r message=FALSE, warning=FALSE}
 library(xlsx)
@@ -843,7 +843,7 @@ cat("le dataframe df6 a ",nrow(df7)," observations ",
     "et ",ncol(df7),"colonnes\n", sep = "")
 ```
 
-Si l'on compare les temps d'exécution (tableau \@ref(tab:tableduration)), on constate que la lecture des fichiers *xlsx* peut être extrêmement longue si l'on ne spécifie pas le type des colonnes, ce qui peut devenir problématique pour des fichiers volumineux. Notez également que la lecture des fichiers *csv* devient de plus en plus laborieuse à mesure que la taille du fichier *csv* augmente. Si vous devez un jour charger des fichiers *csv* de plusieurs gigaoctets, nous vous recommandons vivement d'utiliser la fonction `fread` du *package* **data.table** qui est beaucoup plus rapide.
+Si l'on compare les temps d'exécution (tableau \@ref(tab:tableduration)), on constate que la lecture des fichiers *xlsx* peut être extrêmement longue si l'on ne spécifie pas le type des colonnes, ce qui peut devenir problématique pour des fichiers volumineux. Notez également que la lecture des fichiers *csv* devient de plus en plus laborieuse à mesure que la taille du fichier *csv* augmente. Si vous devez un jour charger des fichiers *csv* de plusieurs gigaoctets, nous vous recommandons vivement d'utiliser la fonction `fread` du *package* `data.table` qui est beaucoup plus rapide.
 
 ```{r tableduration, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -864,9 +864,9 @@ show_table(DureeImportation,
 
 Une fois le *DataFrame* chargé, voyons comment il est possible de le manipuler.
 
-#### Un petit mot sur le **tidyverse** {#sect01421}
+#### Un petit mot sur le `tidyverse` {#sect01421}
 
-**Tidyverse** est un ensemble de *packages* conçus pour faciliter la structuration et la manipulation des données dans R. Avant d'aller plus loin, il est important d'aborder brièvement un débat actuel dans la Communauté R. Entre 2010 et 2020, l'utilisation du **tidyverse** s'est peu à peu répandue. Développé et maintenu par Hadley Wickham, **tidyverse** introduit une philosophie et une grammaire spécifiques qui diffèrent du langage R traditionnel. Une partie de la communauté a pour ainsi dire complètement embrassé le **tidyverse** et de nombreux *packages*, en dehors du **tidyverse**, ont adopté sa grammaire et sa philosophie. À l'inverse, une autre partie de la communauté est contre cette évolution ([voir l'article du blogue suivant](https://blog.ephorie.de/why-i-dont-use-the-tidyverse){target="_blank"}). Les arguments pour et contre **tidyverse** sont résumés dans le tableau suivant. 
+`tidyverse` est un ensemble de *packages* conçus pour faciliter la structuration et la manipulation des données dans R. Avant d'aller plus loin, il est important d'aborder brièvement un débat actuel dans la Communauté R. Entre 2010 et 2020, l'utilisation du `tidyverse` s'est peu à peu répandue. Développé et maintenu par Hadley Wickham, `tidyverse` introduit une philosophie et une grammaire spécifiques qui diffèrent du langage R traditionnel. Une partie de la communauté a pour ainsi dire complètement embrassé le `tidyverse` et de nombreux *packages*, en dehors du `tidyverse`, ont adopté sa grammaire et sa philosophie. À l'inverse, une autre partie de la communauté est contre cette évolution ([voir l'article du blogue suivant](https://blog.ephorie.de/why-i-dont-use-the-tidyverse){target="_blank"}). Les arguments pour et contre `tidyverse` sont résumés dans le tableau suivant. 
 
 
 ```{r tableTidyverse, echo=FALSE, message=FALSE, warning=FALSE}
@@ -874,12 +874,12 @@ Une fois le *DataFrame* chargé, voyons comment il est possible de le manipuler.
 df <- data.frame(
           Pour = c("Simplicité d'écriture et d'apprentissage",
   "Ajout de l'opérateur `%>%` permettant d'enchaîner les traitements",
-  "La meilleure librairie pour réaliser des graphiques : **ggplot2**",
+  "La meilleure librairie pour réaliser des graphiques : `ggplot2`",
   "Crée un écosystème cohérent",
   "Package en développement et de plus en plus utilisé"),
           Contre = c("Nouvelle syntaxe à apprendre",
   "Perte de lisibilité avec l'opérateur `->`",
-  "Certaines fonctions de base sont remplacées par **tidyverse** lors de son chargement, pouvant créer des erreurs.",
+  "Certaines fonctions de base sont remplacées par `tidyverse` lors de son chargement, pouvant créer des erreurs.",
   "Ajoute une dépendance dans le code",
   "Philosophie d'évolution agressive, aucune assurance de rétrocompatibilité")
 )
@@ -893,7 +893,7 @@ show_table(df,
 ```
 
 
-Le dernier point est probablement le plus problématique. Dans sa volonté d'évoluer au mieux et sans restriction, le *package* **tidyverse** n'offre aucune garantie de rétrocompatibilité. En d'autre termes, des changements importants peuvent être introduits d'une version à l'autre rendant potentiellement obsolète votre ancien code. Nous n'avons pas d'opinion tranchée sur le sujet&nbsp;: **tidyverse** est un outil très intéressant dans de nombreux cas; nous évitons simplement de l'utiliser systématiquement et préférons charger directement des sous-packages (comme **dplyr** ou **ggplot2**) du **tidyverse**. Notez que le *package* **data.table** offre une alternative au **tidyverse** dans la manipulation de données. Au prix d'une syntaxe généralement un peu plus complexe, le package **data.table** offre une vitesse de calcul bien supérieure au **tidyverse** et assure une bonne rétrocompatibilité.
+Le dernier point est probablement le plus problématique. Dans sa volonté d'évoluer au mieux et sans restriction, le *package* `tidyverse` n'offre aucune garantie de rétrocompatibilité. En d'autre termes, des changements importants peuvent être introduits d'une version à l'autre rendant potentiellement obsolète votre ancien code. Nous n'avons pas d'opinion tranchée sur le sujet&nbsp;: `tidyverse` est un outil très intéressant dans de nombreux cas; nous évitons simplement de l'utiliser systématiquement et préférons charger directement des sous-packages (comme `dplyr` ou `ggplot2`) du `tidyverse`. Notez que le *package* `data.table` offre une alternative au `tidyverse` dans la manipulation de données. Au prix d'une syntaxe généralement un peu plus complexe, le package `data.table` offre une vitesse de calcul bien supérieure au `tidyverse` et assure une bonne rétrocompatibilité.
 
 
 #### Gérer les colonnes d'un *DataFrame* {#sect01422}
@@ -1026,7 +1026,7 @@ Ces fonctions sont des fonctions vectorielles puisqu'elles s'appliquent à tous 
 
 #### Fonctions pour manipuler des chaînes de caractères {#sect01425}
 
-Outre les données numériques, vous aurez à travailler avec des données de type texte (`string`). Le **tidyverse** avec le *package* **stringr** offre des fonctions très intéressantes pour manipuler ce type de données. Pour un aperçu de toutes les fonctions offertes par **stringr**, référer-vous à sa [*Cheat Sheet*](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf){target="_blank"}. Commençons avec un *DataFrame* assez simple comprenant des adresses et des noms de personnes.
+Outre les données numériques, vous aurez à travailler avec des données de type texte (`string`). Le `tidyverse` avec le *package* `stringr` offre des fonctions très intéressantes pour manipuler ce type de données. Pour un aperçu de toutes les fonctions offertes par `stringr`, référer-vous à sa [*Cheat Sheet*](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf){target="_blank"}. Commençons avec un *DataFrame* assez simple comprenant des adresses et des noms de personnes.
 
 ```{r message=FALSE, warning=FALSE}
 library(stringr)
@@ -1135,7 +1135,7 @@ paste0("Please conca", "tenate me!")
 
 #### Manipuler des colonnes de type date {#sect01426}
 
-Nous avons vu que les principaux types de données dans R sont le numérique, le texte, le booléen et le facteur. Il existe d'autres types introduits par différents *packages*. Nous abordons ici les types date et heure (*date* and *time*). Pour les manipuler, nous privilégions l'utilisation du *package* **lubridate** du **tidyverse**. Pour illustrer le tout, nous l'appliquerons avec un jeu de données ouvertes de la Ville de Montréal, représentant les collisions routières, impliquant au moins un cycliste, survenues après le 1^er^ janvier 2017.
+Nous avons vu que les principaux types de données dans R sont le numérique, le texte, le booléen et le facteur. Il existe d'autres types introduits par différents *packages*. Nous abordons ici les types date et heure (*date* and *time*). Pour les manipuler, nous privilégions l'utilisation du *package* `lubridate` du `tidyverse`. Pour illustrer le tout, nous l'appliquerons avec un jeu de données ouvertes de la Ville de Montréal, représentant les collisions routières, impliquant au moins un cycliste, survenues après le 1^er^ janvier 2017.
 
 ```{r message=FALSE, warning=FALSE}
 accidents_df <- read.csv(file="data/priseenmain/accidents.csv", sep = ",")
@@ -1152,7 +1152,7 @@ Actuellement, les colonnes `HEURE_ACCDN` et `DT_ACCDN` sont au format texte. Nou
 head(accidents_df, n = 5)
 ```
 
-Un peu de ménage s'impose&nbsp;: les heures sont indiquées comme des périodes d'une heure. Nous utilisons la fonction `str_split_fixed` du *package* **stringr** pour ne garder que la première partie de l'heure (avant le tiret). Nous allons ensuite concaténer l'heure et la date avec la fonction `paste`, puis nous convertirons ce résultat en un objet *date-time*.
+Un peu de ménage s'impose&nbsp;: les heures sont indiquées comme des périodes d'une heure. Nous utilisons la fonction `str_split_fixed` du *package* `stringr` pour ne garder que la première partie de l'heure (avant le tiret). Nous allons ensuite concaténer l'heure et la date avec la fonction `paste`, puis nous convertirons ce résultat en un objet *date-time*.
 
 ```{r message=FALSE, warning=FALSE}
 library(lubridate)
@@ -1170,7 +1170,7 @@ accidents_df$datetime <- as_datetime(accidents_df$date_heure,
                                      format = "%Y/%m/%d %H:%M:%S")
 ```
 
-Pour effectuer la conversion, nous avons utilisé la fonction `as_datetime` du package **lubridate**. Elle prend comme paramètre un vecteur de texte et une indication du format de ce vecteur de texte. Il existe de nombreuses façons de spécifier une date et une heure et l'argument *format* permet d'indiquer celle à utiliser. Dans cet exemple, la date est structurée comme suit&nbsp;: 
+Pour effectuer la conversion, nous avons utilisé la fonction `as_datetime` du package `lubridate`. Elle prend comme paramètre un vecteur de texte et une indication du format de ce vecteur de texte. Il existe de nombreuses façons de spécifier une date et une heure et l'argument *format* permet d'indiquer celle à utiliser. Dans cet exemple, la date est structurée comme suit&nbsp;: 
 `année/mois/jour heure:minute:seconde`, ce qui se traduit par le format `%Y/%m/%d %H:%M:%S`.
 
 * %Y signifie une année indiquée avec quatre caractères&nbsp;: 2017;
@@ -1300,7 +1300,7 @@ En rapportant les collisions aux durées des deux périodes, on observe une nett
 
 ##### Le cas multiple avec la fonction *case_when* {#sect014272}
 
-Lorsque l'on souhaite créer plus que deux catégories, il est possible soit d'enchaîner plusieurs fonctions `ifelse` (ce qui produit un code plus long et moins lisible), soit d'utiliser la fonction `case_when` du *package* **dplyr** du **tidyverse**. Reprenons notre exemple et créons quatre catégories&nbsp;: 
+Lorsque l'on souhaite créer plus que deux catégories, il est possible soit d'enchaîner plusieurs fonctions `ifelse` (ce qui produit un code plus long et moins lisible), soit d'utiliser la fonction `case_when` du *package* `dplyr` du `tidyverse`. Reprenons notre exemple et créons quatre catégories&nbsp;: 
 
 * en heures de pointe du matin;
 * en heures de pointe du soir;

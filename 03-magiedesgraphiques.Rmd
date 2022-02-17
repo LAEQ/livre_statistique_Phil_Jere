@@ -706,7 +706,7 @@ graphique <- ggplot(data = data_co2)+
 
 La relation non linéaire révèle davantage d'informations&nbsp;: l'augmentation de l'urbanisation est associée à une augmentation de l'émission de CO~2~ par habitant uniquement jusqu'à 75% d'urbanisation; au-delà de ce seuil, la relation ne tient plus. Ces résultats semblent cohérents avec l'évolution classique de l'économie d'un pays passant progressivement d'une économie agricole, à une économie industrialisée et finalement une économie de services.
 
-### Graphique en lignes {#sect0324}
+### Graphique en ligne {#sect0324}
 
 Un graphique en ligne permet de représenter l'évolution d'une variable, généralement dans le temps. Dans le jeu de données précédent, nous disposons des émissions de CO~2~ par habitant de nombreux pays sur plusieurs années. Nous pouvons ainsi représenter l'évolution des émissions pour chaque pays avec un graphique en ligne. Pour éviter de le surcharger, cet exercice est réalisé uniquement sur les pays de l'Europe de l'Ouest.
 
@@ -803,7 +803,7 @@ ggplot(data = data_co2_comp)+
 ```
 Notez que pour éviter que les valeurs extrêmes identifiées par la fonction `geom_boxplot` se superposent avec les points représentant les observations, nous les avons supprimées avec l'argument `outlier.shape = NA`.
 
-### Graphique en violons {#sect0326}
+### Graphique en violon {#sect0326}
 
 Les boîtes à moustaches donnent des informations pertinentes sur le centre et la dispersion d'une variable en fonction de sous groupes de la population. Cependant, une grande partie de l'information reste masquée par la représentation sous forme de boîte. Une alternative est de  remplacer la simple boîte par la distribution de la variable étudiée. On obtient ainsi des graphiques en violon (`geom_violin`). Considérant les très grands écarts entre les régions que nous avons observés avec les boîtes à moustaches, il est préférable de tracer les graphiques en violon en excluant les régions Afrique Sub-Saharienne et Asie du Sud.
 
@@ -831,9 +831,9 @@ ggplot(data = data_co2_comp)+
        y = '')
 ```
 
-### Graphique en barres {#sect0327}
+### Graphique en barre {#sect0327}
 
-Les graphiques en barres permettent de représenter des quantités (hauteur des barres) réparties dans des catégories (une barre par catégorie). Nous proposons ici un exemple avec des données de déplacements issues de l'*enquête origine destination de Communauté urbaine de 2017* au niveau des grands secteurs. La figure \@ref(fig:fig342) tirée du [rapport](https://www.transports.gouv.qc.ca/fr/ministere/Planification-transports/enquetes-origine-destination/quebec/2017/Documents/EOD17_faits_saillants_VF.pdf) *FAITS SAILLANTS DE L’ENQUÊTE-MÉNAGES – EOD 2017 QUÉBEC-LÉVIS* délimite ces grands secteurs.
+Les graphiques en barre permettent de représenter des quantités (hauteur des barres) réparties dans des catégories (une barre par catégorie). Nous proposons ici un exemple avec des données de déplacements issues de l'*enquête origine destination de Communauté urbaine de 2017* au niveau des grands secteurs. La figure \@ref(fig:fig342) tirée du [rapport](https://www.transports.gouv.qc.ca/fr/ministere/Planification-transports/enquetes-origine-destination/quebec/2017/Documents/EOD17_faits_saillants_VF.pdf) *FAITS SAILLANTS DE L’ENQUÊTE-MÉNAGES – EOD 2017 QUÉBEC-LÉVIS* délimite ces grands secteurs.
 
 ```{r fig343, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Grands secteurs de Québec",  out.width='60%'}
 knitr::include_graphics('images/magie_graphiques/carte_secteurs.jpg', dpi = NA)
@@ -841,7 +841,7 @@ knitr::include_graphics('images/magie_graphiques/carte_secteurs.jpg', dpi = NA)
 
 Nous représentons pour chaque secteur le nombre déplacements moyen entrant et sortant un jour de semaine en heures de pointe. Les données sont présentées sous forme d'une matrice carrée (avec autant de lignes que de colonnes). L'intersection de la ligne A et de la colonne C indique le nombre de personnes partant du secteur A pour se rendre dans le secteur C. À l'inverse, l'intersection de la ligne C et de la colonne A indique le nombre de personnes partant du secteur C pour se rendre dans le secteur A. En sommant les valeurs de chaque ligne, on obtient le nombre total de départs par secteur tandis que le nombre d'arrivées est la somme de chaque colonne. Ces opérations peuvent simplement être effectuées avec les fonctions `rowSums` et `colSums`.
 
-```{r fig344, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques en barres simples",  out.width='75%', dev = "png", dpi = 300}
+```{r fig344, fig.align='center', auto_pdf = TRUE, fig.cap="Graphiques en barre simples",  out.width='75%', dev = "png", dpi = 300}
 
 # Chargement des donneées
 matriceOD <- read.csv('data/graphique/Quebec_2017_OD_MJ.csv',
@@ -868,7 +868,7 @@ df <- data.frame(depart = tot_depart,
                             'Hors Territoire'),
                  code = c('A','B','C','D','E','F','G','H','I','J','K','X'))
 
-# Création des deux graphiques en barres
+# Création des deux graphiques en barre
 plot1 <- ggplot(data = df)+
   geom_bar(aes(x = code, weight = depart))+
   labs(subtitle = 'Départs',
@@ -902,9 +902,9 @@ annotate_figure(tot_plot,
 
 ```
 
-Plutôt que de représenter les arrivées et les départs dans deux graphiques séparés, il est possible de les empiler dans un même graphique en barres. Nous devons au préalable «&nbsp;faire fondre nos données&nbsp;» avec la fonction `melt`.
+Plutôt que de représenter les arrivées et les départs dans deux graphiques séparés, il est possible de les empiler dans un même graphique en barre. Nous devons au préalable «&nbsp;faire fondre nos données&nbsp;» avec la fonction `melt`.
 
-```{r fig345, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en barres empilées",  out.width='65%', dev = "png", dpi = 300}
+```{r fig345, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en barre empilées",  out.width='65%', dev = "png", dpi = 300}
 # Faire fondre le jeu de données (empiler les colonnes depart et arrivee)
 melted_df <- melt(df, id.vars = c('code'), measure.vars = c('depart','arrivee'))
 names(melted_df) <- c('code','deplacement','effectif')
@@ -930,7 +930,7 @@ annotate_figure(plot1,right = text_grob(string_names, face = "italic", size = 7,
 
 ### Graphique circulaire {#sect0328}
 
-Une alternative directe au graphique en barre est le graphique ou diagramme circulaire, appelé aussi graphique en pointes de tarte (pour les personnes à la dent sucrée) ou en camembert (pour celles amatrices de fromage). Il est suffissamment connu et utilisé pour qu'aucune présentation ne s'impose. Pour être exact, un graphique en pointes de tarte n'est rien d'autre qu'un graphique en barres dont le système de coordonnées a été modifié. Cela impose cependant de calculer à l'avance la position des étiquettes que l'on souhaite ajouter sur le graphique. Reprenons les données de production mondiale de CO~2~ et calculons les productions totales par région géographique en 2015.
+Une alternative directe au graphique en barre est le graphique ou diagramme circulaire, appelé aussi graphique en pointes de tarte (pour les personnes à la dent sucrée) ou en camembert (pour celles amatrices de fromage). Il est suffissamment connu et utilisé pour qu'aucune présentation ne s'impose. Pour être exact, un graphique en pointes de tarte n'est rien d'autre qu'un graphique en barre dont le système de coordonnées a été modifié. Cela impose cependant de calculer à l'avance la position des étiquettes que l'on souhaite ajouter sur le graphique. Reprenons les données de production mondiale de CO~2~ et calculons les productions totales par région géographique en 2015.
 
 ```{r fig346, fig.align='center', fig.cap="Graphique en pointes de tarte", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 library(dplyr)

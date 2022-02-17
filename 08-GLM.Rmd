@@ -297,7 +297,7 @@ Pour illustrer cela, admettons que nous ayons ajusté un modèle GLM de type gau
 
 $Prédiction = 7 + 3\times0,5 + 5\times1,2 + 5\times1,8 = 23,5$
 
-En revanche, simuler des données à partir d’un modèle revient à ajouter la dimension stochastique (aléatoire) du modèle. Puisque notre modèle GLM est gaussien, il comporte un paramètre $\sigma$ (son écart-type); admettons pour cet exemple qu’il soit de 1,2. Ainsi, avec les données précédentes, il est possible de simuler un ensemble infini de valeurs dont la distribution est la suivante&nbsp;: $Normal(\mu = 23,5 \text{ , } \sigma = 1,2)$. 95&nbsp;% du temps, ces valeurs simulées se trouveront dans l’intervalle [21,1-25,9] ($\mu - 2\sigma \text{ ; } \mu + 2\sigma$), puisque cette distribution est normale. Les valeurs simulées dépendent donc de la distribution choisie pour le modèle et de l’ensemble des paramètres du modèle, pas seulement de l’équation de régression.
+En revanche, simuler des données à partir d’un modèle revient à ajouter la dimension stochastique (aléatoire) du modèle. Puisque notre modèle GLM est gaussien, il comporte un paramètre $\sigma$ (son écart-type); admettons pour cet exemple qu’il soit de 1,2. Ainsi, avec les données précédentes, il est possible de simuler un ensemble infini de valeurs dont la distribution est la suivante&nbsp;: $Normal(\mu = 23,5 \text{ , } \sigma = 1,2)$. 95&nbsp;% du temps, ces valeurs simulées se trouveront dans l’intervalle [21,1-25,9] ($\mu - 2\sigma \text{; } \mu + 2\sigma$), puisque cette distribution est normale. Les valeurs simulées dépendent donc de la distribution choisie pour le modèle et de l’ensemble des paramètres du modèle, pas seulement de l’équation de régression.
 
 Si vous aviez à ne retenir qu’une seule phrase de ce bloc, retenez que la prédiction ne se réfère qu’à la partie systématique du modèle (équation de régression), alors que la simulation incorpore la partie stochastique (aléatoire) de la distribution du modèle. Deux prédictions effectuées sur des données identiques donnent des résultats identiques, ce qui n’est que rarement le cas pour la simulation.
 :::
@@ -2138,7 +2138,7 @@ show_table(tableau,
 Les coefficients du modèle expriment l’impact du changement d’une unité des variables *X* sur $\lambda$ (le nombre de cas) dans l’échelle logarithmique (*log-scale*). Pour rappel, l’échelle logarithmique est multiplicative&nbsp;: si l’on convertit les coefficients dans leur échelle originale avec la fonction exponentielle, leur effet n’est plus additif, mais multiplicatif.
 Prenons un exemple concret, admettons que nous ayons ajusté un modèle Poisson à une variable de comptage *Y* avec deux variables $X_1$ et $X_2$ et que nous ayons obtenus les coefficients suivants&nbsp;:
 
-$\beta_0 = 1,8 \text{ ; } \beta_1 = 0,5 \text{ ; } \beta_2 = -1,5$
+$\beta_0 = 1,8 \text{; } \beta_1 = 0,5 \text{; } \beta_2 = -1,5$
 
 L’interprétation basique (sur l’échelle logarithmique) est la suivante&nbsp;: une augmentation d'une unité de la variable $X_1$ est associée avec une augmentation de 0,5 du logarithmique du nombre de cas attendus. Une augmentation d'une unité de la variable $X_2$ est associée avec une réduction de 1,5 unités du logarithmique du nombre de cas attendus. Avec la conversion avec la fonction exponentielle, on obtient alors&nbsp;: 
 
@@ -3664,7 +3664,7 @@ df <- data.frame(
   C1 = c("Mode", "Motif", "HeureDep", "ArrondDep", "LogDist", "MemeArrond", "Semaine"),
   C2 = c("Mode de déplacement", "Motif du déplacement", "Heure de départ", "Arrondissement de départ", "Logarithme de la distance à vol d’oiseau en km", "L’arrivée du trajet du trajet se situe-t-elle dans le même arrondissement que le départ?", "Le trajet a-t-il été effectué en semaine ou en fin de semaine?"),
   C3 = c("Variable catégorielle", "Variable catégorielle", "Variable catégorielle", "Variable catégorielle", "Variable continue", "Variable binaire", "Variable binaire"),
-  C4 = c("Transport collectif ; piéton ; vélo et véhicule individuel", "Travail ; loisir ; magasinage et éducation", "De 7 h à 21 h", "Nom de l’arrondissement dont part le trajet", "Logarithme de la distance à vol d’oiseau en km entre le point de départ et d’arrivée", "Oui ou non", "Semaine ou fin de semaine")
+  C4 = c("Transport collectif; piéton; vélo et véhicule individuel", "Travail; loisir; magasinage et éducation", "De 7 h à 21 h", "Nom de l’arrondissement dont part le trajet", "Logarithme de la distance à vol d’oiseau en km entre le point de départ et d’arrivée", "Oui ou non", "Semaine ou fin de semaine")
 )
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle Gamma",
