@@ -5,25 +5,25 @@
 Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Aussi, nous abordons un concept central de la statistique : les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons principalement les packages suivants : 
+Dans ce chapitre, nous utilisons principalement les packages suivants : 
 
 * Pour créer des graphiques :
-  - **ggplot2**, le seul, l'unique
-  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes
+  - `ggplot2`, le seul, l'unique!
+  - `ggpubr` pour combiner des graphiques et réaliser des diagrammes.
   
 * Pour créer des distributions :
-  - **fitdistrplus** pour générer différentes distributions
-  - **actuar** pour la fonction de densité de Pareto
-  - **gamlss.dist** pour des distributions de Poisson
+  - `fitdistrplus pour générer différentes distributions.
+  - `actuar` pour la fonction de densité de Pareto.
+  - `gamlss.dist` pour des distributions de Poisson.
 
 * Pour les statistiques descriptives :
-  - **stats**, **moments** pour les statistiques descriptives
-  - **nortest** pour le test de Kolmogorov-Smirnov
-  - **DescTools** pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera
+  - `stats` et `moments` pour les statistiques descriptives.
+  - `nortest` pour le test de Kolmogorov-Smirnov.
+  - `DescTools` pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera.
 
 * Autres *packages* :
-  - **Hmisc** et **Weighted.Desc.Stat** pour les statistiques descriptives pondérées
-  - **foreign** pour importer des fichiers externes
+  - `Hmisc` et `Weighted.Desc.Stat` pour les statistiques descriptives pondérées.
+  - `foreign` pour importer des fichiers externes.
 :::
 
 ## Notion de variable {#sect021}
@@ -1207,7 +1207,7 @@ knitr::include_graphics('images/univariee/FormeDistribution.jpg', dpi = NA)
 
 **Une distribution est dite symétrique** quand la moyenne arithmétique est au centre de la distribution, c'est-à-dire que les observations sont bien réparties de part et d'autre de la moyenne qui sera alors égale à la médiane et au mode (on utilisera uniquement le mode pour une variable discrète et non pour une variable continue). Pour évaluer l'asymétrie, on utilise habituellement le coefficient d'asymétrie (*skewness* en anglais). 
 
-Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing] : $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans R avec la fonction `skewness` du *package* **moments**), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* **DescTools** ou **e1071**, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quelle que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie)) :
+Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing] : $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans R avec la fonction `skewness` du *package* `moments`), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* `DescTools` ou `e1071`, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quelle que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie)) :
 
 * quand la valeur du *skewness* est négative, la **distribution est asymétrique négative**. La distribution est alors tirée à gauche par des valeurs extrêmes faibles, mais peu nombreuses. On emploie souvent l'expression *la queue de distribution* est étirée vers la gauche. La moyenne est alors inférieure à la médiane.
 * quand la valeur du *skewness* est égale à 0, **la distribution est symétrique** (la médiane sera égale à la moyenne). Pour une variable discrète, les valeurs du mode, de la moyenne et de la médiane seront égales.
@@ -1391,7 +1391,7 @@ ggarrange(Gp, Gm, Gl, ncol = 2, nrow=2)
 ```
 
 ::: {.bloc_attention data-latex=""}
-Regardez attentivement les équations \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3); vous remarquez que pour $g_2$ et $b_2$, il y a une soustraction de $-3$ et une addition $+6$ pour $G_2$. On parle alors de *kurtosis* normalisé (*excess kurtosis* en anglais). Pour une distribution normale, il prendra la valeur de 0, comparativement à la valeur de 3 pour un *kurtosis* non normalisé. Par conséquent, avant de calculer du *kurtosis*, il convient de s'assurer que la fonction que vous utilisez implémente une méthode de calcul normalisée (donnant une valeur de 0 pour une distribution normale). Par exemple, la fonction `Kurt` du *package* **DescTools** calcule les trois formules normalisées tandis que la fonction `kurtosis` du *package* **moments** renvoie un *kurtosis* non normalisé.
+Regardez attentivement les équations \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3); vous remarquez que pour $g_2$ et $b_2$, il y a une soustraction de $-3$ et une addition $+6$ pour $G_2$. On parle alors de *kurtosis* normalisé (*excess kurtosis* en anglais). Pour une distribution normale, il prendra la valeur de 0, comparativement à la valeur de 3 pour un *kurtosis* non normalisé. Par conséquent, avant de calculer du *kurtosis*, il convient de s'assurer que la fonction que vous utilisez implémente une méthode de calcul normalisée (donnant une valeur de 0 pour une distribution normale). Par exemple, la fonction `Kurt` du *package* `DescTools` calcule les trois formules normalisées tandis que la fonction `kurtosis` du *package* `moments` renvoie un *kurtosis* non normalisé.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library(DescTools)
@@ -1595,7 +1595,7 @@ Comme nous l'avons vu, la distribution normale n'est que l'une des multiples dis
 3. Présélectionnez un ensemble de distributions candidates compte tenu des observations précédentes. Vous pouvez également vous reporter à la littérature existante sur votre sujet d'étude pour inclure d'autres distributions. Soyez flexible ! Une variable strictement positive pourrait tout de même avoir une forme normale. De même, une variable décrivant des comptages suffisamment grands pourrait être mieux décrite par une distribution normale qu'une distribution de poisson.
 4. Tentez d'ajuster chacune des distributions retenues à vos données et comparez les qualités d'ajustements pour retenir la plus adaptée.
 
-Pour ajuster une distribution à un jeu de données, il faut trouver les valeurs des paramètres de cette distribution qui lui permettront d'adopter une forme la plus proche possible des données. On appelle cette opération **ajuster un modèle**, puisque la distribution théorique est utilisée pour modéliser les données. L'ajustement des paramètres est un problème d'optimisation que plusieurs algorithmes sont capables de résoudre (*gradient descent*, *Newton-Raphson method*, *Fisher scoring*, etc.). Dans R, le *package* **fitdistrplus** permet d'ajuster pratiquement n'importe quelle distribution à des données en offrant plusieurs stratégies d'optimisation grâce à la fonction `fitdist`. Il suffit de disposer d'une fonction représentant la distribution de densité ou de masse de la distribution en question, généralement noté `dnomdeladistribution` (`dnorm`, `dgamma`, `dpoisson`, etc.) dans R. Notez que certains *packages* comme **VGAM** ou **gamlss.dist** ajoutent un grand nombre de fonctions de densité et de masse à celles déjà disponibles de base dans R.
+Pour ajuster une distribution à un jeu de données, il faut trouver les valeurs des paramètres de cette distribution qui lui permettront d'adopter une forme la plus proche possible des données. On appelle cette opération **ajuster un modèle**, puisque la distribution théorique est utilisée pour modéliser les données. L'ajustement des paramètres est un problème d'optimisation que plusieurs algorithmes sont capables de résoudre (*gradient descent*, *Newton-Raphson method*, *Fisher scoring*, etc.). Dans R, le *package* `fitdistrplus` permet d'ajuster pratiquement n'importe quelle distribution à des données en offrant plusieurs stratégies d'optimisation grâce à la fonction `fitdist`. Il suffit de disposer d'une fonction représentant la distribution de densité ou de masse de la distribution en question, généralement noté `dnomdeladistribution` (`dnorm`, `dgamma`, `dpoisson`, etc.) dans R. Notez que certains *packages* comme `VGAM` ou `gamlss.dist` ajoutent un grand nombre de fonctions de densité et de masse à celles déjà disponibles de base dans R.
 
 Pour comparer l'ajustement de plusieurs distributions théoriques à des données, trois approches doivent être combinées : 
 
@@ -1676,7 +1676,7 @@ Compte tenu de la forme de la distribution empirique et de sa nature, quatre dis
 * La distribution Gamma, strictement positive et asymétrique, elle est aussi une généralisation de la distribution exponentielle utilisée pour modéliser des temps d'attente. Pour des raisons similaires, on peut aussi retenir la distribution de Weibull et la distribution log-normale. Nous écartons ici la distribution skew-normale puisque le jeu de données n'a clairement pas une forme normale au départ.
 * La distribution de Pareto, strictement positive et permettant de représenter ici le fait que la plupart des retards durent moins de 10 minutes, mais que quelques retards sont également beaucoup plus longs.
 
-Commençons par ajuster les quatre distributions avec la fonction `fitdist` du *package* **fitdistrplus** et représentons-les graphiquements pour éliminer les moins bons candidats. Nous utilisons également le *package* **actuar** pour la fonction de densité de Pareto (`dpareto`).
+Commençons par ajuster les quatre distributions avec la fonction `fitdist` du *package* `fitdistrplus` et représentons-les graphiquements pour éliminer les moins bons candidats. Nous utilisons également le *package* `actuar` pour la fonction de densité de Pareto (`dpareto`).
 
 ```{r figbustrt2, fig.align='center', fig.cap="Comparaison des distributions ajustées aux données de retard des bus", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
 library(fitdistrplus)
@@ -1785,7 +1785,7 @@ ggplot(data = counts) +
   labs(x = "nombre d'accidents",
       y = 'fréquence')
 ```
-Nous avons effectivement de nombreux zéros ici, essayons d'ajuster nos deux distributions à ce jeu de données. Dans le graphique suivant, les barres grises représentent la distribution empirique du jeu de données et les barres rouges les distributions théoriques ajustées. Nous utilisons ici le *package* **gamlss.dist** pour avoir la fonction de masse d'une distribution de poisson avec excès de zéros.
+Nous avons effectivement de nombreux zéros ici, essayons d'ajuster nos deux distributions à ce jeu de données. Dans le graphique suivant, les barres grises représentent la distribution empirique du jeu de données et les barres rouges les distributions théoriques ajustées. Nous utilisons ici le *package* `gamlss.dist` pour avoir la fonction de masse d'une distribution de poisson avec excès de zéros.
 
 ```{r figaccmtldist, fig.align='center', fig.cap="Ajustement des distributions de poisson et poisson avec excès de zéros", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%'}
 library(gamlss.dist)
@@ -1829,7 +1829,7 @@ print(model_poissonzi$loglik)
 #afficher les paramètres ajustés
 model_poissonzi$estimate
 ```
-Nous avons donc la confirmation que le modèle de poisson avec excès de zéros est mieux ajusté. Nous apprenons donc que 70% (sigma = 0,70) des intersections sont en fait exclues du phénomène étudié (probablement parce que très peu de cyclistes les utilisent ou parce qu'elles sont très peu accidentogènes) et que pour les autres, le taux d'accidents par année en 2017 était de 0,67 (mu = 0,669, mu signifiant $\lambda$ pour le *package* **gamlss**). À nouveau, nous pouvons effectuer un test formel avec le fonction `ks.test`.
+Nous avons donc la confirmation que le modèle de poisson avec excès de zéros est mieux ajusté. Nous apprenons donc que 70% (sigma = 0,70) des intersections sont en fait exclues du phénomène étudié (probablement parce que très peu de cyclistes les utilisent ou parce qu'elles sont très peu accidentogènes) et que pour les autres, le taux d'accidents par année en 2017 était de 0,67 (mu = 0,669, mu signifiant $\lambda$ pour le *package* `gamlss`). À nouveau, nous pouvons effectuer un test formel avec le fonction `ks.test`.
 
 ```{r message=FALSE, warning=FALSE}
 params <- as.list(model_poissonzi$estimate)
@@ -1980,7 +1980,7 @@ Il existe une multitude de *packages* dédiés au calcul des statistiques descri
 * `Kurt` du *package* `DescTools` : coefficient d'applatissement
 * `ks.test(x, "pnorm", mean=mean(x), sd=sd(x))` du *package* `nortest` : test de Kolmogorov-Smirnov
 * `shapiro.test` du *package* `DescTools` : test de Shapiro-Wilk
-* `lillie.test` du *package* `DescTools` : du package **nortest** : test de Lilliefors
+* `lillie.test` du *package* `DescTools` : du package `nortest` : test de Lilliefors
 * `ad.test` du *package* `DescTools` : test d'Anderson-Darling
 * `JarqueBeraTest` du *package* `DescTools` : test de Jarque-Bera
 

@@ -1,30 +1,30 @@
 # La magie des graphiques {#chap03}
 
-Dans ce chapitre, nous allons découvrir les incroyables capacités graphiques de R. Pour ce faire, nous couvrirons en profondeur les fonctionnalités du *package* **ggplot2** du **tidyverse**. Selon nous, il s'agit de loin du meilleur *package* pour réaliser des graphiques.
+Dans ce chapitre, nous allons découvrir les incroyables capacités graphiques de R. Pour ce faire, nous couvrirons en profondeur les fonctionnalités du *package* `ggplot2` du `tidyverse`. Selon nous, il s'agit de loin du meilleur *package* pour réaliser des graphiques.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons les *packages* suivants&nbsp;: 
+Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
-  - **ggplot2**, le seul, l'unique!
-  - **ggpubr** pour combiner des graphiques.
-  - **ggthemes** pour utiliser des thèmes complémentaires pour les graphiques. 
+  - `ggplot2`, le seul, l'unique!
+  - `ggpubr` pour combiner des graphiques.
+  - `ggthemes` pour utiliser des thèmes complémentaires pour les graphiques. 
 * Pour les couleurs&nbsp;: 
-  - **RColorBrewer** pour accéder à des palettes de couleurs.
+  - `RColorBrewer` pour accéder à des palettes de couleurs.
 * Pour les graphiques spéciaux&nbsp;: 
-  - **chorddiag** pour construire des graphiques d'accord.
-  - **fmsb** pour construire des graphiques en radar.
-  - **treemap** pour construire une carte proportionnelle.
-  - **wordcloud2** et **textrank** pour construire un nuage de mots.
+  - `chorddiag` pour construire des graphiques d'accord.
+  - `fmsb` pour construire des graphiques en radar.
+  - `treemap` pour construire une carte proportionnelle.
+  - `wordcloud2` et `textrank` pour construire un nuage de mots.
 * Pour les cartes&nbsp;: 
-  - **classInt** pour calculer les intervalles des classes.
-  - **ggsn** pour afficher une échelle.
-  - **tmap** pour la cartographie.
+  - `classInt` pour calculer les intervalles des classes.
+  - `ggsn` pour afficher une échelle.
+  - `tmap` pour la cartographie.
 * Autres *packages*&nbsp;: 
-  - **dplyr** et **reshape2** pour manipuler des données.
-  - **pdftools** pour extraire les textes des fichiers pdf.
-  - **udpipe** pour obtenir des dictionnaires linguistiques.
-  - **sf** pour manipuler des *simple feature collections*.
+  - `dplyr` et `reshape2` pour manipuler des données.
+  - `pdftools` pour extraire les textes des fichiers pdf.
+  - `udpipe` pour obtenir des dictionnaires linguistiques.
+  - `sf` pour manipuler des *simple feature collections*.
 :::
 
 ::: {.bloc_notes data-latex=""}
@@ -52,7 +52,7 @@ knitr::include_graphics('images/magie_graphiques/climate_change_exposure.png', d
 
 Le graphique est à la fois très accrocheur et esthétique. En un coup d'œil, on constate que les villes avec une forte croissance démographique sont aussi les plus vénérables (lecture des deux axes) et qu'elles sont surtout localisées en Afrique et secondairement en Asie (en rouge et orange), quelle que soit leur taille (taille du cercle). À l'inverse, les villes européennes et américaines (en bleu) sont beaucoup moins vulnérables aux changements climatiques et avec une croissance démographique plus faible, qu'elles soient des petites, moyennes ou grandes villes.
 
-Souvent négligée, la visualisation de données est perçue comme une tâche triviale&nbsp;: il s'agit simplement de représenter une donnée sous forme d'un graphique, car c'est l'option la plus pratique ou qui prend le moins d'espace. Pourtant, les avantages de la visualisation des données sont nombreux. Par exemple, la visualisation de données intègre aujourd'hui des supports dynamiques comme des animations, des figures interactives ou des applications webs. R offre d'ailleurs des possibilités très intéressantes en la matière avec des *packages* comme **shiny**, **plotly** ou **leaflet**. Toutefois, nous ne couvrirons pas ici ces méthodes plus récentes en visualisation des données qui devraient faire l'objet d'un autre livre.
+Souvent négligée, la visualisation de données est perçue comme une tâche triviale&nbsp;: il s'agit simplement de représenter une donnée sous forme d'un graphique, car c'est l'option la plus pratique ou qui prend le moins d'espace. Pourtant, les avantages de la visualisation des données sont nombreux. Par exemple, la visualisation de données intègre aujourd'hui des supports dynamiques comme des animations, des figures interactives ou des applications webs. R offre d'ailleurs des possibilités très intéressantes en la matière avec des *packages* comme `shiny`, `plotly` ou `leaflet`. Toutefois, nous ne couvrirons pas ici ces méthodes plus récentes en visualisation des données qui devraient faire l'objet d'un autre livre.
 
 **Les principaux avantages de la visualisation des données**&nbsp;: 
 
@@ -63,7 +63,7 @@ Souvent négligée, la visualisation de données est perçue comme une tâche tr
 
 ## Philosophie du ggplot2 {#sect031}
 
-Le *package* **ggplot2** fait partie du **tidyverse** et dispose d'une logique de fonctionnement particulière. Cette dernière se nomme *The Grammar of Graphics* (les deux G sont d'ailleurs à l'origine du nom **ggplot2**), proposée par Hadley Wickham (le créateur du **tidyverse**!) dans un article intitulé *A layered grammar of graphics* [@wickham2010layered]. Nous proposons de synthétiser ici les concepts et principes centraux qui sous-tendent la production de graphiques avec **ggplot2**.
+Le *package* `ggplot2` fait partie du `tidyverse` et dispose d'une logique de fonctionnement particulière. Cette dernière se nomme *The Grammar of Graphics* (les deux G sont d'ailleurs à l'origine du nom `ggplot2`), proposée par Hadley Wickham (le créateur du `tidyverse`!) dans un article intitulé *A layered grammar of graphics* [@wickham2010layered]. Nous proposons de synthétiser ici les concepts et principes centraux qui sous-tendent la production de graphiques avec `ggplot2`.
 
 ### Une grammaire {#sect0311}
 
@@ -77,11 +77,11 @@ knitr::include_graphics('images/magie_graphiques/composantes.png', dpi = NA)
 * Les **échelles et systèmes de coordonnées** permettent de contrôler la localisation des éléments dans un graphique en convertissant les données depuis leur échelle originale (dollars, kilomètres, pourcentages, etc.) vers l'échelle du graphique (pixels).
 * Les **annotations** recoupent l'ensemble des informations complémentaires ajoutées au graphique comme son titre et sous-titre, la source des données, la mention sur les droits d'auteurs, etc.
 
-En plus de ces trois éléments, il est bien sûr nécessaire de disposer de **données**. Ces dernières sont assignées à des dimensions du graphique pour être représentées (notamment les axes *X* et *Y* et la couleur). Cette étape est appelée **aesthetics mapping** dans **ggplot2**.
+En plus de ces trois éléments, il est bien sûr nécessaire de disposer de **données**. Ces dernières sont assignées à des dimensions du graphique pour être représentées (notamment les axes *X* et *Y* et la couleur). Cette étape est appelée **aesthetics mapping** dans `ggplot2`.
 
 Lorsque l'on combine des données, leur assignation a des dimensions, un type de géométries, des échelles et un système de coordonnées, on obtient un **calque** (*layer* en anglais). Un graphique peut comprendre plusieurs calques comme nous le verrons dans les prochaines sections.
 
-Prenons un premier exemple très simple et construisons un nuage de points à partir du jeu de données *iris* fourni de base dans R. Nous allons représenter la relation qui existe entre la longueur et la largeur des sépales de ces fleurs. Pour commencer, nous devons charger le *package* **ggplot2** et instancier un graphique avec la fonction `ggplot`.
+Prenons un premier exemple très simple et construisons un nuage de points à partir du jeu de données *iris* fourni de base dans R. Nous allons représenter la relation qui existe entre la longueur et la largeur des sépales de ces fleurs. Pour commencer, nous devons charger le *package* `ggplot2` et instancier un graphique avec la fonction `ggplot`.
 
 ```{r fig31, fig.align='center', auto_pdf = TRUE, fig.cap="Base d'un graphique",  out.width='65%', dev = "png", dpi = 300}
 library(ggplot2)
@@ -117,7 +117,7 @@ ggplot() +
 
 ### Les types de géométries {#sect0312}
 
-Le *package* **ggplot2** permet d'utiliser un très grand nombre de géométries différentes. Dans le tableau \@ref(tab:tablegeometries), nous avons reporté les principales géométries disponibles afin que vous puissiez vous faire une idée du bestiaire existant. Il ne s'agit que d'un extrait des principales fonctions. Sachez qu'il existe aussi des *packages* proposant des géométries supplémentaires pour compléter **ggplot2**.
+Le *package* `ggplot2` permet d'utiliser un très grand nombre de géométries différentes. Dans le tableau \@ref(tab:tablegeometries), nous avons reporté les principales géométries disponibles afin que vous puissiez vous faire une idée du bestiaire existant. Il ne s'agit que d'un extrait des principales fonctions. Sachez qu'il existe aussi des *packages* proposant des géométries supplémentaires pour compléter `ggplot2`.
 
 ```{r tablegeometries, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -128,7 +128,7 @@ df <- data.frame(
 
 show_table(df,
            col.names = c("Géométrie","Fonction"),
-           caption = 'Principales géométries proposées par **ggplot2**',
+           caption = 'Principales géométries proposées par `ggplot2`',
            position = "HOLD_position"
            )
 ```
@@ -217,7 +217,7 @@ ggplot() +
 
 ### Utiliser des thèmes
 
-De nombreux autres éléments peuvent être modifiés dans un graphique comme les paramètres des polices, l'arrière-plan, la grille de repères, etc. Il peut être fastidieux de paramétrer tous ces éléments. Une alternative intéressante est d'utiliser des thèmes déjà préconstruits. Le *package* **ggplot2** propose une dizaine de thèmes, constatons leur impact sur le graphique précédent.
+De nombreux autres éléments peuvent être modifiés dans un graphique comme les paramètres des polices, l'arrière-plan, la grille de repères, etc. Il peut être fastidieux de paramétrer tous ces éléments. Une alternative intéressante est d'utiliser des thèmes déjà préconstruits. Le *package* `ggplot2` propose une dizaine de thèmes, constatons leur impact sur le graphique précédent.
 
 * Le thème classique
 ```{r fig38, fig.align='center', auto_pdf = TRUE, fig.cap="Thème classique",  out.width='65%', dev = "png", dpi = 300}
@@ -263,7 +263,7 @@ ggplot() +
   theme_minimal()
 ```
 
-Il est aussi possible d'utiliser le *package* **ggthemes** qui apporte des thèmes complémentaires intéressants dont&nbsp;: 
+Il est aussi possible d'utiliser le *package* `ggthemes` qui apporte des thèmes complémentaires intéressants dont&nbsp;: 
 
 * Le thème `tufte` (à l'ancienne...) (figure \@ref(fig:fig312))
 ```{r fig312, fig.align='center', auto_pdf = TRUE, fig.cap="Thème tufte",  out.width='65%', dev = "png", dpi = 300}
@@ -300,17 +300,17 @@ ggplot() +
   theme_solarized()
 ```
 
-Il en existe bien d'autres et vous pouvez composer vos propres thèmes. N'hésitez pas à explorer la documentation de **ggplot2** et **ggthemes** pour en apprendre plus!
+Il en existe bien d'autres et vous pouvez composer vos propres thèmes. N'hésitez pas à explorer la documentation de `ggplot2` et `ggthemes` pour en apprendre plus!
 
 ### Composer une figure avec plusieurs graphiques {#sect0314}
 
 Il est très fréquent de vouloir combiner plusieurs graphiques dans une même figure. Deux cas se distinguent&nbsp;: 
 
-1. Les données pour les différents graphiques proviennent du même *DataFrame* et peuvent être distinguées selon une variable catégorielle. L'objectif est alors de dupliquer le même graphique, mais pour des sous-groupes de données. Dans ce cas, nous recommandons d'utiliser la fonction `facet_wrap` de **ggplot2**.
+1. Les données pour les différents graphiques proviennent du même *DataFrame* et peuvent être distinguées selon une variable catégorielle. L'objectif est alors de dupliquer le même graphique, mais pour des sous-groupes de données. Dans ce cas, nous recommandons d'utiliser la fonction `facet_wrap` de `ggplot2`.
 
-2. Les graphiques sont complètement indépendants. Dans ce cas, nous recommandons d'utiliser la fonction `ggarrange` du *package* **ggpubr**.
+2. Les graphiques sont complètement indépendants. Dans ce cas, nous recommandons d'utiliser la fonction `ggarrange` du *package* `ggpubr`.
 
-#### **ggplot2** et ses facettes {#sect03141}
+#### `ggplot2` et ses facettes {#sect03141}
 
 Nous pourrions souhaiter réaliser une figure composite avec le jeu de données Iris et séparer notre nuage de points en trois graphiques distincts selon les espèces des iris (figure \@ref(fig:fig315)). Pour cela, il faut au préalable convertir la variable espèce en facteur.
 
@@ -340,7 +340,7 @@ ggplot() +
 
 #### Arranger des graphiques {#sect03142}
 
-La solution avec les facettes est très pratique, mais également très limitée puisqu'elle ne permet pas de créer une figure avec des graphiques combinant plusieurs types de géométries. `ggarrange` du *package* **ggpubr** permet tout simplement de combiner des graphiques déjà existant. Créons deux nuages de points comparant plusieurs variables en fonction de l'espèce des iris, puis combinons-les (figure \@ref(fig:fig317)). Nous allons également attribuer aux points une couleur en fonction de l'espèce des fleurs, afin de mieux les distinguer en associant la variable `Species` au paramètre `color`.
+La solution avec les facettes est très pratique, mais également très limitée puisqu'elle ne permet pas de créer une figure avec des graphiques combinant plusieurs types de géométries. `ggarrange` du *package* `ggpubr` permet tout simplement de combiner des graphiques déjà existant. Créons deux nuages de points comparant plusieurs variables en fonction de l'espèce des iris, puis combinons-les (figure \@ref(fig:fig317)). Nous allons également attribuer aux points une couleur en fonction de l'espèce des fleurs, afin de mieux les distinguer en associant la variable `Species` au paramètre `color`.
 
 ```{r fig317, fig.align='center', auto_pdf = TRUE, fig.cap="Figure avec plusieurs graphiques avec ggarrange",  out.width='65%', dev = "png", dpi = 300}
 library(ggpubr)
@@ -382,7 +382,7 @@ L'argument `common.legend` permet d'indiquer à la fonction `ggarrange` de regro
 
 ### La couleur {#sect0315}
 
-Dans un graphique, la couleur peut être utilisée à la fois pour représenter une variable quantitative (dégradé de couleur ou mise en classes), ou une variable qualitative (couleur par catégorie). Dans **ggplot2**, il est possible d'attribuer une couleur au contour des géométries avec l'argument `color` et au remplissage avec l'argument `fill`. Il est possible de spécifier une couleur de trois façons dans R&nbsp;: 
+Dans un graphique, la couleur peut être utilisée à la fois pour représenter une variable quantitative (dégradé de couleur ou mise en classes), ou une variable qualitative (couleur par catégorie). Dans `ggplot2`, il est possible d'attribuer une couleur au contour des géométries avec l'argument `color` et au remplissage avec l'argument `fill`. Il est possible de spécifier une couleur de trois façons dans R&nbsp;: 
 
 * En utilisant le nom de la couleur dans une chaîne de caractère&nbsp;: `"chartreuse4"`. R dispose 657&nbsp;noms de couleurs prédéfinis. Pour tous les afficher, utilisez la fonction `colors()` qui permet de les visualiser (figure \@ref(fig:figcolors)).
 
@@ -394,7 +394,7 @@ knitr::include_graphics('images/magie_graphiques/all_colors.png', dpi = NA)
 
 * En utilisant une notation RGB (rouge, vert, bleu, transparence). Cette notation doit contenir quatre nombres entre 0 et 1 (0&nbsp;% et 100&nbsp;%), le premier indiquant la quantité de rouge, le second de vert, le troisième de bleu, et le quatrième la transparence. Ces quatre nombres sont donnés comme argument à la fonction `rgb`&nbsp;: `rgb(0.6, 1, 0.2, 0)`.
 
-Le choix des couleurs est un problème plus complexe que la manière de les spécifier. Il existe d'ailleurs tout un pan de la sémiologie graphique dédié à la question du choix et de l'association des couleurs. Une première ressource intéressante est  [ColorBrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3){target="_blank"}. Il s'agit d'une sélection de palettes de couleurs particulièrement efficaces et dont certaines sont même adaptées pour les personnes daltoniennes (figure \@ref(fig:figcolorBrewer)). Il est possible d'accéder directement aux palettes dans R grâce au *package* **RColorBrewer** et la fonction `brewer.pal`&nbsp;: 
+Le choix des couleurs est un problème plus complexe que la manière de les spécifier. Il existe d'ailleurs tout un pan de la sémiologie graphique dédié à la question du choix et de l'association des couleurs. Une première ressource intéressante est  [ColorBrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3){target="_blank"}. Il s'agit d'une sélection de palettes de couleurs particulièrement efficaces et dont certaines sont même adaptées pour les personnes daltoniennes (figure \@ref(fig:figcolorBrewer)). Il est possible d'accéder directement aux palettes dans R grâce au *package* `RColorBrewer` et la fonction `brewer.pal`&nbsp;: 
 
 ```{r figcolorBrewer, fig.align='center', auto_pdf = TRUE, fig.cap="Palette de couleurs de ColorBrewer",  out.width='85%', dev = "png", dpi = 300}
 library(RColorBrewer)
@@ -407,7 +407,7 @@ Une autre ressource pertinente est le site web [coolors.co](https://coolors.co/p
 ## Principaux graphiques {#sect032}
 
 ::: {.bloc_objectif data-latex=""}
-Puisque vous êtes désormais initié(e) aux bases de la grammaire des graphiques implémentées par **ggplot2**, vous apprendrez dans les sous-sections suivantes à construire les principaux graphiques que vous utiliserez régulièrement ou que vous présenterez dans un article scientifique.
+Puisque vous êtes désormais initié(e) aux bases de la grammaire des graphiques implémentées par `ggplot2`, vous apprendrez dans les sous-sections suivantes à construire les principaux graphiques que vous utiliserez régulièrement ou que vous présenterez dans un article scientifique.
 :::
 
 ### Histogramme {#sect0321}
@@ -449,7 +449,7 @@ ggarrange(plotlist = histogrammes, ncol = 2, nrow = 2)
 
 ```
 
-Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable empiler nos données, ce qui signifie changer la forme du *dataframe* actuel qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* **reshape2**.
+Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable empiler nos données, ce qui signifie changer la forme du *dataframe* actuel qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* `reshape2`.
 
 ```{r fig319, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Empiler les données d'un dataframe",  out.width='30%', dev = "png", dpi = 300}
 knitr::include_graphics('images/magie_graphiques/melting.png', dpi = NA)
@@ -498,7 +498,7 @@ Le graphique de droite (fréquence) nous indique donc que plus de 100 observatio
 
 #### Histogramme avec courbe de distribution {#sect03213}
 
-Les histogrammes sont souvent utilisés pour vérifier graphiquement si une distribution empirique s'approche d'une courbe normale. Pour cela, on rajoute sur l'histogramme de la variable empirique la forme qu'aurait une distribution normale parfaite en utilisant la moyenne et l'écart type de la distribution empirique. Pour créer cette figure dans **ggplot2**, il suffit d'utiliser la fonction `stat_function` pour créer un nouveau calque. Il est aussi possible d'ajouter une ligne verticale (`geom_vline`) pour indiquer la moyenne de la distribution.
+Les histogrammes sont souvent utilisés pour vérifier graphiquement si une distribution empirique s'approche d'une courbe normale. Pour cela, on rajoute sur l'histogramme de la variable empirique la forme qu'aurait une distribution normale parfaite en utilisant la moyenne et l'écart type de la distribution empirique. Pour créer cette figure dans `ggplot2`, il suffit d'utiliser la fonction `stat_function` pour créer un nouveau calque. Il est aussi possible d'ajouter une ligne verticale (`geom_vline`) pour indiquer la moyenne de la distribution.
 
 ```{r fig322, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme et courbe normale",  out.width='65%', dev = "png", dpi = 300}
 moyenne <- mean(distribs$gaussien)
@@ -638,7 +638,7 @@ ggplot(data = data_co2)+
        title = 'Relation entre urbanisation et production de CO2 par habitant')
 ```
 
-On observe ainsi une forte concentration dans le bas du graphique, les pays avec des rejets annuels de CO~2~  supérieurs à 15 tonnes par habitant sont relativement rares. Pour les personnes préférant les représentations plus élaborées, il est aussi possible de diviser l'espace du graphique avec des hexagones en utilisant le *package* **hexbin**.
+On observe ainsi une forte concentration dans le bas du graphique, les pays avec des rejets annuels de CO~2~  supérieurs à 15 tonnes par habitant sont relativement rares. Pour les personnes préférant les représentations plus élaborées, il est aussi possible de diviser l'espace du graphique avec des hexagones en utilisant le *package* `hexbin`.
 
 ```{r fig330, fig.align='center', fig.cap="Densité en deux dimensions par hexagones", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_co2)+
@@ -1004,7 +1004,7 @@ Dans cette dernière section, nous allons aborder des graphiques plus rarement u
 
 ### Graphique en radar {#sect0331}
 
-Les graphiques en radar (ou en toile d'araignée) sont utilisés pour comparer une série de variables continues pour plusieurs observations ou groupes d'observations. Chaque variable est associée à un axe et chaque observation est représentée avec un polygone. Prenons l'exemple de données relatives aux logements par secteur de recensement dans la région métropolitaine de Montréal en 2016. On pourrait souhaiter comparer la moyenne des pourcentages des différents types de logements pour les régions des Laurentides, de la Montérégie, de Laval, de Longueuil et de Montréal. Malheureusement, **ggplot2** ne permet pas de dessiner des graphiques en radar satisfaisants, nous devrons donc utiliser le *package* **fmsb**.
+Les graphiques en radar (ou en toile d'araignée) sont utilisés pour comparer une série de variables continues pour plusieurs observations ou groupes d'observations. Chaque variable est associée à un axe et chaque observation est représentée avec un polygone. Prenons l'exemple de données relatives aux logements par secteur de recensement dans la région métropolitaine de Montréal en 2016. On pourrait souhaiter comparer la moyenne des pourcentages des différents types de logements pour les régions des Laurentides, de la Montérégie, de Laval, de Longueuil et de Montréal. Malheureusement, `ggplot2` ne permet pas de dessiner des graphiques en radar satisfaisants, nous devrons donc utiliser le *package* `fmsb`.
 
 ```{r fig348, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en anneau",  out.width='65%', dev = "png", dpi = 300}
 library(fmsb)
@@ -1077,7 +1077,7 @@ legend(x=1.3, y=1, legend = rownames(data_chart[-c(1,2),]), bty = "n",
 
 ### Diagramme d'accord {#sect0332}
 
-Les diagrammes d'accord (*chord diagram* en anglais) sont utilisés pour représenter des échanges ou des connexions entre des entités. Il peut s'agir par exemple de marchandises importées / exportées entre pays, des messages envoyés entre personnes via un réseau social, de flux de population, etc. Reprenons nos données de l'*enquête origine destination de la région de Québec en 2017* pour illustrer le tout. Nous utiliserons le *package* **chorddiag**, très facile d'utilisation et produisant des graphiques interactifs, facilitant grandement la lecture de ce type de graphique. Cependant ce *package* ne fait pas partie du répertoire *CRAN*, nous devrons l'installer directement depuis *github* avec la fonction `devtools::install_github`.
+Les diagrammes d'accord (*chord diagram* en anglais) sont utilisés pour représenter des échanges ou des connexions entre des entités. Il peut s'agir par exemple de marchandises importées / exportées entre pays, des messages envoyés entre personnes via un réseau social, de flux de population, etc. Reprenons nos données de l'*enquête origine destination de la région de Québec en 2017* pour illustrer le tout. Nous utiliserons le *package* `chorddiag`, très facile d'utilisation et produisant des graphiques interactifs, facilitant grandement la lecture de ce type de graphique. Cependant ce *package* ne fait pas partie du répertoire *CRAN*, nous devrons l'installer directement depuis *github* avec la fonction `devtools::install_github`.
 
 ```{r eval = FALSE}
 devtools::install_github('mattflor/chorddiag')
@@ -1138,7 +1138,7 @@ Le graphique permet de remarquer que la plupart des flux s’effectuent au sein 
 
 ### Nuage de mots {#sect0333}
 
-Un nuage de mots est un graphique utilisé en analyse de texte pour représenter les mots les plus importants d'un document. Mesurer l'importance des termes dans un document est une discipline à part entière (*Natural Language Processing*), nous proposons un simple exemple ici avec la méthode *TextRank* (basée sur la théorie des graphes) proposée par @mihalcea2004textrank et implémentée dans le *package* **textrank**. Nous aurons également besoin des *packages* **udpipe** (fournissant des dictionnaires linguistiques), **RColorBrewer** (pour sélectionner une palette de couleurs) et **wordcloud2** (pour générer le graphique). En guise d'exemple, nous avons choisi d'extraire les textes de deux Schémas d'Aménagement et de Développement (SAD), ceux des agglomérations de Québec et Montréal en vigueur en 2020. Il s'agit de deux documents de planification définissant les lignes directrices de l'organisation physique du territoire des municipalités régionales de comté (MRC) ou des agglomérations. Pour ces deux documents, nous nous concentrons sur le chapitre portant sur les grandes orientations d'aménagement et de développement, soit les pages 30 à 135 pour Québec et 30 à 97 pour Montréal. Pour extraire les textes des fichiers pdf, nous utilisons le *package* **pdftools**.
+Un nuage de mots est un graphique utilisé en analyse de texte pour représenter les mots les plus importants d'un document. Mesurer l'importance des termes dans un document est une discipline à part entière (*Natural Language Processing*), nous proposons un simple exemple ici avec la méthode *TextRank* (basée sur la théorie des graphes) proposée par @mihalcea2004textrank et implémentée dans le *package* `textrank`. Nous aurons également besoin des *packages* `udpipe` (fournissant des dictionnaires linguistiques), `RColorBrewer` (pour sélectionner une palette de couleurs) et `wordcloud2` (pour générer le graphique). En guise d'exemple, nous avons choisi d'extraire les textes de deux Schémas d'Aménagement et de Développement (SAD), ceux des agglomérations de Québec et Montréal en vigueur en 2020. Il s'agit de deux documents de planification définissant les lignes directrices de l'organisation physique du territoire des municipalités régionales de comté (MRC) ou des agglomérations. Pour ces deux documents, nous nous concentrons sur le chapitre portant sur les grandes orientations d'aménagement et de développement, soit les pages 30 à 135 pour Québec et 30 à 97 pour Montréal. Pour extraire les textes des fichiers pdf, nous utilisons le *package* `pdftools`.
 
 Nous devons donc réaliser les étapes suivantes pour produire le nuage de mots&nbsp;: 
 
@@ -1240,7 +1240,7 @@ Notez qu'à chaque génération du nuage de mots, vous obtiendrez une dispositio
 
 ### Carte proportionnelle {#sect0334}
 
-Une carte proportionnelle ou carte à cases (*treemap* en anglais) est un graphique permettant de représenter une quantité partagée entre plusieurs observations structurées dans une hiérarchie de groupe. Le jeu de données portant sur les émissions de CO~2~ se prête tout à fait à une représentation par *treemaps*. La variable de quantité est bien sûr les émissions de CO~2~ par pays; ces pays sont regroupés dans un premier ensemble de régions (découpage en 23 régions), qui elles-mêmes sont regroupées dans des régions plus larges (découpage en sept régions). Pour construire un *treemap*, nous allons utiliser le *package* **treemap**.
+Une carte proportionnelle ou carte à cases (*treemap* en anglais) est un graphique permettant de représenter une quantité partagée entre plusieurs observations structurées dans une hiérarchie de groupe. Le jeu de données portant sur les émissions de CO~2~ se prête tout à fait à une représentation par *treemaps*. La variable de quantité est bien sûr les émissions de CO~2~ par pays; ces pays sont regroupés dans un premier ensemble de régions (découpage en 23 régions), qui elles-mêmes sont regroupées dans des régions plus larges (découpage en sept régions). Pour construire un *treemap*, nous allons utiliser le *package* `treemap`.
 
 ```{r fig352, fig.align='center', fig.cap="Treemap", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%', dev = "png", dpi = 300}
 library(treemap)
@@ -1271,13 +1271,13 @@ treemap(data_co2_2015, index=c("region7","region23"),
 
 ## Les cartes {#sect034}
 
-Toute comme un graphique, une carte est aussi une illustration visuelle, avec la généralisation des données géographiques, il peut être utile de savoir représenter ce type de données. Si R n'est pas un logiciel de cartographie, il est possible de réaliser des cartes assez facilement, directement avec **ggplot2**. Nous avons cependant une préférence pour le *package* **tmap** qui propose de nombreuses fonctionnalités. Pour tracer des cartes, **tmap** et **ggplot2** ont besoin d'utiliser un format de données comprenant la géométrie (polyones, lignes ou points), la localisation et le système de projection des entités spatiales étudiées. Le format de fichier le plus courant pour ce type de données est le *shapefile* (*.shp*), mais vous pourrez parfois croiser des fichiers *geojson* (*.js*), ou encore *geopackages* (*.gpkg*). Pour lire ces fichiers, il est possible d'utiliser la fonction *readOGR* du *package* **rgdal**, ou la fonction *st_read* du *package* **sf**. Notez ici que ces deux fonctions ne produisent pas des *DataFrame*, mais respectivement un *SpatialDataFrame* et un objet *sf* (*simple feature collection*). Sans rentrer dans les détails, sachez que deux *packages* permettent de manipuler des objets spatiaux dans R&nbsp;: le traditionnel **sp** (avec les *SpatialDataFrame*) et le plus récent **sf** (avec les *spatial feature collections*). Il est assez facile de convertir un objet de **sp** vers **sf** (et inversement) et cette opération est souvent nécessaire car de nombreux *packages* dédiés à l'analyse spatiale utilisent l'un ou l'autre des formats. Dans le cas de **tmap**, des objets de **sp** et de **sf** peuvent être utilisés sans distinction. En revanche, pour cartographier directement avec **ggplot2**, il est plus facile d'utiliser un objet de type *sf*. Toutefois, nous vous recommandons fortement d'utiliser le *package* **sf**, puisque **sp** (et son format *SpatialDataFrame*) sont progressivement délaissés dans R.
+Toute comme un graphique, une carte est aussi une illustration visuelle, avec la généralisation des données géographiques, il peut être utile de savoir représenter ce type de données. Si R n'est pas un logiciel de cartographie, il est possible de réaliser des cartes assez facilement, directement avec `ggplot2`. Nous avons cependant une préférence pour le *package* `tmap` qui propose de nombreuses fonctionnalités. Pour tracer des cartes, `tmap` et `ggplot2` ont besoin d'utiliser un format de données comprenant la géométrie (polyones, lignes ou points), la localisation et le système de projection des entités spatiales étudiées. Le format de fichier le plus courant pour ce type de données est le *shapefile* (*.shp*), mais vous pourrez parfois croiser des fichiers *geojson* (*.js*), ou encore *geopackages* (*.gpkg*). Pour lire ces fichiers, il est possible d'utiliser la fonction `readOGR` du *package* `rgdal`, ou la fonction *st_read* du *package* `sf`. Notez ici que ces deux fonctions ne produisent pas des *DataFrame*, mais respectivement un *SpatialDataFrame* et un objet `sf` (*simple feature collection*). Sans rentrer dans les détails, sachez que deux *packages* permettent de manipuler des objets spatiaux dans R&nbsp;: le traditionnel `sp` (avec les *SpatialDataFrame*) et le plus récent `sf` (avec les *spatial feature collections*). Il est assez facile de convertir un objet de `sp` vers `sf` (et inversement) et cette opération est souvent nécessaire car de nombreux *packages* dédiés à l'analyse spatiale utilisent l'un ou l'autre des formats. Dans le cas de `tmap`, des objets de `sp` et de `sf` peuvent être utilisés sans distinction. En revanche, pour cartographier directement avec `ggplot2`, il est plus facile d'utiliser un objet de type `sf`. Toutefois, nous vous recommandons fortement d'utiliser le *package* `sf`, puisque `sp` (et son format *SpatialDataFrame*) sont progressivement délaissés dans R.
 
 Une carte thématique permet de représenter la répartition spatiale de variables qualitatives ou quantitatives. On les distingue des cartes topographiques dont l'objectif est de représenter la localisation d'objets spécifiques (route, habitation, rivière, lac, etc.). Les premières sont relativement faciles à construire dans R car elles se limitent à quelques symboles relativement peu complexes. Pour les secondes, on préferera généralement un logiciel comme [QGis](https://qgis.org/en/site/){target="_blank"}.
 
-Créons une carte thématique à partir des données de densité de végétation sur l'île de Montréal avec les *packages* **ggplot2** puis **tmap**.
+Créons une carte thématique à partir des données de densité de végétation sur l'île de Montréal avec les *packages* `ggplot2` puis `tmap`.
 
-Avec **ggplot2**, nous aurons aussi besoin des *packages* **classInt** pour calculer les intervalles des classes et de **ggsn** pour afficher une échelle.
+Avec `ggplot2`, nous aurons aussi besoin des *packages* `classInt` pour calculer les intervalles des classes et de `ggsn` pour afficher une échelle.
 
 ```{r fig353, fig.align='center', fig.cap="Carte thématique avec ggplot2", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='85%', dev = "png", dpi = 300}
 library(sf)
@@ -1364,7 +1364,7 @@ Tous les graphiques que nous avons construits dans ce chapitre peuvent être exp
 knitr::include_graphics('images/magie_graphiques/export.JPG', dpi = NA)
 ```
 
-Lorsque vous créez un graphique avec **ggplot2**, il est aussi possible de l'exporter avec la fonction `ggsave`. Cette fonctionnalité est très pratique lorsque vous souhaitez automatiser la production de graphiques et ne pas avoir à tous les exporter à la main.
+Lorsque vous créez un graphique avec `ggplot2`, il est aussi possible de l'exporter avec la fonction `ggsave`. Cette fonctionnalité est très pratique lorsque vous souhaitez automatiser la production de graphiques et ne pas avoir à tous les exporter à la main.
 
 ```{r warning=FALSE, eval = FALSE}
 data(iris)
@@ -1377,7 +1377,7 @@ ggsave(filename = 'graphique.pdf',
        plot = plot1,
        width = 10, height = 10, units = "cm")
 ```
-Pour les graphiques n'étant pas réalisés avec **ggplot2**, l'alternative à la fonction `ggsave` est l'ensemble de fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`, qui permettent d'exporter n'importe quel graphique dans ces différents formats. Le processus comprend trois étapes&nbsp;: 
+Pour les graphiques n'étant pas réalisés avec `ggplot2`, l'alternative à la fonction `ggsave` est l'ensemble de fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`, qui permettent d'exporter n'importe quel graphique dans ces différents formats. Le processus comprend trois étapes&nbsp;: 
 
 1. Ouvrir une connexion vers le fichier dans lequel le graphique sera exporté avec une des fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`.
 2. Réaliser son graphique comme si on souhaitait l'afficher dans RSudio. Il n'apparaitra cependant pas, car il sera écrit dans le fichier en question à la place.

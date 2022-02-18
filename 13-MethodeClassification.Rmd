@@ -3,19 +3,19 @@
 Dans le cadre de ce chapitre, nous présentons les méthodes les plus utilisées en sciences sociales pour explorer la présence de groupes homogènes au sein d'un jeu de données, soit les méthodes de classification non supervisée. Le qualificatif *non supervisée* signifie que ces classes / groupes ne sont pas connues a priori et doivent être identifiées à partir des données. Autrement dit, nous cherchons à regrouper les observations partageant des caractéristiques similaires sur la base de plusieurs variables. Ces méthodes descriptives et exploratoires multivariées peuvent être vues comme une façon de réduire le nombre d'observations d'un jeu de données à un ensemble d'observations synthétiques, représentant le mieux possible la population à l’étude.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons principalement les packages suivants&nbsp; 
+Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp; 
 
 * Pour créer des graphiques&nbsp;
-  - **ggplot2**, le seul, l'unique
-  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes
+  - `ggplot2`, le seul, l'unique!
+  - `ggpubr` pour combiner des graphiques et réaliser des diagrammes.
 
-* Outils généraux pour faciliter les classifications
-  - **clusterCrit**, calculer des indicateurs de qualités de classification
-  - **NbClust**, trouver le bon nombre de groupe dans une classification
-  - **cluster**, pour appliquer la méthode GAP 
-  - **proxy**, pour calculer plusieurs types de distances
-  - **Gmedian**, pour calculer le k-medians
-  - **geocmeans** pour investiguer les résultats de classifications floues
+* Outils généraux pour faciliter les classifications.
+  - `clusterCrit` pour calculer des indicateurs de qualités de classification.
+  - `NbClust` pour trouver le bon nombre de groupe dans une classification.
+  - `cluster` pour appliquer la méthode GAP.
+  - `proxy` pour calculer plusieurs types de distances.
+  - `Gmedian`, pour calculer le k-medians.
+  - `geocmeans` pour investiguer les résultats de classifications floues.
 :::
 
 
@@ -379,7 +379,7 @@ Si cette mesure semble intéressante du fait qu'elle permets de combiner des var
 * Les variables qualitatives tendent à affecter bien plus la distance que les variables quantitatives. En effet, pour obtenur un écart de 1 sur une variable quantitative, il faut que les deux valeurs soient respectivement le maximum et le minimum de cette variable.
 
 ::: {.bloc_aller_loin data-latex=""}
-**D'autres distances pour des données mixtes**&nbsp; Il existe bien d'autres distances qui peuvent être utilisées dans le cas de données mixtes. Le package `kmed` en implémente pas moins de 5 en plus de la distance de Gower dans sa fonction `distmix`&nbsp; les distances de Wishart, Podani, Huang, Harikumar et Ahmad. Ces différentes distances ont toutes leurs avantages et défauts respectifs, pour plus d'information, référez vous à la documentation de la fonction `distmix`
+**D'autres distances pour des données mixtes**&nbsp; Il existe bien d'autres distances qui peuvent être utilisées dans le cas de données mixtes. Le *package* `kmed` en implémente pas moins de 5 en plus de la distance de Gower dans sa fonction `distmix`&nbsp; les distances de Wishart, Podani, Huang, Harikumar et Ahmad. Ces différentes distances ont toutes leurs avantages et défauts respectifs, pour plus d'information, référez vous à la documentation de la fonction `distmix`
 :::
 
 #### Distance du Phi^2^
@@ -781,7 +781,7 @@ parcs <- read.csv("data/classification/Parcs.txt", header = TRUE, stringsAsFacto
 X <- parcs[c(5:22, 27)]
 ```
 
-Pour calculer la distance du $\Phi^2$, nous utilisons la fonction `dist` du package `proxy` avec le paramètre `method = "Phi-squared"`. Elle requiert que l'ensemble des variables catégorielles soient converties en variables binaires. Pour cela, nous pouvons utiliser la fonction `dummy_cols` du package `fastDummies`
+Pour calculer la distance du $\Phi^2$, nous utilisons la fonction `dist` du *package* `proxy` avec le paramètre `method = "Phi-squared"`. Elle requiert que l'ensemble des variables catégorielles soient converties en variables binaires. Pour cela, nous pouvons utiliser la fonction `dummy_cols` du *package* `fastDummies`
 
 ```{r exampleHclust2, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 library(fastDummies)
@@ -1264,7 +1264,7 @@ Le *k-médioïde* est moins utilisé que le *k-mean*, mais est plus performant q
 
 ### Mise en oeuvre dans R
 
-Pour cet exemple, nous proposons d'utiliser le jeu de données `LyonIris` du package `geocmeans`. Il s'agit d'un jeu de données donnant pour les IRIS (unité de découpage statistique en France) de la ville de Lyon (France) un ensemble de caractéristiques socio-environnementales. Parmi celles-ci se trouvent les concentrations annuelles moyenne de NO<sub>2</sub> et de PM<sub>2,5</sub>, les niveaux de bruit moyen journalier (Lden), le pourcentage de canopée, le pourcentage de personne de moins de 15 ans, de plus de 65 ans, d'immigrants, ayant obtenu le brevet des collèges, le niveau de vie médian et le taux de chômage des 15-64 ans. Nous proposons de réaliser une analyse similaire à celle de l'article de @gelb2021apport, soit de classer les IRIS de Lyon selon ces caractéristiques pour déterminer si certains groupes d'IRIS combinent des situations désavantageuses sur les plans sociaux et environnementaux, dans une perspective d'équité envirnnementale.
+Pour cet exemple, nous proposons d'utiliser le jeu de données `LyonIris` du *package* `geocmeans`. Il s'agit d'un jeu de données donnant pour les IRIS (unité de découpage statistique en France) de la ville de Lyon (France) un ensemble de caractéristiques socio-environnementales. Parmi celles-ci se trouvent les concentrations annuelles moyenne de NO<sub>2</sub> et de PM<sub>2,5</sub>, les niveaux de bruit moyen journalier (Lden), le pourcentage de canopée, le pourcentage de personne de moins de 15 ans, de plus de 65 ans, d'immigrants, ayant obtenu le brevet des collèges, le niveau de vie médian et le taux de chômage des 15-64 ans. Nous proposons de réaliser une analyse similaire à celle de l'article de @gelb2021apport, soit de classer les IRIS de Lyon selon ces caractéristiques pour déterminer si certains groupes d'IRIS combinent des situations désavantageuses sur les plans sociaux et environnementaux, dans une perspective d'équité envirnnementale.
 
 #### Préparation des données
 
@@ -1358,7 +1358,7 @@ ggplot(df) +
 
 ##### Méthode GAP
 
-Pour appliquer la méthode GAP, nous proposons d'utiliser la fonction `clusGap` du package `NbClust`. Pour l'utiliser, il est nécessaire de définir une fonction renvoyant pour le nombre de groupes *k* et le jeu de données *x* une liste comprenant un vecteur attribuant chaque observation à chaque groupe. On peut considérer ce type de fonction comme un "adaptateur".
+Pour appliquer la méthode GAP, nous proposons d'utiliser la fonction `clusGap` du *package* `NbClust`. Pour l'utiliser, il est nécessaire de définir une fonction renvoyant pour le nombre de groupes *k* et le jeu de données *x* une liste comprenant un vecteur attribuant chaque observation à chaque groupe. On peut considérer ce type de fonction comme un "adaptateur".
 
 ```{r kmeansE, fig.align='center', fig.cap="Méthode GAP pour différents nombres de groupes pour le k-means", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 library(NbClust)
@@ -1423,7 +1423,7 @@ tm_shape(LyonIris) +
 
 Il est ainsi possible de constater que le groupe 3 forme un ensemble assez compact d'IRIS au centre de Lyon. Le groupe 4 correspond quant à lui à des IRIS situés en périphérie plutôt éloignée, essentiellement à l'Ouest. le groupe 1 correspond à une périphérie proche du groupe 2 apparaît comme un ensemble d'enclaves dispersées.
 
-Pour distinguer rapidemment les profils des différents groupes, il est possible d'utiliser un graphique en radar. La construction d'un tel graphique peut être un peu fastidieuse dans R, cependant le package `geocmeans` propose une fonction assez pratique&nbsp; `spiderPlots`.
+Pour distinguer rapidemment les profils des différents groupes, il est possible d'utiliser un graphique en radar. La construction d'un tel graphique peut être un peu fastidieuse dans R, cependant le *package* `geocmeans` propose une fonction assez pratique&nbsp; `spiderPlots`.
 
 ```{r kmeansH, fig.cap = "Graphique en radar pour les groupes issus du k-means", fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%', message = FALSE}
 library(geocmeans)
@@ -1493,7 +1493,7 @@ Les constats que nous avions fait précédemment sont confirmés par la figure \
 
 ::: {.bloc_astuce data-latex=""}
 **Interprétation interactive**
-Si comme dans notre exemple, vos données comportent une dimension spatiale, le package `geocmeans` propose une fonction intéressante appelée `sp_clust_explorer` démarrant une application permettant d'explorer les résultats de votre classification. Le seul enjeu est de créer un objet de la classe `FCMres`. Voici un court exemple&nbsp; 
+Si comme dans notre exemple, vos données comportent une dimension spatiale, le *package* `geocmeans` propose une fonction intéressante appelée `sp_clust_explorer` démarrant une application permettant d'explorer les résultats de votre classification. Le seul enjeu est de créer un objet de la classe `FCMres`. Voici un court exemple&nbsp; 
 
 ```{r kmeansK2, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE, eval = FALSE}
 
@@ -1523,7 +1523,7 @@ sp_clust_explorer(object = kmeansres, spatial = LyonIris)
 
 Nous présentons simplement ici comment effectuer la même analyse en utilisant les variantes du *k-means*, soit le *k-medians* et le *k-mediods*.
 
-Il existe relativement peu d'implémentation du *k-medians* dans R, nous optons donc ici pour la fonction `kGmedian` du package `Gmedian`. Pour le *k-mediods*, nous avons retenu la fonction `pam` du package `cluster`.
+Il existe relativement peu d'implémentation du *k-medians* dans R, nous optons donc ici pour la fonction `kGmedian` du *package* `Gmedian`. Pour le *k-mediods*, nous avons retenu la fonction `pam` du *package* `cluster`.
 
 ```{r kmeansL, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
 library(Gmedian)
@@ -1587,7 +1587,7 @@ Pour ces deux méthodes, comme pour l *k-means*, le nombre de groupes *k* doit �
 
 #### Mise en oeuvre du c-means dans R
 
-Le package `fclust` comprend un très grand nombre de méthodes pour effectuer des classifications floues, nous l'utilisons donc en priorité ici en combiniaison avec des fonctions d'interprétation du package `geocmeans`.
+Le *package* `fclust` comprend un très grand nombre de méthodes pour effectuer des classifications floues, nous l'utilisons donc en priorité ici en combiniaison avec des fonctions d'interprétation du *package* `geocmeans`.
 
 ##### Préparation des données
 
@@ -1745,7 +1745,7 @@ spiderPlots(X, cmeans_resultats$U,
 ```
 Sans surprise, nous retrouvons essentiellement les profils que nous avions obtenu avec le *k-means* dans la figure \@ref(fig:cmeansE). Une différence importante peut cependant être notée&nbsp; le groupe cumulant les désavantages sociaux a cette fois-ci en plus les niveaux de pollution sonore journaliers les plus élevés.
 
-Pour compléter la lecture des résultats, il est nécessaire de se pencher sur le tableau des statistiques descriptives des différents groupes. Une fois encore, nous proposons d'utiliser la fonction `summarizeClusters` du package `geocmeans`. Notez que cette fonction calcule les statistiques descriptives pondérées en fonction de l'appartenance des observations aux groupes. Ainsi, une observation ayant une faible chance d'appartenir à un groupe ne contribuer que faiblement aux statistiques descriptives de ce groupe.
+Pour compléter la lecture des résultats, il est nécessaire de se pencher sur le tableau des statistiques descriptives des différents groupes. Une fois encore, nous proposons d'utiliser la fonction `summarizeClusters` du *package* `geocmeans`. Notez que cette fonction calcule les statistiques descriptives pondérées en fonction de l'appartenance des observations aux groupes. Ainsi, une observation ayant une faible chance d'appartenir à un groupe ne contribuer que faiblement aux statistiques descriptives de ce groupe.
 
 ```{r cmeansF, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
 
@@ -1786,7 +1786,7 @@ my_table2
 
 #### Mise en oeuvre du *c-medoid* dans R
 
-La méthode du *c-medoid* dans R peut être appliquée avec la fonction `FKM.med` du package `fclust`. Le processus d'analyse et de validation est identique à celui présenté ci-dessus pour le *c-means*. Nous ne donnons donc pas un exemple complet de la méthode.
+La méthode du *c-medoid* dans R peut être appliquée avec la fonction `FKM.med` du *package* `fclust`. Le processus d'analyse et de validation est identique à celui présenté ci-dessus pour le *c-means*. Nous ne donnons donc pas un exemple complet de la méthode.
 
 ::: {.bloc_aller_loin data-latex=""}
 **Stabilité des groupes obtenus par les méthodes de nuées dynamiques**&nbsp;

@@ -1,27 +1,27 @@
 # (PART) Modèles de régression {-} 
 # La régression linéaire multiple  {#chap07}
 
-Dans ce chapitre, nous présenterons la méthode de régression certainement la plus utilisée en sciences sociales&nbsp;: la régression linéaire multiple. À titre de rappel, dans la section \@ref(sect044), nous avons vu que la régression linéaire simple, basée sur la méthode des moindres carrés ordinaires (MCO), permet d’expliquer et de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est rare que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple&nbsp;: elle permet ainsi de prédire et expliquer une variable dépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
+Dans ce chapitre, nous présentons la méthode de régression certainement la plus utilisée en sciences sociales&nbsp;: la régression linéaire multiple. À titre de rappel, dans la section \@ref(sect044), nous avons vu que la régression linéaire simple, basée sur la méthode des moindres carrés ordinaires (MCO), permet d’expliquer et de prédire une variable continue en fonction d’une autre variable. Toutefois, quel que soit le domaine d’étude, il est rare que le recours à une seule variable explicative (*X*) permette de prédire efficacement une variable continue (*Y*). La régression linéaire multiple est simplement une extension de la régression linéaire simple&nbsp;: elle permet ainsi de prédire et expliquer une variable dépendante (*Y*) en fonction de plusieurs variables indépendantes (explicatives).
 
-Plus spécifiquement, nous aborderons ici les principes et hypothèses de la régression linéaire multiple, comment mesurer la qualité d’ajustement du modèle, introduire des variables explicatives particulières (variable qualitative dichotomique ou polytomique, variable d’interaction, etc.), interpréter les sorties d’un modèle de régression et finalement la mettre en oeuvre dans R.
+Plus spécifiquement, nous abordons ici les principes et hypothèses de la régression linéaire multiple, comment mesurer la qualité d’ajustement du modèle, introduire des variables explicatives particulières (variable qualitative dichotomique ou polytomique, variable d’interaction, etc.), interpréter les sorties d’un modèle de régression et finalement la mettre en oeuvre dans R.
 
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons les *packages* suivants&nbsp;: 
+Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
   - `ggplot2`, le seul, l’unique!
-  - `ggpubr`, pour combiner les graphiques
+  - `ggpubr` pour combiner les graphiques
 * Pour obtenir les coefficients standardisés&nbsp;: 
-  - `QuantPsyc`, avec la fonction *lm.beta* (section \@ref(sect0742)).
+  - `QuantPsyc`avec la fonction `lm.beta` (section \@ref(sect0742)).
 * Pour les effets marginaux des variables indépendantes&nbsp;: 
-  - `ggeffects`, avec la fonction *ggpredict* (section \@ref(sect0774)).
+  - `ggeffects` avec la fonction `ggpredict` (section \@ref(sect0774)).
 * Pour vérifier la normalité des résidus&nbsp;: 
-  - `DescTools`, avec la fonction *Skewness* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect0762)).
+  - `DescTools` avec la fonction `Skewness` et `Kurtosis` et `JarqueBeraTest` (section \@ref(sect0762)).
 * Pour vérifier l'homoscédasticité des résidus&nbsp;: 
-  - `lmtest`, avec la fonction *bptest* et *Kurtosis* et *JarqueBeraTest* (section \@ref(sect07733)).
+  - `lmtest` avec la fonction `bptest` et `Kurtosis` et `JarqueBeraTest` (section \@ref(sect07733)).
 * Pour vérifier la multicolinéarité excessive&nbsp;: 
-  - `car`, avec la fonction *vif* (section \@ref(sect07734)).
+  - `car` avec la fonction `vif` (section \@ref(sect07734)).
 * Autre *package*&nbsp;: 
   - `foreign` pour importer des fichiers externes.
 :::
@@ -33,7 +33,7 @@ Selon Tabachnich et Fidell [-@tabachnick2007], un modèle de régression permet 
 
 La première approche a pour objectif d’identifier les relations entre une variable dépendante (VD) et plusieurs variables indépendantes (VI). Il s’agit alors de déterminer si ces relations sont positives ou négatives, significatives ou non et d'évaluer leur ampleur. La construction du modèle de régression repose alors sur un cadre théorique et la formulation d’hypothèses sur les relations entre chacune des VI et la VD.
 
-La seconde approche est exploratoire et très utilisée en forage ou fouille de données (*data mining* en anglais). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Parfois, ce type de démarche ne repose ni sur un cadre théorique ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle le plus efficace possible afin de prédire, à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée que dans le reste du chapitre, comme du livre, nous ne nous étendrons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
+La seconde approche est exploratoire et très utilisée en forage ou fouille de données (*data mining* en anglais). Parmi un grand ensemble de variables disponibles dans un jeu de données, elle vise à identifier la ou les variables permettant de prédire le plus efficacement (précisément) une variable dépendante. Parfois, ce type de démarche ne repose ni sur un cadre théorique ni sur la formulation d’hypothèses entre les VI et la VD. Dans des cas extrêmes, on s’intéresse uniquement à la capacité de prédiction du modèle, et ce, sans analyser les associations entre les VI et la VD. L’objectif étant d’obtenir le modèle le plus efficace possible afin de prédire, à l’avenir, la valeur de la variable dépendante pour des observations pour lesquelles elle est inconnue. Pour ce faire, on a recours à des régressions séquentielles (*stepwise regressions*) dans lesquelles les variables peuvent être ajoutées (ou retirées) une à une au modèle; on conservera dans le modèle final uniquement celles qui ont un apport explicatif significatif. Signalons d’emblée que dans le reste du chapitre, comme du livre, nous ne nous étendons pas plus sur cette approche de modélisation, et ce, pour deux raisons. D’une part, cette approche met souvent en évidence des relations significatives entre des variables sans qu’il y ait une relation de causalité entre elles. D'autre part, en sciences sociales, un modèle de régression doit être basé sur un cadre théorique et conceptuel élaboré suite à une revue de littérature rigoureuse.
 
 ::: {.bloc_attention data-latex=""}
 **Cadre conceptuel et élaboration d'un modèle de régression**
@@ -89,7 +89,7 @@ avec&nbsp;:
 * $y_i$ la valeur de la variable dépendante *Y* pour l'observation *i*
 * $\beta_{0}$ la constante, soit la valeur prédite pour *Y* quand  toutes les variables indépendantes sont égales à 0
 * $k$ le nombre de variables indépendantes
-* $\beta_{1}$ à  $\beta_{k}$ les coefficients de régression pour les variables indépendantes de 1 à *k* ($X_1$ à $X_k$)
+* $\beta_{1}$ à  $\beta_{k}$ les coefficients de régression pour les variables indépendantes de 1 à *k* ($X_{1}$ à $X_{k}$)
 * $\epsilon_{i}$ le résidu pour l'observation de *i*, soit la partie de la valeur de $y_i$ qui n'est pas expliquée par le modèle de régression.
 
 Notez qu'il existe plusieurs écritures simplifiées de cette équation. D'une part, il est possible de ne pas indiquer l'observation *i* et de remplacer les lettres grecques *bêta* et *epsilon* ($\beta$ et $\epsilon$) par les lettres *b* et *e*&nbsp;:
@@ -234,14 +234,14 @@ show_table(stats,
 
 Comme pour la régression linéaire simple (section \@ref(sect044)), les trois mesures les plus couramment utilisées pour évaluer la qualité d'un modèle sont&nbsp;:
 
-* Le **coefficient de détermination** (R^2^) qui indique la proportion de la variance de la variable dépendante expliquée par les variables indépendantes du modèle (équation \@ref(eq:regmR2)). Il varie ainsi de 0 à 1.
+* Le **coefficient de détermination** (R^2^) qui indique la proportion de la variance de la variable dépendante expliquée par les variables indépendantes du modèle (équation \@ref(eq:regmR2)). Il varie ainsi de 0 à&nbsp;1.
 
-* La **statistique de Fisher** qui permet d'évaluer la significativité globale du modèle (équation \@ref(eq:regmFFisher)). Dans le cas d'une régression linéaire multiple, l'hypothèse nulle du test *F* est que toutes les valeurs des coefficients de régression des variables indépendantes sont égales à 0; autrement dit, qu'aucune des variables indépendantes n'a d'effet sur la variable dépendante. Tel que décrit à la section \@ref(sect0443), il est possible d'obtenir une valeur *P* rattachée à la statistique F avec *k* degrés de liberté au dénominateur et *n-k-1* degrés de liberté au numérateur (*k* et *n* étant respectivement le nombre de variables indépendantes et le nombre d'observations). Lorsque la valeur de P est inférieure à 0,05, on pourra en conclure que le modèle est globalement significatif, c'est-à-dire qu'au moins un coefficient de régression est significativement différent de zéro. Notez qu'il est plutôt rare qu'un modèle de régression, comprenant plusieurs variables indépendantes, soit globalement non significatif (P>0,05), et ce, surtout s'il est basé sur un cadre conceptuel et théorique solide. Le test de la statistique de Fisher est donc facile à passer et ne constitue pas une preuve absolue de la pertinence du modèle.
+* La **statistique de Fisher** qui permet d'évaluer la significativité globale du modèle (équation \@ref(eq:regmFFisher)). Dans le cas d'une régression linéaire multiple, l'hypothèse nulle du test *F* est que toutes les valeurs des coefficients de régression des variables indépendantes sont égales à 0; autrement dit, qu'aucune des variables indépendantes n'a d'effet sur la variable dépendante. Tel que décrit à la section \@ref(sect0443), il est possible d'obtenir une valeur de *p* rattachée à la statistique *F* avec *k* degrés de liberté au dénominateur et *n-k-1* degrés de liberté au numérateur (*k* et *n* étant respectivement le nombre de variables indépendantes et le nombre d'observations). Lorsque la valeur de P est inférieure à 0,05, on pourra en conclure que le modèle est globalement significatif, c'est-à-dire qu'au moins un coefficient de régression est significativement différent de zéro. Notez qu'il est plutôt rare qu'un modèle de régression, comprenant plusieurs variables indépendantes, soit globalement non significatif (P>0,05), et ce, surtout s'il est basé sur un cadre conceptuel et théorique solide. Le test de la statistique de Fisher est donc facile à passer et ne constitue pas une preuve absolue de la pertinence du modèle.
 
 * **L'erreur quadratique moyenne (RMSE)** qui indique l'erreur absolue moyenne du modèle exprimée dans l'unité de mesure de la variable dépendante ou autrement dit, l'écart absolu moyen entre les valeurs observées et prédites du modèle (équation \@ref(eq:regmRMSE)). Une valeur élevée indique que le modèle se trompe largement en moyenne et inversement.
 
 ::: {.bloc_attention data-latex=""}
-**Rappel sur la décomposition de la variance et calcul du $R^2$, de la statistique F et du RMSE**
+**Rappel sur la décomposition de la variance et calcul du $R^2$, de la statistique *F* et du RMSE**
 
 Rappelez-vous que la variance totale (SCT) est égale à la somme de la variance expliquée (SCE) par le modèle et de la variance non expliquée (SCR) par le modèle.
 
@@ -283,7 +283,7 @@ RMSE = \sqrt{\frac{\sum_{i=1}^n (y_{i}-\widehat{y})^2}{n}} = \sqrt{\frac{SCR}{n}
 \normalsize
 :::
 
-Globalement, plus un modèle de régression est efficace, plus les valeurs du R^2^ et de la statistique F sont élevées et inversement, plus celle de RMSE sera faible. En effet, remarquez qu'à l'équation \@ref(eq:regmFFisher), la statistique F peut être obtenue à partir du R^2^; par conséquent, plus la valeur du R^2^ est forte (proche de 1), plus celle de F est aussi élevée. Notez aussi que plus un modèle est performant, plus la partie expliquée par le modèle (SCE) est importante et plus celle non expliquée (SCR) est faible; ce qui signifie que plus le R^2^ est proche de 1 (équation \@ref(eq:regmR2)), plus le RMSE – calculé à partir du SCR – est faible (équation \@ref(eq:regmRMSE)).
+Globalement, plus un modèle de régression est efficace, plus les valeurs du R^2^ et de la statistique *F* sont élevées et inversement, plus celle de RMSE sera faible. En effet, remarquez qu'à l'équation \@ref(eq:regmFFisher), la statistique *F* peut être obtenue à partir du R^2^; par conséquent, plus la valeur du R^2^ est forte (proche de 1), plus celle de F est aussi élevée. Notez aussi que plus un modèle est performant, plus la partie expliquée par le modèle (SCE) est importante et plus celle non expliquée (SCR) est faible; ce qui signifie que plus le R^2^ est proche de 1 (équation \@ref(eq:regmR2)), plus le RMSE – calculé à partir du SCR – est faible (équation \@ref(eq:regmRMSE)).
 
 La syntaxe R ci-dessous illustre comment calculer les différentes variances (SCT, SCE et SCR) à partir des valeurs observées et prédites par le modèle, puis les valeurs du R^2^, de F et du RMSE. Nous verrons par la suite qu'il est possible d'obtenir directement ces valeurs à partir de la fonction `summary(VotreModele)`.
 
@@ -352,7 +352,7 @@ R^2_{\text {ajusté}}= 1 - \frac{(1-R^2)(n-1)}{n-k-1} \mbox{ avec } R^2_{\text {
 \end{equation}
 \normalsize
 
-Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif? Pour y répondre, il convient de comparer les valeurs des statistiques *F* des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de *P* qui lui est associé avec comme degrés de liberté, le nombre de variables indépendantes ajoutées ($k_2-k_1$) et $n-k_2-1$. Si la valeur de P<0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5&nbsp;%). 
+Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif? Pour y répondre, il convient de comparer les valeurs des statistiques *F* des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de *p* qui lui est associé avec comme degrés de liberté, le nombre de variables indépendantes ajoutées ($k_2-k_1$) et $n-k_2-1$. Si la valeur de *p*&nbsp;<&nbsp;0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5&nbsp;%). 
 
 \footnotesize 
 \begin{equation}
@@ -363,9 +363,9 @@ F_{\text {incrémentiel}}= \frac{\frac{R^2_2-R^2_1}{k_2-k_1}} {\frac{1-R^2_2}{n-
 
 avec $R^2_1$ et $R^2_2$ étant les coefficients de détermination des modèles 1 et 2 et $k_1$ et $k_2$ étant les nombres de variables indépendantes qu'ils comprennent ($k_2 > k_1$).
 
-Illustrons le tout avec deux modèles. Dans la syntaxe R ci-dessous, nous avons construit un premier modèle avec uniquement les variables de contrôle (`modele1`), soit deux variables indépendantes (`HABHA` et `AgeMedian`). Puis, dans un second modèle (`modele2`), nous ajoutons comme variables indépendantes les pourcentages des quatre groupes de population (`Pct_014`, `Pct_65P`, `Pct_MV`, `Pct_FR`). Repérez comment sont calculés les R^2^ ajustés pour les modèles et le F incrémentiel.
+Illustrons le tout avec deux modèles. Dans la syntaxe R ci-dessous, nous avons construit un premier modèle avec uniquement les variables de contrôle (`modele1`), soit deux variables indépendantes (`HABHA` et `AgeMedian`). Puis, dans un second modèle (`modele2`), nous ajoutons comme variables indépendantes les pourcentages des quatre groupes de population (`Pct_014`, `Pct_65P`, `Pct_MV`, `Pct_FR`). Repérez comment sont calculés les R^2^ ajustés pour les modèles et le *F* incrémentiel.
 
-Le R^2^ ajusté passe de 0,269 à 0,418 des modèles 1 à 2 signalant que l'ajout des quatre variables indépendantes augmente considérablement la variance expliquée. Autrement dit, le second modèle est bien plus performant. Le F incrémentiel s'élève à 653,8 et est significatif (P < 0,001). Notez que la syntaxe ci-dessous illustre comment calculer les valeurs du R^2^ ajusté et du F incrémentiel à partir des équations \@ref(eq:R2ajuste) et \@ref(eq:Fincrementiel). Sachez toutefois qu'il est possible d'obtenir directement le R^2^ ajusté avec la fonction `summary(VotreModele)` et le F incrémentiel avec la fonction `anova(modele1, modele2)`. 
+Le R^2^ ajusté passe de 0,269 à 0,418 des modèles 1 à 2 signalant que l'ajout des quatre variables indépendantes augmente considérablement la variance expliquée. Autrement dit, le second modèle est bien plus performant. Le *F* incrémentiel s'élève à 653,8 et est significatif (*p* < 0,001). Notez que la syntaxe ci-dessous illustre comment calculer les valeurs du R^2^ ajusté et du *F* incrémentiel à partir des équations \@ref(eq:R2ajuste) et \@ref(eq:Fincrementiel). Sachez toutefois qu'il est possible d'obtenir directement le R^2^ ajusté avec la fonction `summary(VotreModele)` et le *F* incrémentiel avec la fonction `anova(modele1, modele2)`. 
 
 ```{r dataregcalculs2, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 modele1 <- lm(VegPct ~ HABHA+AgeMedian, data = DataFinal)
@@ -412,7 +412,7 @@ anova(modele1, modele2)
 
 ## Les différentes mesures pour les coefficients de régression {#sect074}
 
-La fonction `summary(nom du modèle)` permet d'obtenir les résultats du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (F(6,10203)=1123, p=0,000) avec un R^2^ de 0,4182 indiquant que les variables indépendantes du modèle expliquent 41,82&nbsp;% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
+La fonction `summary(nom du modèle)` permet d'obtenir les résultats du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (*F*(6,10203)&nbsp;=&nbsp;1123, *p*&nbsp;=&nbsp;0,000) avec un R^2^ de 0,4182 indiquant que les variables indépendantes du modèle expliquent 41,82&nbsp;% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
 
 
 ```{r dataregmodel1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -458,14 +458,14 @@ Le signe du coefficient de régression indique si la variable indépendante est 
 
 Quant à la valeur absolue du coefficient, elle indique la taille de l'effet du prédicteur. Par exemple, 1,084 signifie que si toutes les autres variables indépendantes restaient constantes, alors le pourcentage de végétation dans l'îlot augmenterait de 1,084 points de pourcentage pour chaque différence d’un point de pourcentage d'enfants de moins de 15 ans. Toutes choses étant égales par ailleurs, une augmentation de 10&nbsp;% d'enfants dans un îlot entraînerait alors une hausse de 10,8&nbsp;% de la couverture végétale dans l'îlot.
 
-L'analyse des coefficients montre ainsi qu'une fois contrôlées les deux caractéristiques relatives à la forme urbaine (densité de population et âge médian des bâtiments), plus les pourcentages d'enfants et de personnes âgées sont élevés, plus la couverture végétale de l'îlot est importante (B=1,084 et 0,401), toutes choses étant égales par ailleurs. À l'inverse, de plus grands pourcentages de personnes à faible revenu et de minorités sont associés à une plus faible couverture végétale (B=−0,348 et −0,031).
+L'analyse des coefficients montre ainsi qu'une fois contrôlées les deux caractéristiques relatives à la forme urbaine (densité de population et âge médian des bâtiments), plus les pourcentages d'enfants et de personnes âgées sont élevés, plus la couverture végétale de l'îlot est importante (B&nbsp;=&nbsp;1,084 et 0,401), toutes choses étant égales par ailleurs. À l'inverse, de plus grands pourcentages de personnes à faible revenu et de minorités sont associés à une plus faible couverture végétale (B&nbsp;=&nbsp;−0,348 et −0,031).
 
 
 **L'erreur type du coefficient de régression**
 
 L'erreur type d'un coefficient permet d'évaluer son niveau de précision, soit le degré d'incertitude vis-à-vis du coefficient. Succinctement, elle correspond à l'écart-type de l'estimation (coefficient); elle est ainsi toujours positive. Plus la valeur de l'erreur type est faible, plus l'estimation du coefficient est précise. Notez toutefois qu'il n'est pas judicieux de comparer les erreurs types des coefficients pour des variables exprimées dans des unités de mesure différentes. 
 
-Comme nous le verrons plus loin, l'utilité principale de l'erreur type est qu'elle permet de calculer la valeur de *T* et l'intervalle de confiance du coefficient de régression.
+Comme nous le verrons plus loin, l'utilité principale de l'erreur type est qu'elle permet de calculer la valeur de *t* et l'intervalle de confiance du coefficient de régression.
 
 
 ### Coefficients de régression standardisés&nbsp;: repérer les variables les plus importantes du modèle {#sect0742}
@@ -490,7 +490,7 @@ La syntaxe R ci-dessous illustre trois façons d'obtenir les coefficients standa
 
 * en centrant et réduisant préalablement les variables avec la fonction `scale` avant de construire le modèle avec la fonction `lm`;
 * en calculant les écarts-types de VD et VI et en appliquant l'équation \@ref(eq:CoefStand);
-* avec la fonction `lm.beta` du *package* **QuantPsyc**. Cette dernière méthode est moins «&nbsp;verbeuse&nbsp;» (deux lignes de codes uniquement), mais nécessite de charger un *package* supplémentaire.
+* avec la fonction `lm.beta` du *package* `QuantPsyc`. Cette dernière méthode est moins «&nbsp;verbeuse&nbsp;» (deux lignes de codes uniquement), mais nécessite de charger un *package* supplémentaire.
 
 
 ```{r CoefStand1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -561,33 +561,33 @@ T=\frac{\beta_k - 0}{s(\beta_k)}
 \end{equation}
 \normalsize
 
-avec $s(\beta_k)$ étant l'erreur type du coefficient de régression. Notez que dans l'équation \@ref(eq:ValeurT), on indique habituellement $-0$, pour signaler que l'on veut vérifier si le coefficient est différent de 0. En guise d'exemple, au tableau \@ref(tab:dataregmodel2), la valeur de *T* de la variable `HABHA` est bien égale à&nbsp;:
+avec $s(\beta_k)$ étant l'erreur type du coefficient de régression. Notez que dans l'équation \@ref(eq:ValeurT), on indique habituellement $-0$, pour signaler que l'on veut vérifier si le coefficient est différent de 0. En guise d'exemple, au tableau \@ref(tab:dataregmodel2), la valeur de *t* de la variable `HABHA` est bien égale à&nbsp;:
 
-`−0.070401 / 0.002202 = −31.975`.
+$−0,070401 / 0,002202 = −31,975$.
 
 ::: {.bloc_attention data-latex=""}
 
 **Démarche pour vérifier si un coefficient est significativement différent de 0 avec un seuil de confiance**
 
 1. Poser l'hypothèse nulle (*H~0~*) stipulant que le coefficient est égal à 0, soit $H_0 : \beta_k = 0$. L'hypothèse alternative (*H~1~*) est que le coefficient est différent de 0, soit $H_1 : B_k \neq 0$.
-2. Calculer la valeur de *T*, soit le coefficient de régression divisé par son erreur type (équation \@ref(eq:ValeurT)).
+2. Calculer la valeur de *t*, soit le coefficient de régression divisé par son erreur type (équation \@ref(eq:ValeurT)).
 3. Calculer le nombre de degrés de liberté, soit $dl = n − k - 1$, *n* et *k* étant respectivement les nombres d'observations et de variables indépendantes.
-4. Choisir un seuil de signification alpha (5&nbsp;%, 1&nbsp;% ou 0,1&nbsp;%, soit *p* = 0,05, 0,01 ou 0,01).
-5. Trouver la valeur critique de T dans la table T de Student (\@ref(annexe3)) avec *p* et le nombre de degrés de liberté (*dl*).
+4. Choisir un seuil de signification alpha (5&nbsp;%, 1&nbsp;% ou 0,1&nbsp;%, soit *p*&nbsp;=&nbsp;0,05, 0,01 ou 0,01).
+5. Trouver la valeur critique de *t* dans la table T de Student (\@ref(annexe3)) avec *p* et le nombre de degrés de liberté (*dl*).
 6. Valider ou réfuter l'hypothèse nulle (*H~0~*)&nbsp;:
-  - si la valeur de *T* est inférieure à la valeur critique de *T* avec *dl* et le seuil choisi, on valide *H~0~*&nbsp;: le coefficient n'est pas significativement différent de 0.
-  - si la valeur de *T* est supérieure à la valeur critique de *T* avec *dl* et le seuil choisi, on peut réfuter l'hypothèse nulle, et choisir l'hypothèse alternative (*H~1~*) stipulant que le coefficient est significativement différent de 0.
+  - si la valeur de *t* est inférieure à la valeur critique de *t* avec *dl* et le seuil choisi, on valide *H~0~*&nbsp;: le coefficient n'est pas significativement différent de 0.
+  - si la valeur de *t* est supérieure à la valeur critique de *t* avec *dl* et le seuil choisi, on peut réfuter l'hypothèse nulle, et choisir l'hypothèse alternative (*H~1~*) stipulant que le coefficient est significativement différent de 0.
 
 
-**Valeurs critiques de la valeur de *T* à retenir!**
+**Valeurs critiques de la valeur de *t* à retenir!**
 
-Lorsque le nombre de degrés de liberté (*n − k - 1*) est très important (supérieur à 2500), et donc le nombre d'observations de votre jeu de données, on retient habituellement les valeurs critiques suivantes&nbsp;: **1,65 (p=0,10), 1,96 (p=0,05)**, **2,58 (p=0,01)** et **3,29 (p=0,001)**. Concrètement, cela signifie que&nbsp;:
+Lorsque le nombre de degrés de liberté (*n − k - 1*) est très important (supérieur à 2500), et donc le nombre d'observations de votre jeu de données, on retient habituellement les valeurs critiques suivantes&nbsp;: **1,65 (*p*&nbsp;=&nbsp;0,10), 1,96 (*p*&nbsp;=&nbsp;0,05)**, **2,58 (*p*&nbsp;=&nbsp;0,01)** et **3,29 (*p*=0,001)**. Concrètement, cela signifie que&nbsp;:
 
-* une valeur de *T* supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *t* supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de *T* supérieure à 2,58 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5&nbsp;%. Autrement dit, vous avez moins de 1&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *t* supérieure à 2,58 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5&nbsp;%. Autrement dit, vous avez moins de 1&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de *T* supérieure à 3,29 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5&nbsp;%. Autrement dit, vous avez moins de 0,1&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *t* supérieure à 3,29 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5&nbsp;%. Autrement dit, vous avez moins de 0,1&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
 Concrètement, retenez et utilisez les seuils de $\pm1,96$, $\pm2,58$ et $\pm3,29$ pour repérer les variables significatives positivement ou négativement aux seuils respectifs de 0,5, 0,1 et 0,001.
 
@@ -604,14 +604,14 @@ Notez que si 100 études étaient conduites sur le même sujet et dans les même
 Prenons deux variables indépendantes du tableau \@ref(tab:dataregmodel2) – `HABHA` et `AgeMedian` – et vérifions si leurs coefficients de régression respectifs (−0,070 et 0,011) sont significatifs. Appliquons la démarche décrite dans l'encadré ci-dessus&nbsp;:
 
 1. On pose l'hypothèse nulle stipulant que les valeurs de ces deux coefficients sont égales à 0, soit $H_0 : \beta_k = 0$.
-2. Leurs valeurs de *T* sont égales à `−0,070401 / 0,002202 = −31,97139` pour `HABHA` et à `0,010790 / 0,006369 = 1,694144` pour `AgeMedian`.
-3. Le nombre de degrés de liberté est égal à *dl = n-k-1 = 10210 − 6 - 1 = 10203*.
+2. Leurs valeurs de *t* sont égales à `−0,070401 / 0,002202 = −31,97139` pour `HABHA` et à `0,010790 / 0,006369 = 1,694144` pour `AgeMedian`.
+3. Le nombre de degrés de liberté est égal à $\mbox{dl} = \mbox{n}-\mbox{k}-\mbox{1} = \mbox{10 210} − \mbox{6} - \mbox{1} = \mbox{10 203}$.
 4. On choisit respectivement les seuils $\alpha$ de 0,10, 0,05, 0,01 ou 0,01.
-5. Avec 10210 degrés de liberté, les valeurs critiques de la table T de Student (section \@ref(annexe3)) sont de 1,65 (p=0,10), 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001).
+5. Avec 10210 degrés de liberté, les valeurs critiques de la table T de Student (section \@ref(annexe3)) sont de 1,65 (*p*&nbsp;=&nbsp;0,10), 1,96 (*p*&nbsp;=&nbsp;0,05), 2,58 (*p*&nbsp;=&nbsp;0,01), 3,29 (*p*&nbsp;=&nbsp;0,001).
 6. Valider ou réfuter l'hypothèse nulle (*H~0~*)&nbsp;:
   - pour `HABHA`, la valeur absolue de T (−31,975) est supérieure à la valeur critique de 3,29. Son coefficient de régression est donc significativement différent de 0. Autrement dit, ce prédicteur a un effet significatif et négatif sur la variable dépendante.
 
-  - pour `AgeMedian`, la valeur absolue de T (1,694) est supérieure à 1,65 (p=0,10), mais inférieure à 1,96 (p=0,05), 2,58 (p=0,01), 3,29 (p=0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de p=0,10 et non au seuil de p=0,05. Cela signifie qu'on a un peu moins de 10&nbsp;% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
+  - pour `AgeMedian`, la valeur absolue de *t* (1,694) est supérieure à 1,65 (*p*&nbsp;=&nbsp;0,10), mais inférieure à 1,96 (*p*&nbsp;=&nbsp;0,05), 2,58 (*p*&nbsp;=&nbsp;0,01), 3,29 (*p*&nbsp;=&nbsp;0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de *p*&nbsp;=&nbsp;0,10 et non au seuil de *p*&nbsp;=&nbsp;0,05. Cela signifie qu'on a un peu moins de 10&nbsp;% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
 
 
 ::: {.bloc_astuce data-latex=""}
@@ -620,7 +620,7 @@ Prenons deux variables indépendantes du tableau \@ref(tab:dataregmodel2) – `H
 
 Il est très rare que l'on utilise directement la table T de Student pour obtenir un seuil de significativité. 
 
-D'une part, il est possible de calculer directement la valeur de P à partir de la valeur de *T* et du nombre de degrés de liberté avec la fonction `pt` avec les paramètres suivants&nbsp;:
+D'une part, il est possible de calculer directement la valeur de P à partir de la valeur de *t* et du nombre de degrés de liberté avec la fonction `pt` avec les paramètres suivants&nbsp;:
 
 `pt(q= abs(valeur de T), df= nombre de degrés de liberté, lower.tail = F) *2`
 
@@ -644,13 +644,13 @@ print(df_tp)
 
 D'autre part, la fonction `summary` renvoie d'emblée les valeurs de T et de P. Par convention, R, comme la plupart des logiciels d'analyses statistiques, utilise aussi des symboles pour indiquer le seuil de signification du coefficient (voir tableau \@ref(tab:CoefStand2))&nbsp;: 
 
- '***' p<=0,001
+ '***' _p_ <= 0,001
  
- '**'  p<=0,01 
+ '**'  _p_ <= 0,01 
  
- '*'  p<=0,05 
+ '*'  _p_ <= 0,05 
  
- '.'   p<=0,10
+ '.'   _p_ <= 0,10
  
 :::
 
@@ -661,9 +661,9 @@ Finalement, il est possible de calculer l'intervalle de confiance d'un coefficie
 * il permet de vérifier si le coefficient est ou non significatif au seuil retenu. Pour cela la borne inférieure et la borne supérieure du coefficient doivent être toutes deux négatives ou positives. À l'inverse, un intervalle à cheval sur 0, soit avec une borne inférieure négative et une borne supérieure positive, n'est pas significatif.
 * il permet d'estimer la précision de l'estimation; plus l'intervalle du coefficient est réduit, plus l'estimation de l'effet de la variable indépendante est précise. Inversement, un intervalle large signale que le coefficient est incertain.
 
-Cela explique que de nombreux auteurs reportent les intervalles de confiance dans les articles scientifiques (habituellement à 95&nbsp;%). Dans le modèle ici présenté, il serait alors possible d'écrire&nbsp;: toutes choses étant égales par ailleurs, le pourcentage d'enfants de moins de 15 ans est positivement et significativement associé avec le pourcentage de la couverture végétale dans l'îlot (B=1,084; IC 95&nbsp;% = [1,021 - 1,148], p <0.001).
+Cela explique que de nombreux auteurs reportent les intervalles de confiance dans les articles scientifiques (habituellement à 95&nbsp;%). Dans le modèle ici présenté, il serait alors possible d'écrire&nbsp;: toutes choses étant égales par ailleurs, le pourcentage d'enfants de moins de 15 ans est positivement et significativement associé avec le pourcentage de la couverture végétale dans l'îlot (B&nbsp;=&nbsp;1,084; IC 95&nbsp;% = [1,021 - 1,148], *p* < 0,001).
 
-En guise d'exemple, à la lecture de la sortie R ci-dessous, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` se situe dans l'intervalle -0,002 à 0,023 qui est à cheval sur 0. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec p=0,05.
+En guise d'exemple, à la lecture de la sortie R ci-dessous, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` se situe dans l'intervalle -0,002 à 0,023 qui est à cheval sur 0. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec *p*&nbsp;=&nbsp;0,05.
 
 ```{r confintReg2, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 
@@ -784,7 +784,7 @@ La démographie est probablement la discipline des sciences sociales qui a le pl
 ::: {.bloc_aller_loin data-latex=""}
 **Régression polynomiale et nombre d'ordres**.
 
-Sachez qu'il est aussi possible de construire des régressions polynomiales avec plus deux ordres. Par exemple, une régression polynomiale d'ordre 3 comprend une variable dans sa forme originelle, puis mise au carré et au cube. Cela a l'inconvénient d'augmenter corollairement le nombre de coefficients. Nous verrons au chapitre \@ref(chap11) qu'il existe une solution plus élégante et efficace&nbsp;: le recours aux modèles de régressions linéaires généralisés additifs avec des *splines*. Dans le cadre de cette section, nous nous limiterons à des régressions polynomiales d'ordre 2.
+Sachez qu'il est aussi possible de construire des régressions polynomiales avec plus deux ordres. Par exemple, une régression polynomiale d'ordre 3 comprend une variable dans sa forme originelle, puis mise au carré et au cube. Cela a l'inconvénient d'augmenter corollairement le nombre de coefficients. Nous verrons au chapitre \@ref(chap11) qu'il existe une solution plus élégante et efficace&nbsp;: le recours aux modèles de régressions linéaires généralisés additifs avec des *splines*. Dans le cadre de cette section, nous nous limitons à des régressions polynomiales d'ordre 2.
 
 \footnotesize 
 \begin{equation}
@@ -820,17 +820,17 @@ Ces deux méthodes produiront les mêmes résultats pour les autres variables d�
 Appliquons cette démarche à la variable `AgeMedian` (âge médian des bâtiments) afin de vérifier si elle partage ou non une relation curvilinéaire avec la couverture végétale de l'îlot. À la lecture des résultats pour les deux modèles, les constats suivants peuvent être avancés&nbsp;:
 
 * Le R^2^ ajusté passe de 0,4179 à 0,4378 du modèle 1 au modèle 2, ce qui signale un gain de variance expliquée.
-* Le F incrémentiel entre les deux modèles s'élève à 362,64 et est significatif (P<0,001). On peut donc en conclure que le second modèle est plus performant que le premier, ce qui signale que la forme curvilinéaire pour `AgeMedian` (modèle 2) est plus efficace que la forme linéaire (modèle 1).
+* Le *F* incrémentiel entre les deux modèles s'élève à 362,64 et est significatif (*p*&nbsp;<&nbsp;0,001). On peut donc en conclure que le second modèle est plus performant que le premier, ce qui signale que la forme curvilinéaire pour `AgeMedian` (modèle 2) est plus efficace que la forme linéaire (modèle 1).
 * Dans le premier modèle, le coefficient de régression pour `AgeMedian` n'est pas significatif. L'âge médian des bâtiments n'est donc pas associé linéairement avec la variable dépendante.
 * Dans le second modèle, la valeur du coefficient de `poly(AgeMedian, 2)1` est positive et celle de `poly(AgeMedian, 2)2` est négative et significative. Cela indique qu'il existe une relation linéaire en forme de U inversé. Si le premier coefficient avait été négatif et le second positif, on aurait alors conclu que la forme curvilinéaire prend la forme d'un U.
 
 
 ```{r calculRegPoly1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 
-# Régression linéaire
+# régression linéaire
 modele1 <- lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
 
-# Régression polynomiale
+# régression polynomiale
 modele2 <- lm(VegPct ~ HABHA+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)
 
 # affichage des résultats du modèle 1
@@ -904,7 +904,7 @@ ggplot(data = df) +
        y = "Couverture végétale (%)")
 ```
 
-La figure \@ref(fig:calculRegPoly2) démontre bien que la relation linéaire n'est pas significative&nbsp;: la pente est extrêmement faible, ce qui signale que l'effet de l'âge médian est presque nul (B=0,0108, P=0,0902). En revanche, la relation curvilinéaire est plus intéressante&nbsp;: la couverture végétale croît quand l'âge médian des bâtiments dans l'îlot augmente de 0 à 60 ans environ, puis elle décroît.
+La figure \@ref(fig:calculRegPoly2) démontre bien que la relation linéaire n'est pas significative&nbsp;: la pente est extrêmement faible, ce qui signale que l'effet de l'âge médian est presque nul (B&nbsp;=&nbsp;0,0108, P=0,0902). En revanche, la relation curvilinéaire est plus intéressante&nbsp;: la couverture végétale croît quand l'âge médian des bâtiments dans l'îlot augmente de 0 à 60 ans environ, puis elle décroît.
 
 #### Variable indépendante sous forme logarithmique {#sect07512}
 
@@ -1197,7 +1197,7 @@ Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \beta_{3}(X_{1}\times X_{2}) +
 
 Un nouveau coefficient ($\beta_{3}$) s'ajoute pour l'interaction (la multiplication) entre les deux variables continues. **Pourquoi ajouter une interaction entre deux variables?** L'objectif est d'évaluer l'effet d'une augmentation de $\beta_{1}$ en fonction d'un niveau donné de $\beta_{2}$ et inversement. Cela permet ainsi de répondre à la question suivante&nbsp;: l'effet de la variable $\beta_{1}$ est-il influencé par la variable $\beta_{2}$ et inversement?
 
-Prenons un exemple concret pour illustrer le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B= 0,659, P<0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59&nbsp;% plus de végétation (tableau \@ref(tab:ModeleInteraction1)).
+Prenons un exemple concret pour illustrer le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B&nbsp;=&nbsp;0,659, *p*&nbsp;<&nbsp;0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59&nbsp;% plus de végétation (tableau \@ref(tab:ModeleInteraction1)).
 
 ```{r ModeleInteraction1, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 modele5 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
@@ -1215,7 +1215,7 @@ tabreg <- build_table(modele5, confid = F, std_digits = 3, coef_digits = 3, z_di
 
 Dans ce modèle (tableau \@ref(tab:ModeleInteraction1)), les pourcentages de jeunes de moins de 15 ans et de 65 ans et plus (`Pct_014` et `Pct_65P`) sont associés positivement à la variable dépendante tandis que le pourcentage de personnes à faible revenu (`Pct_FR`) est associé négativement.
 
-Que se passe-t-il si nous introduisons une variable d'interaction entre `DistCBDkm` et `Pct_FR` (tableau \@ref(tab:ModeleInteraction2))? L’effet du pourcentage de personnes à faible revenu (%) est significatif et négatif lorsqu’il est mis en interaction avec la distance au centre-ville. Cela indique que plus l'îlot est éloigné du centre-ville, plus `Pct_FR` a un effet négatif sur la couverture végétale (B=−0,011, P<0,001).
+Que se passe-t-il si nous introduisons une variable d'interaction entre `DistCBDkm` et `Pct_FR` (tableau \@ref(tab:ModeleInteraction2))? L’effet du pourcentage de personnes à faible revenu (%) est significatif et négatif lorsqu’il est mis en interaction avec la distance au centre-ville. Cela indique que plus l'îlot est éloigné du centre-ville, plus `Pct_FR` a un effet négatif sur la couverture végétale (B&nbsp;=&nbsp;−0,011, *p*&nbsp;<&nbsp;0,001).
 
 ```{r ModeleInteraction2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 DataFinal$DistCBDkmX_Pct_014 <- DataFinal$DistCBDkm*DataFinal$Pct_014
@@ -1409,7 +1409,7 @@ Nous avons vu qu'il est possible d'introduire une variable d'interaction entre d
 
 ## Diagnostics de la régression {#sect076}
 
-Pour illustrer comment vérifier si le modèle respecte ou non les hypothèses de la régression, nous utiliserons le modèle suivant&nbsp;:
+Pour illustrer comment vérifier si le modèle respecte ou non les hypothèses de la régression, nous utilisons le modèle suivant&nbsp;:
 
 `modele3 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFinal)`
 
@@ -1463,7 +1463,7 @@ Pour vérifier si les résidus sont normalement distribués, trois démarches la
 
 Les deux premiers étant parfois très restrictifs, on accorde habituellement une attention particulière aux graphiques.
 
-Pour notre modèle, les coefficients d’asymétrie (−0,263) et d’aplatissement (1,149) signalent que la distribution est plutôt symétrique, mais leptokurtique; c'est-à-dire que les valeurs des résidus sont bien réparties autour de 0, mais avec une faible dispersion. Puisque la valeur de P associée au test de Jarque-Bera est inférieure à 0,05, on peut en conclure que la distribution des résidus est anormale. La forme pointue de la distribution est d'ailleurs confirmée à la lecture de l'histogramme avec la courbe normale et du diagramme quantile-quantile.
+Pour notre modèle, les coefficients d’asymétrie (−0,263) et d’aplatissement (1,149) signalent que la distribution est plutôt symétrique, mais leptokurtique; c'est-à-dire que les valeurs des résidus sont bien réparties autour de 0, mais avec une faible dispersion. Puisque la valeur de *p* associée au test de Jarque-Bera est inférieure à 0,05, on peut en conclure que la distribution des résidus est anormale. La forme pointue de la distribution est d'ailleurs confirmée à la lecture de l'histogramme avec la courbe normale et du diagramme quantile-quantile.
 
 ```{r VerifierNormaliteResidus, echo=FALSE, fig.align='center', fig.cap="Vérifier la normalité des résidus", message=FALSE, warning=FALSE, out.width='75%'}
 library(DescTools)
@@ -1753,7 +1753,7 @@ modele8 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+Pct_014+Pct_65P+Pct_MV+Pct_F
 a. Le rappel de l'équation du modèle.
 b. Quelques statistiques descriptives sur les résidus du modèle, soit la différence entre les valeurs observées et prédites.
 c. Un tableau pour les coefficients de régression comprenant plusieurs colonnes, à savoir les coefficients de régression (`Estimate`), l'erreur type du coefficient (`Std. Error`), la valeur de T (`t value`) et la probabilité associée à la valeur de T (`Pr(>|t|)`). La première ligne de ce tableau (`Estimate`) est pour la constante (*Intercept* en anglais) et celles qui suivent sont pour les variables indépendantes.
-d. Les mesures d'ajustement du modèle dont le RMSE (`Residual standard error`), les R^2^ classique (`Multiple R-squared`) et ajusté  (`Adjusted R-squared`), la statistique F avec le nombre de degrés de liberté en lignes (nombre d'observations) et en colonnes (*n-k-1*) ainsi que la valeur de P qui est lui associée (`F-statistic:  1223 on 6 and 10203 DF,  p-value: < 2.2e-16`).
+d. Les mesures d'ajustement du modèle dont le RMSE (`Residual standard error`), les R^2^ classique (`Multiple R-squared`) et ajusté  (`Adjusted R-squared`), la statistique *F* avec le nombre de degrés de liberté en lignes (nombre d'observations) et en colonnes (*n-k-1*) ainsi que la valeur de P qui est lui associée (`F-statistic:  1223 on 6 and 10203 DF,  p-value: < 2.2e-16`).
 
 ```{r figOutputRegression, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Les différentes parties obtenues à la fonction summary(Modèle)",  out.width='75%', fig.pos="H"}
 knitr::include_graphics('images/lm/SortiesLM.jpg', dpi = NA)
@@ -1768,7 +1768,7 @@ confint(modele3)
 
 ### Comparer des modèles {#sect0772}
 
-Tel que détaillé à la section \@ref(sect0732), pour comparer des modèles imbriqués, il convient d'analyser les valeurs du R^2^ ajusté et du F incrémentiel, ce qui peut être fait en trois étapes.
+Tel que détaillé à la section \@ref(sect0732), pour comparer des modèles imbriqués, il convient d'analyser les valeurs du R^2^ ajusté et du *F* incrémentiel, ce qui peut être fait en trois étapes.
 
 **Première étape.** Il peut être judicieux d'afficher l'équation des différents modèles afin de se remémorer les VI introduites dans chacun d'eux, et ceux avec la fonction `MonModèle$call$formula`.
 
@@ -1804,16 +1804,16 @@ cat("\nComparaison des R2 ajustés :",
 )
 ```
 
-**Troisième étape.** La syntaxe ci-dessous permet d'obtenir le F incrémentiel pour des modèles ne comprenant pas le même nombre de variables dépendantes, et ce, en utilisant la fonction `anova(modele1, modele2, ..., modelen)`.
+**Troisième étape.** La syntaxe ci-dessous permet d'obtenir le *F* incrémentiel pour des modèles ne comprenant pas le même nombre de variables dépendantes, et ce, en utilisant la fonction `anova(modele1, modele2, ..., modelen)`.
 
-Par exemple, la syntaxe `anova(modele1, modele2)` permet de comparer les deux modèles et signale que le gain de variance expliquée entre les deux modèles (R^2^ de 0,4179 et 0,4378) est significatif (F incrémentiel = 362,64; P<0,001).
+Par exemple, la syntaxe `anova(modele1, modele2)` permet de comparer les deux modèles et signale que le gain de variance expliquée entre les deux modèles (R^2^ de 0,4179 et 0,4378) est significatif (*F* incrémentiel = 362,64; *p*&nbsp;<&nbsp;0,001).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 # Comparaison des deux modèles uniquement (modèles 1 et 2)
 anova(modele1, modele2)
 ```
 
-Il est aussi possible de comparer plusieurs modèles simultanément. Notez que dans la syntaxe ci-dessous, le troisième modèle n'est pas inclus, car il comprend le même nombre de variables indépendantes que le second modèle; il en va de même pour le sixième modèle comparativement au cinquième. Ici aussi, l'analyse des valeurs de F et de P vous permet de vérifier si les modèles et donc leurs R^2^ ajustés sont significativement différents (quand P<0,05).
+Il est aussi possible de comparer plusieurs modèles simultanément. Notez que dans la syntaxe ci-dessous, le troisième modèle n'est pas inclus, car il comprend le même nombre de variables indépendantes que le second modèle; il en va de même pour le sixième modèle comparativement au cinquième. Ici aussi, l'analyse des valeurs de F et de P vous permet de vérifier si les modèles et donc leurs R^2^ ajustés sont significativement différents (quand *p*&nbsp;<&nbsp;0,05).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 # Comparaison de plusieurs modèles
@@ -1871,7 +1871,7 @@ if(nobs >= 104+k){
 
 #### Vérifier la normalité des résidus {#sect07732}
 
-La syntaxe suivante permet de vérifier la normalité des résidus selon les trois démarches classiques&nbsp;: 1) coefficients d’asymétrie et d’aplatissement, 2) test de normalité de Jarque-Bera (fonction `JarqueBeraTest` du *package* **DescTools**), 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile).
+La syntaxe suivante permet de vérifier la normalité des résidus selon les trois démarches classiques&nbsp;: 1) coefficients d’asymétrie et d’aplatissement, 2) test de normalité de Jarque-Bera (fonction `JarqueBeraTest` du *package* `DescTools`), 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile).
 
 
 ```{r VerifierNormaliteResidusDia, echo=TRUE, fig.align='center', fig.cap="Diagnostic : normalité des résidus?", message=FALSE, warning=FALSE, out.width='75%'}
@@ -1913,7 +1913,7 @@ ggarrange(Ghisto, Gqqplot, ncol=2, nrow=1)
 
 #### Évaluer la linéarité et l'homoscédasticité des résidus {#sect07733}
 
-La syntaxe suivante permet de vérifier si l'hypothèse d'homoscédasticité des résidus est respectée avec&nbsp;: 1) un nuage de points entre les valeurs prédites et des résidus, 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile) et 2) le test de Breusch-Pagan (fonction `bptest` du *package* **lmtest**).
+La syntaxe suivante permet de vérifier si l'hypothèse d'homoscédasticité des résidus est respectée avec&nbsp;: 1) un nuage de points entre les valeurs prédites et des résidus, 3) les graphiques (histogramme avec courbe normale et diagramme quantile-quantile) et 2) le test de Breusch-Pagan (fonction `bptest` du *package* `lmtest`).
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, fig.show="hide"}
@@ -1955,7 +1955,7 @@ ggplot() +
 ```
 
 #### Vérifier la multicolinéarité excessive {#sect07734}
-Pour vérifier la présence ou l'absence de multicolinéarité excessive, on utilise habituellement la fonction `vif` du *package* **car**.
+Pour vérifier la présence ou l'absence de multicolinéarité excessive, on utilise habituellement la fonction `vif` du *package* `car`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 library(car)
@@ -2064,7 +2064,7 @@ Pour ce faire, comparez les valeurs d’asymétrie,d’aplatissement et du test 
 
 * l'asymétrie est très similaire (-0,260 à -0,265);
 * l'aplatissement s'est amélioré (1,183 à 0,164);
-* le test de Jarque-Bera signale toujours un problème de normalité (P<0,001), mais sa valeur a nettement diminué (548,7 à 131,24);
+* le test de Jarque-Bera signale toujours un problème de normalité (*p*&nbsp;<&nbsp;0,001), mais sa valeur a nettement diminué (548,7 à 131,24);
 * les graphiques démontrent une nette amélioration de la normalité des résidus.
 
 ```{r ResidusCompa, echo=TRUE, fig.align='center', fig.cap="Normalité des résidus avant et après la suppression des valeurs influentes", message=FALSE, warning=FALSE, out.width='65%'}

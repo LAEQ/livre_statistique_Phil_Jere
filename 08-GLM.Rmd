@@ -11,24 +11,24 @@ Dans ce chapitre, nous présenterons les modèles linéaires généralisés plus
 
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons principalement les packages suivants&nbsp;: 
+Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
-  - **ggplot2**, le seul, l'unique!
-  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes.
+  - `ggplot2`, le seul, l'unique!
+  - `ggpubr` pour combiner des graphiques et réaliser des diagrammes.
   
 * Pour ajuster des modèles GLM&nbsp;:
-  - **VGAM** et **gamlss** offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent plusieurs manipulations manuelles.
-  - **mgcv** offre moins de distributions que les deux précédents, mais est plus simple d'utilisation.
+  - `VGAM` et `gamlss` offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent plusieurs manipulations manuelles.
+  - `mgcv` offre moins de distributions que les deux précédents, mais est plus simple d'utilisation.
 
  * Pour analyser des modèles GLM&nbsp;:
-  - **car** essentiellement pour la fonction `vif`.
-  - **DHARMa** pour le diagnostic des résidus simulés.
-  - **ROCR** et **caret** pour l'analyse de la qualité d'ajustement de modèles pour des variables qualitatives.
-  - **AER** pour des tests de sur-dispersion.
-  - **fitdistrplus** pour ajuster des distributions à des données.
-  - **LaplacesDemon** pour manipuler certaines distributions.
-  - **sandwich** pour générer des erreurs standards robustes pour le modèle GLM logistique binomial.
+  - `car` essentiellement pour la fonction `vif`.
+  - `DHARMa` pour le diagnostic des résidus simulés.
+  - `ROCR` et `caret` pour l'analyse de la qualité d'ajustement de modèles pour des variables qualitatives.
+  - `AER` pour des tests de sur-dispersion.
+  - `fitdistrplus` pour ajuster des distributions à des données.
+  - `LaplacesDemon` pour manipuler certaines distributions.
+  - `sandwich` pour générer des erreurs standards robustes pour le modèle GLM logistique binomial.
 :::
 
 ## Qu'est qu'un modèle GLM? {#sect081}
@@ -663,7 +663,7 @@ Le second graphique permet de comparer les résidus et les valeurs prédites. L'
 plot(sim_res)
 ```
 
-```{r figresidsimbinom, echo=FALSE, fig.align="center", fig.cap="Diagnostic des résidus simulés par le package DHARMa", fig.pos="H", message=FALSE, warning=FALSE, out.width='100%'}
+```{r figresidsimbinom, echo=FALSE, fig.align="center", fig.cap="Diagnostic des résidus simulés par le *package* DHARMa", fig.pos="H", message=FALSE, warning=FALSE, out.width='100%'}
 invisible(capture.output({
   out <- "images/glm/figresidsimbinom.png"
 
@@ -772,7 +772,7 @@ info <- confusionMatrix(as.factor(dfenquete2$y), as.factor(ypred))
 print(info)
 ```
 
-Les résultats proposés par le package **caret** sont exhaustifs; nous vous proposons ici une façon de les présenter dans deux tableaux&nbsp;: l'un présente la matrice de confusion (tableau \@ref(tab:confusmatbinom)) et l'autre, les indicateurs de qualité de prédiction (tableau \@ref(tab:confusmatbinom2)).
+Les résultats proposés par le *package* `caret` sont exhaustifs; nous vous proposons ici une façon de les présenter dans deux tableaux&nbsp;: l'un présente la matrice de confusion (tableau \@ref(tab:confusmatbinom)) et l'autre, les indicateurs de qualité de prédiction (tableau \@ref(tab:confusmatbinom2)).
 
 ```{r confusmatbinom, echo=FALSE, message=FALSE, warning=FALSE, out.width='60%'}
 mat <- info[[2]]
@@ -1039,7 +1039,7 @@ Les conditions d’application sont les mêmes que pour un modèle binomial, ave
 Si certaines variables ne respectent pas cette condition d’application, trois options sont possibles pour y remédier&nbsp;: 
 
 1. Supprimer la variable du modèle (à éviter si cette variable est importante dans votre cadre théorique).
-2. Autoriser la variable à avoir un effet différent entre chaque palier (possible avec le *package* **VGAM**).
+2. Autoriser la variable à avoir un effet différent entre chaque palier (possible avec le *package* `VGAM`).
 3. Changer de modèle et opter pour un modèle des catégories adjacentes. Il s’agit du cas particulier où toutes les variables sont autorisées à changer à chaque niveau. Ne pas confondre ce dernier modèle et le modèle multinomial que nous présentons ensuite, puisque le modèle des catégories adjacentes continues à prédire la probabilité de passer à une catégorie supérieure.
 
 
@@ -1119,7 +1119,7 @@ vif(glm(price ~ beds +
       private + cat_review, data = data_airbnb))
 ```
 
-Toutes les valeurs de VIF sont inférieures à 2, indiquant une absence de multicolinéarité excessive. Nous pouvons alors ajuster le modèle et analyser les distances de Cook afin de vérifier la présence ou non d'observations très influentes. Pour ajuster le modèle, nous utilisons le package **VGAM** et la fonction `vglm` qui nous donnent accès à la famille `cumulative` pour ajuster des modèles logistiques ordinaux. Notez que le fonctionnement de base de cette famille est de modéliser $P(Y\leq1),P(Y\leq2),...,P(Y\leq J)$ avec *J* le nombre de catégories. Cependant, nous voulons ici modéliser la probabilité de passer à une catégorie supérieure de prix. Pour cela, il est nécessaire de spécifier le paramètre `reverse = TRUE` pour la famille `cumulative` (voir `help(cumulative)` pour plus de détail).
+Toutes les valeurs de VIF sont inférieures à 2, indiquant une absence de multicolinéarité excessive. Nous pouvons alors ajuster le modèle et analyser les distances de Cook afin de vérifier la présence ou non d'observations très influentes. Pour ajuster le modèle, nous utilisons le *package* `VGAM` et la fonction `vglm` qui nous donnent accès à la famille `cumulative` pour ajuster des modèles logistiques ordinaux. Notez que le fonctionnement de base de cette famille est de modéliser $P(Y\leq1),P(Y\leq2),...,P(Y\leq J)$ avec *J* le nombre de catégories. Cependant, nous voulons ici modéliser la probabilité de passer à une catégorie supérieure de prix. Pour cela, il est nécessaire de spécifier le paramètre `reverse = TRUE` pour la famille `cumulative` (voir `help(cumulative)` pour plus de détail).
 
 ```{r message=FALSE, warning=FALSE}
 library(VGAM)
@@ -1190,7 +1190,7 @@ matsim <- do.call(rbind, simulations)
 table(matsim[1,])
 ```
 
-À partir de ces simulations de prédiction, nous pouvons réaliser un diagnostic des résidus simulés grâce au *package* **DHARMa**.
+À partir de ces simulations de prédiction, nous pouvons réaliser un diagnostic des résidus simulés grâce au *package* `DHARMa`.
 
 ```{r diagressimcumul, message=FALSE, warning=FALSE, fig.cap = "Diagnostic général des résidus simulés du modèle des cotes proportionnelles", out.width="100%", fig.align = "center"}
 library(DHARMa)
@@ -1256,7 +1256,7 @@ knitr::include_graphics("images/glm/diagressimcumul2.png", dpi = 300)
 
 ```
 
-La fonction `plotResiduals` du *package* **DHARMa** produit des graphiques peu esthétiques, mais pratiques pour effectuer ce type de diagnostic.
+La fonction `plotResiduals` du *package* `DHARMa` produit des graphiques peu esthétiques, mais pratiques pour effectuer ce type de diagnostic.
 
 La figure \@ref(fig:diagressimcumul2) indique qu'aucune relation marquée n'existe entre nos variables indépendantes et nos résidus simulés, sauf pour la variable nombre de lits. En effet, nous pouvons constater que les résidus ont tendance à être toujours plus faibles quand le nombre de lits augmente. Cet effet est sûrement lié au fait qu'au-delà de cinq lits, le logement en question est vraisemblablement un dortoir. Il pourrait être judicieux de retirer ces observations de l'analyse, considérant qu'elles sont peu nombreuses et constituent un type de logement particulier.
 
@@ -1344,7 +1344,7 @@ out <- "images/glm/diagressimcumul3.png"
 knitr::include_graphics(out, dpi = 300)
 ```
 
-La prochaine étape du diagnostic est de vérifier si nous n'avons pas de séparation parfaite provoquée par une de nos  variable indépendantes. Le package **VGAM** propose pour cela la fonction `hdeff`.
+La prochaine étape du diagnostic est de vérifier si nous n'avons pas de séparation parfaite provoquée par une de nos  variable indépendantes. Le *package* `VGAM` propose pour cela la fonction `hdeff`.
 
 ```{r message=FALSE, warning=FALSE}
 tests <- hdeff(modele2)
@@ -1356,7 +1356,7 @@ La fonction nous informe qu'aucun de nos variables indépendantes ne provoque de
 
 Il ne nous reste donc plus qu'à vérifier que l'hypothèse de proportionnalité des cotes est respectée, soit que l'impact de chacune des variables indépendantes est bien le même pour passer de la catégorie 1 à 2 que pour passer des catégories 2 à 3. Pour cela, deux approches sont possibles&nbsp;: le test de Brant ou la réalisation d'une séquence de tests de rapport de vraisemblance.
 
-Le package **brant** propose une implémentation du test de Brant, mais elle ne peut être appliquée qu'à des modèles construits avec la fonction `polr` du package **MASS**. Nous avons donc récupéré le code source de la fonction `brant` du package **brant** et apporté quelques modifications pour qu'elle soit utilisable sur un objet `vglm`. Cette nouvelle fonction appelée `brant.vglm` est disponible dans le code source de ce livre.
+Le *package* `brant` propose une implémentation du test de Brant, mais elle ne peut être appliquée qu'à des modèles construits avec la fonction `polr` du *package* `MASS`. Nous avons donc récupéré le code source de la fonction `brant` du *package* `brant` et apporté quelques modifications pour qu'elle soit utilisable sur un objet `vglm`. Cette nouvelle fonction appelée `brant.vglm` est disponible dans le code source de ce livre.
 
 ```{r message=FALSE, warning=FALSE}
 tableau_brant <- round(brant.vglm(modele2),3)
@@ -1595,7 +1595,7 @@ vif(glm(SCIGM ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
           CRT + Parti + AGE + Sexe + Revenu, data = data_quest))
 ```
 
-La seconde étape est d'ajuster le modèle et de vérifier l'absence de sur ou sous-dispersion. Pour ajuster le modèle, nous utilisons à nouveau la fonction `vglm` du *package* **VGAM**, avec le paramètre `family = multinomial()`. Le ratio entre la statistique de Pearson et le nombre de degrés de liberté du modèle indique une absence de sur ou sous-dispersion (1,04).
+La seconde étape est d'ajuster le modèle et de vérifier l'absence de sur ou sous-dispersion. Pour ajuster le modèle, nous utilisons à nouveau la fonction `vglm` du *package* `VGAM`, avec le paramètre `family = multinomial()`. Le ratio entre la statistique de Pearson et le nombre de degrés de liberté du modèle indique une absence de sur ou sous-dispersion (1,04).
 
 
 ```{r message=FALSE, warning=FALSE}
@@ -1661,7 +1661,7 @@ modele2 <- vglm(Y ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim +
                family = multinomial(refLevel="A"), model = T)
 ```
 
-Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* **DHARMa** ne peut traiter que des variables quantitatives, binaires ou ordinales. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons à nouveau utiliser le *package* **DHARMa** pour analyser nos résidus. Veuillez noter que cette approche n'est pas optimale et que cette section du livre peut être amenée à changer.
+Nous pouvons à présent passer à l'analyse des résidus simulés. Le problème avec ce modèle est que sa variable *Y* est qualitative alors que la méthode d'analyse des résidus du *package* `DHARMa` ne peut traiter que des variables quantitatives, binaires ou ordinales. Pour rappel, il est possible d'envisager la prédiction d'un modèle logistique multinomial comme la prédiction d'une série de modèles logistiques binomiaux. En représentant nos prédictions de cette façon, nous pouvons à nouveau utiliser le *package* `DHARMa` pour analyser nos résidus. Veuillez noter que cette approche n'est pas optimale et que cette section du livre peut être amenée à changer.
 
 La figure \@ref(fig:residusmultinom) indique que les résidus suivent bien une distribution uniforme et qu'aucune valeur aberrante n'est observable.
 
@@ -1904,7 +1904,7 @@ knitr::include_graphics(out, dpi = 300)
 # }
 ```
 
-Profitons du fait que nous utilisons le package **VGAM** pour vérifier l'absence d'effet de Hauck-Donner qui indiquerait que des variables indépendantes provoquent des séparations parfaites. 
+Profitons du fait que nous utilisons le *package* `VGAM` pour vérifier l'absence d'effet de Hauck-Donner qui indiquerait que des variables indépendantes provoquent des séparations parfaites. 
 
 ```{r  message=FALSE, warning=FALSE}
 test <- hdeff(modele3)
@@ -2224,7 +2224,7 @@ ggplot() +
 
 **Vérification des conditions d'application**
 
-Comme précédemment, notre première étape est de vérifier l'absence de multicolinéarité excessive avec la fonction `vif` du package **car**.
+Comme précédemment, notre première étape est de vérifier l'absence de multicolinéarité excessive avec la fonction `vif` du *package* `car`.
 
 ```{r message=FALSE, warning=FALSE}
 vif(glm(Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet + Terreplein + Apaisement +
@@ -2293,7 +2293,7 @@ La figure \@ref(fig:poisscookdist2) montre que nous n'avons plus d'observations 
 deviance(modele)/(nrow(data2) - modele$rank)
 ```
 
-Le rapport entre la déviance et le nombre de degrés de liberté du modèle est nettement supérieur à 1, indiquant une sur-dispersion excessive. Nous pouvons confirmer ce résultat avec la fonction `dispersiontest` du *package* **AER**.
+Le rapport entre la déviance et le nombre de degrés de liberté du modèle est nettement supérieur à 1, indiquant une sur-dispersion excessive. Nous pouvons confirmer ce résultat avec la fonction `dispersiontest` du *package* `AER`.
 
 ```{r message=FALSE, warning=FALSE}
 library(AER)
@@ -2363,7 +2363,7 @@ ggplot() +
        y = "valeurs réelles")
 ```
 
-Pour tenir compte de cette particularité des données, nous modifions légèrement le modèle pour utiliser une distribution de quasi-Poisson, intégrant spécifiquement un paramètre de dispersion. Cet ajustement ne modifie pas l'estimation des coefficients du modèle, mais modifie le calcul des erreurs standards et par extension les valeurs de *p* pour les rendre moins sensibles au problème de sur-dispersion. Une autre approche aurait été de calculer une version robuste des erreurs standards avec le *package* **sandwich** comme nous l'avons fait dans la section \@ref(sect0821) sur le modèle binomial. Après réajustement du modèle, le nouveau paramètre de dispersion estimé est de 1,92.
+Pour tenir compte de cette particularité des données, nous modifions légèrement le modèle pour utiliser une distribution de quasi-Poisson, intégrant spécifiquement un paramètre de dispersion. Cet ajustement ne modifie pas l'estimation des coefficients du modèle, mais modifie le calcul des erreurs standards et par extension les valeurs de *p* pour les rendre moins sensibles au problème de sur-dispersion. Une autre approche aurait été de calculer une version robuste des erreurs standards avec le *package* `sandwich` comme nous l'avons fait dans la section \@ref(sect0821) sur le modèle binomial. Après réajustement du modèle, le nouveau paramètre de dispersion estimé est de 1,92.
 
 ::: {.bloc_notes data-latex=""}
 **Les quasi-distributions**
@@ -2601,7 +2601,7 @@ show_table(tableau,
 
 #### Conditions d'application
 
-Les conditions d'application d'un modèle négatif binomial sont presque les mêmes que celles d'un modèle de Poisson. La seule différence est que la condition d'absence de sur ou sous-dispersion est remplacée par une condition de respect du lien moyenne-variance. En effet, dans un modèle binomial, le paramètre de dispersion $\theta$ est combiné avec $\mu$ (l'espérance) pour exprimer la dispersion de la distribution. Dans le *package* **mgcv** que nous utilisons dans l'exemple, le lien entre $\mu$, $\theta$ et la variance est le suivant&nbsp;: 
+Les conditions d'application d'un modèle négatif binomial sont presque les mêmes que celles d'un modèle de Poisson. La seule différence est que la condition d'absence de sur ou sous-dispersion est remplacée par une condition de respect du lien moyenne-variance. En effet, dans un modèle binomial, le paramètre de dispersion $\theta$ est combiné avec $\mu$ (l'espérance) pour exprimer la dispersion de la distribution. Dans le *package* `mgcv` que nous utilisons dans l'exemple, le lien entre $\mu$, $\theta$ et la variance est le suivant&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -2614,7 +2614,7 @@ Il s'agit donc d'un modèle hétéroscédastique, sa variance n'est pas fixe, ma
 
 #### Exemple appliqué dans R
 
-Dans l’exemple précédent avec le modèle de Poisson, nous avions observé une certaine sur-dispersion que nous avions contournée en utilisant un modèle de quasi-Poisson. Dans l’article original, les auteurs avaient opté pour un modèle négatif binomial, ce que nous proposons de faire ici. Les variables utilisées sont les mêmes que pour le modèle de Poisson. Nous utilisons le *package* **mgcv** et sa fonction `gam` pour ajuster le modèle.
+Dans l’exemple précédent avec le modèle de Poisson, nous avions observé une certaine sur-dispersion que nous avions contournée en utilisant un modèle de quasi-Poisson. Dans l’article original, les auteurs avaient opté pour un modèle négatif binomial, ce que nous proposons de faire ici. Les variables utilisées sont les mêmes que pour le modèle de Poisson. Nous utilisons le *package* `mgcv` et sa fonction `gam` pour ajuster le modèle.
 
 **Vérification des conditions d'application**
 
@@ -2835,7 +2835,7 @@ L’interprétation des paramètres est identique à celle d’un modèle de Poi
 
 #### Exemple appliqué dans R
 
-La variable de comptage des accidents des piétons que nous avons utilisée dans les deux exemples précédents semble être une bonne candidate pour une distribution de Poisson avec excès de zéros. En effet, nous avions pu constater une sur-dispersion dans le modèle de Poisson original, ainsi qu’un nombre important d’intersections sans accident. Tentons donc d’améliorer notre modèle en ajustant un excès fixe de zéros. Nous utilisons la fonction `gamlss` du *package* **gamlss**.
+La variable de comptage des accidents des piétons que nous avons utilisée dans les deux exemples précédents semble être une bonne candidate pour une distribution de Poisson avec excès de zéros. En effet, nous avions pu constater une sur-dispersion dans le modèle de Poisson original, ainsi qu’un nombre important d’intersections sans accident. Tentons donc d’améliorer notre modèle en ajustant un excès fixe de zéros. Nous utilisons la fonction `gamlss` du *package* `gamlss`.
 
 
 ```{r message=FALSE, warning=FALSE}
@@ -3124,7 +3124,7 @@ Concernant les coefficients pour la partie Poisson du modèle, nous observons qu
 
 ### Conclusion sur les modèles destinés à des variables de comptage {#sect0845}
 
-Dans cette section, nous avons vu que modéliser une variable de comptage ne doit pas toujours être réalisé avec une simple distribution de Poisson. Il est nécessaire de tenir compte de la sur ou sous-dispersion potentielle ainsi que de l’excès de zéros. Nous n’avons cependant pas couvert tous les cas, il est en effet possible d’ajuster des modèles avec une distribution négative binomiale avec excès de zéros (avec le *package* **gamlss**), ainsi que des modèles de **Hurdle**. Ces derniers ont une approche différente de celle proposée par les distributions ajustées pour tenir compte de l’excès de zéro que nous détaillons dans l’encadré « pour aller plus loin » ci-dessous. Le processus de sélection du modèle peut être résumé avec la figure \@ref(fig:figpoisswork). Notez que même en suivant cette procédure, rien ne garantit que votre modèle final reflète bien les données que vous étudiez. L’analyse approfondie des résidus et des prédictions du modèle est la seule façon de déterminer si oui ou non le modèle est fiable.
+Dans cette section, nous avons vu que modéliser une variable de comptage ne doit pas toujours être réalisé avec une simple distribution de Poisson. Il est nécessaire de tenir compte de la sur ou sous-dispersion potentielle ainsi que de l’excès de zéros. Nous n’avons cependant pas couvert tous les cas, il est en effet possible d’ajuster des modèles avec une distribution négative binomiale avec excès de zéros (avec le *package* `gamlss`), ainsi que des modèles de **Hurdle**. Ces derniers ont une approche différente de celle proposée par les distributions ajustées pour tenir compte de l’excès de zéro que nous détaillons dans l’encadré « pour aller plus loin » ci-dessous. Le processus de sélection du modèle peut être résumé avec la figure \@ref(fig:figpoisswork). Notez que même en suivant cette procédure, rien ne garantit que votre modèle final reflète bien les données que vous étudiez. L’analyse approfondie des résidus et des prédictions du modèle est la seule façon de déterminer si oui ou non le modèle est fiable.
 
 ```{r figpoisswork, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Processus de sélection d'un modèle pour une variable de comptage",  out.width='100%'}
 knitr::include_graphics('images/glm/poisson_workflow.png', dpi = 300)
@@ -3433,7 +3433,7 @@ L’interprétation des paramètres est la même que pour un modèle gaussien pu
 
 #### Exemple appliqué dans R
 
-Nous proposons ici de simplement réajuster le modèle gaussien présenté dans la section précédente en utilisant une distribution de Student. Nous utilisons pour cela la fonction `gam` du *package* **mgcv** avec le paramètre `family=scat` pour utiliser une distribution de Student. Les valeurs de VIF ont déjà été calculées dans l'exemple précédent, nous pouvons donc passer directement au calcul des distances de Cook.
+Nous proposons ici de simplement réajuster le modèle gaussien présenté dans la section précédente en utilisant une distribution de Student. Nous utilisons pour cela la fonction `gam` du *package* `mgcv` avec le paramètre `family=scat` pour utiliser une distribution de Student. Les valeurs de VIF ont déjà été calculées dans l'exemple précédent, nous pouvons donc passer directement au calcul des distances de Cook.
 
 ```{r stucookdist, fig.align="center", fig.cap="Distances de Cook pour un modèle GLM avec une distribution de Student", message=FALSE, warning=FALSE, out.width="50%", dev = "png", dpi = 300}
 # Chargement des données
@@ -4179,7 +4179,7 @@ vif(glm(hot ~
         data = dataset))
 ```
 
-La seule variable semblant poser un problème de multicolinéarité est la variable `Arrond`. Cependant, du fait de sa nature multinomiale, elle regroupe en réalité 32 coefficients (voir la colonne `Df`). Il faut donc utiliser la règle habituelle de 5 sur le carré de la troisième colonne (`GVIF^(1/(2*Df))`) du tableau [@fox1992generalized], soit `1,032820^2 = 1.066717`, ce qui est bien inférieur à la limite de 5. Nous n'avons donc pas de problème de multicolinéarité excessive. Nous pouvons passer au calcul des distances de Cook. Pour ajuster notre modèle, nous utilisons le *package* **MGCV** et la fonction `gam` avec le paramètre `family = betar(link = "logit")`.
+La seule variable semblant poser un problème de multicolinéarité est la variable `Arrond`. Cependant, du fait de sa nature multinomiale, elle regroupe en réalité 32 coefficients (voir la colonne `Df`). Il faut donc utiliser la règle habituelle de 5 sur le carré de la troisième colonne (`GVIF^(1/(2*Df))`) du tableau [@fox1992generalized], soit `1,032820^2 = 1.066717`, ce qui est bien inférieur à la limite de 5. Nous n'avons donc pas de problème de multicolinéarité excessive. Nous pouvons passer au calcul des distances de Cook. Pour ajuster notre modèle, nous utilisons le *package* `mgcv` et la fonction `gam` avec le paramètre `family = betar(link = "logit")`.
 
 ```{r cookdistbeta, fig.align="center", fig.cap="Distances de Cook pour le modèle GLM Beta", message=FALSE, warning=FALSE, out.width="65%", dev = "png", dpi = 300}
 # Ajustement d'une première version du modèle

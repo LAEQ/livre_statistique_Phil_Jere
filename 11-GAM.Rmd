@@ -3,26 +3,26 @@
 Dans les précédents chapitres, nous avons eu l'occasion d'explorer toute une panoplie de modèles&nbsp;: régressions linéaires, modèles généralisés, modèles généralisés à effets mixtes et les modèles multiniveaux. Dans ce chapitre, nous abordons une nouvelle extension dans le monde des régressions&nbsp;: les modèles généralisés additifs (*Generalized additive model* en anglais — GAM). Cette extension a pour but de permettre de modéliser des relations non linéaires entre les variables indépendantes et la variable dépendante.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons principalement les *packages* suivants&nbsp;: 
+Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
-  - **ggplot2** le seul, l'unique;
-  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes;
-  - **metR** pour placer des étiquettes sur des isolignes.
+  - `ggplot2` le seul, l'unique!
+  - `ggpubr` pour combiner des graphiques et réaliser des diagrammes.
+  - `metR` pour placer des étiquettes sur des isolignes.
   
 * Pour jouer avec des *splines*&nbsp;:
-  - **splines2** permet de construire les fonctions de bases de nombreuses splines;
-  - **segmented** permet d'ajuster des modèles avec des coefficients variant par segment.
+  - `splines2` pour construire les fonctions de base de nombreuses splines.
+  - `segmented` pour ajuster des modèles avec des coefficients variant par segment.
   
 * Pour ajuster des modèles GAM&nbsp;:
-  - **mgcv** le package de référence pour ajuster des GAM dans R;
-  - **gamlss** un second package très flexible pour ajuster des GAM;
-  - **gamlss.add** une extension de **gamlss** ajoutant des distributions supplémentaires.
+  - `mgcv`, le *package* de référence pour ajuster des GAM dans R!
+  - `gamlss`, un second *package* très flexible pour ajuster des GAM.
+  - `gamlss.add`, une extension de **gamlss** ajoutant des distributions supplémentaires.
 
 * Pour analyser des modèles GAM&nbsp;:
-  - **itsadug** permet notamment d'extraire certains résultats d'un GAM;
-  - **mixedup** permet notamment d'extraire les effets aléatoires d'un GAM;
-  - **DHARMa** pour le diagnostic des résidus simulés.
+  - `itsadug` pour notamment extraire certains résultats d'un GAM.
+  - `mixedup` pour notamment extraire les effets aléatoires d'un GAM.
+  - `DHARMa` pour le diagnostic des résidus simulés.
 :::
 
 
@@ -936,7 +936,7 @@ En revanche, dans l'arrondissement Mercier-Hochelaga-Maisonneuve, la situation e
 ::: {.bloc_aller_loin data-latex=""}
 **Des effets aléatoires plus complexes dans les GAMM**
 
-Il est possible de spécifier des GAMM avec des effets aléatoires plus complexes autorisant par exemple des corrélations entre les différents effets / niveaux. Il faut pour cela utiliser la fonction `gamm` de `mgcv` ou la fonction `gamm4` du package `gamm4.` La première offre plus de flexibilité, mais la seconde est plus facile à utiliser et doit être privilégiée quand un modèle comporte un très grand nombre de groupes dans un effet aléatoire, ou lorsque la distribution du modèle n'est pas gaussienne. La fonction `gamm` permet d'ajuster des modèles non gaussiens, mais elle utilise une approche appelée *PQL* (*Penalized Quasi-Likelihood* en anglais) connue pour être moins stable et moins précise.
+Il est possible de spécifier des GAMM avec des effets aléatoires plus complexes autorisant par exemple des corrélations entre les différents effets / niveaux. Il faut pour cela utiliser la fonction `gamm` de `mgcv` ou la fonction `gamm4` du *package* `gamm4.` La première offre plus de flexibilité, mais la seconde est plus facile à utiliser et doit être privilégiée quand un modèle comporte un très grand nombre de groupes dans un effet aléatoire, ou lorsque la distribution du modèle n'est pas gaussienne. La fonction `gamm` permet d'ajuster des modèles non gaussiens, mais elle utilise une approche appelée *PQL* (*Penalized Quasi-Likelihood* en anglais) connue pour être moins stable et moins précise.
 
 Cependant, dans l'exemple de cette section, nous utilisons un modèle GAMM avec une distribution *beta*, ce qui n'est actuellement pas supporté par les fonctions `gamm` et `gamm4`. Pour un modèle GAMM plus complexe utilisant une distribution *beta*, il serait nécessaire d'utiliser le *package* `gamlss`, mais ce dernier utilise aussi une approche de type PQL. Nous montrons tout de même ici comment ajouter un modèle qui inclurait une corrélation entre les deux effets aléatoires de l'exemple précédent. Notez ici que le terme `re` apparaissant dans la formule permet de spécifier un effet aléatoire en utilisant la syntaxe du *package* `nlme.` Plus spécifiquement, `gamlss` fait un pont avec `nlme` et utilise son algorithme d'ajustement au sein de ces propres routines. De même, le terme `pb` permet de spécifier une *spline* de lissage dans le même esprit que `mgcv.` Il est également possible d'utiliser le terme `ga` faisant le lien avec `mgcv` et de profiter de sa flexibilité dans `gamlss`.
 

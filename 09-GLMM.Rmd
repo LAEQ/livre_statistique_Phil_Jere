@@ -8,23 +8,23 @@ Dans les deux chapitres précédents, nous avons consécutivement présenté la 
 *	effectuer les diagnostics d’un GLMM.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utiliserons principalement les packages suivants&nbsp;: 
+Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
-  - **ggplot2**, le seul, l'unique!
-  - **ggpubr** pour combiner des graphiques et réaliser des diagrammes.
-  - **ellipse** pour représenter des ellipses sur certains graphiques.
+  - `ggplot2`, le seul, l'unique!
+  - `ggpubr` pour combiner des graphiques et réaliser des diagrammes.
+  - `ellipse` pour représenter des ellipses sur certains graphiques.
   
 * Pour ajuster des modèles GLMM&nbsp;:
-  - **lme4**, offrant une interface simple pour ajuster des GLMM.
+  - `lme4`, offrant une interface simple pour ajuster des GLMM.
 
 * Pour analyser des modèles GLM&nbsp;:
-  - **car** essentiellement pour la fonction `vif`.
-  - **DHARMa** pour le diagnostic des résidus simulés.
-  - **merTools** permet d'explorer les résultats d'un GLMM.
-  - **lmerTest** fourni des tests de significativité pour les coefficients d'un GLMM.
-  - **MuMin** pour calculer les R^2^ conditionnel et marginal.
-  - **performance** pour calculer le ICC et d'autres mesures d'ajustement.
+  - `car`, essentiellement pour la fonction `vif`.
+  - `DHARMa` pour le diagnostic des résidus simulés.
+  - `merTools` pour explorer les résultats d'un GLMM.
+  - `lmerTest` pour obtenir des tests de significativité pour les coefficients d'un GLMM.
+  - `MuMin` pour calculer les R^2^ conditionnel et marginal.
+  - `performance` pour calculer le ICC et d'autres mesures d'ajustement.
 :::
 
 ## Introduction {#sect091}
@@ -649,7 +649,7 @@ ggplot() +
 
 ## Inférence dans les modèles GLMM {#sect094}
 
-Une des questions importantes que l'on se pose lorsque l'on construit un modèle est toujours&nbsp;: est-ce que les différents effets présents dans le modèle ont un impact significativement différent de zéro sur la variable dépendante? Cette étape d'inférence est plus compliquée pour les modèles GLMM que dans les modèles GLM à cause de la présence d'effets aléatoires. Ces derniers brouillent le comptage du nombre de paramètres et par extension du nombre de degrés de liberté des modèles. Pour un effet aléatoire, il est possible de déterminer que le nombre de degrés de liberté est de 1 puisque nous ajustons un seul paramètre supplémentaire (la variance de cet effet aléatoire). Selon un autre point de vue, il serait possible d'affirmer que le nombre de degrés de liberté est de *k*-1 (avec *k* le nombre de groupes dans cet effet aléatoire), ce que nous utilisons habituellement pour un effet fixe. La vraie valeur du nombre de degrés de liberté se situe quelque part entre ces deux extrêmes. L'enjeu du nombre de degrés de liberté est crucial, car il impacte directement l'estimation des valeurs de *P* pour l'ensemble des coefficients du modèle. Avec un nombre de degrés de liberté plus petit, les valeurs de *P* seront plus faibles et les effets "plus significatifs". Le sujet est d'ailleurs l'objet d'une telle controverse que les auteurs de certains *package* comme **lme4** (un des *packages* les plus utilisés pour ajuster des GLMM) ont fait le choix de ne renvoyer aucune valeur de *P* dans les résultats des modèles. L'article de @bolker2009generalized propose une explication détaillée et relativement accessible du problème (en plus d'une excellente introduction aux GLMM)&nbsp;: en se basant sur leurs recommandations, il est possible de séparer le problème de l'inférence dans les GLMM en trois sous problèmes&nbsp;: 
+Une des questions importantes que l'on se pose lorsque l'on construit un modèle est toujours&nbsp;: est-ce que les différents effets présents dans le modèle ont un impact significativement différent de zéro sur la variable dépendante? Cette étape d'inférence est plus compliquée pour les modèles GLMM que dans les modèles GLM à cause de la présence d'effets aléatoires. Ces derniers brouillent le comptage du nombre de paramètres et par extension du nombre de degrés de liberté des modèles. Pour un effet aléatoire, il est possible de déterminer que le nombre de degrés de liberté est de 1 puisque nous ajustons un seul paramètre supplémentaire (la variance de cet effet aléatoire). Selon un autre point de vue, il serait possible d'affirmer que le nombre de degrés de liberté est de *k*-1 (avec *k* le nombre de groupes dans cet effet aléatoire), ce que nous utilisons habituellement pour un effet fixe. La vraie valeur du nombre de degrés de liberté se situe quelque part entre ces deux extrêmes. L'enjeu du nombre de degrés de liberté est crucial, car il impacte directement l'estimation des valeurs de *P* pour l'ensemble des coefficients du modèle. Avec un nombre de degrés de liberté plus petit, les valeurs de *P* seront plus faibles et les effets "plus significatifs". Le sujet est d'ailleurs l'objet d'une telle controverse que les auteurs de certains *package* comme `lme4` (un des *packages* les plus utilisés pour ajuster des GLMM) ont fait le choix de ne renvoyer aucune valeur de *P* dans les résultats des modèles. L'article de @bolker2009generalized propose une explication détaillée et relativement accessible du problème (en plus d'une excellente introduction aux GLMM)&nbsp;: en se basant sur leurs recommandations, il est possible de séparer le problème de l'inférence dans les GLMM en trois sous problèmes&nbsp;: 
 
 * Quel est le degré de significativité des effets fixes?
 * Quel est le degré de significativité de l'effet aléatoire dans le modèle?
@@ -691,7 +691,7 @@ Les GLMM sont donc une extension des GLM offrant une grande flexibilité de mod�
 
 Pour cet exemple de GLMM, nous proposons de réanalyser les données présentées dans la section \@ref(sect06211) sur le modèle logistique binomial. Pour rappel, nous modélisions la probabilité qu'un individu utilise le vélo comme mode de transport pour son trajet le plus fréquent en utilisant une enquête réalisée auprès d'environ 26000 Européens. Initialement, nous avions intégré les pays comme un effet fixe. Or, nous savons à présent qu'il serait plus judicieux de les traiter comme un effet aléatoire. Nous comparons deux modèles, un pour lequel seulement la constante varie par pays et un second dans lequel la pente pour l'âge varie également par pays. L'hypothèse étant que l'impact de l'âge sur l'utilisation du vélo pourrait être réduit dans certains pays où la culture du vélo est plus présente. Cette hypothèse implique également la présence potentielle d'une corrélation inverse entre la constante et la pente de chaque pays&nbsp;: dans un pays où la probabilité de base d'utiliser le vélo est plus élevée, l'impact de l'effet de l'âge est probablement réduit.
 
-Pour ajuster ces modèles, nous utilisons le *package* **lme4**, permettant d'ajuster des modèles GLMM avec des distributions gaussienne, gamma, poisson et binomial. Lorsque d'autres distributions sont nécessaires, il est possible de se tourner vers le *package* **gamlss**. Notez cependant que les effets aléatoires de **gamlss** sont estimés avec une méthode appelée PQL très flexible, mais qui peut produire des résultats erronés dans certains cas [@bolker2009generalized].
+Pour ajuster ces modèles, nous utilisons le *package* `lme4`, permettant d'ajuster des modèles GLMM avec des distributions gaussienne, gamma, poisson et binomial. Lorsque d'autres distributions sont nécessaires, il est possible de se tourner vers le *package* `gamlss`. Notez cependant que les effets aléatoires de `gamlss` sont estimés avec une méthode appelée PQL très flexible, mais qui peut produire des résultats erronés dans certains cas [@bolker2009generalized].
 
 Afin de limiter les répétitions, nous ne recalculons pas ici le VIF et nous excluons d'emblée les observations aberrantes (provenant de Malte, Chypre ou avec des temps de trajets supérieurs à 400 minutes).
 
@@ -754,7 +754,7 @@ var_pays <- VarCorr(modele1)[[1]][[1]]
 var_pays / (((pi**2)/3) + var_pays)
 ```
 
-Nous pouvons parvenir au même résultat en utilisant la fonction `icc` du *package* **performance**.
+Nous pouvons parvenir au même résultat en utilisant la fonction `icc` du *package* `performance`.
 
 ```{r message=FALSE, warning=FALSE, out.width='50%'}
 library(performance)
@@ -764,14 +764,14 @@ icc(modele1)
 
 Notez que cette fonction distingue un ICC ajusté et un ICC conditionnel. Le premier correspond à l'ICC que nous avons présenté jusqu'ici et que nous avons calculé à la main. L'ICC conditionnel inclut dans son estimation la variance présente dans les effets fixes. Un fort écart entre ces deux ICC indiquerait que les effets fixes sont capables de capturer une très forte variance dans les données, ce qui pourrait remettre en cause la pertinence de l'effet aléatoire. Dans notre cas, la différence entre les deux est très faible.
 
-En plus du ICC, nous pouvons calculer les R^2^ marginal et conditionnel. Pour cela, nous utilisons la fonction `r.squaredGLMM` du *package* **MuMIn**.
+En plus du ICC, nous pouvons calculer les R^2^ marginal et conditionnel. Pour cela, nous utilisons la fonction `r.squaredGLMM` du *package* `MuMIn`.
 
 ```{r message=FALSE, warning=FALSE, out.width='50%'}
 library(MuMIn)
 r.squaredGLMM(modele1)
 ```
 
-Cette fonction nous renvoie à la fois les R^2^ obtenus en utilisant la variance théorique du modèle ($\frac{\pi^2}{3}$ dans notre cas) et la variance estimée par la méthode delta. La seconde est plus conservative, mais les deux résultats indiquent que les effets aléatoires expliquent une part importante de la variance comparativement aux effets fixes. Notez également que la fonction `r2` du *package* **performance** peut calculer ces deux R^2^, mais seulement en utilisant la variance théorique.
+Cette fonction nous renvoie à la fois les R^2^ obtenus en utilisant la variance théorique du modèle ($\frac{\pi^2}{3}$ dans notre cas) et la variance estimée par la méthode delta. La seconde est plus conservative, mais les deux résultats indiquent que les effets aléatoires expliquent une part importante de la variance comparativement aux effets fixes. Notez également que la fonction `r2` du *package* `performance` peut calculer ces deux R^2^, mais seulement en utilisant la variance théorique.
 
 #### Significativité de l'effet aléatoire {#sect09612}
 
@@ -789,7 +789,7 @@ anova(modele1,model_simple)
 
 Le test indique clairement que le modèle complet est mieux ajusté&nbsp;: les valeurs de l'AIC, du BIC et de la déviance sont toutes grandement réduites et le test est largement significatif.
 
-Pour aller plus loin, nous pouvons utiliser une approche par *bootstrap* pour calculer un intervalle de confiance pour la variance de l'effet aléatoire, l'ICC et le R^2^ conditionnel. Nous utilisons pour cela la fonction `bootMer`. Si vous essayez de lancer cette syntaxe, vous constaterez qu'elle prend énormément de temps, ce qui s'explique par le grand nombre de fois où le modèle doit être réajusté. Nous vous recommandons donc de bien enregistrer vos résultats après l'exécution de la fonction avec la fonction `save.` Notez que pour réduire significativement le temps de calcul, il est possible d'utiliser simultanément plusieurs cœurs de votre processeur, ce que nous faisons ici avec le *package* **snow**.
+Pour aller plus loin, nous pouvons utiliser une approche par *bootstrap* pour calculer un intervalle de confiance pour la variance de l'effet aléatoire, l'ICC et le R^2^ conditionnel. Nous utilisons pour cela la fonction `bootMer`. Si vous essayez de lancer cette syntaxe, vous constaterez qu'elle prend énormément de temps, ce qui s'explique par le grand nombre de fois où le modèle doit être réajusté. Nous vous recommandons donc de bien enregistrer vos résultats après l'exécution de la fonction avec la fonction `save.` Notez que pour réduire significativement le temps de calcul, il est possible d'utiliser simultanément plusieurs cœurs de votre processeur, ce que nous faisons ici avec le *package* `snow`.
 
 ```{r message=FALSE, warning=FALSE, out.width='50%', eval=F, echo=T}
 # Définition d'une fonction pour extraire les valeurs qui nous intéressent
@@ -864,7 +864,7 @@ quantile(df$R2cond,probs = c(0.0275,0.5,0.975))
 
 #### Significativité des différentes constantes {#sect09613}
 
-Puisque nous avons conclu que l'effet aléatoire contribue significativement au modèle, nous pouvons à présent vérifier si les constantes ajustées pour chaque pays varient significativement les unes des autres. Pour rappel, les pentes et les constantes aléatoires ne sont pas directement estimées par le modèle, mais à posteriori. Il en résulte qu'il n'y a pas de moyen direct de mesurer l'incertitude de ces paramètres et donc de construire des intervalles de confiance. Une première option pour contourner ce problème est d'effectuer des simulations à partir de la distribution postérieure du modèle. Notez que cette approche s'inspire largement de l'approche statistique bayésienne. Nous utilisons ici le *package* **merTools** pour effectuer 1000 simulations et obtenir une erreur standard pour chaque constante aléatoire de chaque pays.
+Puisque nous avons conclu que l'effet aléatoire contribue significativement au modèle, nous pouvons à présent vérifier si les constantes ajustées pour chaque pays varient significativement les unes des autres. Pour rappel, les pentes et les constantes aléatoires ne sont pas directement estimées par le modèle, mais à posteriori. Il en résulte qu'il n'y a pas de moyen direct de mesurer l'incertitude de ces paramètres et donc de construire des intervalles de confiance. Une première option pour contourner ce problème est d'effectuer des simulations à partir de la distribution postérieure du modèle. Notez que cette approche s'inspire largement de l'approche statistique bayésienne. Nous utilisons ici le *package* `merTools` pour effectuer 1000 simulations et obtenir une erreur standard pour chaque constante aléatoire de chaque pays.
 
 ```{r randomconstantes1, message=FALSE, warning=FALSE, out.width='70%',echo=T, fig.cap = "Constantes aléatoires estimées par Pays (IC par simulations)"}
 # Simulations et extraction des effets aléatoires
@@ -960,7 +960,7 @@ Dans le modèle précédent, nous avons ajusté pour chaque pays une constante a
 * le modèle avec des constantes et pentes aléatoires indépendantes;
 * le modèle avec des constantes et pentes aléatoires corrélées.
 
-Dans le *package* **lme4**, les syntaxes pour ajuster ces trois modèles sont les suivantes&nbsp;: 
+Dans le *package* `lme4`, les syntaxes pour ajuster ces trois modèles sont les suivantes&nbsp;: 
 
 * constantes aléatoires&nbsp;: `+(1|Pays)`;
 * constantes et pentes aléatoires indépendantes&nbsp;: `+(1 + Age||Pays)`;
@@ -1208,7 +1208,7 @@ ggplot() +
 
 #### Inférence pour les effets fixes {#sect09624}
 
-Nous avions mentionné dans les sections précédentes que le calcul de valeurs de *P* pour les effets fixes fait l'objet de controverses pour les modèles GLMM. La méthode offrant le meilleur compromis entre rapidité de calcul et fiabilité est la méthode Satterthwaite implémentée dans le *package* **lmerTest**. Pour l'utiliser, il suffit de charger le *package* **lmerTest** après **lme4**, ce qui modifiera la fonction `summary` pour qu'elle utilise directement cette approche.
+Nous avions mentionné dans les sections précédentes que le calcul de valeurs de *P* pour les effets fixes fait l'objet de controverses pour les modèles GLMM. La méthode offrant le meilleur compromis entre rapidité de calcul et fiabilité est la méthode Satterthwaite implémentée dans le *package* `lmerTest`. Pour l'utiliser, il suffit de charger le *package* `lmerTest` après `lme4`, ce qui modifiera la fonction `summary` pour qu'elle utilise directement cette approche.
 
 ```{r diagbinomglmm3, message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(lmerTest)
