@@ -2,7 +2,7 @@
 
 **Les modèles linéaires généralisés**
 
-Dans ce chapitre, nous présenterons les modèles linéaires généralisés plus communément appelés GLM (*generalized linear models* en anglais). Il s’agit d’une extension directe du modèle de régression linéaire multiple (LM) basé sur la méthode des moindres carrés ordinaires, décrite dans le chapitre précédent. Pour aborder cette section sereinement, il est important d’avoir bien compris le concept de distribution présenté dans la section \@ref(sect024). À la fin de cette section, vous serez en mesure de&nbsp;:
+Dans ce chapitre, nous présentons les modèles linéaires généralisés plus communément appelés GLM (*generalized linear models* en anglais). Il s’agit d’une extension directe du modèle de régression linéaire multiple (LM) basé sur la méthode des moindres carrés ordinaires, décrite dans le chapitre précédent. Pour aborder cette section sereinement, il est important d’avoir bien compris le concept de distribution présenté dans la section \@ref(sect024). À la fin de cette section, vous serez en mesure de&nbsp;:
 
 * comprendre la distinction entre un modèle LM classique et un GLM;
 * identifier les composantes d’un GLM;
@@ -18,7 +18,7 @@ Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;:
   - `ggpubr` pour combiner des graphiques et réaliser des diagrammes.
   
 * Pour ajuster des modèles GLM&nbsp;:
-  - `VGAM` et `gamlss` offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent plusieurs manipulations manuelles.
+  - `VGAM` et `gamlss` offrent tous les deux un très large choix de distributions et de fonctions de diagnostic, mais nécessitent souvent un peu plus de code.
   - `mgcv` offre moins de distributions que les deux précédents, mais est plus simple d'utilisation.
 
  * Pour analyser des modèles GLM&nbsp;:
@@ -61,7 +61,7 @@ D'après cette formule, nous modélisons la variable *Y* avec une équation de r
 \end{equation}
 \normalsize
 
-Pas de panique ! Cette écriture se lit comme suit&nbsp;: la variable *Y* est issue d’une distribution normale $(Y \sim Normal)$ avec deux paramètres&nbsp;: $\mu$ (sa moyenne) et $\sigma$ (son écart-type). $\mu$ varie en fonction d’une équation de régression linéaire ($\beta_0 + \beta X$) transformée par une fonction de lien *g* (détaillée plus loin). Dans ce cas précis, la fonction de lien est appelée fonction identitaire puisqu’elle n’applique aucune transformation ($g(x) = x$). Vous noterez ici que le second paramètre de la distribution normale $\sigma$ (paramètre de dispersion) a une valeur fixe et ne dépend donc pas des variables indépendantes à la différence de $\mu$. Dans ce modèle spécifiquement, les paramètres à estimer sont $\sigma$, $\beta_0$ et $\beta$.
+Pas de panique! Cette écriture se lit comme suit&nbsp;: la variable *Y* est issue d’une distribution normale $(Y \sim Normal)$ avec deux paramètres&nbsp;: $\mu$ (sa moyenne) et $\sigma$ (son écart-type). $\mu$ varie en fonction d’une équation de régression linéaire ($\beta_0 + \beta X$) transformée par une fonction de lien *g* (détaillée plus loin). Dans ce cas précis, la fonction de lien est appelée fonction identitaire puisqu’elle n’applique aucune transformation ($g(x) = x$). Notez ici que le second paramètre de la distribution normale $\sigma$ (paramètre de dispersion) a une valeur fixe et ne dépend donc pas des variables indépendantes à la différence de $\mu$. Dans ce modèle spécifiquement, les paramètres à estimer sont $\sigma$, $\beta_0$ et $\beta$.
 Notez que dans la notation traditionnelle, la fonction de lien est appliquée au paramètre modélisé. Il est possible de renverser cette notation en utilisant la réciproque ($g'$) de la fonction de lien ($g$)&nbsp;:
 
 \footnotesize
@@ -76,14 +76,14 @@ Dans un modèle GLM, la distribution attendue de la variable *Y* est déclarée 
 
 Avec cet exemple, nous voyons les deux composantes supplémentaires d’un modèle GLM&nbsp;:
 
-*	La distribution supposée de la variable *Y* (ici, la distribution normale).
+*	La distribution supposée de la variable *Y* conditionnée par les variables *X* (ici, la distribution normale).
 *	Une fonction de lien associant l’équation de régression formée par les variables indépendantes et un paramètre de la distribution retenue (ici la fonction identitaire et le paramètre $\mu$).
 
-Notez également que l’estimation des paramètres d’un modèle GLM (ici $\beta_0$, $\beta X$ et $\sigma$) ne se fait plus avec la méthode des moindres carrés ordinaires utilisée pour les modèles LM. À la place, la méthode par maximum de vraisemblance (*maximum likelihood*) est le plus souvent utilisée, mais certains *packages* utilisent également la méthode des moments (*method of moments*). Dans les deux cas, ces méthodes nécessitent des échantillons plus grands que la méthode des moindres carrés. Dans le cas spécifique d'un modèle GLM utilisant une distribution normale, la méthode des moindres carrés et la méthode par maximum de vraisemblance produisent les mêmes résultats.
+Notez également que l’estimation des paramètres d’un modèle GLM (ici $\beta_0$, $\beta X$ et $\sigma$) ne se fait plus avec la méthode des moindres carrés ordinaires utilisée pour les modèles LM. À la place, la méthode par maximum de vraisemblance (*maximum likelihood*) est le plus souvent utilisée, mais certains *packages* utilisent également la méthode des moments (*method of moments*). Ces deux méthodes nécessitent des échantillons plus grands que la méthode des moindres carrés. Dans le cas spécifique d'un modèle GLM utilisant une distribution normale, la méthode des moindres carrés et la méthode par maximum de vraisemblance produisent les mêmes résultats.
 
 ### Autres distributions et rôle de la fonction de lien {#sect0812}
 
-À première vue, on pourrait se demander pourquoi rajouter ces deux éléments puisqu’ils ne font que complexifier le modèle. Pour mieux saisir la pertinence des GLM, prenons un exemple appliqué au cas d’une variable binaire. Admettons que nous souhaitons modéliser / prédire la probabilité qu’un(e) cycliste décède lors d’une collision avec un véhicule motorisé. Notre variable dépendante est donc binaire (0 = survie, 1 = décès) et nous souhaitons la prédire avec trois variables continues que sont&nbsp;: la vitesse de déplacement du ou de la cycliste ($x_1$), la vitesse de déplacement du véhicule ($x_2$) et la masse du véhicule ($x_3$). Puisque *Y* n’est pas continu, il serait absurde de supposer qu’elle est issue d’une distribution normale. Il serait plus logique de penser qu’elle provient d’une distribution de Bernoulli (pour rappel, une distribution de Bernoulli permet de modéliser un phénomène ayant deux issues possibles comme un lancer de pièce de monnaie, section \@ref(sect024)). Plus spécifiquement, nous pourrions formuler l’hypothèse que nos trois variables $x_1$, $x_2$ et $x_3$ influencent le paramètre *p* (la probabilité d’occurrence de l’évènement) d’une distribution de Bernoulli. À partir de ces premières hypothèses, nous pouvons écrire le modèle suivant&nbsp;: 
+À première vue, il serait possible de se demander pourquoi rajouter ces deux éléments puisqu’ils ne font que complexifier le modèle. Pour mieux saisir la pertinence des GLM, prenons un exemple appliqué au cas d’une variable binaire. Admettons que nous souhaitons modéliser / prédire la probabilité qu’un(e) cycliste décède lors d’une collision avec un véhicule motorisé. Notre variable dépendante est donc binaire (0 = survie, 1 = décès) et nous souhaitons la prédire avec trois variables continues que sont&nbsp;: la vitesse de déplacement du ou de la cycliste ($x_1$), la vitesse de déplacement du véhicule ($x_2$) et la masse du véhicule ($x_3$). Puisque la variable *Y* n’est pas continue, il serait absurde de supposer qu’elle est issue d’une distribution normale. Il serait plus logique de penser qu’elle provient d’une distribution de Bernoulli (pour rappel, une distribution de Bernoulli permet de modéliser un phénomène ayant deux issues possibles comme un lancer de pièce de monnaie, section \@ref(sect024)). Plus spécifiquement, nous pourrions formuler l’hypothèse que nos trois variables $x_1$, $x_2$ et $x_3$ influencent le paramètre *p* (la probabilité d’occurrence de l’évènement) d’une distribution de Bernoulli. À partir de ces premières hypothèses, nous pouvons écrire le modèle suivant&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -96,7 +96,7 @@ Notez également que l’estimation des paramètres d’un modèle GLM (ici $\be
 \end{equation}
 \normalsize
 
-Toutefois, le résultat n’est pas entièrement satisfaisant. En effet, *p* est une probabilité et, par nature, ce paramètre devrait être compris entre 0 et 1 (entre 0 et 100&nbsp;% de « chances de décès », ni plus ni moins). L’équation de régression que nous utilisons actuellement peut produire des résultats compris entre $-\infty$ et $+\infty$ pour *p* puisque rien ne contraint la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ à être comprise entre 0 et 1. Il est possible de visualiser le problème soulevé par cette situation avec les figures suivantes. Admettons que nous ayons observé une variable *Y* binaire et que nous savons qu’elle est influencée par une variable *X* qui, plus elle augmente, plus la chance que *Y* soit 1 augmente (figure \@ref(fig:linearbinom)).
+Toutefois, le résultat n’est pas entièrement satisfaisant. En effet, *p* est une probabilité et, par nature, ce paramètre doit être compris entre 0 et 1 (entre 0 et 100&nbsp;% de «&nbsp;chances de décès&nbsp;», ni plus ni moins). L’équation de régression que nous utilisons actuellement peut produire des résultats compris entre $-\infty$ et $+\infty$ pour *p* puisque rien ne contraint la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ à être comprise entre 0 et 1. Il est possible de visualiser le problème soulevé par cette situation avec les figures suivantes. Admettons que nous ayons observé une variable *Y* binaire et que nous sachions qu’elle est influencée par une variable *X* qui, plus elle augmente, plus les chances que *Y* soit 1 augmentent (figure \@ref(fig:linearbinom)).
 
 ```{r linearbinom, echo=FALSE, fig.align='center', fig.cap="Exemple de données issues d'une distribution de Bernoulli", message=FALSE, warning=FALSE, out.width='70%'}
 x1 <- rnorm(150)
@@ -123,7 +123,7 @@ ggplot(data = df)+
 
 Ce modèle semble bien cerner l’influence positive de *X* sur *Y*, mais la droite est au final très éloignée de chaque point, indiquant un faible ajustement du modèle. De plus, la droite prédit des probabilités négatives lorsque *X* est inférieur à −2,5 et des probabilités supérieures à 1 quand *X* est supérieur à 1. Elle est donc loin de bien représenter les données.
 
-C’est ici qu’intervient la fonction de lien. La fonction identitaire que nous avons utilisée jusqu'ici n’est pas satisfaisante, nous devons la remplacer par une fonction qui conditionnera la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ pour donner un résultat entre 0 et 1. Une candidate toute désignée est la fonction *sigmoidale*, plus souvent appelée la fonction *logistique* !
+C’est ici qu’intervient la fonction de lien. La fonction identitaire que nous avons utilisée jusqu'ici n’est pas satisfaisante, nous devons la remplacer par une fonction qui conditionnera la somme $\beta_0+ \beta_1x_1+\beta_2x_2+ \beta_3x_3$ pour donner un résultat entre 0 et 1. Une candidate toute désignée est la fonction *sigmoidale*, plus souvent appelée la fonction *logistique*!
 
 \footnotesize
 \begin{equation}
@@ -136,7 +136,7 @@ C’est ici qu’intervient la fonction de lien. La fonction identitaire que nou
 \end{equation}
 \normalsize
 
-La fonction logistique prend la forme d’un *S*. Plus la valeur entrée dans la fonction est grande, plus le résultat produit par la fonction est proche de 1 et inversement. Si l’on reprend l’exemple précédent, on obtient le modèle à la figure \@ref(fig:linearbinom3).
+La fonction logistique prend la forme d’un *S*. Plus la valeur entrée dans la fonction est grande, plus le résultat produit par la fonction est proche de 1 et inversement. Si l’on reprend l’exemple précédent, on obtient le modèle illustré à la figure \@ref(fig:linearbinom3).
 
 ```{r linearbinom3, echo=FALSE, fig.align='center', fig.cap="Utilisation de la fonction de lien logistique", message=FALSE, warning=FALSE, out.width='70%', fig.pos="H"}
 ggplot(data = df)+
@@ -160,13 +160,13 @@ La famille des GLM englobe de (très) nombreux modèles du fait de la diversité
 *	l’absence de multicolinéarité excessive entre les variables indépendantes.
 
 Ces trois conditions sont également valables pour les modèles LM tel qu'abordés dans le chapitre \@ref(chap07). La distance de *Cook* peut ainsi être utilisée pour détecter les potentielles valeurs aberrantes et le facteur d’inflation de la variance (*VIF*) pour détecter la multicolinéarité.
-Les conditions d’application particulières seront détaillées dans les sections dédiées à chaque modèle.
+Les conditions d’application particulières sont détaillées dans les sections dédiées à chaque modèle.
 
 ### Résidus et déviance {#sect0814}
 
-Dans la section sur la régression linéaire simple, nous avions présenté la notion de résidu, soit l’écart entre la valeur observée (réelle) de *Y* et la valeur prédite par le modèle. Pour un modèle GLM, ces résidus traditionnels (aussi appelés résidus naturels) ne sont pas très informatifs si la variable à modéliser est binaire, multinomiale ou même de comptage. Lorsque l’on travaille avec des GLM, on préférera utiliser trois autres formes des résidus, soit les résidus de Pearson, les résidus de déviance et les résidus simulés.
+Dans la section sur la régression linéaire simple, nous avions présenté la notion de résidu, soit l’écart entre la valeur observée (réelle) de *Y* et la valeur prédite par le modèle. Pour un modèle GLM, ces résidus traditionnels (aussi appelés résidus naturels) ne sont pas très informatifs si la variable à modéliser est binaire, multinomiale ou même de comptage. Lorsque l’on travaille avec des GLM, on préfère utiliser trois autres formes de résidus, soit les résidus de Pearson, les résidus de déviance et les résidus simulés.
 
-**Les résidus de Pearson** sont une forme ajustée des résidus classiques. On soustrait à la valeur observée la valeur attendue divisée par la racine carrée de la variance modélisée. Leur formule varie donc d’un modèle à l’autre puisque l’expression de la variance change en fonction de la distribution du modèle. Pour un modèle GLM gaussien, il s'écrit&nbsp;:
+**Les résidus de Pearson** sont une forme ajustée des résidus classiques, obtenus par la division des résidus naturels par la racine carrée de la variance modélisée. Leur formule varie donc d’un modèle à l’autre puisque l’expression de la variance change en fonction de la distribution du modèle. Pour un modèle GLM gaussien, il s'écrit&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -186,11 +186,11 @@ r_i = \frac{y_i - p_i}{\sqrt{p_i(1-p_i)}}
 
 avec $\mu_i$ et $p_i$ les préditions du modèle pour l'observation *i*.
 
-**Les résidus de déviance** sont basés sur le concept de *likelihood* présenté dans la section \@ref(sect02adjdistrib). Pour rappel, le *likelihood*, ou la vraisemblance d’un modèle, correspond à la probabilité conjointe d’avoir observé les données *Y* selon le modèle étudié. Pour des raisons mathématiques (voir section \@ref(sect02adjdistrib)), on préfère généralement calculer le *log likelihood.* Plus cette valeur est forte, moins le modèle se trompe. Cette interprétation est donc inverse à celle des résidus classiques, c’est pourquoi on multiplie le *log likelihood* par −2 pour retrouver une interprétation intuitive. Ainsi, pour chaque observation *i*, on peut calculer&nbsp;:
+**Les résidus de déviance** sont basés sur le concept de *likelihood* présenté dans la section \@ref(sect02adjdistrib). Pour rappel, le *likelihood*, ou la vraisemblance d’un modèle, correspond à la probabilité conjointe d’avoir observé les données *Y* selon le modèle étudié. Pour des raisons mathématiques (voir section \@ref(sect02adjdistrib)), le *log likelihood* est plus souvent calculé. Plus cette valeur est forte, moins le modèle se trompe. Cette interprétation est donc inverse à celle des résidus classiques, c’est pourquoi le *log likelihood* est généralement multiplié par −2 pour retrouver une interprétation intuitive. Ainsi, pour chaque observation *i*, nous pouvons calculer&nbsp;:
 
 \footnotesize
 \begin{equation}
-d_i = -2 * log(P(y_i|M_e))
+d_i = \mbox{-2} \times log(P(y_i|M_e))
 (\#eq:glm7)
 \end{equation}
 \normalsize
@@ -201,7 +201,7 @@ La somme de tous ces résidus est appelée la déviance totale du modèle.
 
 \footnotesize
 \begin{equation}
-D(M_e) = \sum_{i=1}^n -2 * log(P(y_i|M_e))
+D(M_e) = \sum_{i=1}^n \mbox{-2} \times log(P(y_i|M_e))
 (\#eq:glm8)
 \end{equation}
 \normalsize
@@ -212,9 +212,9 @@ Il s’agit donc d’une quantité représentant à quel point le modèle est er
 
 * À partir du modèle GLM construit, simuler *S* fois (généralement 1&nbsp;000) une variable *Y’* avec autant d’observation (*n*) que *Y*. Cette variable simulée est une combinaison de la prédiction du modèle (coefficient et variables indépendantes) et de sa dispersion (variance). Ces simulations représentent des variations vraisemblables de la variable *Y* si le modèle est correctement spécifié. En d’autres termes, si le modèle représente bien le phénomène à l’origine de la variable *Y*, alors les simulations *Y’* issues du modèle devraient être proches de la variable *Y* originale. Pour une explication plus détaillée de ce que signifie simuler des données à partir d’un modèle, référez-vous au *bloc attention* intitulé *distinction entre simulation et prédiction* dans la section \@ref(compOrigPred).
 
-* Pour chaque observation, on obtient ainsi *S* valeurs formant une distribution, $Ds_i$, des valeurs simulées par le modèle pour cette observation.
+* Pour chaque observation, nous obtenons ainsi *S* valeurs formant une distribution, $Ds_i$, des valeurs simulées par le modèle pour cette observation.
 
-* Pour chacune de ces distributions, on calcule la probabilité cumulative d’observer la vraie valeur $Y_i$ d'après la distribution $Ds_i$. Cette valeur est comprise entre 0 (toutes les valeurs simulées sont plus grandes que $Y_i$) et 1 (toutes les valeurs simulées sont inférieures à $Y_i$).
+* Pour chacune de ces distributions, nous calculons la probabilité cumulative d’observer la vraie valeur $Y_i$ d'après la distribution $Ds_i$. Cette valeur est comprise entre 0 (toutes les valeurs simulées sont plus grandes que $Y_i$) et 1 (toutes les valeurs simulées sont inférieures à $Y_i$).
 
 Si le modèle est correctement spécifié, le résultat attendu est que la distribution de ces résidus est uniforme. En effet, il y a autant de chances que les simulations produisent des résultats supérieurs ou inférieurs à $Y_i$ si le modèle représente bien le phénomène [@RandomizedResid;@gelman2006data]. Si la distribution des résidus ne suit pas une loi uniforme, cela signifie que le modèle échoue à reproduire le phénomène à l’origine de *Y*, ce qui doit nous alerter sur sa pertinence.
 
@@ -234,11 +234,11 @@ Les mesures d’ajustement sont des indicateurs plus ou moins arbitraires dont l
 
 ##### La déviance expliquée 
 
-Rappelons que la déviance d’un modèle est une quantité représentant à quel point le modèle est erroné. L’idée de l’indicateur de la déviance expliquée est d’estimer le pourcentage de la déviance maximale observable dans les données que le modèle est parvenu à expliquer. La déviance maximale observable dans les données est obtenue en utilisant la déviance totale du modèle nul (notée $M_n$, soit un modèle dans lequel aucune variable indépendante n’est ajoutée et ne comportant qu’une constante). Cette déviance est maximale puisqu’aucune variable indépendante n’est présente dans le modèle. On calcule ensuite le pourcentage de cette déviance totale qui a été contrôlée par le modèle étudié ($M_e$).
+Rappelons que la déviance d’un modèle est une quantité représentant à quel point le modèle est erroné. L’objectif de l’indicateur de la déviance expliquée est d’estimer le pourcentage de la déviance maximale observable dans les données que le modèle est parvenu à expliquer. La déviance maximale observable dans les données est obtenue en utilisant la déviance totale du modèle nul (notée $M_n$, soit un modèle dans lequel aucune variable indépendante n’est ajoutée et ne comportant qu’une constante). Cette déviance est maximale puisqu’aucune variable indépendante n’est présente dans le modèle. On calcule ensuite le pourcentage de cette déviance totale qui a été contrôlée par le modèle étudié ($M_e$).
 
 \footnotesize
 \begin{equation}
-\text{déviance expliquée} = \frac{D(M_n) - D(M_e)}{D(M_n)} = 1- \frac{D(M_e)}{D(M_n)}
+\mbox{déviance expliquée} = \frac{D(M_n) - D(M_e)}{D(M_n)} = 1- \frac{D(M_e)}{D(M_n)}
 (\#eq:glm9)
 \end{equation}
 \normalsize
@@ -267,7 +267,7 @@ show_table(df,
       position = "HOLD_position")
 ```
 
-En dehors du pseudo-R^2^ de McFadden ajusté, aucune de ces mesures ne tient compte de la complexité du modèle. Il est cependant intéressant de les reporter, car des valeurs très faibles indiquent vraisemblablement un modèle avec une moindre capacité informative. À l’inverse, des valeurs trop fortes pourraient indiquer un problème de surajustement (**voir encadré sur le principe de parcimonie**, section \@ref(sect0732)).
+En dehors du pseudo-R^2^ de McFadden ajusté, aucune de ces mesures ne tient compte de la complexité du modèle. Il est cependant important de les reporter, car des valeurs très faibles indiquent vraisemblablement un modèle avec une moindre capacité informative. À l’inverse, des valeurs trop fortes pourraient indiquer un problème de surajustement (**voir encadré sur le principe de parcimonie**, section \@ref(sect0732)).
 
 ##### Le critère d'information d'Akaike (*AIC*)
 
@@ -282,7 +282,7 @@ AIC = D(M_e) + 2K
 
 Avec *K* le nombre de paramètres à estimer dans le modèle (coefficients, paramètres de distribution, etc.). 
 
-L'*AIC* n’a pas d’interprétation directe, mais permet de comparer deux modèles imbriqués (voir section \@ref(sect0732)). Plus L'*AIC* est petit, mieux le modèle est ajusté. L’idée derrière cet indicateur est relativement simple. Si la déviance *D* est grande, alors le modèle est mal ajusté. Ajouter des paramètres (des coefficients pour de nouvelles variables *X*, par exemple) ne peut que réduire *D*, mais cette réduction n’est pas forcément suffisamment grande pour justifier la complexification du modèle. L'*AIC* pondère donc *D* en lui ajoutant 2 fois le nombre de paramètres du modèle. Un modèle plus simple (avec moins de paramètres) parvenant à une même déviance est préférable à un modèle complexe (principe de parcimonie ou du rasoir d’Ockham), ce que permet de « quantifier » L'*AIC*. Attention, L'*AIC* **ne peut pas être utilisé pour comparer des modèles non imbriqués**. Notez que d’autres indicateurs similaires comme le *WAIC*, le *BIC* et le *DIC* sont utilisés dans un contexte d’inférence bayésienne. Retenez simplement que ces indicateurs sont conceptuellement proches du *AIC* et s’interprètent (à peu de choses près) de la même façon.
+L'*AIC* n’a pas d’interprétation directe, mais permet de comparer deux modèles imbriqués (voir section \@ref(sect0732)). Plus L'*AIC* est petit, mieux le modèle est ajusté. L’idée derrière cet indicateur est relativement simple. Si la déviance *D* est grande, alors le modèle est mal ajusté. Ajouter des paramètres (des coefficients pour de nouvelles variables *X*, par exemple) ne peut que réduire *D*, mais cette réduction n’est pas forcément suffisamment grande pour justifier la complexification du modèle. L'*AIC* pondère donc *D* en lui ajoutant 2 fois le nombre de paramètres du modèle. Un modèle plus simple (avec moins de paramètres) parvenant à une même déviance est préférable à un modèle complexe (principe de parcimonie ou du rasoir d’Ockham), ce que permet de «&nbsp;quantifier&nbsp;» L'*AIC*. Attention, L'*AIC* **ne peut pas être utilisé pour comparer des modèles non imbriqués**. Notez que d’autres indicateurs similaires comme le *WAIC*, le *BIC* et le *DIC* sont utilisés dans un contexte d’inférence bayésienne. Retenez simplement que ces indicateurs sont conceptuellement proches du *AIC* et s’interprètent (à peu de choses près) de la même façon.
 
 #### Comparer les distributions originales et prédites {#compOrigPred}
 
@@ -293,13 +293,13 @@ Le graphique à réaliser comprend donc la distribution de la variable dépendan
 **Distinction entre simulation et prédiction**
 
 Notez ici que **simuler des données** à partir d’un modèle et **effectuer des prédictions** à partir d’un modèle sont deux opérations différentes. Prédire une valeur à partir d’un modèle revient simplement à appliquer son équation de régression à des données. Si l’on réutilise les mêmes données, la prédiction renvoie toujours le même résultat, il s’agit de la partie systématique (ou déterministe) du modèle. 
-Pour illustrer cela, admettons que nous ayons ajusté un modèle GLM de type gaussien (fonction de lien identitaire) avec trois variables continues $X_1$, $X_2$ et $X_3$ et des coefficients respectifs de 0,5, 1,2 et 1,8 ainsi qu’une constante de 7. Nous pouvons utiliser ces valeurs pour prédire la valeur attendue de $Y$ quand $X_1$ = 3, $X_2$ = 5 et $X_3$ = 5&nbsp;: 
+Pour illustrer cela, admettons que nous ayons ajusté un modèle GLM de type gaussien (fonction de lien identitaire) avec trois variables continues $X_1$, $X_2$ et $X_3$ et des coefficients respectifs de 0,5, 1,2 et 1,8 ainsi qu’une constante de 7. Nous pouvons utiliser ces valeurs pour prédire la valeur attendue de $Y$ quand $X_1= 3$, $X_2= 5$ et $X_3 = 5$&nbsp;: 
 
-$Prédiction = 7 + 3\times0,5 + 5\times1,2 + 5\times1,8 = 23,5$
+$Prédiction = \mbox{7 + 3}\times \mbox{0,5 + 5}\times \mbox{1,2 + 5}\times\mbox{1,8 = 23,5}$
 
-En revanche, simuler des données à partir d’un modèle revient à ajouter la dimension stochastique (aléatoire) du modèle. Puisque notre modèle GLM est gaussien, il comporte un paramètre $\sigma$ (son écart-type); admettons pour cet exemple qu’il soit de 1,2. Ainsi, avec les données précédentes, il est possible de simuler un ensemble infini de valeurs dont la distribution est la suivante&nbsp;: $Normal(\mu = 23,5 \text{ , } \sigma = 1,2)$. 95&nbsp;% du temps, ces valeurs simulées se trouveront dans l’intervalle [21,1-25,9] ($\mu - 2\sigma \text{; } \mu + 2\sigma$), puisque cette distribution est normale. Les valeurs simulées dépendent donc de la distribution choisie pour le modèle et de l’ensemble des paramètres du modèle, pas seulement de l’équation de régression.
+En revanche, simuler des données à partir d’un modèle revient à ajouter la dimension stochastique (aléatoire) du modèle. Puisque notre modèle GLM est gaussien, il comporte un paramètre $\sigma$ (son écart-type); admettons pour cet exemple qu’il soit de 1,2. Ainsi, avec les données précédentes, il est possible de simuler un ensemble infini de valeurs dont la distribution est la suivante&nbsp;: $Normal(\mu = 23,5 \text{ , } \sigma = 1,2)$. 95&nbsp;% du temps, ces valeurs simulées se trouveront dans l’intervalle $\mbox{[21,1-25,9]}$ ($\mu - 2\sigma \text{; } \mu + 2\sigma$), puisque cette distribution est normale. Les valeurs simulées dépendent donc de la distribution choisie pour le modèle et de l’ensemble des paramètres du modèle, pas seulement de l’équation de régression.
 
-Si vous aviez à ne retenir qu’une seule phrase de ce bloc, retenez que la prédiction ne se réfère qu’à la partie systématique du modèle (équation de régression), alors que la simulation incorpore la partie stochastique (aléatoire) de la distribution du modèle. Deux prédictions effectuées sur des données identiques donnent des résultats identiques, ce qui n’est que rarement le cas pour la simulation.
+Si vous aviez à ne retenir qu’une seule phrase de ce bloc, retenez que la prédiction ne se réfère qu’à la partie systématique du modèle (équation de régression), alors que la simulation incorpore la partie stochastique (aléatoire) de la distribution du modèle. Deux prédictions effectuées sur des données identiques donnent nécessairement des résultats identiques, ce qui n’est pas le cas pour la simulation.
 :::
 
 #### Comparer les prédictions du modèle avec les valeurs originales
@@ -317,7 +317,7 @@ RMSE = \sqrt{\frac{\sum_{i=1}^n(y_i - \hat{y_i})^2}{n}}
 \end{equation}
 \normalsize
 
-Il s’agit de la racine carrée de la moyenne des écarts au carré entre valeurs réelles et prédites. Le *RMSE* est exprimé dans la même unité que la donnée originale et nous donne une indication sur l’erreur moyenne de la prédiction du modèle. Admettons, par exemple, que nous modélisions les niveaux de bruit environnemental en ville en décibels et que notre modèle de régression ait un RMSE de 3,5. Cela signifierait qu’en moyenne notre modèle se trompe de 3,5 décibels (erreur pouvant être négative ou positive) ce qui serait énorme (3 décibels correspond à une multiplication par deux de l’intensité sonore) et nous amènerait à reconsidérer la fiabilité du modèle. Notez que l’usage d’une moyenne quadratique plutôt qu’une moyenne arithmétique permet de donner plus d’impact aux larges erreurs et donc de pénaliser davantage des modèles faisant parfois de grosses erreurs de prédiction. Le *RMSE* est donc très sensible à la présence de valeurs aberrantes.
+Il s’agit de la racine carrée de la moyenne des écarts au carré entre valeurs réelles et prédites. Le *RMSE* est exprimé dans la même unité que la donnée originale et nous donne une indication sur l’erreur moyenne de la prédiction du modèle. Admettons, par exemple, que nous modélisions les niveaux de bruit environnemental en ville en décibels et que notre modèle de régression ait un *RMSE* de 3,5. Cela signifierait qu’en moyenne notre modèle se trompe de 3,5 décibels (erreur pouvant être négative ou positive) ce qui serait énorme (3 décibels correspond à une multiplication par deux de l’intensité sonore) et nous amènerait à reconsidérer la fiabilité du modèle. Notez que l’usage d’une moyenne quadratique plutôt qu’une moyenne arithmétique permet de donner plus d’impact aux larges erreurs et donc de pénaliser davantage des modèles faisant parfois de grosses erreurs de prédiction. Le *RMSE* est donc très sensible à la présence de valeurs aberrantes.
 À la place de la moyenne quadratique, il est possible d’utiliser la simple moyenne arithmétique des valeurs absolues des erreurs (*MAE*). Cette mesure est cependant moins souvent utilisée&nbsp;:
 
 \footnotesize
@@ -349,7 +349,7 @@ show_table(df,
 
 En colonne du tableau \@ref(tab:confusmat1), nous avons les catégories observées et en ligne, les catégories prédites. La diagonale représente les prédictions correctes. Dans le cas présent, le modèle a bien catégorisé 35 (15 + 20) observations sur 43, soit une précision totale de 81,4&nbsp;%; huit sont mal classifiées (18,6&nbsp;%); cinq avec la modalité A ont été catégorisées comme des B, soit 20% des A, et seuls trois B ont été catégorisées comme des A (13&nbsp;%).
 
-La matrice ci-dessus (tableau \@ref(tab:confusmat1)) ne comporte que deux catégories possibles, la variable *Y* modélisée était donc une variable binaire. Il est possible d'étendre facilement le concept de matrice de confusion au cas des variables avec plus de deux modalités (multinomiale). Le tableau \@ref(tab:confusmat2) est un exemple de matrice de confusion multinomiale.
+La matrice ci-dessus (tableau \@ref(tab:confusmat1)) ne comporte que deux catégories possibles puisque la variable *Y* modélisée est binaire. Il est facile d'étendre le concept de matrice de confusion au cas des variables avec plus de deux modalités (multinomiale). Le tableau \@ref(tab:confusmat2) est un exemple de matrice de confusion multinomiale.
 
 ```{r confusmat2, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 df <- data.frame(
@@ -369,13 +369,13 @@ show_table(df,
 
 Trois mesures pour chaque catégorie peuvent être utilisées pour déterminer la capacité de prédiction du modèle&nbsp;: 
 
-* La précision (*precision* en anglais), soit le nombre de fois où une classe a été correctement prédite divisée par le nombre de fois où la classe a été prédite.
+* La précision (*precision* en anglais), soit le nombre de fois où une classe a été correctement prédite, divisée par le nombre de fois où la classe a été prédite.
 * Le rappel (*recall* en anglais), soit le nombre de fois où une classe a été correctement prédite divisée par le nombre de fois où elle se trouve dans les données originales.
 * Le score *F1* est la moyenne harmonique entre la précision et le rappel, soit&nbsp;:
 
 \footnotesize
 \begin{equation}
-F1 = 2 * \frac{\text{précision * rappel}}{\text{précision + rappel}}
+$$F1 = 2 \times \frac{\text{précision} \times \text{rappel}}{\text{précision} + \text{rappel}}$$
 (\#eq:glm13)
 \end{equation}
 \normalsize
@@ -400,7 +400,7 @@ Pr(e) = \sum^{J}_{j=1} \frac{Cnt_{prédit}(j)}{n\times2} \times \frac{Cnt_{réel
 \end{equation}
 \normalsize
 
-avec *n* le nombre d'observation, $Cnt_{prédit}(j)$ le nombre de fois où le modèle prédit la catégorie *j* et $Cnt_{réel}(j)$ le nombre de fois où la catégorie *j* a été observée.
+avec *n* le nombre d'observations, $Cnt_{prédit}(j)$ le nombre de fois où le modèle prédit la catégorie *j* et $Cnt_{réel}(j)$ le nombre de fois où la catégorie *j* a été observée.
 
 Pour l'interprétation du coefficient de Kappa, référez-vous au tableau \@ref(tab:Kappvals).
 
@@ -429,7 +429,8 @@ indicators <- data.frame(
 )
 show_table(indicators, 
     caption = 'Indicateurs de qualité de prédiction',
-    col.names = c("", "précision", "rappel", "F1")
+    col.names = c("", "précision", "rappel", "F1"),
+    position = "HOLD_position"
 )
 ```
 
@@ -454,7 +455,7 @@ LR = 2(loglik(M_2) - loglik(M_1))
 
 Avec $M_2$ un modèle reprenant toutes les variables du modèle $M_1$, impliquant donc que  $loglik(M_2) >= loglik(M_1))$. 
 
-Avec ce test, on suppose que le modèle $M_2$ qui comporte plus de paramètres que le modèle $M_1$ devrait être mieux ajusté aux données. Si c'est bien le cas, la différence entre les *loglikelihood* de deux modèles devrait être supérieure à 0. La valeur calculée *LR* suit une distribution du Khi^2^ avec un nombre de degrés de liberté égal au nombre de paramètres supplémentaires dans le modèle $M_2$ comparativement à $M_1$. Avec ces deux informations, il est possible de déterminer la valeur de *p* associée à ce test et de déterminer si $M_2$ est significativement mieux ajusté que $M_1$ aux données. Notez qu'il existe aussi deux autres tests (test de Wald et test de Lagrange) ayant la même fonction. Il s'agit, dans les deux cas, d'approximation du test de rapport des vraisemblances dont la puissance statistique est inférieure au test de rapport de vraisemblance [@NeymanLemma].
+Avec ce test, nous supposons que le modèle $M_2$ qui comporte plus de paramètres que le modèle $M_1$ devrait être mieux ajusté aux données. Si c'est bien le cas, la différence entre les *loglikelihood* de deux modèles devrait être supérieure à zéro. La valeur calculée *LR* suit une distribution du Khi^2^ avec un nombre de degrés de liberté égal au nombre de paramètres supplémentaires dans le modèle $M_2$ comparativement à $M_1$. Avec ces deux informations, il est possible de déterminer la valeur de *p* associée à ce test et de déterminer si $M_2$ est significativement mieux ajusté que $M_1$ aux données. Notez qu'il existe aussi deux autres tests (test de Wald et test de Lagrange) ayant la même fonction. Il s'agit, dans les deux cas, d'approximation du test de rapport des vraisemblances dont la puissance statistique est inférieure au test de rapport de vraisemblance [@NeymanLemma].
 
 Dans les prochaines sections, nous décrivons les modèles GLM les plus couramment utilisés. Il en existe de nombreuses variantes que nous ne pouvons pas toutes décrire ici. L'objectif est de comprendre les rouages de ces modèles afin de pouvoir, en cas de besoin, transposer ces connaissances sur des modèles plus spécifiques. Pour faciliter la lecture de ces sections, nous vous proposons une carte d’identité de chacun des modèles présentés. Elles contiennent l’ensemble des informations pertinentes à retenir pour chaque modèle.
 
@@ -469,7 +470,7 @@ Le modèle logistique binomial est une généralisation du modèle de Bernoulli 
 
 1.	La variable observée est binaire (0 ou 1). Dans ce cas, le modèle logistique binomiale devient un simple modèle de Bernoulli.
 2.	La variable observée est un comptage (nombre de réussites) et on dispose d’une autre variable avec le nombre de réplications de l’expérience. Par exemple, pour chaque intersection d’un réseau routier, nous pourrions avoir le nombre de décès à vélo (variable *Y* de comptage) et le nombre de collisions vélo / automobile (variable quantifiant le nombre d’expériences, chaque collision étant une expérience).
-Spécifiquement, on tente de prédire le paramètre *p* de la distribution binomiale à l’aide de notre équation de régression et la fonction logistique comme fonction de lien. Notez ici que cette fonction de lien influence directement l'interprétation des paramètres du modèle. Pour rappel, cette fonction est définie comme:
+Spécifiquement, on tente de prédire le paramètre *p* de la distribution binomiale à l’aide de notre équation de régression et la fonction logistique comme fonction de lien. Notez ici que cette fonction de lien influence directement l'interprétation des paramètres du modèle. Pour rappel, cette fonction est définie comme&nbsp;:
 
 \footnotesize
 \begin{equation}
@@ -477,9 +478,9 @@ g(x) = ln(\frac{x}{1-x})
 \end{equation}
 \normalsize
 
-avec $ln$ étant le logarithme naturel.
+avec $ln$ le logarithme naturel.
 
-Au-delà de sa propriété mathématique assurant que $g(x) \in \mathopen[0,1\mathclose]$, cette fonction offre une interprétation intéressante. La partie $\frac{x}{1-x}$ est une cote et s'interprète en termes de chance d'observer un évènement. Par exemple, dans le cas des accidents des cyclistes, si la probabilité d'observer un décès suite à une collision est de 0,1, alors la cote de cet évènement est $\frac{\frac{1}{10}}{\frac{9}{10}} = \frac{1}{9}$ soit un contre 9. Dans un modèle GLM logistique, les coefficients ajustés pour les variables indépendantes vont représenter des **logarithmes de rapport de cote**, car ils comparent les cotes d'observer l'évènement (y = 1) en fonction des valeurs des variables indépendantes.
+Au-delà de sa propriété mathématique assurant que $g(x) \in \mathopen[0,1\mathclose]$, cette fonction offre une interprétation intéressante. La partie $\frac{x}{1-x}$ est une cote et s'interprète en termes de chances d'observer un évènement. Par exemple, dans le cas des accidents des cyclistes, si la probabilité d'observer un décès suite à une collision est de 0,1, alors la cote de cet évènement est $\frac{\frac{1}{10}}{\frac{9}{10}} = \frac{1}{9}$ soit un contre neuf. Dans un modèle GLM logistique, les coefficients ajustés pour les variables indépendantes vont représenter des **logarithmes de rapport de cote**, car ils comparent les cotes d'observer l'évènement (y = 1) en fonction des valeurs des variables indépendantes.
 
 ```{r binomidentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
@@ -498,15 +499,15 @@ show_table(tableau,
 
 #### Interprétation des paramètres
 
-Les seuls paramètres à estimer du modèle sont les coefficients $\beta$ et la constante $\beta_0$. La fonction de lien logistique transforme la valeur de ces coefficients, en conséquence, **ils ne peuvent plus être interprétés directement**. $\beta_0$ et $\beta$ sont exprimés dans une unité particulière: des logarithmes de rapports de cote (*log odd ratio*). Le rapport de cote est relativement facile à interpréter contrairement à son logarithme. Pour l’obtenir, il suffit d’utiliser la fonction exponentielle (l’inverse de la fonction logarithmique) pour passer des log rapport de cote à de simples rapports de cote.
+Les seuls paramètres à estimer du modèle sont les coefficients $\beta$ et la constante $\beta_0$. La fonction de lien logistique transforme la valeur de ces coefficients, en conséquence, **ils ne peuvent plus être interprétés directement**. $\beta_0$ et $\beta$ sont exprimés dans une unité particulière: des logarithmes de rapports de cote (*log odd ratio*). Le rapport de cote est relativement facile à interpréter contrairement à son logarithme. Pour l’obtenir, il suffit d’utiliser la fonction exponentielle (l’inverse de la fonction logarithme) pour passer des log rapport de cote à de simples rapports de cote.
 Donc si $exp(\beta)$ est inférieur à 1, il réduit les chances d’observer l’évènement et inversement si $exp(\beta)$ est supérieur à 1. 
 
-Par exemple, admettons que nous ayons eu un coefficient $\beta_1$ de 1,2 pour une variable $X_1$ dans une régression logistique. Il est nécessaire d'utiliser son exponentiel pour l'interpréter de façon intuitive. $exp(1,2) = 3,32$, ce qui signifie que lorsque l'on augmente $X_1$ d'une unité, on multiplie les chances par 3,32 d'observer 1 plutôt que 0 comme valeur de *Y*. Admettons maintenant que $\beta_1$ vaille −1,2, on calcule donc $exp(-1,2) = 0,30$, ce qui signifie qu'à chaque augmentation d'une unité de $X_1$, on multiplie les chances par 0,30 d'observer 1 plutôt que 0 comme valeur de *Y*. En d'autres termes, on divise par 3,33 ($1/0,30 = 3,33$) les chances d'observer 1 plutôt que 0, soit une diminution de 70&nbsp;% ($1-0,3 = 0,7$) des chances d'observer 1 plutôt que 0.
+Par exemple, admettons que nous ayons eu un coefficient $\beta_1$ de 1,2 pour une variable $X_1$ dans une régression logistique. Il est nécessaire d'utiliser son exponentiel pour l'interpréter de façon intuitive. $mbox{exp(1,2) = 3,32}$, ce qui signifie que lorsque $X_1$ augmente d'une unité, les chances d'observer 1 plutôt que 0 comme valeur de *Y* sont multipliées par 3,32. Admettons maintenant que $\beta_1$ vaille −1,2, nous calculons donc $mbox{exp(-1,2) = 0,30}$, ce qui signifie qu'à chaque augmentation d'une unité de $X_1$, les chances  d'observer 1 plutôt que 0 comme valeur de *Y* sont multipliées par 0,30. En d'autres termes,les chances d'observer 1 plutôt que 0 sont divisées par  3,33 ($mbox{1/0,30 = 3,33}$), soit une diminution de 70&nbsp;% ($mbox{1-0,3 = 0,7}$) des chances d'observer 1 plutôt que 0.
 
 ::: {.bloc_aller_loin data-latex=""}
 **Les rapports de cotes**
 
-Le rapport de cote ou rapport des chances est une mesure utilisée pour exprimer l’effet d’un facteur sur une probabilité très utilisée dans le domaine de la santé, mais aussi des paris. Prenons un exemple concret avec le port du casque à vélo. Si sur 100 accidents impliquant des cyclistes portant un casque, on observe seulement&nbsp;3 cas de blessures graves à la tête, contre 15 dans un second groupe de 100 cyclistes ne portant pas de casque, on peut calculer le rapport de cote suivant&nbsp;: 
+Le rapport de cote ou rapport des chances est une mesure utilisée pour exprimer l’effet d’un facteur sur une probabilité. Il est très utilisé dans le domaine de la santé, mais aussi des paris. Prenons un exemple concret avec le port du casque à vélo. Si sur 100 accidents impliquant des cyclistes portant un casque, nous observons seulement&nbsp;3 cas de blessures graves à la tête, contre 15 dans un second groupe de 100 cyclistes ne portant pas de casque, nous pouvons calculer le rapport de cote suivant&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -514,16 +515,16 @@ Le rapport de cote ou rapport des chances est une mesure utilisée pour exprimer
 \end{equation}
 \normalsize
 
-avec *p* la probabilité d'observer le phénomène (ici la blessure grave à la tête) dans le groupe 1 (ici les cyclistes sans casque) et *q* la probabilité d'observer le phénomène dans le groupe 2 (ici les cyclistes avec un casque). Ce rapport de cote indique que les cyclistes sans casques ont 5,71 fois plus de chances de se blesser gravement à la tête lors d’un accident comparativement à ceux et celles portant un casque.
+avec *p* la probabilité d'observer le phénomène (ici la blessure grave à la tête) dans le groupe 1 (ici les cyclistes sans casque) et *q* la probabilité d'observer le phénomène dans le groupe 2 (ici les cyclistes avec un casque). Ce rapport de cote indique que les cyclistes sans casques ont 5,71 fois plus de chances de se blesser gravement à la tête lors d’un accident comparativement à celles et ceux portant un casque.
 :::
 
 #### Les conditions d'application {#sectcondapp}
 
-La non séparation complète signifie qu’aucune des variables *X* n'est, à elle seule, capable de parfaitement distinguer les deux catégories 0 et 1 de la variable *Y*. Dans un tel cas de figure, les algorithmes d’ajustement utilisés pour estimer les paramètres des modèles sont incapables de converger. Notez aussi l’absurdité de créer un modèle pour prédire une variable *Y* si une variable *X* est capable à elle seule de la prédire à coup sûr. Ce problème est appelé un effet de Hauck-Donner, il est assez facile de le repérer, car la plupart du temps les fonctions de R signalent ce problème (message d'erreur sur la convergence). Sinon, des valeurs extrêmement élevées ou faibles pour certains rapports de cote peuvent aussi indiquer un effet de Hauck-Donner.
+La non-séparation complète signifie qu’aucune des variables *X* n'est, à elle seule, capable de parfaitement distinguer les deux catégories 0 et 1 de la variable *Y*. Dans un tel cas de figure, les algorithmes d’ajustement utilisés pour estimer les paramètres des modèles sont incapables de converger. Notez aussi l’absurdité de créer un modèle pour prédire une variable *Y* si une variable *X* est capable à elle seule de la prédire à coup sûr. Ce problème est appelé un effet de Hauck-Donner. Il est assez facile de le repérer, car la plupart du temps les fonctions de R signalent ce problème (message d'erreur sur la convergence). Sinon, des valeurs extrêmement élevées ou faibles pour certains rapports de cote peuvent aussi indiquer un effet de Hauck-Donner.
 
-La sur-dispersion est un problème spécifique aux distributions n’ayant pas de paramètre de dispersion (binomiale, poisson, exponentielle, etc.), pour lesquelles la variance dépend directement de la moyenne. On parle de sur-dispersion lorsque dans un modèle les résidus (ou erreurs) sont plus dispersés que ce que suppose la distribution utilisée. À l’inverse, il est aussi possible (mais rare) d’observer des cas de sous-dispersion (lorsque la dispersion des résidus est plus petite que ce que suppose la distribution choisie). Ce cas de figure se produit généralement lorsque le modèle parvient à réaliser une prédiction trop précise pour être fiable. Si vous rencontrez une forte sous-dispersion, cela signifie souvent que l’une de vos variables indépendantes provoque une séparation complète. La meilleure option dans ce cas est de supprimer la variable en question du modèle. La variance attendue d’une distribution binomiale est $nb \times p \times(1-p)$, soit le produit entre le nombre de tirages, la probabilité de réussite et la probabilité d'échec. À titre d'exemple, si l'on considère une distribution binomiale avec un seul tirage et 50&nbsp;% de chances de réussite, sa variance serait&nbsp;: $1 \times 0,5 \times (1-0,5) = 0,25$.
+La sur-dispersion est un problème spécifique aux distributions n’ayant pas de paramètre de dispersion (binomiale, poisson, exponentielle, etc.), pour lesquelles la variance dépend directement de l'espérance. La sur-dispersion désigne une situation dans laquelle les résidus (ou erreurs) d'un modèle sont plus dispersés que ce que suppose la distribution utilisée. À l’inverse, il est aussi possible (mais rare) d’observer des cas de sous-dispersion (lorsque la dispersion des résidus est plus petite que ce que suppose la distribution choisie). Ce cas de figure se produit généralement lorsque le modèle parvient à réaliser une prédiction trop précise pour être crédible. Si vous rencontrez une forte sous-dispersion, cela signifie souvent que l’une de vos variables indépendantes provoque une séparation complète. La meilleure option dans ce cas est de supprimer la variable en question du modèle. La variance attendue d’une distribution binomiale est $nb \times p \times(1-p)$, soit le produit entre le nombre de tirages, la probabilité de réussite et la probabilité d'échec. À titre d'exemple, si nous considérons une distribution binomiale avec un seul tirage et 50&nbsp;% de chances de réussite, sa variance serait&nbsp;: $1 \times mbox{0,5} \times \mbox{(1-0,5) = 0,25}$.
 
-On peut observer de la sur-dispersion dans un modèle binomial logistique pour plusieurs raisons: 
+Plusieurs raisons peuvent expliquer la présence de sur-dispersion dans une modèle: 
 
 * il manque des variables importantes dans le modèle, conduisant à un mauvais ajustement et donc une sur-dispersion des erreurs;
 * les observations ne sont pas indépendantes, impliquant qu’une partie de la variance n’est pas contrôlée et augmente les erreurs;
@@ -657,7 +658,7 @@ L'histogramme indique clairement que les résidus simulés suivent une distribut
 * Le second test permet de vérifier la présence de sur ou sous-dispersion. Dans notre cas, ce test n'est pas significatif, n'indiquant aucun problème de sur-dispersion ou sous-dispersion.
 * Le dernier test permet de vérifier si des valeurs aberrantes sont présentes dans les résidus. Une valeur non significative indique une absence de valeurs aberrantes.
 
-Le second graphique permet de comparer les résidus et les valeurs prédites. L'idéal est donc d'observer une ligne droite horizontale rouge au milieu du graphique qui indiquerait une absence de relation entre les valeurs prédites et les résidus (ce que nous observons bien ici).
+Le second graphique permet de comparer les résidus et les valeurs prédites. L'idéal est donc d'observer une ligne droite horizontale au milieu du graphique qui indiquerait une absence de relation entre les valeurs prédites et les résidus (ce que nous observons bien ici).
 
 ```{r eval = FALSE}
 plot(sim_res)
@@ -682,7 +683,7 @@ L'analyse approfondie des résidus nous permet donc de conclure que le modèle r
 
 **Vérification de la qualité d'ajustement**
 
-Pour calculer les différents R^2^ d'un modèle GLM, nous proposons la fonction suivante:
+Pour calculer les différents R^2^ d'un modèle GLM, nous proposons la fonction suivante&nbsp;:
 
 ```{r message=FALSE, warning=FALSE, out.width='100%'}
 rsqs <- function(loglike.full, loglike.null,full.deviance, null.deviance, nb.params, n){
@@ -707,7 +708,7 @@ rsqs <- function(loglike.full, loglike.null,full.deviance, null.deviance, nb.par
 }
 ```
 
-Nous pourrons l'utiliser pour l'ensemble des modèles GLM de la section. Dans le cas du modèle binomial, nous obtenons&nbsp;: 
+Nous l'utiliserons pour l'ensemble des modèles GLM de ce chapitre. Dans le cas du modèle binomial, nous obtenons&nbsp;: 
 
 ```{r message=FALSE, warning=FALSE, out.width='100%'}
 # Ajuster un modele null avec seulement une constante
@@ -761,7 +762,7 @@ ggplot() +
   theme(axis.title.y.right = element_text(colour = "red"), legend.position="none")
 ```
 
-On constate avec la figure \@ref(fig:equlibresensispeci) que si la valeur du seuil est 0&nbsp;%, alors la prédiction a une sensibilité parfaite (le modèle prédit toujours 1, donc tous les 1 sont détectés); à l’inverse, si le seuil choisi est 100&nbsp;% alors la prédiction à une spécificité parfaite (le modèle prédit toujours 0, donc tous les 0 sont détectés). Dans notre cas, la valeur d’équilibre est d'environ 0,148, donc si le modèle prédit une probabilité au moins égale à 14,8&nbsp;% qu’un individu utilise le vélo pour son déplacement le plus fréquent, nous l’attribuerons à la catégorie *cycliste*. Avec ce seuil, nous pouvons convertir les probabilités prédites en classes prédites et construire notre matrice de confusion.
+On constate avec la figure \@ref(fig:equlibresensispeci) que si la valeur du seuil est 0&nbsp;%, alors la prédiction a une sensibilité parfaite (le modèle prédit toujours 1, donc tous les 1 sont détectés); à l’inverse, si le seuil choisi est 100&nbsp;% alors la prédiction à une spécificité parfaite (le modèle prédit toujours 0, donc tous les 0 sont détectés). Dans notre cas, la valeur d’équilibre est d'environ 0,148, donc si le modèle prédit une probabilité au moins égale à 14,8&nbsp;% qu’un individu utilise le vélo pour son déplacement le plus fréquent, nous devons l’attribuer à la catégorie *cycliste*. Avec ce seuil, nous pouvons convertir les probabilités prédites en classes prédites et construire notre matrice de confusion.
 
 ```{r message=FALSE, warning=FALSE, out.width='60%'}
 library(caret) # pour la matrice de confusion
@@ -886,7 +887,7 @@ show_table(ok_tableau,
       position = "HOLD_position")
 ```
 
-Les chances pour un individu d’utiliser le vélo pour son trajet le plus fréquent sont augmentées de 45&nbsp;% s’il s’agit d’un homme plutôt qu’une femme. Pour l’âge, nous constatons un effet relativement faible puisque chaque année supplémentaire réduit les chances qu’un individu utilise le vélo comme mode de transport pour son trajet le plus fréquent de 0,9&nbsp;% $((0.991-1)\times100)$. Le fait d’être sans emploi augmente les chances d’utiliser le vélo de 29&nbsp;% comparativement au fait d’avoir un emploi. Concernant le niveau d’éducation, seul le coefficient pour le groupe des personnes de la catégorie "secondaire inférieure" est significatif, indiquant que les personnes de ce groupe ont 35&nbsp;% de chances en plus d'utiliser le vélo comme mode de transport pour leur déplacement le plus fréquent comparativement aux personnes de la catégorie "premier cycle". Pour le revenu, seul le groupe avec de très faibles revenus se distingue significativement du groupe avec un revenu élevé avec un rapport de cotes de 1,27, soit 27&nbsp;% de chances en plus d'utiliser le vélo.
+Les chances pour un individu d’utiliser le vélo pour son trajet le plus fréquent sont augmentées de 45&nbsp;% s’il s’agit d’un homme plutôt qu’une femme. Pour l’âge, nous constatons un effet relativement faible puisque chaque année supplémentaire réduit les chances qu’un individu utilise le vélo comme mode de transport pour son trajet le plus fréquent de 0,9&nbsp;% $((0.991-1)\times100)$. Le fait d’être sans emploi augmente les chances d’utiliser le vélo de 29&nbsp;% comparativement au fait d’avoir un emploi. Concernant le niveau d’éducation, seul le coefficient pour le groupe des personnes de la catégorie «&nbsp;secondaire inférieure&nbsp;» est significatif, indiquant que les personnes de ce groupe ont 35&nbsp;% de chances en plus d'utiliser le vélo comme mode de transport pour leur déplacement le plus fréquent comparativement aux personnes de la catégorie «&nbsp;premier cycle&nbsp;». Pour le revenu, seul le groupe avec de très faibles revenus se distingue significativement du groupe avec un revenu élevé avec un rapport de cotes de 1,27, soit 27&nbsp;% de chances en plus d'utiliser le vélo.
 
 Comparativement à ceux vivant dans une aire métropolitaine, les personnes vivant dans de petites, moyennes et grandes villes ont des chances accrues d’utiliser le vélo comme mode de déplacement pour leur trajet le plus fréquent. En revanche, on ne peut observer aucune différence entre la probabilité d’utiliser le vélo dans une métropole et en zone rurale. La figure \@ref(fig:figvillebinom) permet de clairement visualiser cette situation. Rappelons que la référence est la situation&nbsp;: vivre dans une région métropolitaine, représentée par la ligne verticale rouge. Plusieurs pistes d’interprétation peuvent être envisagées pour ce résultat&nbsp;: 
 
@@ -992,7 +993,7 @@ La figure \@ref(fig:figagebinom) permet de bien constater la diminution de la pr
 
 ### Le modèle probit binomial {#sect0822}
 
-Le modèle GLM probit binomial est pour ainsi dire le frère du modèle logistique binomial. La seule différence entre les deux réside dans l'utilisation d'une fonction de lien différente: probit et logistique. La fonction de lien probit (Φ) correspond à la fonction cumulative de la distribution normale et a également une forme de *S*. Cette version du modèle est plus souvent utilisée par les économistes. Le principal changement réside dans l’interprétation des coefficients $\beta_0$ et $\beta$. Du fait de la transformation probit, ces derniers indiquent le changement en termes de scores Z de la probabilité modélisée. Vous conviendrez qu’il ne s’agit pas d’une échelle très intuitive, la plupart du temps, seuls la significativité et le signe (positif ou négatif) des coefficients sont interprétés.
+Le modèle GLM probit binomial est pour ainsi dire le frère du modèle logistique binomial. La seule différence entre les deux réside dans l'utilisation d'une autre fonction de lien: probit plutôt que logistique. La fonction de lien probit (Φ) correspond à la fonction cumulative de la distribution normale et a également une forme de *S*. Cette version du modèle est plus souvent utilisée par les économistes. Le principal changement réside dans l’interprétation des coefficients $\beta_0$ et $\beta$. Du fait de la transformation probit, ces derniers indiquent le changement en termes de scores Z de la probabilité modélisée. Vous conviendrez qu’il ne s’agit pas d’une échelle très intuitive, la plupart du temps, seuls la significativité et le signe (positif ou négatif) des coefficients sont interprétés.
 
 ```{r probitdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p) = \\beta_0 + \\beta X$ \\newline $g(x) = \\Phi^-1(x)$"
@@ -1010,7 +1011,7 @@ show_table(tableau,
 
 ### Le modèle logistique des cotes proportionnelles {#sect0823}
 
-Le modèle logistique des cotes proportionnelles (aussi appelé modèle logistique cumulatif) est utilisé pour modéliser une variable qualitative ordinale. Un exemple classique de ce type de variable est une échelle de satisfaction (très insatisfait, insatisfait, mitigé, satisfait, très satisfait) qui peut être recodée avec des valeurs numériques (0, 1, 2, 3, 4; ces échelons étant notés *j*). Il n’existe pas à proprement parler de distribution pour représenter ces données, mais avec une petite astuce, il est possible de simplement utiliser la distribution binomiale. Cette astuce consiste à poser l’hypothèse de la proportionnalité des cotes, soit que le passage de la catégorie 0 à la catégorie 1 est proportionnel au passage de la catégorie 1 à la catégorie 2 et ainsi de suite. Si cette hypothèse est respectée, alors les coefficients du modèle pourront autant décrire le passage de la catégorie *satisfait* à celle *très satisfait* que le passage de *insatisfait* à *mitigé*. Si cette hypothèse n’est pas respectée, il faudrait des coefficients différents pour représenter les passages d’une catégorie à l’autre (ce qui est le cas pour le modèle multinomial présenté juste après).
+Le modèle logistique des cotes proportionnelles (aussi appelé modèle logistique cumulatif) est utilisé pour modéliser une variable qualitative ordinale. Un exemple classique de ce type de variable est une échelle de satisfaction (très insatisfait, insatisfait, mitigé, satisfait, très satisfait) qui peut être recodée avec des valeurs numériques (0, 1, 2, 3, 4; ces échelons étant notés *j*). Il n’existe pas à proprement parler de distribution pour représenter ces données, mais avec une petite astuce, il est possible de simplement utiliser la distribution binomiale. Cette astuce consiste à poser l’hypothèse de la proportionnalité des cotes, soit que le passage de la catégorie 0 à la catégorie 1 est proportionnel au passage de la catégorie 1 à la catégorie 2 et ainsi de suite. Si cette hypothèse est respectée, alors les coefficients du modèle pourront autant décrire le passage de la catégorie *satisfait* à celle *très satisfait* que le passage de *insatisfait* à *mitigé*. Si cette hypothèse n’est pas respectée, il faudrait des coefficients différents pour représenter les passages d’une catégorie à l’autre (ce qui est le cas pour le modèle multinomial présenté dans la section \@ref(sect0824)).
 
 ```{r cumuldentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim Binomial(p)$ \\newline $g(p \\leq j) = \\beta_{0j} + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
@@ -1027,7 +1028,7 @@ show_table(tableau,
 )
 ```
 
-Ainsi, dans le modèle logistique binomial vu précédemment, on modélise la probabilité d’observer un évènement $P(Y = 1)$. Dans un modèle logistique ordinal, on modélise la probabilité cumulative d’observer l’échelon *j* de notre variable ordinale $P(Y <= j)$. L’intérêt de cette reformulation est que l’on conserve la facilité d’interprétation du modèle logistique binomial classique avec les rapports de cotes, à ceci prêt qu’ils représentent maintenant la probabilité de passer à un échelon supérieur de *Y*. La différence pratique est que notre modèle se retrouve avec autant de constantes qu’il y a de catégories à prédire moins une, chacune de ces constantes contrôlant la probabilité de base de passer de la catégorie *j* à la catégorie *j*+1.
+Ainsi, dans le modèle logistique binomial vu précédemment, nous modélisons la probabilité d’observer un évènement $P(Y = 1)$. Dans un modèle logistique ordinal, nous modélisons la probabilité cumulative d’observer l’échelon *j* de notre variable ordinale $P(Y \leq j)$. L’intérêt de cette reformulation est que nous conservons la facilité d’interprétation du modèle logistique binomial classique avec les rapports de cotes, à ceci prêt qu’ils représentent maintenant la probabilité de passer à un échelon supérieur de *Y*. La différence pratique est que notre modèle se retrouve avec autant de constantes qu’il y a de catégories à prédire moins une, chacune de ces constantes contrôlant la probabilité de base de passer de la catégorie *j* à la catégorie *j*+1.
 
 #### Conditions d'application
 
@@ -1040,12 +1041,12 @@ Si certaines variables ne respectent pas cette condition d’application, trois 
 
 1. Supprimer la variable du modèle (à éviter si cette variable est importante dans votre cadre théorique).
 2. Autoriser la variable à avoir un effet différent entre chaque palier (possible avec le *package* `VGAM`).
-3. Changer de modèle et opter pour un modèle des catégories adjacentes. Il s’agit du cas particulier où toutes les variables sont autorisées à changer à chaque niveau. Ne pas confondre ce dernier modèle et le modèle multinomial que nous présentons ensuite, puisque le modèle des catégories adjacentes continues à prédire la probabilité de passer à une catégorie supérieure.
+3. Changer de modèle et opter pour un modèle des catégories adjacentes. Il s’agit du cas particulier où toutes les variables sont autorisées à changer à chaque niveau. Ne pas confondre ce dernier modèle et le modèle multinomial (section \@ref(sect0824))), puisque le modèle des catégories adjacentes continues à prédire la probabilité de passer à une catégorie supérieure.
 
 
 #### Exemple appliqué dans R
 
-Pour cet exemple, nous allons analyser un jeu de données proposé par [Inside Airbnb](http://insideairbnb.com/get-the-data.html), une organisation sans but lucratif collectant des données des annonces sur le site d’Airbnb pour alimenter le débat sur l’impact de cette société sur les quartiers. Plus spécifiquement, nous utilisons le jeu de données pour Montréal compilé le 30 juin 2020. Nous modélisons ici le prix par nuit des logements, ce type d’exercice est appelé modélisation hédonique. Il est particulièrement utilisé en économie urbaine pour évaluer les déterminants du marché immobilier et prédire son évolution. Le cas d'Airbnb a déjà été étudié dans plusieurs articles [@teubner2017price; @wang2017price; @zhang2017key], il en ressort notamment que le niveau de confiance inspiré par l’hôte, les caractéristiques intrinsèques du logement et sa localisation sont les principales variables indépendantes de son prix. Nous construirons donc notre modèle sur cette base. Notez que nous avons décidé de retirer les logements avec des prix supérieurs à 250&nbsp;\$ par nuit qui constituent des cas particuliers et qui devraient faire l'objet d'une analyse à part entière. Nous avons également retiré les observations pour lesquelles certaines données sont manquantes, et obtenons un nombre final de 9&nbsp;051 observations.
+Pour cet exemple, nous allons analyser un jeu de données proposé par [Inside Airbnb](http://insideairbnb.com/get-the-data.html), une organisation sans but lucratif collectant des données des annonces sur le site d’Airbnb pour alimenter le débat sur l’impact de cette société sur les quartiers. Plus spécifiquement, nous utilisons le jeu de données pour Montréal compilé le 30 juin 2020. Nous modélisons ici le prix par nuit des logements, ce type d’exercice est appelé modélisation hédonique. Il est particulièrement utilisé en économie urbaine pour évaluer les déterminants du marché immobilier et prédire son évolution. Le cas d'Airbnb a déjà été étudié dans plusieurs articles [@teubner2017price; @wang2017price; @zhang2017key], il en ressort notamment que le niveau de confiance inspiré par l’hôte, les caractéristiques intrinsèques du logement et sa localisation sont les principales variables indépendantes de son prix. Nous construisons donc notre modèle sur cette base. Notez que nous avons décidé de retirer les logements avec des prix supérieurs à 250&nbsp;\$ par nuit qui constituent des cas particuliers et qui devraient faire l'objet d'une analyse à part entière. Nous avons également retiré les observations pour lesquelles certaines données sont manquantes, et obtenons un nombre final de 9&nbsp;051 observations.
 
 La distribution originale du prix des logements dans notre jeu de données est présentée à la figure \@ref(fig:histopriceairbnb).
 
@@ -1173,7 +1174,7 @@ predicted <- predict(modele,type = "response")
 round(head(predicted,n = 4),3)
 ```
 
-On constate ainsi que pour la première observation, la probabilité prédite d'appartenir au groupe 1 est de 69,4&nbsp;%, 27,7&nbsp;% pour le groupe 2 et 2,9&nbsp;% pour le groupe 3. Si nous effectuons 1&nbsp;000 simulations, on peut s'attendre à ce qu'en moyenne, sur ces 1&nbsp;000 simulations, 694&nbsp;indiqueront 1 comme catégorie prédite, 277&nbsp;indiqueront 2 et seulement 29&nbsp;indiqueront 3.
+On constate ainsi que pour la première observation, la probabilité prédite d'appartenir au groupe 1 est de 69,4&nbsp;%, 27,7&nbsp;% pour le groupe 2 et 2,9&nbsp;% pour le groupe 3. Si nous effectuons 1&nbsp;000 simulations, nous pouvons nous attendre à ce qu'en moyenne, sur ces 1&nbsp;000 simulations, 694&nbsp;indiqueront 1 comme catégorie prédite, 277&nbsp;indiqueront 2 et seulement 29&nbsp;indiqueront 3.
 
 ```{r message=FALSE, warning=FALSE}
 # Nous effectuerons 1000 simulations
@@ -1352,7 +1353,7 @@ problem <- table(tests)
 problem
 ```
 
-La fonction nous informe qu'aucun de nos variables indépendantes ne provoque de séparation parfaite&nbsp;: toutes les valeurs renvoyées par la fonction `hdeff` sont égales à `FALSE.`
+La fonction nous informe qu'aucune de nos variables indépendantes ne provoque de séparation parfaite&nbsp;: toutes les valeurs renvoyées par la fonction `hdeff` sont égales à `FALSE.`
 
 Il ne nous reste donc plus qu'à vérifier que l'hypothèse de proportionnalité des cotes est respectée, soit que l'impact de chacune des variables indépendantes est bien le même pour passer de la catégorie 1 à 2 que pour passer des catégories 2 à 3. Pour cela, deux approches sont possibles&nbsp;: le test de Brant ou la réalisation d'une séquence de tests de rapport de vraisemblance.
 
@@ -1362,14 +1363,14 @@ Le *package* `brant` propose une implémentation du test de Brant, mais elle ne 
 tableau_brant <- round(brant.vglm(modele2),3)
 ```
 
-Ce premier tableau nous indique que seule la variable indiquant si le logement est disponible en entier ou partagé contrevient à l'hypothèse de proportionnalité des cotes (la seule valeur de p significative). Pour confirmer cette observation, nous pouvons réaliser un ensemble de tests de rapport de vraisemblance. Pour chaque variable du modèle, nous allons créer un second modèle dans lequel cette variable est autorisée à varier pour chaque catégorie et comparer les niveaux d'ajustement des modèles. Nous avons implémenté cette procédure dans la fonction `parallel.likelihoodtest.vglm` présente dans le code source de ce livre.
+Ce premier tableau nous indique que seule la variable indiquant si le logement est disponible en entier ou partagé contrevient à l'hypothèse de proportionnalité des cotes (la seule valeur *p* significative). Pour confirmer cette observation, nous pouvons réaliser un ensemble de tests de rapport de vraisemblance. Pour chaque variable du modèle, nous allons créer un second modèle dans lequel cette variable est autorisée à varier pour chaque catégorie et comparer les niveaux d'ajustement des modèles. Nous avons implémenté cette procédure dans la fonction `parallel.likelihoodtest.vglm` disponible dans le code source de ce livre.
 
 ```{r message=FALSE, warning=FALSE}
 tableau_likelihood <- parallel.likelihoodtest.vglm(modele2, verbose = FALSE)
 print(tableau_likelihood)
 ```
 
-Les résultats de cette seconde série de tests confirment les précédents, la variable concernant le type de logement doit être autorisée à varier en fonction de la catégorie. Ce second tableau nous indique que la variable concernant la densité de végétation pourrait aussi être amenée à varier en fonction du groupe, mais ce changement a un effet très marginal (différence de AIC de seulement 8 points). Nous ajustons donc un nouveau modèle autorisant la variable `private` à changer en fonction de la catégorie prédite.
+Les résultats de cette seconde série de tests confirment les précédents, la variable concernant le type de logement doit être autorisée à varier en fonction de la catégorie. Ce second tableau nous indique que la variable concernant la densité de végétation pourrait aussi être amenée à varier en fonction du groupe, mais ce changement a un effet très marginal (différence entre les AICs de seulement 8 points). Nous ajustons donc un nouveau modèle autorisant la variable `private` à changer en fonction de la catégorie prédite.
 
 ```{r message=FALSE, warning=FALSE}
 modele3 <- vglm(fac_price_cat ~ beds + 
@@ -1414,7 +1415,7 @@ print(matrices$confusion_matrix)
 print(matrices$indicators)
 ```
 
-Le modèle a une précision totale de 61&nbsp;% (61&nbsp;% des observations ont été correctement prédites). La catégorie 1 a de loin la meilleure précision (72&nbsp;%) et la 3 a la pire (48&nbsp;%), ce qui indique qu’il manque vraisemblablement des variables indépendantes contribuant à prédire les prix des logements les plus chers. Le coefficient de Kappa (`r cat(matrices$indicators[5,2])`) indique un niveau d’accord entre modéré et faible, mais le modèle parvient à une prédiction significativement supérieure au seuil de non-information. Si l'ajustement du modèle est imparfait, il est suffisamment fiable pour nous donner des renseignements pertinents sur le phénomène étudié.
+Le modèle a une précision totale de 61&nbsp;% (61&nbsp;% des observations ont été correctement prédites). La catégorie 1 a de loin la meilleure précision (72&nbsp;%) et la 3 a la pire (48&nbsp;%), ce qui indique qu’il manque vraisemblablement des variables indépendantes contribuant à prédire les prix des logements les plus chers. Le coefficient de Kappa (`r cat(tofr(matrices$indicators[5,2]))`) indique un niveau d’accord entre modéré et faible, mais le modèle parvient à une prédiction significativement supérieure au seuil de non-information. Si l'ajustement du modèle est imparfait, il est suffisamment fiable pour nous donner des renseignements pertinents sur le phénomène étudié.
 
 **Interprétation des résultats**
 
@@ -1497,11 +1498,12 @@ ggplot(data = df) +
   
 ```
 
-On constate sur la figure \@ref(fig:predpricecatveg) que les probabilités d’appartenir aux niveaux 2 et 3 diminuent à mesure qu’augmente le pourcentage de végétation. La probabilité d’appartenir à la classe 2 et plus (en rouge), passe de plus de 95&nbsp;%, en cas d’absence de végétation, à environ 75&nbsp;% avec 80&nbsp;% de végétation dans un rayon de 500m. Comme vous pouvez le constater, la probabilité $P[Y=1]$ est la symétrie de $P[Y>=2]$ puisque $P[Y=1]+P[Y>=2] = 1$.
+Nous constatons à la figure \@ref(fig:predpricecatveg) que les probabilités d’appartenir aux niveaux 2 et 3 diminuent à mesure qu’augmente le pourcentage de végétation. La probabilité d’appartenir à la classe 2 et plus (en rouge), passe de plus de 95&nbsp;%, en cas d’absence de végétation, à environ 75&nbsp;% avec 80&nbsp;% de végétation dans un rayon de 500m. Comme vous pouvez le constater, la probabilité $P[Y=1]$ est la symétrie de $P[Y>=2]$ puisque $P[Y=1]+P[Y>=2] = 1$.
 
 ### Le modèle logistique multinomial {#sect0824}
 
 La régression logistique multinomiale est utilisée pour modéliser une variable *Y* qualitative multinomiale, c’est-à-dire une variable dont les modalités ne peuvent pas être ordonnées. Dans le modèle précédent, nous avons vu qu’il était possible de modéliser une variable ordinale avec une distribution binomiale en formulant l’hypothèse de la proportionnalité des cotes. Avec une variable multinomiale, cette hypothèse ne tient plus, car les catégories ne sont plus ordonnées. Il faut donc formuler le modèle différemment.
+
 L’idée derrière un modèle multinomial est de choisir une catégorie de référence, puis de modéliser les probabilités d’appartenir à chaque autre catégorie plutôt qu’à cette catégorie de référence (tableau \@ref(tab:multinomdentity)). Si nous avons *K* catégories possibles dans notre variable *Y*, nous obtenons *K*-1 comparaisons. Chaque comparaison est modélisée avec sa propre équation ce qui génère de nombreux paramètres. Par exemple, admettons que notre variable *Y* ait cinq catégories et que nous disposons de six variables *X* prédictives. Nous avons ainsi 4 (5-1) équations de régression avec 7 paramètres (6 coefficients et une constante), soit 28 coefficients à analyser. 
 
 Considérant cette tendance à la multiplication des coefficients, il est fréquent de recourir à une méthode appelée *Analyse de type 3* pour limiter au maximum le nombre de variables indépendantes (VI) dans le modèle. L'idée de cette méthode est de recalculer plusieurs versions du modèle dans lesquelles une variable indépendante est retirée, puis de réaliser un test de rapport de vraisemblance en comparant ce nouveau modèle (complet moins une VI) au modèle complet (toutes les VI) pour vérifier si la variable en question améliore significativement le modèle. Il est alors possible de retirer toutes les variables dont l'apport est négligeable si elles étaient également peu intéressantes du point de vue théorique.
@@ -1523,11 +1525,11 @@ show_table(tableau,
 
 #### Conditions d'application
 
-Les conditions d’application sont les mêmes que pour un modèle binomial, avec l’ajout de l’hypothèse sur l’indépendance des alternatives non pertinentes. Cette dernière suppose que le choix entre deux catégories est indépendant des catégories proposées. Voici un exemple simple pour illustrer cette hypothèse: admettons que nous disposons d’une trentaine de personnes et que nous leur demandions la couleur de leurs yeux. Cette variable ne serait pas affectée par la présence de nouvelles couleurs en dehors de notre échantillon. En revanche, si nous leur demandions de choisir un mode de transport parmi une liste pour se rendre à leur lieu de travail, leur réponse serait nécessairement affectée par la liste des modes de transport disponibles. Les tests développés pour vérifier cette hypothèse sont connus pour leur [faible fiabilité](https://statisticalhorizons.com/iia). Il est plus pertinent de décider théoriquement si cette hypothèse est valide ou non. Dans le cas contraire, il est possible d’utiliser une classe de modèle logistique plus rare: le modèle logistique imbriqué. 
+Les conditions d’application sont les mêmes que pour un modèle binomial, avec l’ajout de l’hypothèse sur **l’indépendance des alternatives non pertinentes**. Cette dernière suppose que le choix entre deux catégories est indépendant des catégories proposées. Voici un exemple simple pour illustrer cette hypothèse: admettons que nous disposons d’une trentaine de personnes et que nous leur demandions la couleur de leurs yeux. Cette variable ne serait pas affectée par la présence de nouvelles couleurs en dehors de notre échantillon. En revanche, si nous leur demandions de choisir un mode de transport parmi une liste pour se rendre à leur lieu de travail, leur réponse serait nécessairement affectée par la liste des modes de transport disponibles. Les tests développés pour vérifier cette hypothèse sont connus pour leur [faible fiabilité](https://statisticalhorizons.com/iia). Il est plus pertinent de décider théoriquement si cette hypothèse est valide ou non. Dans le cas contraire, il est possible d’utiliser une classe de modèle logistique plus rare: le modèle logistique imbriqué. 
 
 Notez également que le grand nombre de paramètres dans ce type de modèle implique de disposer d’un plus grand nombre d’observations afin de disposer de suffisamment d’information dans chaque catégorie pour ajuster tous les paramètres.
 
-Pour vérifier la présence de sur-dispersion, il est possible, dans le cas du modèle multinomial, de calculer le rapport entre le Khi^2^ de Pearson et le nombre de degrés de liberté du modèle. Si ce rapport est supérieur à 1 (des valeurs jusqu'à 1,2 ne sont pas problématiques), alors le modèle souffre de sur-dispersion [@Sasmultinom]. Le Khi^2^ de Pearson est simplement la somme des résidus de Pearson au carré dans le cas d'un modèle GLM.
+Pour vérifier la présence de sur-dispersion, il est possible, dans le cas du modèle multinomial, de calculer le rapport entre le Khi^2^ de Pearson et le nombre de degrés de liberté du modèle. Si ce rapport est supérieur à 1 (des valeurs jusqu'à 1,15 ne sont pas problématiques), alors le modèle souffre de sur-dispersion [@Sasmultinom]. Le Khi^2^ de Pearson est simplement la somme des résidus de Pearson au carré dans le cas d'un modèle GLM.
 
 \footnotesize
 \begin{equation}
@@ -1543,7 +1545,7 @@ Le ratio est ensuite calculé comme suit: $\frac{\chi^2}{(N - p)(K-1)}$, avec *N
 ::: {.bloc_aller_loin data-latex=""}
 **Le modèle logistique imbriqué**
 
-Du fait de sa proximité avec les modèles à effets mixtes que nous aborderons plus tard (chapitre \@ref(chap09)), nous ne détaillons pas ici le modèle logistique imbriqué, mais présentons plutôt son principe général. Il s’agit d’une généralisation du modèle logistique multinomial basé sur l’idée que certaines catégories pourraient être regroupées dans des « nids » (*nest* en anglais). Dans ces groupes, les erreurs peuvent être corrélées, indiquant ainsi que si une catégorie est manquante, une autre catégorie du même groupe sera préférée. Un paramètre $\lambda$ contrôle spécifiquement cette corrélation et permet de mesurer sa force une fois le modèle ajusté. Il peut être pertinent de comparer un modèle imbriqué à un modèle multinomial pour déterminer lequel des deux est le mieux ajusté aux données.
+Du fait de sa proximité avec les modèles à effets mixtes que nous aborderons plus tard (chapitre \@ref(chap09)), nous ne détaillons pas ici le modèle logistique imbriqué, mais présentons plutôt son principe général. Il s’agit d’une généralisation du modèle logistique multinomial basé sur l’idée que certaines catégories pourraient être regroupées dans des «&nbsp;nids&nbsp;» (*nest* en anglais). Dans ces groupes, les erreurs peuvent être corrélées, indiquant ainsi que si une catégorie est manquante, une autre catégorie du même groupe sera préférée. Un paramètre $\lambda$ contrôle spécifiquement cette corrélation et permet de mesurer sa force une fois le modèle ajusté. Il peut être pertinent de comparer un modèle imbriqué à un modèle multinomial pour déterminer lequel des deux est le mieux ajusté aux données.
 :::
 
 #### Exemple appliqué dans R
@@ -1560,9 +1562,9 @@ Pour ces deux questions, les répondants devaient sélectionner leur degré d'ac
 * C. Les individus sont en accord sur les OGM, mais en désaccord sur le réchauffement climatique.
 * D. :es individus sont en désaccord avec les deux propositions.
 
-Un modèle logistique multinomial a été utilisé pour déterminer quels facteurs contribuent à la probabilité d'appartenir à ces différentes catégories. Les variables indépendantes présentes dans le modèle sont détaillées dans le tableau \@ref(tab:variablemultinom). Les auteurs avaient notamment conclu que : 
+Un modèle logistique multinomial a été utilisé pour déterminer quels facteurs contribuent à la probabilité d'appartenir à ces différentes catégories. Les variables indépendantes présentes dans le modèle sont détaillées dans le tableau \@ref(tab:variablemultinom). Les auteurs avaient notamment conclu que&nbsp;: 
 
-* Les effets des connaissances (réelles ou perçues) n'étaient pas uniformes et pouvaient varier en fonction du sujet.
+* Les effets des connaissances (réelles ou perçues) sur l'appartenance aux différentes catégories n'étaient pas uniformes et pouvaient varier en fonction du sujet.
 * L'orientation politique avait une influence significative sur les croyances.
 * Les répondants avec de plus hauts résultats au test de cognition CRT avaient plus souvent des opinions divergentes de la communauté scientifique.
 
@@ -1619,7 +1621,7 @@ ratio <- khi2 / ((N-p)*(r-1))
 print(ratio)
 ```
 
-La troisième étape de la vérification des conditions d'application est l'analyse des distances de Cook. À nouveau, puisque le modèle évalue la probabilité d'appartenir à *K*-1 catégorie, nous pouvons calculer *K*-1 résidus par observation et par extension *K*-1 distances de Cook. Aucune observation ne semble se détacher nettement dans la figure \@ref(fig:cookmultinom). Nous décidons donc pour le moment de conserver toutes les observations.
+La troisième étape de la vérification des conditions d'application est l'analyse des distances de Cook. À nouveau, puisque le modèle évalue la probabilité d'appartenir à $K-1$ catégorie, nous pouvons calculer $K-1$ résidus par observation et par extension $K-1$ distances de Cook. Aucune observation ne semble se détacher nettement dans la figure \@ref(fig:cookmultinom). Nous décidons donc pour le moment de conserver toutes les observations.
 
 ```{r cookmultinom, fig.align="center", fig.cap="Distances de Cook pour le modèle logistique multinomial", message=FALSE, warning=FALSE, out.width="90%", dev = "png", dpi = 300}
 # Extraction des résidus
@@ -1652,7 +1654,7 @@ Avant de passer à l'analyse de résidus simulés, il est pertinent de réaliser
 tableau <- AnalyseType3(modele, data_quest, verbose = FALSE)
 ```
 
-L'analyse de type 3 nous permet de déterminer que l'âge et le revenu sont deux variables dont la contribution au modèle est marginale. À titre de rappel, l’analyse de Type 3 permet de comparer si le modèle complet (avec l’ensemble des variables indépendantes) est statistiquement différent du modèle avec l’ensemble des variables, sauf une. Or, dans notre cas, le modèle complet n’est pas statistiquement mieux ajusté que le modèle complet sans la variable Age (P=0,44) et que le modèle complet sans la variable Revenu (P=0,77). Cela signifie donc que ces deux variables n’ont pas un apport significatif au modèle et peuvent par conséquent être ôtées par parcimonie. Nous décidons donc de les retirer afin d'alléger les tableaux de coefficients que nous présenterons plus loin. Nous pouvons également en conclure que ces deux variables ne jouent aucun rôle dans la propension à être en désaccord avec la recherche scientifique. Nous réajustons le modèle en conséquence.
+L'analyse de type 3 nous permet de déterminer que l'âge et le revenu sont deux variables dont la contribution au modèle est marginale. À titre de rappel, l’analyse de Type 3 permet de comparer si le modèle complet (avec l’ensemble des variables indépendantes) est statistiquement mieux ajusté que le modèle avec l’ensemble des variables, sauf une. Or, dans notre cas, le modèle complet n’est pas statistiquement mieux ajusté que le modèle complet sans la variable Age (P=0,44) et que le modèle complet sans la variable Revenu (*p*&nbsp;=&nbsp;0,77). Cela signifie donc que ces deux variables n’ont pas un apport significatif au modèle et peuvent par conséquent être ôtées par parcimonie. Nous décidons donc de les retirer afin d'alléger les tableaux de coefficients que nous présenterons plus loin. Nous pouvons également en conclure que ces deux variables ne jouent aucun rôle dans la propension à être en désaccord avec la recherche scientifique. Nous réajustons le modèle en conséquence.
 
 ```{r  message=FALSE, warning=FALSE}
 modele2 <- vglm(Y ~ PercepOGM + PercepRechClim + ConnaisOGM + ConnaisRechClim + 
@@ -1705,43 +1707,6 @@ sim_res <- createDHARMa(simulatedResponse = matsim,
                             integerResponse = T)
 # Afficher les résultats
 plot(sim_res)
-```
-
-```{r eval=FALSE, include=FALSE}
-# Extraction des prédictions (en probabilité)
-# predicted <- predict(modele2,type = "response")
-# 
-# nsim <- 1000
-# # Lancement des simulations pour chaque observation (chaque ligne dans predicted)
-# simulations <- lapply(1:nrow(predicted), function(i){
-#   probs <- predicted[i,]
-#   sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
-#   return(sims)
-# })
-# matsim <- do.call(rbind, simulations)
-# 
-# # On conserve la catégorie avec la plus haute probabilité 
-# # comme catégorie prédite
-# pred_cat <- colnames(predicted)[max.col(predicted)]
-# 
-# # On convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
-# real <- case_when(data_quest$Y == "A" ~ 1,
-#                   data_quest$Y == "B" ~ 2,
-#                   data_quest$Y == "C" ~ 3,
-#                   data_quest$Y == "D" ~ 4)
-# 
-# pred <- case_when(pred_cat == "A" ~ 1,
-#                   pred_cat == "B" ~ 2,
-#                   pred_cat == "C" ~ 3,
-#                   pred_cat == "D" ~ 4)
-# 
-# # On calcule les résidus simulés
-# sim_res <- createDHARMa(simulatedResponse = matsim, 
-#                         observedResponse = real,
-#                         fittedPredictedResponse = predicted,
-#                         integerResponse = T)
-# 
-# DHARMa::plotQQunif(sim_res)
 ```
 
 La figure \@ref(fig:residusmultinom2) permet d'affiner le diagnostic en s'assurant de l'absence de relation entre les variables indépendantes et les résidus. Il est possible de remarquer des irrégularités pour les variables de perceptions (premier et second panneaux). Dans les deux cas, la catégorie 1 (fort désaccord) se démarque nettement des autres catégories. Nous proposons donc de les recoder comme des variables binaires&nbsp;: en désaccord / pas en désaccord pour minimiser cet effet.
@@ -1859,51 +1824,6 @@ invisible(capture.output({
 knitr::include_graphics(out, dpi = 300)
 ```
 
-```{r eval=FALSE, include=FALSE}
-# 
-# # extraction des prédictions (en probabilité)
-# predicted <- predict(modele3,type = "response")
-# 
-# nsim <- 1000
-# # lancement des simulations pour chaque observation (chaque lignes dans predicted)
-# simulations <- lapply(1:nrow(predicted), function(i){
-#   probs <- predicted[i,]
-#   sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
-#   return(sims)
-# })
-# matsim <- do.call(rbind, simulations)
-# 
-# # on conserver la catégorie avec la plus haute probabilité 
-# # comme catégorie prédite
-# pred_cat <- colnames(predicted)[max.col(predicted)]
-# 
-# # on convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
-# 
-# real <- case_when(data_quest$Y == "A" ~ 1,
-#                   data_quest$Y == "B" ~ 2,
-#                   data_quest$Y == "C" ~ 3,
-#                   data_quest$Y == "D" ~ 4)
-# 
-# pred <- case_when(pred_cat == "A" ~ 1,
-#                   pred_cat == "B" ~ 2,
-#                   pred_cat == "C" ~ 3,
-#                   pred_cat == "D" ~ 4)
-# 
-# # on calcule les résidus simulés
-# sim_res <- createDHARMa(simulatedResponse = matsim, 
-#                         observedResponse = real,
-#                         fittedPredictedResponse = pred,
-#                         integerResponse = T)
-# 
-# par(mfrow=c(3,3))
-# vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
-#           "ConnaisRechClim", "CRT", "Parti", "Sexe")
-# 
-# for(v in  vars){
-#   plotResiduals(sim_res, data_quest[[v]], main = v)
-# }
-```
-
 Profitons du fait que nous utilisons le *package* `VGAM` pour vérifier l'absence d'effet de Hauck-Donner qui indiquerait que des variables indépendantes provoquent des séparations parfaites. 
 
 ```{r  message=FALSE, warning=FALSE}
@@ -1982,50 +1902,6 @@ sim_res <- createDHARMa(simulatedResponse = matsim,
                             fittedPredictedResponse = all_probs[,2],
                             integerResponse = T)
 plot(sim_res)
-```
-
-```{r eval=FALSE, include=FALSE}
-# Extraction des prédictions (en probabilité)
-# predicted <- predict(modele4,type = "response")
-# 
-# nsim <- 1000
-# # Lancement des simulations pour chaque observation (chaque lignes dans predicted)
-# simulations <- lapply(1:nrow(predicted), function(i){
-#   probs <- predicted[i,]
-#   sims <- sample(c(1,2,3,4), size = nsim, replace = T, prob = probs)
-#   return(sims)
-# })
-# matsim <- do.call(rbind, simulations)
-# 
-# # On conserver la catégorie avec la plus haute probabilité 
-# # comme catégorie prédite
-# pred_cat <- colnames(predicted)[max.col(predicted)]
-# 
-# # On convertit les catégories en nombres entiers (nécessaire pour le package DHARMa)
-# 
-# real <- case_when(data_quest$Y == "A" ~ 1,
-#                   data_quest$Y == "B" ~ 2,
-#                   data_quest$Y == "C" ~ 3,
-#                   data_quest$Y == "D" ~ 4)
-# 
-# pred <- case_when(pred_cat == "A" ~ 1,
-#                   pred_cat == "B" ~ 2,
-#                   pred_cat == "C" ~ 3,
-#                   pred_cat == "D" ~ 4)
-# 
-# # On calcule les résidus simulés
-# sim_res <- createDHARMa(simulatedResponse = matsim, 
-#                         observedResponse = real,
-#                         fittedPredictedResponse = pred,
-#                         integerResponse = T)
-# 
-# par(mfrow=c(3,3))
-# vars <- c("PercepOGMDes", "PercepRechClimDes", "ConnaisOGM", 
-#           "ConnaisRechClim", "CRT", "Parti", "Sexe")
-# 
-# for(v in  vars){
-#   plotResiduals(sim_res, data_quest[[v]], main = v)
-# }
 ```
 
 **Vérifier l'ajustement du modèle**
@@ -2115,9 +1991,9 @@ Nous avons pu voir dans cette section les trois principales formes de modèles G
 
 Dans cette section, nous présentons les principaux modèles utilisés pour modéliser des variables de comptage. Il peut s'agir de variables comme le nombre d'accidents à une intersection, le nombre de cafés par quartier, le nombre de cas d'une maladie donnée par entité géographique, etc.
 
-### Le modèle Poisson {#sect0841}
+### Le modèle de Poisson {#sect0841}
 
-Le modèle GLM de base pour modéliser une variable de comptage est le modèle Poisson. Pour rappel, la distribution Poisson a un seul paramètre: $\lambda$. Il représente le nombre moyen d'évènements observés sur l’intervalle de temps d'une observation, ainsi que la dispersion de la distribution. En conséquence, $\lambda$ doit être un nombre strictement positif; autrement dit, on ne peut pas observer un nombre négatif d'évènements. Il est donc nécessaire d’utiliser une fonction de lien pour contraindre l’équation de régression sur l’intervalle $[0 ,+\infty]$. La fonction la plus utilisée est le logarithme naturel (log) dont la réciproque est la fonction exponentielle (exp).
+Le modèle GLM de base pour modéliser une variable de comptage est le modèle Poisson. Pour rappel, la distribution de Poisson a un seul paramètre: $\lambda$. Il représente le nombre moyen d'évènements observés sur l’intervalle de temps d'une observation, ainsi que la dispersion de la distribution. En conséquence, $\lambda$ doit être un nombre strictement positif; autrement dit, on ne peut pas observer un nombre négatif d'évènements. Il est donc nécessaire d’utiliser une fonction de lien pour contraindre l’équation de régression sur l’intervalle $[0 ,+\infty]$. La fonction la plus utilisée est le logarithme naturel (log) dont la réciproque est la fonction exponentielle (exp).
 
 ```{r poissondentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim Poisson(\\lambda)$ \\newline $g(\\lambda) = \\beta_0 + \\beta X$ \\newline $g(x) =log(x)$"
@@ -2140,28 +2016,28 @@ Prenons un exemple concret, admettons que nous ayons ajusté un modèle Poisson 
 
 $\beta_0 = 1,8 \text{; } \beta_1 = 0,5 \text{; } \beta_2 = -1,5$
 
-L’interprétation basique (sur l’échelle logarithmique) est la suivante&nbsp;: une augmentation d'une unité de la variable $X_1$ est associée avec une augmentation de 0,5 du logarithmique du nombre de cas attendus. Une augmentation d'une unité de la variable $X_2$ est associée avec une réduction de 1,5 unités du logarithmique du nombre de cas attendus. Avec la conversion avec la fonction exponentielle, on obtient alors&nbsp;: 
+L’interprétation basique (sur l’échelle logarithmique) est la suivante&nbsp;: une augmentation d'une unité de la variable $X_1$ est associée avec une augmentation de 0,5 du logarithme du nombre de cas attendus. Une augmentation d'une unité de la variable $X_2$ est associée avec une réduction de 1,5 unités du logarithme du nombre de cas attendus. Avec la conversion avec la fonction exponentielle, on obtient alors&nbsp;: 
 
-* $exp(0,5) = 1,649$, soit une multiplication par 1,649 du nombre de cas attendu (aussi appelé taux d'incident) à chaque augmentation d’une unité de $X_1$;
-* $exp(-1,5) = 0,223$, soit une division par 4,54 (1/0,223) du nombre de cas attendu (aussi appelé taux d'incident) à chaque augmentation d’une unité de $X_2$.
+* $\mbox{exp(0,5) = 1,649}$, soit une multiplication par 1,649 du nombre de cas attendu (aussi appelé taux d'incident) à chaque augmentation d’une unité de $X_1$;
+* $\mbox{exp(-1,5) = 0,223}$, soit une division par 4,54 (1/0,223) du nombre de cas attendu (aussi appelé taux d'incident) à chaque augmentation d’une unité de $X_2$.
 
 Utilisons maintenant notre équation pour effectuer une prédiction si $X_1 = 1$ et $X_2 = 1$.
 
-$\lambda = exp(1,8 + (0,5\times 1) + (-1,5\times1)) = 2,225$
+$\lambda = exp(1,8 + (\mbox{0,5}\times 1) + (\mbox{-1,5}\times1)) = \mbox{2,225}$
 
 Si nous augmentons $X_1$ d’une unité, nous obtenons alors&nbsp;: 
 
-$\lambda = exp(1,8 + (0,5\times 2) + (-1,5\times1)) = 3,670$
+$\lambda = exp(1,8 + (\mbox{0,5}\times 2) + (\mbox{-1,5}\times1)) = \mbox{3,670}$
 
-En ayant augmenté d’une unité $X_1$, nous avons multiplié notre résultat par 1,649 ($2,225 \times 1,649 = 3,670$).
+En ayant augmenté d’une unité $X_1$, nous avons multiplié notre résultat par 1,649 ($\mbox{2,225} \times \mbox{1,649 = 3,670}$).
 
-Notez que ces effets se multiplient entre eux. Si nous augmentons à la fois $X_1$ et $X_2$ d'une unité chacune, nous obtenons&nbsp;: $\lambda = exp(1,8 + (0,5 \times 2) + (-1,5 \times 2)) = 0,818$, ce qui correspond bien à $2,225 \times 1,649 \text{ (effet de  }X_1\text{)} \times 0,223 \text{ (effet de }X_2\text{)} = 0,818$.
+Notez que ces effets se multiplient entre eux. Si nous augmentons à la fois $X_1$ et $X_2$ d'une unité chacune, nous obtenons&nbsp;: $\lambda = exp(1,8 + (\mbox{0,5} \times 2) + (\mbox{-1,5} \times 2)) = \mbox{0,818}$, ce qui correspond bien à $\mbox{2,225} \times \mbox{1,649} \text{ (effet de  }X_1\text{)} \times \mbox{0,223} \text{ (effet de }X_2\text{)} = \mbox{0,818}$.
 
 Il existe des fonctions dans R qui calculent ces prédictions à partir des équations des modèles. Il est cependant essentiel de bien saisir ce comportement multiplicatif induit par la fonction de lien log.
 
 ##### Conditions d'application
 
-Puisque la distribution Poisson n’a qu’un seul paramètre, le modèle GLM Poisson est exposé au même problème potentiel de sur-dispersion que les modèles binomiaux de la section précédente. Référez-vous à la section \@ref(sectcondapp) pour davantage de détails sur le problème posé par la sur-dispersion. Pour détecter une potentielle sur-dispersion dans un modèle de Poisson, il est possible dans un premier temps de calculer le ratio entre la déviance du modèle et son nombre de degrés de liberté [@Saspoiss]. Ce ratio doit être proche de 1, s'il est plus grand, le modèle souffre de sur-dispersion.
+Puisque la distribution de Poisson n’a qu’un seul paramètre, le modèle GLM de Poisson est exposé au même problème potentiel de sur-dispersion que les modèles binomiaux de la section précédente. Référez-vous à la section \@ref(sectcondapp) pour davantage de détails sur le problème posé par la sur-dispersion. Pour détecter une potentielle sur-dispersion dans un modèle de Poisson, il est possible dans un premier temps de calculer le ratio entre la déviance du modèle et son nombre de degrés de liberté [@Saspoiss]. Ce ratio doit être proche de 1, s'il est plus grand, le modèle souffre de sur-dispersion.
 
 \footnotesize
 \begin{equation}
@@ -2172,7 +2048,7 @@ Puisque la distribution Poisson n’a qu’un seul paramètre, le modèle GLM Po
 
 avec $N$ et $p$ étant respectivement les nombres d'observations et de paramètres. Il est également possible de tester formellement si la sur-dispersion est significative avec un test de dispersion.
 
-La question de l’excès de zéros a été abordée dans la section \@ref(sectpoissonzero) du chapitre \@ref(chap02). Il s’agit d’une situation où un plus grand nombre de zéros sont présents dans les données que ce que suppose la distribution Poisson. Dans ce cas, il convient d'utiliser la distribution de Poisson avec excès de zéros.
+La question de l’excès de zéros a été abordée dans la section \@ref(sectpoissonzero) du chapitre \@ref(chap02). Il s’agit d’une situation où un plus grand nombre de zéros sont présents dans les données que ce que suppose la distribution de Poisson. Dans ce cas, il convient d'utiliser la distribution de Poisson avec excès de zéros.
 
 #### Exemple appliqué dans R
 
@@ -2301,40 +2177,11 @@ library(AER)
 dispersiontest(modele)
 ```
 
-Contrairement à la forme classique d’un modèle de poisson pour laquelle la dispersion attendue est de&nbsp;1, le test nous indique qu’une dispersion de `r cat(as.numeric(round(dispersiontest(modele)$estimate,2)))` serait mieux ajustée aux données. 
+Contrairement à la forme classique d’un modèle de Poisson pour laquelle la dispersion attendue est de&nbsp;1, le test nous indique qu’une dispersion de `r cat(tofr(as.numeric(round(dispersiontest(modele)$estimate,2))))` serait mieux ajustée aux données. 
 
 Il est également possible d'illuster cet écart à l'aide d'un graphique représentant les valeurs réelles, les valeurs prédites, ainsi que la variance (sous forme de barres d'erreurs) attendue par le modèle (figure \@ref(fig:surdisppoiss)). Nous constatons ainsi que les valeurs réelles (en rouge) ont largement tendance à dépasser la variance attendue par le modèle, surtout pour les valeurs les plus faibles de la distribution. 
 
-```{r eval = FALSE}
-# Extraction des prédictions du modèle
-lambdas <- predict(modele, type = "response")
-# Création d'un dataframe pour contenir la prédiction et les vraies valeurs
-df1 <- data.frame(
-  lambdas = lambdas,
-  reals = data2$Nbr_acci
-)
-# Calcul de l'intervalle de confiance à 95% selon la distribution de Poisson
-# et stockage dans un second dataframe
-seqa <- seq(0,round(max(lambdas)),1)
-df2 <- data.frame(
-  lambdas = seqa,
-  lower = qpois(p = 0.025, lambda = seqa),
-  upper = qpois(p = 0.975, lambda = seqa)
-)
-# Affichage des valeurs réelles et prédites (en rouge)
-# et de leur variance selon le modèle (en noir)
-ggplot() + 
-  geom_errorbar(data = df2,
-                mapping = aes(x = lambdas, ymin = lower, ymax = upper),
-                width = 0.2, color = rgb(0.4,0.4,0.4)) + 
-  geom_point(data = df1, 
-             mapping = aes(x = lambdas, y = reals),
-             color ="red", size = 0.5) + 
-  labs(x = 'valeurs prédites',
-       y = "valeurs réelles")
-```
-
-```{r surdisppoiss, echo=FALSE, fig.aling="center", fig.cap="Représentation de la sur-dispersion des données dans le modèle de Poisson", message=FALSE, warning=FALSE, out.width='65%'}
+```{r surdisppoiss, fig.aling="center", fig.cap="Représentation de la sur-dispersion des données dans le modèle de Poisson", message=FALSE, warning=FALSE, out.width='65%', dpi=300, dev = 'png'}
 # Extraction des prédictions du modèle
 lambdas <- predict(modele, type = "response")
 # Création d'un dataframe pour contenir la prédiction et les vraies valeurs
@@ -2368,7 +2215,7 @@ Pour tenir compte de cette particularité des données, nous modifions légèrem
 ::: {.bloc_notes data-latex=""}
 **Les quasi-distributions**
 
-Les distributions binomiale Poisson ne disposent chacune que d’un paramètre décrivant à la fois leur dispersion et leur espérance. Elles manquent donc de flexibilité et échouent parfois à représenter fidèlement des données avec une forte variance. Il existe donc des distributions alternatives, respectivement les distributions quasi-binomiale et quasi-Poisson comprenant chacune un paramètre supplémentaire pour contrôler la dispersion. Bien que cette solution soit attrayante, il ne faut pas perdre de vue que la sur ou la sous dispersion peuvent être causées par l’absence de certaines variables explicatives, la sur-représentation de zéros, ou encore une séparation parfaite de la variable dépendante causée par une variable indépendante.
+Les distributions binomiale et de Poisson ne disposent chacune que d’un paramètre décrivant à la fois leur dispersion et leur espérance. Elles manquent donc de flexibilité et échouent parfois à représenter fidèlement des données avec une forte variance. Il existe donc des distributions alternatives, respectivement les distributions quasi-binomiale et quasi-Poisson comprenant chacune un paramètre supplémentaire pour contrôler la dispersion. Bien que cette solution soit attrayante, il ne faut pas perdre de vue que la sur ou la sous dispersion peuvent être causées par l’absence de certaines variables explicatives, la sur-représentation de zéros, ou encore une séparation parfaite de la variable dépendante causée par une variable indépendante.
 :::
 
 ```{r message=FALSE, warning=FALSE}
@@ -2555,7 +2402,7 @@ L’erreur quadratique moyenne du modèle est de 1,84, ce que signifie qu’en m
 
 **Interprétation des résultats**
 
-L'ensemble des coefficients du modèle sont accessibles via la fonction `summary`. Puisque la fonction de lien du modèle est la fonction *log*, il est pertinent de convertir les coefficients avec la fonction `exp` afin de pouvoir les interpréter sur l'échelle originale (`nombre d'accidents`) plutôt que l'échelle logarithmique (`log(nombre d'accidents)`). N'oubliez pas que ces effets sont multiplicatifs une fois transformés avec la fonction `exp`. Nous pouvons également utiliser les erreurs standards pour calculer des intervalles de confiance à 95&nbsp;% des exponentiels des coefficients. Le tableau \@ref(tab:coeffpoiss) présente l'ensemble des informations pertinentes pour l'interprétation des résultats.
+L'ensemble des coefficients du modèle sont accessibles via la fonction `summary`. Puisque la fonction de lien du modèle est la fonction `log`, il est pertinent de convertir les coefficients avec la fonction `exp` afin de pouvoir les interpréter sur l'échelle originale (`nombre d'accidents`) plutôt que l'échelle logarithmique (`log(nombre d'accidents)`). N'oubliez pas que ces effets sont multiplicatifs une fois transformés avec la fonction `exp`. Nous pouvons également utiliser les erreurs standards pour calculer des intervalles de confiance à 95&nbsp;% des exponentiels des coefficients. Le tableau \@ref(tab:coeffpoiss) présente l'ensemble des informations pertinentes pour l'interprétation des résultats.
 
 ```{r message=FALSE, warning=FALSE}
 # Calcul des coefficients en exponentiel et des intervalles de confiance
@@ -2578,12 +2425,12 @@ show_table(tableau[,c(1,2,3,6,9,10,11)],
       position = "HOLD_position")
 ```
 
-Parmi les variables décrivant les aménagements de l’intersection, nous constatons que les présences d’un feu de circulation et d’un feu de traversée pour les piétons multiplient le nombre attendu d’accidents à une intersection par 3,0 et 1,39. Par contre, les présences d’un passage piéton, d’un terre-plein ou de mesures d’apaisement n’ont pas d’effets significatifs (valeurs de p > 0,05).
-Concernant les variables décrivant l’environnement à proximité des intersections, nous observons que la concentration d’emplois et la densité de population contribuent toutes les deux à augmenter le nombre d’accidents à une intersection, bien que leurs effets soient limités. Enfin, la présence d’une rue à cinq voies à l’intersection augmente le nombre d’accidents attendu à l’intersection de 89&nbsp;%. Nous ne détaillons pas plus les résultats, car nous utiliserons le même jeu de données dans les prochaines sections.
+Parmi les variables décrivant les aménagements de l’intersection, nous constatons que les présences d’un feu de circulation et d’un feu de traversée pour les piétons multiplient le nombre attendu d’accidents à une intersection par 3,0 et 1,39. Par contre, les présences d’un passage piéton, d’un terre-plein ou de mesures d’apaisement n’ont pas d’effets significatifs (valeurs de *p*&nbsp;>&nbsp;0,05).
+Concernant les variables décrivant l’environnement à proximité des intersections, nous observons que la concentration d’emplois et la densité de population contribuent toutes les deux à augmenter le nombre d’accidents à une intersection, bien que leurs effets soient limités. Enfin, la présence d’une rue à cinq voies à l’intersection augmente le nombre d’accidents attendu à l’intersection de 89&nbsp;%. Nous ne détaillons pas plus les résultats, car nous utilisons le même jeu de données dans les prochaines sections.
 
 ### Le modèle négatif binomial {#sect0842}
 
-Dans le cas où une variable de comptage serait marquée par une sur ou sous-dispersion, la distribution de Poisson n’est pas en mesure de capturer efficacement sa variance. Pour contourner ce problème, il est possible d’utiliser la distribution négative binomiale plutôt que la distribution de Poisson (ou quasi-Poisson). Cette distribution peut être décrite comme une généralisation de la distribution de Poisson&nbsp;: elle inclut un second paramètre $\theta$ contrôlant la dispersion. L’intérêt premier de ce changement de distribution est que l’interprétation des paramètres est la même pour les deux modèles, tout en contrôlant directement l'effet d'une potentielle sur-dispersion.
+Dans le cas où une variable de comptage serait marquée par une sur ou sous-dispersion, la distribution de Poisson n’est pas en mesure de capturer efficacement sa variance. Pour contourner ce problème, il est possible d’utiliser la distribution négative binomiale plutôt que la distribution de Poisson (ou quasi-Poisson). Cette distribution peut être décrite comme une généralisation de la distribution de Poisson&nbsp;: elle inclut un second paramètre $\theta$ contrôlant la dispersion. L’intérêt premier de ce changement de distribution est que l’interprétation des paramètres est la même pour les deux modèles, tout en contrôlant directement l'effet d'une potentielle sur ou sous-dispersion.
 
 ```{r nbdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim NB(\\mu,\\theta)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) =log(x)$"
@@ -2601,7 +2448,7 @@ show_table(tableau,
 
 #### Conditions d'application
 
-Les conditions d'application d'un modèle négatif binomial sont presque les mêmes que celles d'un modèle de Poisson. La seule différence est que la condition d'absence de sur ou sous-dispersion est remplacée par une condition de respect du lien moyenne-variance. En effet, dans un modèle binomial, le paramètre de dispersion $\theta$ est combiné avec $\mu$ (l'espérance) pour exprimer la dispersion de la distribution. Dans le *package* `mgcv` que nous utilisons dans l'exemple, le lien entre $\mu$, $\theta$ et la variance est le suivant&nbsp;: 
+Les conditions d'application d'un modèle négatif binomial sont presque les mêmes que celles d'un modèle de Poisson. La seule différence est que la condition d'absence de sur ou sous-dispersion est remplacée par une condition de respect du lien espérance-variance. En effet, dans un modèle négatif binomial, le paramètre de dispersion $\theta$ est combiné avec $\mu$ (l'espérance) pour exprimer la dispersion de la distribution. Dans le *package* `mgcv` que nous utilisons dans l'exemple, le lien entre $\mu$, $\theta$ et la variance est le suivant&nbsp;: 
 
 \footnotesize
 \begin{equation}
@@ -2610,11 +2457,11 @@ variance = \mu + \mu^{\frac{2}{\theta}}
 \end{equation}
 \normalsize
 
-Il s'agit donc d'un modèle hétéroscédastique, sa variance n'est pas fixe, mais varie en fonction de sa propre moyenne. Si la moyenne augmente, la variance augmente (comme pour un modèle de Poisson), et l'intensité de cette augmentation est contrôlée par le paramètre $\theta$. Si cette condition n'est pas respectée, l'analyse des résidus simulés révélera un problème de dispersion.
+Il s'agit donc d'un **modèle hétéroscédastique**, sa variance n'est pas fixe, mais varie en fonction de sa propre espérance. Si celle-ci augmente, la variance augmente (comme pour un modèle de Poisson), et l'intensité de cette augmentation est contrôlée par le paramètre $\theta$. Si cette condition n'est pas respectée, l'analyse des résidus simulés révélera un problème de dispersion.
 
 #### Exemple appliqué dans R
 
-Dans l’exemple précédent avec le modèle de Poisson, nous avions observé une certaine sur-dispersion que nous avions contournée en utilisant un modèle de quasi-Poisson. Dans l’article original, les auteurs avaient opté pour un modèle négatif binomial, ce que nous proposons de faire ici. Les variables utilisées sont les mêmes que pour le modèle de Poisson. Nous utilisons le *package* `mgcv` et sa fonction `gam` pour ajuster le modèle.
+Dans l’exemple précédent avec le modèle de Poisson, nous avions observé une certaine sur-dispersion que nous avions contournée en utilisant un modèle de quasi-Poisson. Dans l’article original, les auteurs avaient opté pour un modèle négatif binomial, ce que nous reproduisons ici. Les variables utilisées sont les mêmes que pour le modèle de Poisson. Nous utilisons le *package* `mgcv` et sa fonction `gam` pour ajuster le modèle.
 
 **Vérification des conditions d'application**
 
@@ -2651,7 +2498,7 @@ cas_etrange <- subset(data_accidents, cooksd > 0.03)
 print(cas_etrange)
 ```
 
-Il s'agit à nouveau des quatre observations avec un grand nombre d'accidents. Nous décidons de les retirer du jeu de données pour ne pas fausser les résultats concernant l'ensemble des autres intersections. Dans une analyse plus détaillée, il serait judicieux de chercher à comprendre pourquoi ces quatre observations sont particulièrement accidentogènes.
+Il s'agit à nouveau de quatre observations avec un grand nombre d'accidents. Nous décidons de les retirer du jeu de données pour ne pas fausser les résultats concernant l'ensemble des autres intersections. Dans une analyse plus détaillée, il serait judicieux de chercher à comprendre pourquoi ces quatre observations sont particulièrement accidentogènes.
 
 ```{r cookdistnb2, fig.cap = "Distances de Cook pour le modèle négatif binomial (après avoir retiré quatre observations fortement influentes)", fig.align = "center", message=FALSE, warning=FALSE, out.width='75%', dev = "png", dpi = 300}
 data2 <- subset(data_accidents, cooksd < 0.03)
@@ -2699,7 +2546,7 @@ sim_res <- createDHARMa(simulatedResponse = mat_sims,
 plot(sim_res)
 ```
 
-La figure \@ref(fig:diagresnb), présentant le diagnostic des résidus simulés, montre que ces derniers suivent bien une distribution uniforme, aucun problème de dispersion ni de valeurs aberrantes. La figure \@ref(fig:compnbdistr2) permet de comparer la distribution originale de la variable *Y* et les simulations issues du modèle (intervalles de confiance représentés en bleu). On constate que le modèle parvient bien à reproduire la distribution originale, et ce, même pour les valeurs les plus à droite de la distribution.
+La figure \@ref(fig:diagresnb), présentant le diagnostic des résidus simulés, montre que ces derniers suivent bien une distribution uniforme, aucun problème de dispersion ni de valeurs aberrantes. La figure \@ref(fig:compnbdistr2) permet de comparer la distribution originale de la variable *Y* et les simulations issues du modèle (intervalles de confiance représentés en bleu). On constate que le modèle parvient bien à reproduire la distribution originale, et ce, même pour les valeurs les plus extrèmes de la distribution.
 
 ```{r compnbdistr2, message=FALSE, warning=FALSE, fig.align ="center", fig.cap="Comparaison de la distribution originale et des simulations pour le modèle négatif binomial", out.width = "65%", dev = "png", dpi = 300}
 # Extraction des valeurs prédites par le modèle
@@ -2846,9 +2693,11 @@ modelzi <- gamlss(formula = Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                   sigma.formula = ~1,
                family = ZIP(mu.link = "log", sigma.link="logit"),
                data = data_accidents)
+
 modelnull <- glm(formula = Nbr_acci ~ 1,
                family = poisson(link="log"),
                data = data_accidents)
+
 # Constante pour p
 coeff_p <- modelzi$sigma.coefficients
 cat("Coefficient pour p =", round(coeff_p,4))
@@ -2863,7 +2712,7 @@ Nous constatons immédiatement que le modèle avec excès fixe de zéros est peu
 
 ### Le modèle de poisson avec excès ajusté de zéros {#sect0844}
 
-Nous avons vu dans le modèle précédent que l’excès de zéro était conceptualisé comme la combinaison de deux phénomènes, l’un issu d’une distribution de Poisson que l’on souhaite modéliser, et le second générant des zéros supplémentaires. Il est possible d’aller plus loin que de simplement contrôler la proportion de zéro supplémentaire en modélisant explicitement ce second processus en ajoutant une deuxième équation au modèle. Cette deuxième équation a pour enjeu de modéliser *p* (la proportion de 0) à l’aide de variables indépendantes, ces dernières pouvant se retrouver dans les deux parties du modèle. **Pour résumer, un modèle de Poisson avec excès ajusté de zéro revient à combiner un modèle logistique binomial avec un modèle de Poisson**. La partie binaire du modèle s’occupe des faux zéros et la partie Poisson du reste des données. L’idée étant que pour chaque observation, le modèle évalue sa probabilité d’être un faux zéro (partie binomiale), avant d’évaluer son impact dans le modèle Poisson.
+Nous avons vu dans le modèle précédent que l’excès de zéro était conceptualisé comme la combinaison de deux phénomènes, l’un issu d’une distribution de Poisson que l’on souhaite modéliser, et le second générant des zéros supplémentaires. Il est possible d’aller plus loin que de simplement contrôler la proportion de zéro supplémentaire en modélisant explicitement ce second processus en ajoutant une deuxième équation au modèle. Cette deuxième équation a pour enjeu de modéliser *p* (la proportion de 0) à l’aide de variables indépendantes, ces dernières pouvant se retrouver dans les deux parties du modèle. L’idée étant que pour chaque observation, le modèle évalue sa probabilité d’être un faux zéro (partie binomiale), et le nombre attendu d'accidents.
 
 ```{r poisszadentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim ZIP(\\mu,\\theta)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $s(p) = \\alpha_0 + \\alpha_X$ \\newline $g(x) =log(x)$ \\newline $s(x) = log(\\frac{x}{1-x})$"
@@ -2885,7 +2734,7 @@ L’interprétation des paramètres $\beta_0$ et $\beta$ est identique à celle 
 
 #### Exemple appliqué
 
-Nous avions vu dans l’exemple précédent que l’utilisation du modèle avec excès fixe de zéros pour les données d’accident des piétons aux intersections ne donnait pas de résultats satisfaisants. Nous tentons ici d’améliorer le modèle en ajoutant les variables indépendantes significatives du modèle Poisson dans la seconde équation de régression destinée à détecter les zéros.
+Nous avions vu dans l’exemple précédent que l’utilisation du modèle avec excès fixe de zéros pour les données d’accident des piétons aux intersections ne donnait pas de résultats satisfaisants. Nous tentons ici d’améliorer le modèle en ajoutant les variables indépendantes significatives du modèle Poisson dans la seconde équation de régression destinée à détecter les faux zéros.
 
 **Vérification des conditions d'application**
 
@@ -2899,6 +2748,7 @@ modelza <- gamlss(formula = Nbr_acci ~ Feux_auto + Feux_piet + Pass_piet +
                   sigma.formula = ~1 + Feux_auto + Feux_piet + Densite_pop + NB_voies5,
                family = ZIP(mu.link = "log", sigma.link="logit"),
                data = data_accidents)
+
 # Extraire la prédiction des valeurs lambda
 lambdas <- predict(modelza, type = "response", what = "mu")
 # Extraire la prédiction des valeurs p
@@ -3124,7 +2974,7 @@ Concernant les coefficients pour la partie Poisson du modèle, nous observons qu
 
 ### Conclusion sur les modèles destinés à des variables de comptage {#sect0845}
 
-Dans cette section, nous avons vu que modéliser une variable de comptage ne doit pas toujours être réalisé avec une simple distribution de Poisson. Il est nécessaire de tenir compte de la sur ou sous-dispersion potentielle ainsi que de l’excès de zéros. Nous n’avons cependant pas couvert tous les cas, il est en effet possible d’ajuster des modèles avec une distribution négative binomiale avec excès de zéros (avec le *package* `gamlss`), ainsi que des modèles de **Hurdle**. Ces derniers ont une approche différente de celle proposée par les distributions ajustées pour tenir compte de l’excès de zéro que nous détaillons dans l’encadré « pour aller plus loin » ci-dessous. Le processus de sélection du modèle peut être résumé avec la figure \@ref(fig:figpoisswork). Notez que même en suivant cette procédure, rien ne garantit que votre modèle final reflète bien les données que vous étudiez. L’analyse approfondie des résidus et des prédictions du modèle est la seule façon de déterminer si oui ou non le modèle est fiable.
+Dans cette section, nous avons vu que modéliser une variable de comptage ne doit pas toujours être réalisé avec une simple distribution de Poisson. Il est nécessaire de tenir compte de la sur ou sous-dispersion potentielle ainsi que de l’excès de zéros. Nous n’avons cependant pas couvert tous les cas, il est en effet possible d’ajuster des modèles avec une distribution négative binomiale avec excès de zéros (avec le *package* `gamlss`), ainsi que des modèles de **Hurdle**. Ces derniers ont une approche différente de celle proposée par les distributions ajustées pour tenir compte de l’excès de zéro que nous détaillons dans l’encadré «&nbsp;pour aller plus loin&nbsp;» ci-dessous. Le processus de sélection du modèle peut être résumé avec la figure \@ref(fig:figpoisswork). Notez que même en suivant cette procédure, rien ne garantit que votre modèle final reflète bien les données que vous étudiez. L’analyse approfondie des résidus et des prédictions du modèle est la seule façon de déterminer si oui ou non le modèle est fiable.
 
 ```{r figpoisswork, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Processus de sélection d'un modèle pour une variable de comptage",  out.width='100%'}
 knitr::include_graphics('images/glm/poisson_workflow.png', dpi = 300)
@@ -3159,7 +3009,7 @@ Comme nous avons pu le voir dans la section \@ref(sect024), il existe un grand n
 
 ### Le modèle GLM gaussien {#sect0851}
 
-Comme nous l'avons vu en introduction, le modèle GLM est le plus simple puisqu'il correspond à la transposition de la régression linéaire classique (des moindres carrés) dans la forme des modèles généralisés.
+Comme nous l'avons vu en introduction, le modèle GLM gaussien est le plus simple puisqu'il correspond à la transposition de la régression linéaire classique (des moindres carrés) dans la forme des modèles généralisés.
 
 ```{r gaussiandentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim Normal(\\mu,\\sigma)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = x$"
@@ -3322,7 +3172,7 @@ ggplot() +
        y = "valeurs réelles")
 ```
 
-À nouveau, on constate à la figure \@ref(fig:gausssim2) que le modèle s'attendrait à trouver des valeurs négatives pour la concentration de végétation, ce qui n'est pas possible dans notre cas. En revanche, il semblerait que la variance soit bien homogène puisque la dispersion des observations semble à peu près suivre la dispersion attendue par le modèle (en noir).
+À nouveau, on constate à la figure \@ref(fig:gausssim2) que le modèle s'attendrait à trouver des valeurs négatives pour la concentration de végétation, ce qui n'est pas possible dans notre cas. En revanche, il semblerait que la variance soit bien homogène puisque la dispersion des observations semble suivre à peu près la dispersion attendue par le modèle (en noir).
 
 Malgré ces différents constats indiquant clairement qu'un modèle gaussien est un choix sous-optimal pour ces données, nous allons poursuivre l'analyse de ce modèle.
 
@@ -3366,7 +3216,7 @@ show_table(tab,
 )
 ```
 
-Les résultats de la régression linéaire multiple avaient déjà été interprétés dans la section \@ref(sect0771), nous ne commenterons pas ici les résultats du modèle GLM gaussien qui sont très semblables.
+Les résultats de la régression linéaire multiple avaient déjà été interprétés dans la section \@ref(sect0771), nous ne commenterons pas ici les résultats du modèle GLM gaussien qui sont identiques.
 
 
 ### Le modèle GLM avec une distribution de Student {#sect0852}
@@ -3407,7 +3257,7 @@ ggplot() +
   ylim(0,0.05)
 ```
 
-Comme vous pouvez le constater dans la carte d'identité au tableau \@ref(tab:studentdentity), le modèle GLM Student est très proche du modèle GLM gaussien. On modélise explicitement la moyenne de la distribution et son paramètre de dispersion (variance) est laissé fixe. Ce GLM est même souvent utilisé comme une version « robuste » du modèle gaussien du fait de sa capacité à intégrer explicitement l’effet des observations extrêmes. En effet, dans un modèle gaussien, les observations extrêmes (aussi appelées observations aberrantes) vont davantage influencer les paramètres du modèle que si une distribution de Student était utilisée.
+Comme vous pouvez le constater dans la carte d'identité au tableau \@ref(tab:studentdentity), le modèle GLM de Student est très proche du modèle GLM gaussien. On modélise explicitement la moyenne de la distribution et son paramètre de dispersion (variance) est laissé fixe. Ce GLM est même souvent utilisé comme une version «&nbsp;robuste&nbsp;» du modèle gaussien du fait de sa capacité à intégrer explicitement l’effet des observations extrêmes. En effet, dans un modèle gaussien, les observations extrêmes (aussi appelées observations aberrantes) vont davantage influencer les paramètres du modèle que pour un modèle utilisant une distribution de Student.
 
 ```{r studentdentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim Student(\\mu,\\sigma,\\nu)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = x$"
@@ -3504,7 +3354,7 @@ sim_res <- createDHARMa(simulatedResponse = mat_sims,
 plot(sim_res)
 ```
 
-Il semble que nous obtenions des résultats similaires à ceux du modèle gaussien: les résidus divergent significativement d'une distribution uniforme (figure \@ref(fig:studentresid)). Le graphique de quantile-quantile n'est parfois pas très adapté pour discerner une déviation de la distribution uniforme, nous pouvons dans ce cas afficher un histogramme des résidus pour en avoir le coeur net (figure \@ref(fig:studentresid2)).
+Il semble que nous obtenions des résultats similaires à ceux du modèle gaussien: les résidus divergent significativement d'une distribution uniforme (figure \@ref(fig:studentresid)). Le graphique quantile-quantile n'est parfois pas très adapté pour discerner une déviation de la distribution uniforme, nous pouvons dans ce cas afficher un histogramme des résidus pour en avoir le coeur net (figure \@ref(fig:studentresid2)).
 
 ```{r studentresid2, message=FALSE, warning=FALSE, fig.align = "center", fig.cap = "Distribution des résidus simulés du modèle GLM avec distribution de Student", out.width = "95%", dev = "png", dpi = 300}
 ggplot()+
@@ -3584,7 +3434,7 @@ show_table(tab,
 
 ### Le modèle GLM avec distribution Gamma {#sect0853}
 
-Pour rappel, la distribution Gamma est strictement positive ($[0;+\infty[$), asymétrique, et a une variance proportionnelle à sa moyenne (hétéroscedastique). Dans la section sur les distributions, nous avions vu que la distribution Gamma (section \@ref(sect024315)) est formulée avec deux paramètres&nbsp;: sa forme ($\alpha$ ou *shape*) et son échelle ($b$ ou *scale*). Ces deux paramètres n’ont pas une interprétation très intuitive, mais il est possible avec un peu de jonglage mathématique d’arriver à une reparamétrisation intéressante. Cela est détaillé dans l'encadré ci-dessous; notez toutefois qu'il n'est pas nécessaire de maîtriser parfaitement le contenu de cet encadré pour lire la suite de cette section sur les modèles GLM avec une distribution Gamma.
+Pour rappel, la distribution Gamma est strictement positive ($[0;+\infty[$), asymétrique, et a une variance proportionnelle à sa moyenne (hétéroscedastique). Dans la section sur les distributions, nous avions vu que la distribution Gamma (section \@ref(sect024315)) est formulée avec deux paramètres&nbsp;: sa forme ($\alpha$ ou *shape*) et son échelle ($b$ ou *scale*). Ces deux paramètres n’ont pas une interprétation intuitive, mais il est possible avec un peu de jonglage mathématique d’arriver à une reparamétrisation intéressante. Cela est détaillé dans l'encadré ci-dessous; notez toutefois qu'il n'est pas nécessaire de maîtriser le contenu de cet encadré pour lire la suite de cette section sur les modèles GLM avec une distribution Gamma.
 
 
 ::: {.bloc_aller_loin data-latex=""}
@@ -3721,7 +3571,7 @@ vif(glm(Duree ~ Mode + Motif + HeureDep + LogDist +
         family = Gamma(link="log")))
 ```
 
-L'ensemble des valeurs de VIF sont inférieures à trois, indiquant donc l'absence de multicolinéarité excessive. Nous pouvons donc ajuster une première version du modèle (ici avec le *package* **VGAM** et la fonction `vglm`) et calculer les distances de Cook.
+L'ensemble des valeurs de VIF sont inférieures à trois, indiquant donc l'absence de multicolinéarité excessive. Nous pouvons donc ajuster une première version du modèle (ici avec le *package* `VGAM` et la fonction `vglm`) et calculer les distances de Cook.
 
 ```{r cookdistgamma, fig.align="center", fig.cap="Distances de Cook pour le modèle Gamma", message=FALSE, warning=FALSE, out.width='50%', dev = "png", dpi = 300}
 # Calcul du modèle avec VGAM
@@ -3865,7 +3715,7 @@ plot(sim_res)
 
 La figure \@ref(fig:gammaresids3) indique que les résidus simulés ne suivent toujours pas une distribution uniforme et qu'il existe une relation prononcée (panneau de droite) entre les résidus et les valeurs prédites.  Cette dernière laisse penser que des variables indépendantes importantes ont été omises dans le modèle, ce qui n’est pas surprenant compte tenu du fait que nous ne disposons d’aucune donnée socioéconomique sur les individus ayant réalisé les trajets. Nos données sont également potentiellement affectées par la présence de dépendance spatiale.
 
-D'un point de vue purement pédagogique, nous pouvons comparer graphiquement la variance observée dans les données et la variance attendue par le modèle. La figure \@ref(fig:dispgamma) montre clairement que la variance des données tend à être plus grande qu'attendue quand les temps de trajet sont courts, mais diminue trop vite quand les temps de trajet augmentent. D'autres distributions pourraient être envisagées pour ajuster notre modèle&nbsp;: Lognormal, Weibull, etc.
+Nous pouvons comparer graphiquement la variance observée dans les données et la variance attendue par le modèle. La figure \@ref(fig:dispgamma) montre clairement que la variance des données tend à être plus grande qu'attendue quand les temps de trajet sont courts, mais diminue trop vite quand les temps de trajet augmentent. D'autres distributions pourraient être envisagées pour ajuster notre modèle&nbsp;: Lognormal, Weibull, etc.
 
 ```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle Gamma", out.width = "50%", dev = "png", dpi = 300}
 # Extraction des prédictions du modèle
@@ -3924,7 +3774,7 @@ Le modèle n’explique que 5&nbsp;% de la déviance et obtient des valeurs de R
 
 **Interprétation des résultats**
 
-Pour rappel, la fonction de lien dans notre modèle est la fonction *log*. Chaque coefficient représente donc l'impact de l'augmentation d'une unité des variables indépendantes sur le logarithme de l'espérance de notre variable dépendante. Si nous transformons nos coefficients avec la fonction exponentielle (*exp*) nous obtenons, pour chaque augmentation d'une unité des variables indépendantes, la multiplication de l'espérance de notre variable dépendante.
+Pour rappel, la fonction de lien dans notre modèle est la fonction `log`. Chaque coefficient représente donc l'impact de l'augmentation d'une unité des variables indépendantes sur le logarithme de l'espérance de notre variable dépendante. Si nous transformons nos coefficients avec la fonction exponentielle (`exp`) nous obtenons, pour chaque augmentation d'une unité des variables indépendantes, la multiplication de l'espérance de notre variable dépendante.
 
 Puisque nos trajets peuvent provenir de nombreux arrondissements, nous proposons de représenter l'exponentiel de leurs coefficients avec un graphique. Nous pouvons d'ailleurs comparer les exponentiels des coefficients et les effets marginaux pour simplifier l'interprétation.
 
@@ -4055,9 +3905,9 @@ ggplot(data = dfpred) +
        x = "distance à vol d'oiseau (km)")
 ```
 
-### Le modèle GLM avec une distribution de Beta {#sect0854}
+### Le modèle GLM avec une distribution Beta {#sect0854}
 
-Pour rappel, la distribution de Beta est une distribution définie sur l’intervalle $[0,1]$, elle est donc particulièrement utile pour décrire des proportions, des pourcentages ou des probabilités. Dans la section \@ref(sect024316) sur les distributions, nous avions présenté la paramétrisation classique de la distribution avec les paramètres $a$ et $b$ étant tous les deux des paramètres de forme. Ces deux paramètres n’ont pas d’interprétation pratique, mais il est possible (comme pour la distribution Gamma) de reparamétrer la distribution Beta avec un paramètre de centralité (espérance) et de dispersion.
+Pour rappel, la distribution Beta est une distribution définie sur l’intervalle $[0,1]$, elle est donc particulièrement utile pour décrire des proportions, des pourcentages ou des probabilités. Dans la section \@ref(sect024316) sur les distributions, nous avions présenté la paramétrisation classique de la distribution avec les paramètres $a$ et $b$ étant tous les deux des paramètres de forme. Ces deux paramètres n’ont pas d’interprétation pratique, mais il est possible (comme pour la distribution Gamma) de reparamétrer la distribution Beta avec un paramètre de centralité (espérance) et de dispersion.
 
 Notez également que si la distribution Beta autorise la présence de 0 et de 1, le modèle GLM utilisant cette distribution doit les exclure des valeurs possibles s'il utilise la fonction de lien logistique. En effet, cette fonction à la forme suivante&nbsp;:
 
@@ -4070,12 +3920,12 @@ logit(x) = log(\frac{x}{1-x})\\
 
 On peut constater que si $x = 1$, alors le dénominateur de la fraction est 0, or il est impossible de diviser par 0. Si $x = 0$, alors nous obtenons $log(0)$ ce qui est également impossible au plan mathématique.
 
-Dans le cas de figure où des 0 et/ou des 1 sont présents dans les données, quatres options sont possibles pour contourner le problèmes&nbsp;:
+Dans le cas de figure où des 0 et/ou des 1 sont présents dans les données, quatre options sont possibles pour contourner le problèmes&nbsp;:
 
 1. Si les observations à 0 ou 1 sont très peu nombreuses, il est envisageable de les retirer des données.
-2. Si la variable mesurée le permets, il est possible de remplacer les 0 et les 1 par des valeurs très proches (0,0001 et 0,9999) sans dénaturer excessivement les données initiales.
-3. Plutôt que d'utiliser une valeur arbitraire, @smithson2006better recommande recalculer la variable $Y \in [0;1]$ avec la formule \@ref(eq:correctbeta)
-4. Employer un modèle Hurdle à trois équations, la première prédisant la probabilité d'observer $Y > 0$, la seconde, la probabilité d'observer $Y = 1$ et la dernière prédisant les valeur de *Y* pour $0>Y>1$.
+2. Si la variable mesurée le permet, il est possible de remplacer les 0 et les 1 par des valeurs très proches (0,0001 et 0,9999 par exemple) sans dénaturer excessivement les données initiales.
+3. Plutôt que d'utiliser une valeur arbitraire, @smithson2006better recommande de recalculer la variable $Y \in [0;1]$ avec la formule \@ref(eq:correctbeta)
+4. Employer un modèle Hurdle à trois équations, la première prédisant la probabilité d'observer $Y > 0$, la seconde, la probabilité d'observer $Y = 1$ et la dernière prédisant les valeurs de *Y* pour $0>Y>1$.
 
 \footnotesize
 \begin{equation}
@@ -4084,7 +3934,7 @@ Y' = \frac{Y(N-1)+s}{N}
 \end{equation}
 \normalsize
 
-Avec *N* le nombre d'observation, *Y'* la variable *Y* transformée et *s* une constante. Plus cette dernière est élevée, plus la variable *Y'* aura des valeurs éloignée de 0 et 1. la valeur de 0,5 est recommandée par les auteurs.
+Avec *N* le nombre d'observations, *Y'* la variable *Y* transformée et *s* une constante. Plus cette dernière est élevée, plus la variable *Y'* aura des valeurs éloignée de 0 et 1. la valeur de 0,5 est recommandée par les auteurs.
 
 ::: {.bloc_aller_loin data-latex=""}
 **Reparamétrer la distribution Beta**
@@ -4117,9 +3967,7 @@ Pour reparamétrer cette distribution, on définit un nouveau paramètre $\phi$ 
 De cette manière, il est possible d'exprimer la distribution Beta en fonction de son espérance (sa valeur attendue, ce qui s'interprète approximativement comme une moyenne) et un paramètre $\phi$ intervenant dans le calcul de sa variance. Vous noterez d'ailleurs que la variance de cette distribution dépend de sa moyenne, impliquant à nouveau une hétéroscédasticité intrinsèque.
 :::
 
-Puisqu'une distribution Beta est définie dans l'intervalle $]0,1[$, son espérance doit également être comprise dans $]0,1[$. La fonction de lien d'un modèle GLM avec distribution Beta doit donc contraindre son équation de régression dans cet intervalle. La candidate toute désignée est donc la fonction logistique.
-
-Pour résumer, nous nous retrouvons donc avec un modèle qui prédit l'espérance d’une distribution de Beta avec une fonction de lien logistique. La variance de cette distribution est fonction de cette moyenne et d'un second paramètre $\phi$. Ces informations sont résumées dans la fiche d'identité du modèle (tableau \@ref(tab:betaentity)).
+Pour résumer, nous nous retrouvons donc avec un modèle qui prédit l'espérance d’une distribution Beta avec une fonction de lien logistique. La variance de cette distribution est fonction de cette moyenne et d'un second paramètre $\phi$. Ces informations sont résumées dans la fiche d'identité du modèle (tableau \@ref(tab:betaentity)).
 
 ```{r betaentity, echo=FALSE, message=FALSE, warning=FALSE, out.width='50%'}
 model_formula <- "$Y \\sim Beta(\\mu,\\phi)$ \\newline $g(\\mu) = \\beta_0 + \\beta X$ \\newline $g(x) = log(\\frac{x}{1-x})$"
@@ -4146,7 +3994,7 @@ Puisque le modèle utilise la fonction de lien logistique, les exponentiels des 
 
 #### Exemple appliqué dans R
 
-Afin de présenter le modèle GLM avec une distribution Beta, nous utilisons un jeu de données que nous avons construit pour l’île de Montréal. Nous nous intéressons à la question des îlots de chaleur urbains au niveau des aires de diffusion (AD – entités spatiales du recensement canadien comprenant de 400 à 700 habitants). Pour cela, nous avons calculé dans chaque AD le pourcentage de sa surface classifiée comme îlot de chaleur dans la carte des îlots de [chaleur/fraicheur](https://www.donneesquebec.ca/recherche/fr/dataset/ilots-de-chaleur-fraicheur-urbains-et-temperature-de-surface) réalisé par l’INSPQ et le CERFO.
+Afin de présenter le modèle GLM avec une distribution Beta, nous utilisons un jeu de données que nous avons construit pour l’île de Montréal. Nous nous intéressons à la question des îlots de chaleur urbains au niveau des aires de diffusion (AD – entités spatiales du recensement canadien comprenant entre 400 et 700 habitants). Pour cela, nous avons calculé dans chaque AD le pourcentage de sa surface classifiée comme îlot de chaleur dans la carte des îlots de [chaleur/fraicheur](https://www.donneesquebec.ca/recherche/fr/dataset/ilots-de-chaleur-fraicheur-urbains-et-temperature-de-surface) réalisé par l’INSPQ et le CERFO.
 
 La question que nous nous posons est la suivante&nbsp;: les populations vulnérables socioéconomiquement et/ou physiologiquement sont-elles systématiquement plus exposées à la nuisance que représentent les îlots de chaleur? Cette question se rattache donc au champ de la recherche sur la justice environnementale et plus spécifiquement sur sa dimension spatiale (à savoir l'équité environnementale, à distinguer des dimensions procédurale et de reconnaissance). Plusieurs études se sont d'ailleurs déjà penchées sur la question des îlots de chaleur abordée sous l'angle de l'équité environnementale [@harlan2007shade; @sanchez2019cooling; @huang2011everyone]. Nous modélisons donc pour chaque AD (n = 3&nbsp;158) de l’île de Montréal la proportion de sa surface couverte par des îlots de chaleur. Nos variables indépendantes sont divisées en deux catégories&nbsp;: variables environnementales et variables socio-économiques. Les premières sont des variables de contrôle, il s’agit de la densité de végétation dans l’AD (ajouté avec une polynomiale d'ordre deux) et de l'arrondissement dans lequel il se situe. Ces deux paramètres affectent directement les chances d’observer des îlots de chaleur, mais nous souhaitons isoler leurs effets (toutes choses étant égales par ailleurs) de ceux des variables socio-économiques. Ces dernières ont pour objectif de cibler les populations vulnérables sur le plan physiologique (personnes âgées et enfants de moins de 14 ans) ou socio-économique (minorités visibles et faible revenu). L'ensemble de ces variables sont présentées dans le tableau \@ref(tab:variablebeta). Notez que puisque le modèle avec distribution de Beta ne peut pas prendre en compte des valeurs exactes de 1 ou 0, nous les avons remplacées respectivement par 0,99 et 0,01. Cette légère modification n'altère que marginalement les données, surtout si l'on considère qu'elles sont agrégées au niveau des AD et proviennent originalement d'imagerie satellitaire.
 
@@ -4179,7 +4027,7 @@ vif(glm(hot ~
         data = dataset))
 ```
 
-La seule variable semblant poser un problème de multicolinéarité est la variable `Arrond`. Cependant, du fait de sa nature multinomiale, elle regroupe en réalité 32 coefficients (voir la colonne `Df`). Il faut donc utiliser la règle habituelle de 5 sur le carré de la troisième colonne (`GVIF^(1/(2*Df))`) du tableau [@fox1992generalized], soit `1,032820^2 = 1.066717`, ce qui est bien inférieur à la limite de 5. Nous n'avons donc pas de problème de multicolinéarité excessive. Nous pouvons passer au calcul des distances de Cook. Pour ajuster notre modèle, nous utilisons le *package* `mgcv` et la fonction `gam` avec le paramètre `family = betar(link = "logit")`.
+La seule variable semblant poser un problème de multicolinéarité est la variable `Arrond`. Cependant, du fait de sa nature multinomiale, elle regroupe en réalité 32 coefficients (voir la colonne `Df`). Il faut donc utiliser la règle habituelle de 5 sur le carré de la troisième colonne (`GVIF^(1/(2*Df))`) du tableau [@fox1992generalized], soit `1,032820^2 = 1,066717`, ce qui est bien inférieur à la limite de 5. Nous n'avons donc pas de problème de multicolinéarité excessive. Nous pouvons passer au calcul des distances de Cook. Pour ajuster notre modèle, nous utilisons le *package* `mgcv` et la fonction `gam` avec le paramètre `family = betar(link = "logit")`.
 
 ```{r cookdistbeta, fig.align="center", fig.cap="Distances de Cook pour le modèle GLM Beta", message=FALSE, warning=FALSE, out.width="65%", dev = "png", dpi = 300}
 # Ajustement d'une première version du modèle
@@ -4348,7 +4196,7 @@ rsqs(loglike.full = modele3$deviance/-2,
 sqrt(mean((modele3$fitted.values - modele3$y)**2))
 ```
 
-Le modèle parvient à expliquer 90&nbsp;% de la déviance totale et obtient des pseudo-R^2^ très élevés. Il obtient cependant un RMSE de 0,10 soit une erreur quadratique moyenne de 10&nbsp;% dans la prédiction, ce qui est tout de même important. Le modèle ne semble pas souffrir particulièrement de sur-ajustement comme les pseudo-R^2^ auraient pu nous le laisser penser. 
+Le modèle parvient à expliquer 90&nbsp;% de la déviance totale et obtient des pseudo-R^2^ très élevés. Il obtient cependant un *RMSE* de 0,10 soit une erreur quadratique moyenne de 10&nbsp;% dans la prédiction, ce qui est tout de même important. Le modèle ne semble pas souffrir particulièrement de sur-ajustement comme les pseudo-R^2^ auraient pu nous le laisser penser. 
 
 L'ensemble des coefficients du modèle sont accessibles via la fonction `summary`. Pour rappel, il est nécessaire de les convertir avec la fonction exponentielle pour pouvoir les interpréter en termes de rapport de cotes. À nouveau, nous proposons de construire dans un premier temps une figure pour observer l'effet des arrondissements.
 
