@@ -2,68 +2,65 @@
 
 # Statistiques descriptives univariées {#chap02}
 
-Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables : nominale, ordinale, discrète, continue et semi-quantitative. Aussi, nous abordons un concept central de la statistique : les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
+Dans ce chapitre, nous décrirons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables&nbsp;: nominale, ordinale, discrète, continue et semi-quantitative. Aussi, nous abordons un concept central de la statistique&nbsp;: les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utilisons principalement les packages suivants : 
+Dans ce chapitre, nous utilisons principalement les packages suivants&nbsp;: 
 
-* Pour créer des graphiques :
+* Pour créer des graphiques&nbsp;:
   - `ggplot2`, le seul, l'unique!
-  - `ggpubr` pour combiner des graphiques et réaliser des diagrammes.
-  
-* Pour créer des distributions :
-  - `fitdistrplus pour générer différentes distributions.
+  - `ggpubr` pour combiner des graphiques et réaliser des diagrammes quantiles-quantiles.
+* Pour créer des distributions&nbsp;:
+  - `fitdistrplus` pour générer différentes distributions.
   - `actuar` pour la fonction de densité de Pareto.
   - `gamlss.dist` pour des distributions de Poisson.
-
-* Pour les statistiques descriptives :
+* Pour les statistiques descriptives&nbsp;:
   - `stats` et `moments` pour les statistiques descriptives.
   - `nortest` pour le test de Kolmogorov-Smirnov.
   - `DescTools` pour les tests de Lilliefors, Shapiro-Wilk, Anderson-Darling et Jarque-Bera.
-
-* Autres *packages* :
+* Autres *packages*&nbsp;:
   - `Hmisc` et `Weighted.Desc.Stat` pour les statistiques descriptives pondérées.
   - `foreign` pour importer des fichiers externes.
 :::
 
 ## Notion de variable {#sect021}
 
-### La variable : l'opérationnalisation d'un concept {#sect0211}
+### La variable&nbsp;: l'opérationnalisation d'un concept {#sect0211}
 
-Une variable permet d'opérationnaliser un concept, soit une « idée générale et abstraite que se fait l'esprit humain d'un objet de pensée concret ou abstrait, et qui lui permet de rattacher à ce même objet les diverses perceptions qu'il en a, et d'en organiser les connaissances » ([Larousse](https://www.larousse.fr/dictionnaires/francais/concept/17875?q=concept#17749){target="_blank"}). Pour valider un modèle théorique, il convient alors d'opérationnaliser ses différentes concepts et d'établir les relations qu'ils partagent. L'opérationnalisation d'un concept nécessite soit de mesurer (dans un intervalle de valeurs, c'est-à-dire de manière quantitative), soit de qualifier (avec plusieurs catégories, c'est-à-dire de manière qualitative) un phénomène. 
+Une variable permet d'opérationnaliser un concept, soit une «&nbsp;idée générale et abstraite que se fait l'esprit humain d'un objet de pensée concret ou abstrait, et qui lui permet de rattacher à ce même objet les diverses perceptions qu'il en a, et d'en organiser les connaissances&nbsp;» ([Larousse](https://www.larousse.fr/dictionnaires/francais/concept/17875?q=concept#17749){target="_blank"}). Pour valider un modèle théorique, il convient alors d'opérationnaliser ses différentes concepts et d'établir les relations qu'ils partagent. L'opérationnalisation d'un concept nécessite soit de mesurer (dans un intervalle de valeurs, c'est-à-dire de manière quantitative), soit de qualifier (avec plusieurs catégories, c'est-à-dire de manière qualitative) un phénomène. 
 
-Selon [Statistique Canada](https://www.statcan.gc.ca/fra/concepts/variable){target="_blank"}, « une variable est une caractéristique d'une unité statistique que l'on observe et pour laquelle une valeur numérique ou une catégorie d'une classification peut être attribuée ». Il convient alors de bien saisir à quelle unité statistique (ou unité d'observation) s'applique les valeurs d'une variable : des personnes, des ménages, des municipalités, etc. 
+Selon [Statistique Canada](https://www.statcan.gc.ca/fra/concepts/variable){target="_blank"}, «&nbsp;une variable est une caractéristique d'une unité statistique que l'on observe et pour laquelle une valeur numérique ou une catégorie d'une classification peut être attribuée&nbsp;». Il convient alors de bien saisir à quelle unité statistique (ou unité d'observation) s'applique les valeurs d'une variable&nbsp;: des personnes, des ménages, des municipalités, etc. 
 
-Prenons deux exemples concrets tirées du Recensement de 2016 de Statistique Canada :
+Prenons deux exemples concrets tirées du Recensement de 2016 de Statistique Canada&nbsp;:
 
-* Le concept **famille de recensement** est défini comme étant « un couple marié et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des conjoints; un couple en union libre et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des partenaires; ou un parent seul, peu importe son état matrimonial, habitant avec au moins un enfant dans le même logement et cet ou ces enfants. Tous les membres d'une famille de recensement particulière habitent le même logement. Un couple peut être de sexe opposé ou de même sexe. Les enfants peuvent être des enfants naturels, par le mariage, par l'union libre ou par adoption, peu importe leur âge ou leur état matrimonial, du moment qu'ils habitent dans le logement sans leur propre conjoint marié, partenaire en union libre ou enfant. Les petits-enfants habitant avec leurs grands-parents, alors qu'aucun des parents n'est présent, constituent également une famille de recensement » ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/fam004-fra.cfm){target="_blank"}). À partir de cette définition, les familles de recensement peuvent être qualifiées selon plusieurs modalités : couples mariés sans enfant, couples mariés avec enfants, couples en union libre sans enfant, couples en union libre avec enfant, famille monoparentale (avec un parent de sexe féminin), famille monoparentale (avec un parent de sexe masculin).
-* Le concept de **revenu d'emploi** est défini comme étant « tous les revenus reçus sous forme de traitements, salaires et commissions d'un travail rémunéré ou le revenu net d'un travail autonome dans une entreprise agricole ou non agricole non constituée en société et/ou dans l'exercice d'une profession au cours de la période de référence. Pour le Recensement de 2016, la période de référence est l'année civile 2015 pour toutes les variables de revenu » ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop027-fra.cfm){target="_blank"}). Il est donc mesurée en dollars pour chaque individu de 15 ans et plus. Pour l'ensemble de la population de 15 ans et plus, il peut ensuite être classé en déciles de revenu d'emploi, soit en dix groupes ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop204-fra.cfm"}){target="_blank"}).
+* Le concept **famille de recensement** est défini comme étant «&nbsp;un couple marié et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des conjoints; un couple en union libre et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des partenaires; ou un parent seul, peu importe son état matrimonial, habitant avec au moins un enfant dans le même logement et cet ou ces enfants. Tous les membres d'une famille de recensement particulière habitent le même logement. Un couple peut être de sexe opposé ou de même sexe. Les enfants peuvent être des enfants naturels, par le mariage, par l'union libre ou par adoption, peu importe leur âge ou leur état matrimonial, du moment qu'ils habitent dans le logement sans leur propre conjoint marié, partenaire en union libre ou enfant. Les petits-enfants habitant avec leurs grands-parents, alors qu'aucun des parents n'est présent, constituent également une famille de recensement&nbsp;» ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/fam004-fra.cfm){target="_blank"}). À partir de cette définition, les familles de recensement peuvent être qualifiées selon plusieurs modalités&nbsp;: couples mariés sans enfant, couples mariés avec enfants, couples en union libre sans enfant, couples en union libre avec enfant, famille monoparentale (avec un parent de sexe féminin), famille monoparentale (avec un parent de sexe masculin).
+* Le concept de **revenu d'emploi** est défini comme étant «&nbsp;tous les revenus reçus sous forme de traitements, salaires et commissions d'un travail rémunéré ou le revenu net d'un travail autonome dans une entreprise agricole ou non agricole non constituée en société et/ou dans l'exercice d'une profession au cours de la période de référence. Pour le Recensement de 2016, la période de référence est l'année civile 2015 pour toutes les variables de revenu&nbsp;» ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop027-fra.cfm){target="_blank"}). Il est donc mesurée en dollars pour chaque individu de 15 ans et plus. Pour l'ensemble de la population de 15 ans et plus, il peut ensuite être classé en déciles de revenu d'emploi, soit en dix groupes ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop204-fra.cfm"}){target="_blank"}).
 
 ::: {.bloc_attention data-latex=""}
-**Maîtriser la définition des variables que vous utilisez : un enjeu crucial! **
+**Maîtriser la définition des variables que vous utilisez&nbsp;: un enjeu crucial! **
 
-Nous avons vu qu'une variable est l'opérationnalisation d'un concept. Par conséquent, ne pas maîtriser la définition d'une variable revient à ne pas bien saisir le concept sous-jacent qu'elle tente de mesurer. Si vous exploitez des données secondaires – par exemple, issues d'un recensement de population ou d'une enquête longitudinale ou transversale –, il faut impérativement lire les définitions des variables que vous souhaiteriez utiliser. Ne pas le faire risque d'aboutir à :
+Nous avons vu qu'une variable est l'opérationnalisation d'un concept. Par conséquent, ne pas maîtriser la définition d'une variable revient à ne pas bien saisir le concept sous-jacent qu'elle tente de mesurer. Si vous exploitez des données secondaires – par exemple, issues d'un recensement de population ou d'une enquête longitudinale ou transversale –, il faut impérativement lire les définitions des variables que vous souhaiteriez utiliser. Ne pas le faire risque d'aboutir à&nbsp;:
 
-* Une mauvaise opérationnalisation de votre modèle théorique, même si votre analyse est bien menée statistiquement parlant. Autrement dit, vous risquez de ne pas sélectionner les bonnes variables. Prenons un exemple concret. Vous avez construit un modèle théorique dans lequel vous souhaitez inclure un concept sur la langue des personnes. Dans le recensement canadien de 2016, plusieurs variables relatives à la langue sont disponibles : [connaissance des langues officielles](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop055-fra.cfm){target="_blank"},
+* Une mauvaise opérationnalisation de votre modèle théorique, même si votre analyse est bien menée statistiquement parlant. Autrement dit, vous risquez de ne pas sélectionner les bonnes variables. Prenons un exemple concret. Vous avez construit un modèle théorique dans lequel vous souhaitez inclure un concept sur la langue des personnes. Dans le recensement canadien de 2016, plusieurs variables relatives à la langue sont disponibles&nbsp;: [connaissance des langues officielles](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop055-fra.cfm){target="_blank"},
 [langue parlée à la maison](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop042-fra.cfm){target="_blank"}, [langue maternelle](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop095-fra.cfm){target="_blank"}, [première langue officielle parlée](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop034-fra.cfm){target="_blank"},  [connaissance des langues non officielles](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop054-fra.cfm){target="_blank"} et [langue de travail](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop059-fra.cfm){target="_blank"} ([Statistique Canada, 2019](https://www12.statcan.gc.ca/census-recensement/2016/ref/guides/003/98-500-x2016003-fra.cfm){target="_blank"}). La sélection de l'une de ces variables doit être faite de manière rigoureuse, c'est-à-dire en lien avec votre cadre théorique et suite à une bonne compréhension des définitions des variables. Dans une étude sur le marché du travail, on sélectionnerait probablement la variable *sur la connaissance des langues officielles du Canada*, afin d'évaluer son effet sur l'employabilité, toutes choses étant égales par ailleurs. Dans une autre étude portant sur la réussite ou la performance scolaire, il est probable qu'on utilise plutôt la *langue maternelle*.
 
 * Une mauvaise interprétation et discussion de vos résultats en lien avec votre cadre théorique.
 * Une mauvaise identification des pistes de recherche.
 
-Finalement, la définition d'une variable peut évoluer à travers plusieurs recensements de population : la société évolue, les variables aussi ! Par conséquent, si vous comptez utiliser plusieurs années de recensement dans une même étude, assurez-vous que les définitions des variables soient similaires d'un jeu de données à l'autre et qu'elles mesurent ainsi la même chose. 
+Finalement, la définition d'une variable peut évoluer à travers plusieurs recensements de population&nbsp;: la société évolue, les variables aussi! Par conséquent, si vous comptez utiliser plusieurs années de recensement dans une même étude, assurez-vous que les définitions des variables soient similaires d'un jeu de données à l'autre et qu'elles mesurent ainsi la même chose. 
 
-**Comprendre les variables utilisées dans un article scientifique : un exercice indispensable dans l'élaboration d'une revue de littérature**
+**Comprendre les variables utilisées dans un article scientifique&nbsp;: un exercice indispensable dans l'élaboration d'une revue de littérature**
 
 Une lecture rigoureuse d'un article scientifique suppose, entre autres, de bien comprendre les concepts et variables mobilisés. Il convient alors de lire attentivement la section méthodologique (pas uniquement la section des résultats ou pire le résumé), sans quoi vous risquez d'aboutir à une revue de littérature approximative. 
-Ayez aussi un **regard critique** sur les variables visant à opérationnaliser les  concepts clés de l'étude. Certains concepts sont très difficiles à traduire en variables; leurs opérationalisations (mesures) peuvent ainsi faire l'objet de vifs débats parmi les chercheurs. Très succinctement, c'est notamment le cas du concept de capital social. D'une part, les définitions et ancrages sont biens différents selon Bourdieu (sociologue, ancrage au niveau des individus) et Putman (politologue, ancrage au niveau des collectivités); d'autre part, aucun consensus ne semble clairement se dégager quant à la définition de variables permettant de le mesurer efficacement (de manière quantitative).   
+Ayez aussi un **regard critique** sur les variables visant à opérationnaliser les  concepts clés de l'étude. Certains concepts sont très difficiles à traduire en variables; leurs opérationalisations (mesures) peuvent ainsi faire l'objet de vifs débats au sein de la commmunauté scientifique. Très succinctement, c'est notamment le cas du concept de capital social. D'une part, les définitions et ancrages sont biens différents selon Bourdieu (sociologue, ancrage au niveau des individus) et Putman (politologue, ancrage au niveau des collectivités); d'autre part, aucun consensus ne semble clairement se dégager quant à la définition de variables permettant de le mesurer efficacement (de manière quantitative).   
 
 **Variable de substitution (*proxy variable* en anglais)**
 
-On fait la moins pire des recherches ! En effet, les données disponibles sont parfois imparfaites pour répondre avec précision à une question de recherche; on peut toujours les exploiter, tout en signalant honnêtemment leurs faiblesses et limites, et ce, tant pour les données que les variables utilisées.
+On fait la moins pire des recherches! En effet, les données disponibles sont parfois imparfaites pour répondre avec précision à une question de recherche; on peut toujours les exploiter, tout en signalant honnêtemment leurs faiblesses et limites, et ce, tant pour les données que les variables utilisées.
 
-* Des bases de données peuvent être en effet imparfaites. Par exemple, en criminologie, des chercheur·e·s exploitant des données policières signalent habituellement la limite du **chiffre noir** : les données policières comprennent uniquement les crimes et délits découverts par la police et occultent ainsi les crimes non-découverts; ils ne peuvent ainsi refléter la criminalité réelle sur un territoire donné.
+* Des bases de données peuvent être en effet imparfaites. Par exemple, en criminologie, des chercheur·e·s exploitant des données policières signalent habituellement la limite du **chiffre noir**&nbsp;: les données policières comprennent uniquement les crimes et délits découverts par la police et occultent ainsi les crimes non-découverts; ils ne peuvent ainsi refléter la criminalité réelle sur un territoire donné.
 
-* Des variables peuvent aussi être imparfaites. Dans un jeu de données, il est fréquent qu'une variable opérationnalisant un concept précis ne soit pas disponible ou qu'elle n'ait tout simplement pas été  mesurée. On cherchera alors une variable de substitution (*proxy*) pour la remplacer. Prenons un exemple concret portant sur l'exposition des cyclistes à la pollution atmosphérique ou au bruit environnemental. L'un des principaux facteurs d'exposition à ces pollutions est le trafic routier : plus ce dernier est élevé, plus les cyclistes risquent de rouler dans un environnement bruyant et pollué. Toutefois, il est rare de disposer de mesures du trafic en temps réel qui nécessitent des comptages de véhicules pendant le trajet des cyclistes (par exemple, à partir de vidéos captées par une caméra fixée sur le guidon). Pour pallier à l'absence de mesures directes, plusieurs auteurs utilisent des variables de substitution de la densité du trafic, comme la typologie des types d'axes (primaire, secondaire, tertiaire, rue locale, etc.), supposant ainsi qu'un axe primaire supporte un volume de véhicules supérieur à un axe secondaire.
+* Des variables peuvent aussi être imparfaites. Dans un jeu de données, il est fréquent qu'une variable opérationnalisant un concept précis ne soit pas disponible ou qu'elle n'ait tout simplement pas été  mesurée. On cherchera alors une variable de substitution (*proxy*) pour la remplacer. Prenons un exemple concret portant sur l'exposition des cyclistes à la pollution atmosphérique ou au bruit environnemental. L'un des principaux facteurs d'exposition à ces pollutions est le trafic routier&nbsp;: plus ce dernier est élevé, plus les cyclistes risquent de rouler dans un environnement bruyant et pollué. Toutefois, il est rare de disposer de mesures du trafic en temps réel qui nécessitent des comptages de véhicules pendant le trajet des cyclistes (par exemple, à partir de vidéos captées par une caméra fixée sur le guidon). Pour pallier à l'absence de mesures directes, plusieurs auteurs utilisent des variables de substitution de la densité du trafic, comme la typologie des types d'axes (primaire, secondaire, tertiaire, rue locale, etc.), supposant ainsi qu'un axe primaire supporte un volume de véhicules supérieur à un axe secondaire.
 :::
 
 ### Les types de variables {#sect0212}
@@ -77,12 +74,12 @@ knitr::include_graphics('images/univariee/figure1.jpg', dpi = NA)
 
 **Une variable nominale** permet de **qualifier** des observations (individus) à partir de plusieurs catégories dénommées modalités. Par exemple, la variable _couleur des yeux_ pourrait comprendre les modalités _bleu_, _marron_, _vert_, _noir_ tandis que les *types de familles* compendrait les modalités _couple marié_, _couple en union libre_ et _famille monoparentale_.
 
-**Une variable ordinale** permet de **classer** des observations à partir de plusieurs modalités hiérarchisées. L'exemple le plus connu est certainement l'échelle de Likert, très utilisée dans les sondages évaluant le degré d'accord d'une personne à une affirmation avec les modalités suivantes : _tout à fait d'accord_, _d'accord_, _ni en désaccord ni d'accord_, _pas d'accord_ et _pas du tout d'accord_. Une multitude de variantes sont toutefois possibles pour classer la fréquence d'un phénomène (_Très souvent_, _souvent_, _parfois_, _rarement_, _jamais_), l'importance accordée à un phénomène (_Pas du tout important_, _peu important_, _plus ou moins important_, _important_, _très important_) ou la proximité perçue d'un lieu (_très éloigné_, _loin_, _plus ou moins proche_, _proche_, _très proche_).
+**Une variable ordinale** permet de **classer** des observations à partir de plusieurs modalités hiérarchisées. L'exemple le plus connu est certainement l'échelle de Likert, très utilisée dans les sondages évaluant le degré d'accord d'une personne à une affirmation avec les modalités suivantes&nbsp;: _tout à fait d'accord_, _d'accord_, _ni en désaccord ni d'accord_, _pas d'accord_ et _pas du tout d'accord_. Une multitude de variantes sont toutefois possibles pour classer la fréquence d'un phénomène (_Très souvent_, _souvent_, _parfois_, _rarement_, _jamais_), l'importance accordée à un phénomène (_Pas du tout important_, _peu important_, _plus ou moins important_, _important_, _très important_) ou la proximité perçue d'un lieu (_très éloigné_, _loin_, _plus ou moins proche_, _proche_, _très proche_).
 
 En fonction du nombre de modalités qu'elle comprend, une variable qualitative (nominale ou ordinale) est soit **dichtomique (binaire)** (deux modalités), soit **polytomique** (plus de deux modalités). Par exemple, dans le recensement canadien, le *sexe* est une variable binaire (avec les modalités *sexe masculin*, *sexe féminin*), tandis que le *genre* est une variable polytomique (avec les modalités *genre masculin*, *genre féminin* et *diverses identités de genre*).
 
 ::: {.bloc_attention data-latex=""}
-Les variables nominales et ordinales sont habituellement encodées avec des valeurs numériques entières (par exemple, 1 pour _couple marié_, 2 pour _couple en union libre_ et 3 pour _famille monoparentale_). Toutefois, aucune opération arithmétique (moyenne ou écart-type par exemple) n'est possible sur ces valeurs. Dans R, on utilisera un facteur pour attribuer un intitulé à chacune des valeurs numériques de la variable qualitative :
+Les variables nominales et ordinales sont habituellement encodées avec des valeurs numériques entières (par exemple, 1 pour _couple marié_, 2 pour _couple en union libre_ et 3 pour _famille monoparentale_). Toutefois, aucune opération arithmétique (moyenne ou écart-type par exemple) n'est possible sur ces valeurs. Dans R, on utilisera un facteur pour attribuer un intitulé à chacune des valeurs numériques de la variable qualitative&nbsp;:
 
 `df$Famille <- factor(df$Famille, c(1,2,3), labels = c("couple marié","couple en union libre", "famille monoparentale"))`
 
@@ -91,11 +88,11 @@ On calculera toutefois les fréquences des différentes modalités pour une vari
 
 #### Les variables quantitatives {#sect02122}
 
-**Une variable discrète** permet de **compter** un phénomène dans un ensemble fini de valeurs, comme le nombre d'accidents impliquant un·e cycliste à une intersection sur une période de cinq ans ou encore le nombre de vélos en libre service disponibles à une station. Il existe ainsi une variable binaire sous-jacente : la présence ou non d'un accident à l'intersection ou d'un vélo ou non à la station pour laquelle on opère un comptage. Habituellement, une variable discrète ne peut prendre que des valeurs entières (sans décimales), comme le nombre de personnes fréquentant un parc.
+**Une variable discrète** permet de **compter** un phénomène dans un ensemble fini de valeurs, comme le nombre d'accidents impliquant un ou une cycliste à une intersection sur une période de cinq ans ou encore le nombre de vélos en libre service disponibles à une station. Il existe ainsi une variable binaire sous-jacente&nbsp;: la présence ou non d'un accident à l'intersection ou d'un vélo ou non à la station pour laquelle on opère un comptage. Habituellement, une variable discrète ne peut prendre que des valeurs entières (sans décimales), comme le nombre de personnes fréquentant un parc.
 
-**Une variable continue** permet de **mesurer** un phénomène avec un nombre infini de valeurs réelles (avec décimales) dans un intervalle donné. Par exemple, une variable relative à la distance de dépassement d'un·e cycliste par un véhicule motorisé pourrait varier de 0 à 5 mètres ($X \in \left[0,5\right]$); toutefois cette distance peut être de 0,759421 ou de 4,785612 mètres. Le nombre de décimales de la valeur réelle dépendra de la précision et de la fiabilité de la mesure. Pour un capteur de distance de dépassement, le nombre de décimales dépendra de la précision du lidar ou du sonar de l'appareil; aussi, l'utilisation de trois décimales – soit une précision au millimètre – est largement suffisant pour mesurer la distance de dépassement. Une variable continue est soit une variable d'intervalle, soit une variable de rapport. Les **variables d'intervalle** ont une échelle relative, c'est-à-dire que les intervalles entre les valeurs de la variables ne sont pas constants; elles n'ont pas de vrai zéro. Autrement dit, ce type de variable a une échelle relative avec un zéro arbitaire. Ces valeurs peuvent être manipulées uniquement par addition et soustraction et non par multiplication et division. La variable d'intervalle la plus connue est certainement celle de la température. S'il fait 10 degrés Celsius à Montréal et 30°C à Mumbai (soit 50 et 86 degrés en Fahrenheit), on peut affirmer qu'il y a 20°C ou 36°F d'écart entre les deux villes, mais on ne peut pas affirmer qu'il fait trois fois plus chaud à Mumbai. Presque toutes les mesures statistiques sur une variable d'intervalle peuvent être calculées, exceptés le coefficient de variation et la moyenne géométrique puisqu'il n'y a pas de vrai zéro et d'intervalles constants entre les valeurs.  À l'inverse, les **variables de rapport** ont une échelle absolue, c'est-à-dire que les intervalles entre les valeurs sont constants et elles ont un vrai zéro. Elles peuvent ainsi être manipulées par addition, soustraction, multiplication et division. Par exemple, le prix d'un produit exprimé dans une unité monétaire ou la distance exprimée dans le système métrique sont des variables de rapport. Un vélo dont le prix affiché est de 1000$ est bien deux fois plus cher qu'un autre à 500$, une piste cyclable hors rue à 25 mètres du tronçon routier le plus proche est bien quatre fois plus proche qu'une autre à 100 mètres.
+**Une variable continue** permet de **mesurer** un phénomène avec un nombre infini de valeurs réelles (avec décimales) dans un intervalle donné. Par exemple, une variable relative à la distance de dépassement d'un ou d'une cycliste par un véhicule motorisé pourrait varier de 0 à 5 mètres ($X \in \left[0,5\right]$); toutefois cette distance peut être de 0,759421 ou de 4,785612 mètres. Le nombre de décimales de la valeur réelle dépendra de la précision et de la fiabilité de la mesure. Pour un capteur de distance de dépassement, le nombre de décimales dépendra de la précision du lidar ou du sonar de l'appareil; aussi, l'utilisation de trois décimales – soit une précision au millimètre – est largement suffisant pour mesurer la distance de dépassement. Une variable continue est soit une variable d'intervalle, soit une variable de rapport. Les **variables d'intervalle** ont une échelle relative, c'est-à-dire que les intervalles entre les valeurs de la variables ne sont pas constants; elles n'ont pas de vrai zéro. Autrement dit, ce type de variable a une échelle relative avec un zéro arbitaire. Ces valeurs peuvent être manipulées uniquement par addition et soustraction et non par multiplication et division. La variable d'intervalle la plus connue est certainement celle de la température. S'il fait 10 degrés Celsius à Montréal et 30°C à Mumbai (soit 50 et 86 degrés en Fahrenheit), on peut affirmer qu'il y a 20°C ou 36°F d'écart entre les deux villes, mais on ne peut pas affirmer qu'il fait trois fois plus chaud à Mumbai. Presque toutes les mesures statistiques sur une variable d'intervalle peuvent être calculées, exceptés le coefficient de variation et la moyenne géométrique puisqu'il n'y a pas de vrai zéro et d'intervalles constants entre les valeurs.  À l'inverse, les **variables de rapport** ont une échelle absolue, c'est-à-dire que les intervalles entre les valeurs sont constants et elles ont un vrai zéro. Elles peuvent ainsi être manipulées par addition, soustraction, multiplication et division. Par exemple, le prix d'un produit exprimé dans une unité monétaire ou la distance exprimée dans le système métrique sont des variables de rapport. Un vélo dont le prix affiché est de 1000$ est bien deux fois plus cher qu'un autre à 500$, une piste cyclable hors rue à 25 mètres du tronçon routier le plus proche est bien quatre fois plus proche qu'une autre à 100 mètres.
 
-**Une variable semi-quantitative**, appelée aussi variable quantitative ordonnée, est une variable discrète ou continue dont les valeurs ont été regroupées en classes hiérarchisées. Par exemple, l'âge est une variable continue pouvant être transformée avec les groupes d'âge ordonnés suivants : *moins 25 ans*, *25 à 44 ans*, *45 à 64 ans* et *65 ans et plus*.
+**Une variable semi-quantitative**, appelée aussi variable quantitative ordonnée, est une variable discrète ou continue dont les valeurs ont été regroupées en classes hiérarchisées. Par exemple, l'âge est une variable continue pouvant être transformée avec les groupes d'âge ordonnés suivants&nbsp;: *moins 25 ans*, *25 à 44 ans*, *45 à 64 ans* et *65 ans et plus*.
 
 
 ## Les types de données {#sect022}
@@ -104,15 +101,15 @@ Différents types de données sont utilisés en sciences sociales. L'objectif ic
 
 ### Données secondaires *versus* données primaires {#sect0221}
 
-Les **données secondaires** sont des données qui existent déjà au début de votre projet de recherche : pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
+Les **données secondaires** sont des données qui existent déjà au début de votre projet de recherche&nbsp;: pas besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
   
 ::: {.bloc_notes data-latex=""}
-Au Canada, les chercheurs (étudiant·e·s et professeur·e·s) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du ([RCCDR](https://crdcn.org/fr/donn%C3%A9es){target="_blank"}) afin d'explorer les différentes enquêtes disponibles.
+Au Canada, les chercheur(e)s (étudiant(e)s et professeur(e)s) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du ([RCCDR](https://crdcn.org/fr/donn%C3%A9es){target="_blank"}) afin d'explorer les différentes enquêtes disponibles.
 
 Au Québec, l'accès à ces enquêtes est possible dans les différentes antennes du Centre interuniversitaire québécois de statistiques sociales de Statistique Canada ([CIQSS](https://www.ciqss.org/){target="_blank"}).
 :::
 
-Par opposition, les **données primaires** n'existent pas quand vous démarrez votre projet : vous devez les collecter spécifiquement pour votre étude! Par exemple, un·e chercheur·e souhaitant analyser l'exposition des cyclistes au bruit et à la pollution dans une ville donnée devra réaliser une collecte de données avec idéalement plusieurs participants (équipés de différents capteurs), et ce, sur plusieurs jours. 
+Par opposition, les **données primaires** n'existent pas quand vous démarrez votre projet&nbsp;: vous devez les collecter spécifiquement pour votre étude! Par exemple, un·e chercheur·e souhaitant analyser l'exposition des cyclistes au bruit et à la pollution dans une ville donnée devra réaliser une collecte de données avec idéalement plusieurs participants (équipés de différents capteurs), et ce, sur plusieurs jours. 
 Une collecte de données primaires peut aussi être réalisée avec une enquête par sondage. Brièvement, réaliser une collecte de données primaires nécessite différentes phases complexes comme la définition de la méthode de collecte, de la population à l'étude, l’estimation de la taille de l'échantillon, la validation des outils de collecte avec une phase de test, la réalisation de la collecte, la structuration, la gestion et l'exploitation de données collectées. Finalement, dans le milieu académique, une collecte de données primaires auprès d'individus doit être approuvée par le comité d'éthique de la recherche de l'université à laquelle est affilié·e le ou la responsable du projet de recherche (qu'il soit professeur·e, chercheur·e ou étudiant·e).
 
 ###  Données transversales *versus* données longitudinales {#sect0222}
@@ -122,7 +119,7 @@ Les **données longitudinales**, appelées aussi données par panel, sont des me
 
 ### Données spatiales versus données aspatiales {#sect0223}
 
-Les observations des **données spatiales** sont des unités spatiales géoréférencées (points, lignes, polygones ou encore pixels d’une image). Elles peuvent être par exemple :
+Les observations des **données spatiales** sont des unités spatiales géoréférencées (points, lignes, polygones ou encore pixels d’une image). Elles peuvent être par exemple&nbsp;:
 
 * des points *(x,y)* ou *(lat-long)* représentant des entreprises avec plusieurs variables (adresse, date de création, nombre d'employés, secteurs d'activité, etc.);
 *  les lignes représentant des tronçons de rues pour lesquels plusieurs variables sont disponibles (types d’axe, longueur en mètres, nombre de voies, débit journalier moyen annuel, etc.);
@@ -133,7 +130,7 @@ Les observations des **données spatiales** sont des unités spatiales géoréf�
 
 ### Données individuelles *versus* données agrégées {#sect0224}
 
-Comme son nom l'indique, pour des **données individuelles**, chaque observation correspond à un individu. Les microdonnées de recensement ou d'enquêtes, par exemple, sont des données individuelles pour lesquelles toute une série de variables est disponible. Une étude analysant les caractéristiques de chaque arbre d'un quartier nécessite aussi des données individuelles : l'information doit être disponible pour chaque arbre. Pour les microdonnées des recensements canadiens, « chaque enregistrement au niveau de la personne comprend des identifiants (comme les identifiants du ménage et de la famille), des variables géographiques et des variables directes et dérivées tirées du questionnaire » ([Statistique Canada](https://www150.statcan.gc.ca/n1/pub/12-002-x/2012001/article/11642-fra.htm){target="_blank"}). Comme signalé plus haut, ces microdonnées de recensement ou d'enquêtes sont uniquement accessibles dans les Centres de données de recherche (CDR).
+Comme son nom l'indique, pour des **données individuelles**, chaque observation correspond à un individu. Les microdonnées de recensement ou d'enquêtes, par exemple, sont des données individuelles pour lesquelles toute une série de variables est disponible. Une étude analysant les caractéristiques de chaque arbre d'un quartier nécessite aussi des données individuelles&nbsp;: l'information doit être disponible pour chaque arbre. Pour les microdonnées des recensements canadiens, «&nbsp;chaque enregistrement au niveau de la personne comprend des identifiants (comme les identifiants du ménage et de la famille), des variables géographiques et des variables directes et dérivées tirées du questionnaire&nbsp;» ([Statistique Canada](https://www150.statcan.gc.ca/n1/pub/12-002-x/2012001/article/11642-fra.htm){target="_blank"}). Comme signalé plus haut, ces microdonnées de recensement ou d'enquêtes sont uniquement accessibles dans les Centres de données de recherche (CDR).
 
 Les données individuelles peuvent être **agrégées** à un niveau supérieur. Prenons le cas de microdonnées d'un recensement. Les informations disponibles pour chaque individu sont agrégées par territoire géographique (province, région économique, division de recensement, subdivision de recensement, région et agglomération de recensement, secteurs de recensement, aires de diffusion, etc.) en fonction du lieu de résidence des individus. Des sommaires statistiques – basés sur la moyenne, la médiane, la somme ou la proportion de chacune des variables mesurées au niveau individuel (âge, sexe, situation familiale, revenu, etc.) – sont alors construits pour ces différents découpages géographiques ([Statistique Canada](https://www.statcan.gc.ca/fra/idd/trousse/section5#a4){target="_blank"}).
 
@@ -151,15 +148,15 @@ Il convient d'être prudent dans l'analyse des données agrégées. Très fréqu
 
 Prenons un exemple concret tiré d'une étude récente sur la localisation des écoles primaires et le bruit aérien dans la région métropolitaine de Toronto [@audrin2021localisation]. Un des objectifs de cette étude est de vérifier si les écoles primaires (n=1420) avec des niveaux de bruit aérien élevés présentent des niveaux de réussite scolaire plus faibles. Les auteur·e·s concluent que les enfants scolarisés dans les écoles primaires exposées à des niveaux élevés de bruit aérien sont issus de milieux plus défavorisés et ont plus souvent une langue maternelle autre que la langue d’enseignement. Aussi, les écoles avec des niveaux bruit aérien élevé présentent des niveaux de réussite scolaire plus faibles. 
 
-Toutefois, étant donné que les variables sur la réussite scolaire sont mesurées au niveau de l'école (soit les pourcentages d’élèves ayant atteint ou dépassé la norme provinciale en lecture, en écriture et en mathématique, respectivement pour la 3^e^ année et la 6^e^ année) et non au niveau individuel, les auteur·e·s ne peuvent conclure que le bruit aérien à un impact significatif sur la réussite scolaire des élèves :
+Toutefois, étant donné que les variables sur la réussite scolaire sont mesurées au niveau de l'école (soit les pourcentages d’élèves ayant atteint ou dépassé la norme provinciale en lecture, en écriture et en mathématique, respectivement pour la 3^e^ année et la 6^e^ année) et non au niveau individuel, les auteur·e·s ne peuvent conclure que le bruit aérien à un impact significatif sur la réussite scolaire des élèves&nbsp;:
 
-« Nous avons pu démontrer que les écoles primaires localisées dans la zone NEF 25 présentent des taux de réussite plus faibles. Rappelons toutefois qu’une association obtenue avec des données agrégées ne peut pas nous permettre de conclure à une influence directe au niveau individuel, car l’agrégation des données entraîne une perte d’information. Cette erreur d’interprétation dite erreur écologique (ecological fallacy) tend à laisser penser que les associations entre les groupes s’appliquent à chaque individu (Robinson, 1950). Nos résultats gagneraient à être corroborés à partir d’analyses reposant sur des données individuelles »
+«&nbsp;Nous avons pu démontrer que les écoles primaires localisées dans la zone NEF 25 présentent des taux de réussite plus faibles. Rappelons toutefois qu’une association obtenue avec des données agrégées ne peut pas nous permettre de conclure à une influence directe au niveau individuel, car l’agrégation des données entraîne une perte d’information. Cette erreur d’interprétation dite erreur écologique (ecological fallacy) tend à laisser penser que les associations entre les groupes s’appliquent à chaque individu (Robinson, 1950). Nos résultats gagneraient à être corroborés à partir d’analyses reposant sur des données individuelles&nbsp;»
 :::
 
 Pour le cas de l'agrégation géographique, il convient alors de bien comprendre la hiérarchie des régions géographiques délimitées par l’organisme ou l’agence ayant la responsabilité de produire, gérer et diffuser les données des recensements et des enquêtes, puis de sélectionner le découpage géographique qui répond le mieux à votre question de recherche.
 
 ::: {.bloc_astuce data-latex=""}
-Pour le recensement de 2016 de Statistique Canada vous pourrez consulter :
+Pour le recensement de 2016 de Statistique Canada vous pourrez consulter&nbsp;:
 
 * la [hiérarchie des régions géographiques normalisées pour la diffusion](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/figures/f1_1-fra.cfm){target="_blank"}
 * le [glossaire illustré](https://www150.statcan.gc.ca/n1/pub/92-195-x/92-195-x2016001-fra.htm){target="_blank"} des régions géographiques
@@ -191,28 +188,28 @@ Autre exemple, une autre chercheure souhaite comprendre les facteurs influençan
 
 ### Deux grandes familles de méthodes statistiques {#sect0232}
 
-On distingue habituellement deux grandes familles de méthodes statistiques : la statistique descriptive et exploratoire et la statistiques inférentielle et confirmatoire. Il existe de nombreuses définitions de ces deux branches de la statistique, celles proposées de Lebart et al. [-@lebart1995statistique] étant parmi les plus abouties :
+On distingue habituellement deux grandes familles de méthodes statistiques&nbsp;: la statistique descriptive et exploratoire et la statistiques inférentielle et confirmatoire. Il existe de nombreuses définitions de ces deux branches de la statistique, celles proposées de Lebart et al. [-@lebart1995statistique] étant parmi les plus abouties&nbsp;:
 
-* « **La statistique descriptive et exploratoire** : elle permet, par des résumés et des graphiques plus ou moins élaborés, de décrire des ensembles de données statistiques, d’établir des relations entre les variables sans faire jouer de rôle privilégié à une variable particulière. Les conclusions ne portent dans cette phase de travail que sur les données étudiées, sans être inférées à une population plus large. L’analyse exploratoire s’appuie essentiellement sur des notions élémentaires telles que des indicateurs de moyenne et de dispersion, sur des représentations graphiques. [...]
-* **La statistique inférentielle et confirmatoire** : elle permet de valider ou d’infirmer, à partir de tests statistiques ou de modèles probabilistes, des hypothèses formulées a priori (ou après une phase exploratoire), et d’extrapoler, c’est-à-dire d’étendre certaines propriétés d’un échantillon à une population plus large. Les conclusions obtenues à partir des données vont au-delà de ces données. La statistique confirmatoire fait surtout appel aux méthodes dites explicatives et prévisionnelles, destinées comme leurs noms l’indiquent, à expliquer puis à prévoir, suivant des règles de décision, une variable privilégiée à l’aide d’une ou plusieurs variables explicatives (régressions multiples et logistiques, analyse de variance, analyse discriminante, segmentation, etc.) » [@lebart1995statistique, p. 209].
+* «&nbsp;**La statistique descriptive et exploratoire**&nbsp;: elle permet, par des résumés et des graphiques plus ou moins élaborés, de décrire des ensembles de données statistiques, d’établir des relations entre les variables sans faire jouer de rôle privilégié à une variable particulière. Les conclusions ne portent dans cette phase de travail que sur les données étudiées, sans être inférées à une population plus large. L’analyse exploratoire s’appuie essentiellement sur des notions élémentaires telles que des indicateurs de moyenne et de dispersion, sur des représentations graphiques. [...]
+* **La statistique inférentielle et confirmatoire**&nbsp;: elle permet de valider ou d’infirmer, à partir de tests statistiques ou de modèles probabilistes, des hypothèses formulées a priori (ou après une phase exploratoire), et d’extrapoler, c’est-à-dire d’étendre certaines propriétés d’un échantillon à une population plus large. Les conclusions obtenues à partir des données vont au-delà de ces données. La statistique confirmatoire fait surtout appel aux méthodes dites explicatives et prévisionnelles, destinées comme leurs noms l’indiquent, à expliquer puis à prévoir, suivant des règles de décision, une variable privilégiée à l’aide d’une ou plusieurs variables explicatives (régressions multiples et logistiques, analyse de variance, analyse discriminante, segmentation, etc.)&nbsp;» [@lebart1995statistique, p. 209].
 
 ## Notion de distribution {#sect024}
 
 ::: {.bloc_objectif data-latex=""}
-Dans cette section, nous abordons un concept central de la statistique : les distributions. Prenez le temps de lire cette section à tête reposée et assurez-vous de bien comprendre chaque idée avant de passer à la suivante. N’hésitez pas à y revenir plusieurs fois si nécessaire, car la compréhension de ces concepts est essentielle pour utiliser adéquatement les méthodes que nous abordons dans ce livre.
+Dans cette section, nous abordons un concept central de la statistique&nbsp;: les distributions. Prenez le temps de lire cette section à tête reposée et assurez-vous de bien comprendre chaque idée avant de passer à la suivante. N’hésitez pas à y revenir plusieurs fois si nécessaire, car la compréhension de ces concepts est essentielle pour utiliser adéquatement les méthodes que nous abordons dans ce livre.
 :::
 
 ### Définitions générales
 
 En probabilité, on s’intéresse aux résultats d’expériences. Du point de vue de la théorie des probabilités, Lancer un dé, mesurer la pollution atmosphérique, compter le nombre de collisions à une intersection, demander à une personne d’évaluer son sentiment de sécurité sur une échelle de 1 à 10 sont autant d’expériences pouvant produire des résultats.
 
-**Une distribution est un modèle mathématique permettant d’associer pour chaque résultat possible d’une expérience la probabilité d’obtenir ce résultat**. D'un point de vue pratique, si nous disposions de la distribution régissant l’expérience : « mesurer la concentration d’ozone à Montréal à 13h en été », nous pourrions calculer la probabilité de mesurer une valeur inférieure à 15 μg/m<sup>3</sup>.
+**Une distribution est un modèle mathématique permettant d’associer pour chaque résultat possible d’une expérience la probabilité d’obtenir ce résultat**. D'un point de vue pratique, si nous disposions de la distribution régissant l’expérience&nbsp;: «&nbsp;mesurer la concentration d’ozone à Montréal à 13h en été&nbsp;», nous pourrions calculer la probabilité de mesurer une valeur inférieure à 15 μg/m<sup>3</sup>.
 
-Notez que l'utilisation que nous faisons ici du terme « distribution » est un anglicisme (éhonté diront certain(e)s). En effet, en français, la définition précédente est plus proche du terme de « loi de probabilité ». Cependant, la quasi-totalité de la documentation sur R est en anglais, et dans la pratique, ces deux termes ont tendance à se confondre. Nous avons donc fait le choix de poursuivre avec ce terme dans le reste du livre.
+Notez que l'utilisation que nous faisons ici du terme «&nbsp;distribution&nbsp;» est un anglicisme (éhonté diront certain(e)s). En effet, en français, la définition précédente est plus proche du terme de «&nbsp;loi de probabilité&nbsp;». Cependant, la quasi-totalité de la documentation sur R est en anglais, et dans la pratique, ces deux termes ont tendance à se confondre. Nous avons donc fait le choix de poursuivre avec ce terme dans le reste du livre.
 
 Une distribution est toujours définies dans un intervalle en dehors duquel elle n'est définie; les valeurs dans cet intervalle sont appelées **l’espace d’échantillonnage**. Il s’agit donc des valeurs possibles que peut produire l’expérience. La somme des probabilités de l’ensemble des valeurs de l’espace d’échantillonnage est 1 (100%). Intuitivement, cela signifie que si l’on réalise l’expérience, on obtient nécessairement un résultat, et que la somme des probabilités est répartie entre tous les résultats possibles de l’expérience. En langage mathématique, on dit que l’intégrale de la fonction de densité d'une distribution est 1 dans son intervalle de définition.
 
-Prenons un exemple concret avec l’expérience suivante : tirer à pile ou face avec une pièce de monnaie non truquée. Si l’on souhaite décrire la probabilité d’obtenir pile ou face, on peut utiliser une distribution qui aura comme espace d’échantillonnage [pile; face] et ces deux valeurs auront chacune comme probabilité 0,5. Il est facile d’étendre cet exemple au cas d’un dé à six faces. La distribution de probabilité décrivant l’expérience « lancer le dé » a pour espace d’échantillonnage [1,2,3,4,5,6], chacune de ces valeurs étant associée à la probabilité 1/6.
+Prenons un exemple concret avec l’expérience suivante&nbsp;: tirer à pile ou face avec une pièce de monnaie non truquée. Si l’on souhaite décrire la probabilité d’obtenir pile ou face, on peut utiliser une distribution qui aura comme espace d’échantillonnage [pile; face] et ces deux valeurs auront chacune comme probabilité 0,5. Il est facile d’étendre cet exemple au cas d’un dé à six faces. La distribution de probabilité décrivant l’expérience «&nbsp;lancer le dé&nbsp;» a pour espace d’échantillonnage [1,2,3,4,5,6], chacune de ces valeurs étant associée à la probabilité 1/6.
 
 Chacune des deux expériences précédentes est régie par une distribution appartenant à la famille des distributions **discrètes**. Elles servent à représenter des expériences dont le nombre de valeurs possibles est fini. Par opposition, la seconde famille de distributions regroupe les distributions **continues**, décrivant des expériences dont le nombre de résultats possibles est en principe infini. Par exemple, mesurer la taille d’une personne adulte sélectionnée au hasard peut produire en principe un nombre infini de valeurs. Les distributions sont utiles pour décrire les résultats potentiels d’une expérience. Reprenons notre exemple du dé. Nous savons que chaque face a une chance sur six d’être tirée au hasard. Nous pouvons représenter cette distribution avec un graphique (figure \@ref(fig:fig251)). 
 
@@ -249,7 +246,7 @@ ggplot(mapping = aes(x = face, weight = prob_exp10), data = df) +
   ylim(c(0,0.5))
 ```
 
-Il s'agit de la distribution **empirique**. Chaque échantillon aura sa propre distribution empirique. Cependant, comme le prédit la loi des grands nombres : si une expérience est répétée un grand nombre de fois, la probabilité empirique d’un résultat se rapproche de la probabilité théorique à mesure que le nombre de répétitions augmente. Du point de vue de la théorie des probabilités, chaque échantillon correspond à un ensemble de tirages aléatoires effectués à partir de la distribution théorique du phénomène étudié. 
+Il s'agit de la distribution **empirique**. Chaque échantillon aura sa propre distribution empirique. Cependant, comme le prédit la loi des grands nombres&nbsp;: si une expérience est répétée un grand nombre de fois, la probabilité empirique d’un résultat se rapproche de la probabilité théorique à mesure que le nombre de répétitions augmente. Du point de vue de la théorie des probabilités, chaque échantillon correspond à un ensemble de tirages aléatoires effectués à partir de la distribution théorique du phénomène étudié. 
 
 Pour nous en convaincre, collectons trois échantillons de lancer de dé de respectivement 30, 100 et 1000 observations (figure \@ref(fig:fig253)). Comme nous avons pu le montrer avec la figure \@ref(fig:fig252), nous connaissons la distribution théorique qui régit cette expérience.
 
@@ -302,9 +299,9 @@ ggplot(mapping = aes(x = face, weight = value), data = df_melt)+
 ```
 On constate bien qu’au fur et à mesure que la taille de l’échantillon augmente, on tend vers la distribution théorique.
 
-Cette relation a été étudiée pour la première fois au XVIII^e^ siècle par le mathématicien Daniel Bernoulli qui a montré que la probabilité que la moyenne d’une distribution empirique soit éloignée de la moyenne de la distribution théorique dont elle est tirée diminuait lorsqu’on augmente le nombre des tirages et donc la taille de l’échantillon. Un autre mathématicien, Siméon-Denis Poisson, l’a fait connaître sous le nom de « loi des grands nombres  ».
+Cette relation a été étudiée pour la première fois au XVIII^e^ siècle par le mathématicien Daniel Bernoulli qui a montré que la probabilité que la moyenne d’une distribution empirique soit éloignée de la moyenne de la distribution théorique dont elle est tirée diminuait lorsqu’on augmente le nombre des tirages et donc la taille de l’échantillon. Un autre mathématicien, Siméon-Denis Poisson, l’a fait connaître sous le nom de «&nbsp;loi des grands nombres&nbsp;».
 
-Les distributions théoriques sont utilisées pour modéliser des phénomènes réels et sont à la base de presque tous les tests statistiques d'inférence fréquentiste ou bayésienne. En pratique, la question que l’on se pose le plus souvent est : quelle distribution théorique peut le mieux décrire le phénomène empirique à l’étude? Pour répondre à cette question, deux approches sont possibles :
+Les distributions théoriques sont utilisées pour modéliser des phénomènes réels et sont à la base de presque tous les tests statistiques d'inférence fréquentiste ou bayésienne. En pratique, la question que l’on se pose le plus souvent est&nbsp;: quelle distribution théorique peut le mieux décrire le phénomène empirique à l’étude? Pour répondre à cette question, deux approches sont possibles&nbsp;:
 
 * Considérant la littérature existante sur le sujet, les connaissances accumulées et la nature de la variable étudiée, il est possible de sélectionner des distributions théoriques pouvant vraisemblablement correspondre au phénomène mesuré.
 * Comparer visuellement ou à l’aide de tests statistiques la distribution empirique de la variable et diverses distributions théoriques pour trouver la plus adaptée.
@@ -313,7 +310,7 @@ Idéalement, le choix d’une distribution théorique devrait reposer sur ces de
 
 ### Anatomie d'une distribution
 
-Une distribution (ou loi de probabilité) est une fonction. Il est possible de la représenter à l’aide d’une formule mathématique (appelée **fonction de masse** pour les distributions discrètes et **fonction de densité** pour les distributions continues) associant chaque résultat possible de l'expérience régie par la distribution à la probabilité d'observer ce résultat. Prenons un premier exemple concret avec la distribution théorique associée au lancer de pièce de monnaie : la distribution de **Bernoulli**. Sa formule est la suivante :
+Une distribution (ou loi de probabilité) est une fonction. Il est possible de la représenter à l’aide d’une formule mathématique (appelée **fonction de masse** pour les distributions discrètes et **fonction de densité** pour les distributions continues) associant chaque résultat possible de l'expérience régie par la distribution à la probabilité d'observer ce résultat. Prenons un premier exemple concret avec la distribution théorique associée au lancer de pièce de monnaie&nbsp;: la distribution de **Bernoulli**. Sa formule est la suivante&nbsp;:
 
 \footnotesize
 \begin{equation} f(x ; p)=\left\{\begin{array}{ll}
@@ -324,8 +321,8 @@ p & \text { si } x=1
 \end{equation}
 \normalsize
 
-avec *p* la probabilité d’obtenir $x = 1$ (pile), et $1 – p$ la probabilité d’avoir $x = 0$ (face). La distribution de Bernoulli ne dépend que d’un paramètre : *p*. Avec différentes valeurs de *p*, on peut obtenir différentes formes pour la distribution de Bernoulli. Si *p* = 1/2, la distribution de Bernoulli décrit parfaitement l’expérience : obtenir pile à un lancer de pièce de monnaie. Si *p* = 1/6, elle décrit alors l’expérience : obtenir 4 (tout comme n’importe quelle valeur de 1 à 6) à un lancer de dé. Pour un exemple plus appliqué, la distribution de Bernoulli est utilisée en analyse spatiale pour étudier la concentration d’accidents de la route ou de crimes en milieu urbain. En chaque endroit du territoire, il est possible de calculer la probabilité qu’un tel évènement ait lieu ou non en modélisant les données observées au moyen de la loi de Bernoulli.
-La distribution continue la plus simple à décrire est certainement la distribution **uniforme**. Il s’agit d’une distribution un peu spéciale puisqu’elle attribue la même probabilité à toutes ses valeurs dans son espace d’échantillonnage. Elle est définie sur l’intervalle [-Inf ; +Inf] et a la fonction de densité suivante : 
+avec *p* la probabilité d’obtenir $x = 1$ (pile), et $1 – p$ la probabilité d’avoir $x = 0$ (face). La distribution de Bernoulli ne dépend que d’un paramètre&nbsp;: *p*. Avec différentes valeurs de *p*, on peut obtenir différentes formes pour la distribution de Bernoulli. Si *p* = 1/2, la distribution de Bernoulli décrit parfaitement l’expérience&nbsp;: obtenir pile à un lancer de pièce de monnaie. Si *p* = 1/6, elle décrit alors l’expérience&nbsp;: obtenir 4 (tout comme n’importe quelle valeur de 1 à 6) à un lancer de dé. Pour un exemple plus appliqué, la distribution de Bernoulli est utilisée en analyse spatiale pour étudier la concentration d’accidents de la route ou de crimes en milieu urbain. En chaque endroit du territoire, il est possible de calculer la probabilité qu’un tel évènement ait lieu ou non en modélisant les données observées au moyen de la loi de Bernoulli.
+La distribution continue la plus simple à décrire est certainement la distribution **uniforme**. Il s’agit d’une distribution un peu spéciale puisqu’elle attribue la même probabilité à toutes ses valeurs dans son espace d’échantillonnage. Elle est définie sur l’intervalle [-Inf; +Inf] et a la fonction de densité suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x ; \mathrm{a} ; \mathrm{b})=\left\{\begin{array}{cc}
@@ -352,12 +349,12 @@ ggplot()+
        title = 'distribution uniforme')+
   scale_color_identity(name = "Paramètres",
                       breaks = c('#d90429', '#8d99ae', '#2b2d42'),
-                      labels = c("a = 15 ; b = -15", "a = 10 ; b = -10",
-                                 "a = 1 ; b = 11"),
+                      labels = c("a = 15; b = -15", "a = 10; b = -10",
+                                 "a = 1; b = 11"),
                       guide = "legend")
 ```
 
-On observe clairement que toutes les valeurs de *x* entre *a* et *b* ont la même probabilité pour chacune de trois distributions uniformes présentées dans le graphique. Plus l’étendue est grande ($a-b$), plus l’espace d’échantillonnage est grand et plus la probabilité totale est répartie dans cet espace. Cette distribution serait donc idéale pour décrire un phénomène pour lequel chaque valeur a autant de chance de se produire qu’une autre.  Prenons pour exemple un cas fictif avec un jeu de hasard qui vous proposerait la situation suivante : en tirant sur la manette d’une machine à sous, un nombre est tiré aléatoirement entre -60 et +50. Si le nombre est négatif, vous perdez de l’argent et inversement si le nombre est positif. Nous pouvons représenter cette situation avec une distribution uniforme continue et l’utiliser pour calculer quelques informations essentielles : 
+On observe clairement que toutes les valeurs de *x* entre *a* et *b* ont la même probabilité pour chacune de trois distributions uniformes présentées dans le graphique. Plus l’étendue est grande ($a-b$), plus l’espace d’échantillonnage est grand et plus la probabilité totale est répartie dans cet espace. Cette distribution serait donc idéale pour décrire un phénomène pour lequel chaque valeur a autant de chance de se produire qu’une autre.  Prenons pour exemple un cas fictif avec un jeu de hasard qui vous proposerait la situation suivante&nbsp;: en tirant sur la manette d’une machine à sous, un nombre est tiré aléatoirement entre -60 et +50. Si le nombre est négatif, vous perdez de l’argent et inversement si le nombre est positif. Nous pouvons représenter cette situation avec une distribution uniforme continue et l’utiliser pour calculer quelques informations essentielles&nbsp;: 
 
 1. Selon cette distribution, quelle est la probabilité de gagner de l’argent lors d’un tirage (x > 0)? 
 2. Quelle est la probabilité de perdre de l’argent? (x < 0)?
@@ -377,14 +374,14 @@ punif(30, min = -60, max = 50,lower.tail = F)
 Les paramètres permettent donc d’ajuster la fonction de masse ou de densité d’une distribution afin de lui permettre de prendre des formes différentes. Certains paramètres vont changer la localisation de la distribution (la déplacer vers la droite ou la gauche de l’axe des X), d’autres son degré de dispersion (distribution pointue ou aplatie) ou encore sa forme (symétrie). Les différents paramètres d’une distribution correspondent donc à sa carte d’identité et donnent une idée précise sur sa nature.
 
 ::: {.bloc_aller_loin data-latex=""}
-**Fonction de répartition, de survie et d'intensité** : 
+**Fonction de répartition, de survie et d'intensité**&nbsp;: 
 
 Si la fonction de densité ou de densité d'une distribution sont le plus souvent utilisées pour décrire une distribution, d'autres types de fonctions peuvent également être employées et disposent de propriétés intéressantes.
 
-1. La fonction de répartition : il s'agit d'une fonction décrivant le cumul de probabilités d'une distribution. Cette fonction a un minimum de zéro qui est obtenu pour la plus petite valeur de l'espace d'échantillonnage de la distribution, et un maximum de un pour la plus grande valeur de ce même espace. Formellement, la fonction de répartition ($F$) est l’intégrale de la fonction de densité ($f$). Elle est appelée.
+1. La fonction de répartition&nbsp;: il s'agit d'une fonction décrivant le cumul de probabilités d'une distribution. Cette fonction a un minimum de zéro qui est obtenu pour la plus petite valeur de l'espace d'échantillonnage de la distribution, et un maximum de un pour la plus grande valeur de ce même espace. Formellement, la fonction de répartition ($F$) est l’intégrale de la fonction de densité ($f$). Elle est appelée.
 
 $$F(x) = \int_{-\infty}^{x}f(u)du$$
-2. La fonction de survie : soit l'inverse additif de la fonction de répartition ($R$)
+2. La fonction de survie&nbsp;: soit l'inverse additif de la fonction de répartition ($R$)
 
 $$R(x) = 1-F(x)$$
 3. La fonction de d'intensité, soit le quotient de la fonction de densité et de la fonction de survie ($D$).
@@ -408,7 +405,7 @@ knitr::include_graphics('images/distributions/all_distributions.png', dpi = NA)
 Nous avons déjà abordé cette distribution dans les exemples précédents. Elle permet de décrire un phénomène dont tous les résultats possibles ont exactement la même probabilité de se produire. L’exemple classique est bien sûr un lancer de dé.
 
 #### La distribution de Bernoulli
-La distribution de Bernoulli permet de décrire une expérience pour laquelle deux résultats sont possibles. Son espace d’échantillonnage est donc $[0 ; 1]$. Sa fonction de masse est la suivante : 
+La distribution de Bernoulli permet de décrire une expérience pour laquelle deux résultats sont possibles. Son espace d’échantillonnage est donc $[0; 1]$. Sa fonction de masse est la suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x ; p)=\left\{\begin{array}{ll}
@@ -419,11 +416,11 @@ p & \text { si } x=1
 \end{equation}
 \normalsize
 
-avec *p*, la probabilité d’obtenir $x = 1$ (réussite) et donc $1 – p$, la probabilité d’avoir $x = 0$ (échec). La distribution de Bernoulli ne dépend que d’un paramètre : *p* contrôlant la probabilité de réussite de l’expérience. Notez que si $p = 1/2$, alors la distribution de Bernoulli est également une distribution uniforme.  Un exemple d’application de la distribution de Bernoulli en études urbaines serait la modélisation de la survie d’un·e cycliste (1 pour survie, 0 pour décès) lors d’une collision avec une voiture selon une vitesse donnée.
+avec *p*, la probabilité d’obtenir $x = 1$ (réussite) et donc $1 – p$, la probabilité d’avoir $x = 0$ (échec). La distribution de Bernoulli ne dépend que d’un paramètre&nbsp;: *p* contrôlant la probabilité de réussite de l’expérience. Notez que si $p = 1/2$, alors la distribution de Bernoulli est également une distribution uniforme.  Un exemple d’application de la distribution de Bernoulli en études urbaines serait la modélisation de la survie d’un·e cycliste (1 pour survie, 0 pour décès) lors d’une collision avec une voiture selon une vitesse donnée.
 
 #### La distribution binomiale
 
-La distribution binomiale est utilisée pour caractériser la somme de variables aléatoires (expériences) suivant chacune une distribution de Bernoulli. Un exemple simple serait l’accumulation des lancers d’une pièce de monnaie. Si l’on compte le nombre de fois où l’on fait pile, cette expérience est décrite par une distribution binomiale. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers). Sa fonction de masse est la suivante : 
+La distribution binomiale est utilisée pour caractériser la somme de variables aléatoires (expériences) suivant chacune une distribution de Bernoulli. Un exemple simple serait l’accumulation des lancers d’une pièce de monnaie. Si l’on compte le nombre de fois où l’on fait pile, cette expérience est décrite par une distribution binomiale. Son espace d’échantillonnage est donc $[0; +\infty[$ (limité aux nombres entiers). Sa fonction de masse est la suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} 
@@ -463,10 +460,10 @@ ggplot(df) +
 
 #### La distribution géométrique
 
-La distribution géométrique permet de représenter le nombre de tirages qu'il faut faire avec une distribution de Bernoulli avant d’obtenir une réussite. Par exemple, avec un lancer de dé, l’idée serait de compter le nombre de lancers nécessaires avant de tomber sur un 6. Son espace d’échantillonnage est donc $[1 ; +\infty[$ (limité aux nombres entiers). Sa distribution de masse est la suivante : 
+La distribution géométrique permet de représenter le nombre de tirages qu'il faut faire avec une distribution de Bernoulli avant d’obtenir une réussite. Par exemple, avec un lancer de dé, l’idée serait de compter le nombre de lancers nécessaires avant de tomber sur un 6. Son espace d’échantillonnage est donc $[1; +\infty[$ (limité aux nombres entiers). Sa distribution de masse est la suivante&nbsp;: 
 
 \footnotesize
-\begin{equation} f(x ; p)= (1-p)^xp
+\begin{equation} f(x; p)= (1-p)^xp
 (\#eq:geometrique)
 \end{equation}
 \normalsize
@@ -503,10 +500,10 @@ ggplot(df) +
 
 #### La distribution binomiale négative
 
-La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre *n* de réussites $[1 ; +\infty[$ (limité aux nombres entiers positifs). Sa formule est la suivante : 
+La distribution binomiale négative est proche de la distribution géométrique. Elle permet de représenter le nombre de tentatives nécessaires afin d’obtenir un nombre *n* de réussites $[1; +\infty[$ (limité aux nombres entiers positifs). Sa formule est la suivante&nbsp;: 
 
 \footnotesize
-\begin{equation} f(x ; n ; p)=\left(\begin{array}{c}
+\begin{equation} f(x; n; p)=\left(\begin{array}{c}
 x+n-1 \\
 n
 \end{array}\right) p^{n}(1-p)^{x}
@@ -546,10 +543,10 @@ ggplot(df) +
 
 #### La distribution de Poisson
 
-La distribution de Poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc $[0 ; +\infty[$ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un·e cycliste et de considérer que leur collision est une « réussite » (0 : pas d’accidents, 1 : accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de Poisson a une fonction de densité avec un seul paramètre généralement noté $\lambda$ (lambda) et est décrite par la formule suivante : 
+La distribution de Poisson est utilisée pour modéliser des comptages. Son espace d’échantillonnage est donc $[0; +\infty[$ (limité aux nombres entiers positifs). Par exemple, il est possible de compter à une intersection le nombre de collisions entre des automobilistes et des cyclistes sur une période donnée. Cet exemple devrait vous faire penser à la distribution binomiale vue plus haut. En effet, il serait possible de noter chaque rencontre entre une voiture et un·e cycliste et de considérer que leur collision est une «&nbsp;réussite&nbsp;» (0&nbsp;: pas d’accidents, 1&nbsp;: accident). Cependant, ce type de données serait fastidieux à collecter comparativement au simple comptage des accidents. La distribution de Poisson a une fonction de densité avec un seul paramètre généralement noté $\lambda$ (lambda) et est décrite par la formule suivante&nbsp;: 
 
 \footnotesize
-\begin{equation} f(x ; \lambda)=\frac{\lambda^{x}}{x !} e^{-\lambda}
+\begin{equation} f(x; \lambda)=\frac{\lambda^{x}}{x !} e^{-\lambda}
 (\#eq:poisson)
 \end{equation}
 \normalsize
@@ -585,10 +582,10 @@ ggplot(df) +
 
 #### La distribution de poisson avec excès de zéros {#sectpoissonzero}
 
-Il arrive régulièrement qu’une variable de comptage mesurée produise un très grand nombre de zéros. Prenons pour exemple le nombre de seringues de drogue injectable par tronçon de rue ramassées sur une période d’un mois. À l’échelle de toute une ville, un très grand nombre de tronçons n’auront tout simplement aucune seringue et dans ce contexte, la distribution classique de Poisson n’est pas adaptée. On lui préfère alors une autre distribution : la distribution de Poisson avec excès de zéros (ou distribution de Pólya) qui inclut un paramètre contrôlant la forte présence de zéros. Sa fonction de densité est la suivante : 
+Il arrive régulièrement qu’une variable de comptage mesurée produise un très grand nombre de zéros. Prenons pour exemple le nombre de seringues de drogue injectable par tronçon de rue ramassées sur une période d’un mois. À l’échelle de toute une ville, un très grand nombre de tronçons n’auront tout simplement aucune seringue et dans ce contexte, la distribution classique de Poisson n’est pas adaptée. On lui préfère alors une autre distribution&nbsp;: la distribution de Poisson avec excès de zéros (ou distribution de Pólya) qui inclut un paramètre contrôlant la forte présence de zéros. Sa fonction de densité est la suivante&nbsp;: 
 
 \footnotesize
-\begin{equation} f(x ; \lambda; p)=(1-p)\frac{\lambda^{x}}{x !} e^{-\lambda}
+\begin{equation} f(x; \lambda; p)=(1-p)\frac{\lambda^{x}}{x !} e^{-\lambda}
 (\#eq:poissonzi)
 \end{equation}
 \normalsize
@@ -629,8 +626,8 @@ ggplot(df) +
 ```
 
 #### La distribution gaussienne
-Plus communément appelée la distribution normale, la distribution gaussienne est utilisée pour représenter des variables continues centrées sur leur moyenne. Son espace d’échantillonnage est ]-$\infty$ ; +$\infty$[. Cette distribution joue un rôle central en statistique. Selon la formule consacrée, cette distribution résulte de la superposition d’un très grand nombre de petits effets fortuits indépendants. C’est ce qu’exprime formellement le théorème central limite qui montre que la somme d’un grand nombre de variables aléatoires tend généralement vers une distribution normale. Autrement dit, lorsque nous répétons une même expérience et que nous conservons les résultats de ces expériences, la distribution du résultat de ces expériences tend vers la normalité. Ceci s’explique par le fait qu’en moyenne, chaque répétition de l’expérience produit le même résultat, mais qu’un ensemble de petits facteurs aléatoires viennent rajouter de la variabilité dans les données collectées. Prenons un exemple concret, si l’on plante une centaine d’arbres simultanément dans un parc avec un degré d’ensoleillement identique et qu’on leur apporte les mêmes soins pendant dix ans, la distribution de leurs tailles suivra une distribution normale. Un ensemble de facteurs aléatoires (composition du sol, exposition au vent, aléas génétiques, passage de nuages, etc.) auront affecté différemment chaque arbre, ajoutant ainsi un peu de hasard dans leurs tailles finales. Ces dernières seront cependant davantage affectées par des paramètres centraux (espèces, ensoleillement, arrosage, etc.), et seront donc centrées autour d’une moyenne.
-La fonction de densité de la distribution normale est la suivante :
+Plus communément appelée la distribution normale, la distribution gaussienne est utilisée pour représenter des variables continues centrées sur leur moyenne. Son espace d’échantillonnage est $]-\infty; +\infty[$. Cette distribution joue un rôle central en statistique. Selon la formule consacrée, cette distribution résulte de la superposition d’un très grand nombre de petits effets fortuits indépendants. C’est ce qu’exprime formellement le théorème central limite qui montre que la somme d’un grand nombre de variables aléatoires tend généralement vers une distribution normale. Autrement dit, lorsque nous répétons une même expérience et que nous conservons les résultats de ces expériences, la distribution du résultat de ces expériences tend vers la normalité. Ceci s’explique par le fait qu’en moyenne, chaque répétition de l’expérience produit le même résultat, mais qu’un ensemble de petits facteurs aléatoires viennent rajouter de la variabilité dans les données collectées. Prenons un exemple concret, si l’on plante une centaine d’arbres simultanément dans un parc avec un degré d’ensoleillement identique et qu’on leur apporte les mêmes soins pendant dix ans, la distribution de leurs tailles suivra une distribution normale. Un ensemble de facteurs aléatoires (composition du sol, exposition au vent, aléas génétiques, passage de nuages, etc.) auront affecté différemment chaque arbre, ajoutant ainsi un peu de hasard dans leurs tailles finales. Ces dernières seront cependant davantage affectées par des paramètres centraux (espèces, ensoleillement, arrosage, etc.), et seront donc centrées autour d’une moyenne.
+La fonction de densité de la distribution normale est la suivante&nbsp;:
 
 \footnotesize
 \begin{equation} f(x ; \mu ; \sigma)=\frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}}
@@ -638,7 +635,7 @@ La fonction de densité de la distribution normale est la suivante :
 \end{equation}
 \normalsize
 
-avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa probabilité, $\mu$ (mu) la moyenne de la distribution normale (paramètre de localisation) et $\sigma$ (sigma) son écart-type (paramètre de dispersion). Cette fonction suit ce que l'on appelle la courbe normale ayant une forme de cloche. Notez que :
+avec *x* une valeur dont on souhaite connaître la probabilité, *f(x)* sa probabilité, $\mu$ (mu) la moyenne de la distribution normale (paramètre de localisation) et $\sigma$ (sigma) son écart-type (paramètre de dispersion). Cette fonction suit ce que l'on appelle la courbe normale ayant une forme de cloche. Notez que&nbsp;:
 
 * 68,2% de la masse de la distribution normale est comprise dans l’intervalle $[\mu- \sigma≤x≤ \mu+ \sigma]$ 
 * 95,4% dans l’intervalle $[\mu- 2\sigma≤x≤ \mu+ 2\sigma]$
@@ -692,7 +689,7 @@ generate_plot(dnorm,parametres,real_names,xlim,colors)
 
 #### La distribution gaussienne asymétrique
 
-La distribution normale asymétrique (skew-normal) est une extension de la distribution gaussienne permettant lever la contrainte de symétrie de la simple distribution gaussienne. Son espace d’échantillonnage est donc ]-$\infty$ ; +$\infty$[. Sa fonction de densité est la suivante :
+La distribution normale asymétrique (skew-normal) est une extension de la distribution gaussienne permettant lever la contrainte de symétrie de la simple distribution gaussienne. Son espace d’échantillonnage est donc $]-\infty; +\infty[$. Sa fonction de densité est la suivante&nbsp;:
 
 \footnotesize
 \begin{equation} f(x;\xi;\omega;\alpha) = \frac{2}{\omega \sqrt{2 \pi}} e^{-\frac{(x-\xi)^{2}}{2 \omega^{2}}} \int_{-\infty}^{\alpha\left(\frac{x-\xi}{\omega}\right)} \frac{1}{\sqrt{2 \pi}} e^{-\frac{t^{2}}{2}} d t
@@ -700,7 +697,7 @@ La distribution normale asymétrique (skew-normal) est une extension de la distr
 \end{equation}
 \normalsize
 
-avec $\xi$ (xi) le paramètre de localisation, $\omega$ (omega) le paramètre de dispersion (ou d’échelle) et $\alpha$ (alpha) le paramètre de forme (contrôlant le degré de symétrie). Si  $\alpha = 0$, alors la distribution skew-normal est une distribution normale ordinaire. Ce type de distribution est très utile lorsque que l’on souhaite modéliser une variable pour laquelle on sait que des valeurs plus extrêmes s’observeront d’un côté ou de l’autre de la distribution. Les revenus totaux annuels des personnes ou des ménages sont de très bons exemples puisqu’ils sont distribués généralement avec une asymétrie positive : bien qu’une moyenne existe, il y a généralement plus de personnes ou de ménages avec des revenus très faibles, que de personnes ou de ménages avec des revenus très élevés.
+avec $\xi$ (xi) le paramètre de localisation, $\omega$ (omega) le paramètre de dispersion (ou d’échelle) et $\alpha$ (alpha) le paramètre de forme (contrôlant le degré de symétrie). Si  $\alpha = 0$, alors la distribution skew-normal est une distribution normale ordinaire. Ce type de distribution est très utile lorsque que l’on souhaite modéliser une variable pour laquelle on sait que des valeurs plus extrêmes s’observeront d’un côté ou de l’autre de la distribution. Les revenus totaux annuels des personnes ou des ménages sont de très bons exemples puisqu’ils sont distribués généralement avec une asymétrie positive&nbsp;: bien qu’une moyenne existe, il y a généralement plus de personnes ou de ménages avec des revenus très faibles, que de personnes ou de ménages avec des revenus très élevés.
 
 ```{r fig261, echo=FALSE, fig.align='center', fig.cap="La distribution skew-Gaussienne", auto_pdf=TRUE, out.width='70%'}
 parametres <- list(location = c(-10,-5,10),
@@ -714,7 +711,7 @@ generate_plot(dskewnorm,parametres,real_names,xlim,colors)
 
 #### La distribution log-normale
 
-Au même titre que la distribution skew-normal, la distribution log-normale est une version asymétrique de la distribution normale. Son espace d’échantillonnage est ]0 ; +$\infty$[. Cela signifie que cette distribution ne peut décrire que des données continues et positives. Sa fonction de densité est la suivante : 
+Au même titre que la distribution skew-normal, la distribution log-normale est une version asymétrique de la distribution normale. Son espace d’échantillonnage est $]0; +\infty[$. Cela signifie que cette distribution ne peut décrire que des données continues et positives. Sa fonction de densité est la suivante&nbsp;: 
 \footnotesize
 \begin{equation} f(x ; \mu ; \sigma)=\frac{1}{x \sigma \sqrt{2 \pi}} e^{-\left(\frac{(\ln x-\mu)^{2}}{2 \sigma^{2}}\right)}
 (\#eq:loggaussien)
@@ -736,7 +733,7 @@ Plus spécifiquement, la distribution log-normale est une transformation de la d
 
 #### La distribution de Student {#sect024311}
 
-La distribution de Student joue un rôle important en statistique, elle est par exemple utilisée lors du test *t* pour calculer le degré de significativité du test. Comme la distribution gaussienne, la distribution de Student a une forme de cloche, est centrée sur sa moyenne et définie sur ]-$\infty$ ; +$\infty$[. Elle se distingue de la distribution normale principalement par le rôle que joue son troisième paramètre, $\nu$ : le nombre de degré de liberté, contrôlant le poids des queues de la distribution. Une petite valeur de $\nu$ signifie que la distribution a des « queues plus lourdes » (*heavy tails* en anglais). Entendez par-là que les valeurs extrêmes ont une plus grande probabilité d’occurrence : 
+La distribution de Student joue un rôle important en statistique, elle est par exemple utilisée lors du test *t* pour calculer le degré de significativité du test. Comme la distribution gaussienne, la distribution de Student a une forme de cloche, est centrée sur sa moyenne et définie sur $]-\infty; +\infty[$. Elle se distingue de la distribution normale principalement par le rôle que joue son troisième paramètre, $\nu$&nbsp;: le nombre de degré de liberté, contrôlant le poids des queues de la distribution. Une petite valeur de $\nu$ signifie que la distribution a des «&nbsp;queues plus lourdes&nbsp;» (*heavy tails* en anglais). Entendez par-là que les valeurs extrêmes ont une plus grande probabilité d’occurrence&nbsp;: 
 
 \footnotesize
 \begin{equation} p(x ; \nu ; \hat{\mu} ; \hat{\sigma})=\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right) \sqrt{\pi \nu} \hat{\sigma}}\left(1+\frac{1}{\nu}\left(\frac{x-\hat{\mu}}{\hat{\sigma}}\right)^{2}\right)^{-\frac{\nu+1}{2}}
@@ -760,7 +757,7 @@ generate_plot(dst,parametres,real_names,xlim,colors)
 
 #### La distribution de Cauchy
 
-La distribution de Cauchy est également une distribution symétrique définie sur l’intervalle ]-$\infty$ ; +$\infty$[. Elle a comme particularité d'être plus applatie que la distribution de Student (d’avoir des queues potentiellement plus lourdes). Elle est notamment utilisée pour modéliser des phénomènes extrêmes comme les précipitations maximales annuelles, les niveaux d’inondations maximaux annuels ou les seuils critiques de perte pour les portefeuilles financiers. Il est également intéressant de noter que le quotient de deux variables indépendantes normalement distribuées suit une distribution de Cauchy. Sa fonction de densité est la suivante : 
+La distribution de Cauchy est également une distribution symétrique définie sur l’intervalle $]-\infty; +\infty[$. Elle a comme particularité d'être plus applatie que la distribution de Student (d’avoir des queues potentiellement plus lourdes). Elle est notamment utilisée pour modéliser des phénomènes extrêmes comme les précipitations maximales annuelles, les niveaux d’inondations maximaux annuels ou les seuils critiques de perte pour les portefeuilles financiers. Il est également intéressant de noter que le quotient de deux variables indépendantes normalement distribuées suit une distribution de Cauchy. Sa fonction de densité est la suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} \frac{1}{\pi \gamma}\left[\frac{\gamma^{2}}{\left(x-x_{0}\right)^{2}+\gamma^{2}}\right]
@@ -768,7 +765,7 @@ La distribution de Cauchy est également une distribution symétrique définie s
 \end{equation}
 \normalsize
 
-Elle dépend donc de deux paramètres : $x_0$, le paramètre de localisation indiquant le pic de la distribution et $\gamma$, un paramètre de dispersion.
+Elle dépend donc de deux paramètres&nbsp;: $x_0$, le paramètre de localisation indiquant le pic de la distribution et $\gamma$, un paramètre de dispersion.
 
 ```{r fig264, echo=FALSE, fig.align='center', fig.cap="La distribution de Cauchy", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(location = c(-10,0,10),
@@ -783,7 +780,7 @@ generate_plot(dcauchy,parametres,real_names,xlim,colors)
 #### La distribution du Khi-carré
 
 La distribution du Khi<sup>2</sup> est utilisée dans de nombreux tests statistiques. Par exemple, le test du Khi<sup>2</sup> de Pearson est utilisé pour comparer les écarts au carré entre des fréquences attendues et observées de deux variables qualitatives.
-La distribution du Khi<sup>2</sup> décrit plus généralement la sommes des carrés d’un nombre *k* de variables indépendantes normalement distribuées. Il est assez rare de modéliser un phénomène à l’aide d’une distribution du Chi<sup>2</sup>, mais son omniprésence dans les tests statistiques justifie qu’elle soit mentionnée ici. Cette distribution est définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité : 
+La distribution du Khi<sup>2</sup> décrit plus généralement la sommes des carrés d’un nombre *k* de variables indépendantes normalement distribuées. Il est assez rare de modéliser un phénomène à l’aide d’une distribution du Chi<sup>2</sup>, mais son omniprésence dans les tests statistiques justifie qu’elle soit mentionnée ici. Cette distribution est définie sur l’intervalle $[0; +\infty[$ et a pour fonction de densité&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x;k) = \frac{1}{2^{k / 2} \Gamma(k / 2)} x^{k / 2-1} e^{-x / 2}
@@ -803,7 +800,7 @@ generate_plot(dchisq,parametres,real_names,xlim,colors)
 
 #### La distribution exponentielle
 
-La distribution exponentielle est une version continue de la distribution géométrique. Pour cette dernière, on s’intéresserait au nombre de tentatives nécessaires pour obtenir un résultat positif, soit une dimension discrète. Pour la distribution exponentielle, cette dimension discrète est remplacée par une dimension continue. L’exemple le plus intuitif est sûrement le cas du temps. Dans ce cas, la distribution exponentielle servirait à modéliser le temps d’attente nécessaire pour qu’un évènement se produise. Il pourrait aussi s’agir d’une force que l’on applique jusqu’à ce qu’un matériau cède. Cette distribution est donc définie sur l’intervalle [0 ; +$\infty$[ et a pour fonction de densité :
+La distribution exponentielle est une version continue de la distribution géométrique. Pour cette dernière, on s’intéresserait au nombre de tentatives nécessaires pour obtenir un résultat positif, soit une dimension discrète. Pour la distribution exponentielle, cette dimension discrète est remplacée par une dimension continue. L’exemple le plus intuitif est sûrement le cas du temps. Dans ce cas, la distribution exponentielle servirait à modéliser le temps d’attente nécessaire pour qu’un évènement se produise. Il pourrait aussi s’agir d’une force que l’on applique jusqu’à ce qu’un matériau cède. Cette distribution est donc définie sur l’intervalle [0; +$\infty$[ et a pour fonction de densité&nbsp;:
 
 \footnotesize
 \begin{equation} f(x;\lambda) = \lambda e^{-\lambda x}
@@ -824,7 +821,7 @@ La distribution exponentielle est conceptuellement proche de la distribution de 
 
 #### La distribution Gamma {#sect024315}
 
-La distribution Gamma peut être vue comme la généralisation d’un grand nombre de distributions. Ainsi la distribution exponentielle et du Khi<sup>2</sup> peuvent être vues comme des cas particuliers de la distribution Gamma. Cette distribution est définie sur l’intervalle ]0 ; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante : 
+La distribution Gamma peut être vue comme la généralisation d’un grand nombre de distributions. Ainsi la distribution exponentielle et du Khi<sup>2</sup> peuvent être vues comme des cas particuliers de la distribution Gamma. Cette distribution est définie sur l’intervalle ]0; +$\infty$[ (notez que le 0 est exclu) et sa fonction de densité est la suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x ; \alpha; \beta)=\frac{\beta^{\alpha} x^{\alpha-1} e^{-\beta x}}{\Gamma(\alpha)}
@@ -832,7 +829,7 @@ La distribution Gamma peut être vue comme la généralisation d’un grand nomb
 \end{equation}
 \normalsize
 
-Elle comprend donc deux paramètres : $\alpha$ et $\beta$. Le premier est le paramètre de forme et le second un paramètre d’échelle (à l’inverse d’un paramètre de dispersion, plus sa valeur est petite, plus la distribution sera dispersée). Notez que cette distribution ne dispose pas d’un paramètre de localisation. Du fait de sa flexibilité, cette distribution est largement utilisée, que ce soit dans la modélisation des temps d’attente avant un évènement, la taille des réclamations d’assurance, les quantités de précipitations, etc.
+Elle comprend donc deux paramètres&nbsp;: $\alpha$ et $\beta$. Le premier est le paramètre de forme et le second un paramètre d’échelle (à l’inverse d’un paramètre de dispersion, plus sa valeur est petite, plus la distribution sera dispersée). Notez que cette distribution ne dispose pas d’un paramètre de localisation. Du fait de sa flexibilité, cette distribution est largement utilisée, que ce soit dans la modélisation des temps d’attente avant un évènement, la taille des réclamations d’assurance, les quantités de précipitations, etc.
 
 ```{r fig267, echo=FALSE, fig.align='center', fig.cap="La distribution Gamma", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape = c(1,2,6),
@@ -845,9 +842,9 @@ generate_plot(dgamma,parametres,real_names,xlim,colors)
 
 #### La distribution Bêta {#sect024316}
 
-La distribution Bêta est définie sur l’intervalle [0 ; 1], elle est donc énormément utilisée pour modéliser des variables étant des proportions ou des probabilités.
+La distribution Bêta est définie sur l’intervalle [0; 1], elle est donc énormément utilisée pour modéliser des variables étant des proportions ou des probabilités.
 
-La distribution Bêta a été élaborée pour modéliser la superposition d’un très grand nombre de petits effets fortuits qui ne sont pas indépendants et notamment pour étudier l’effet de la réalisation d’un événement aléatoire sur la probabilité des tirages subséquents. Elle a aussi une utilité pratique en statistique, car elle peut être combinée avec d’autres distributions (distribution beta-binomial, beta-negative-binomial, etc.). Un autre usage plus rare, mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Ceci est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2*, suit une distribution beta. Un exemple concret serait par exemple la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante : 
+La distribution Bêta a été élaborée pour modéliser la superposition d’un très grand nombre de petits effets fortuits qui ne sont pas indépendants et notamment pour étudier l’effet de la réalisation d’un événement aléatoire sur la probabilité des tirages subséquents. Elle a aussi une utilité pratique en statistique, car elle peut être combinée avec d’autres distributions (distribution beta-binomial, beta-negative-binomial, etc.). Un autre usage plus rare, mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Ceci est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2*, suit une distribution beta. Un exemple concret serait par exemple la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x;\alpha;\beta) = \frac{1}{\mathrm{B}(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
@@ -868,7 +865,7 @@ generate_plot(dbeta,parametres,real_names,xlim,colors)
 
 #### La distribution de Weibull
 
-La distribution de Weibull est directement liée à la distribution exponentielle, cette dernière étant en fait un cas particulier de distribution Weibull. Elle sert donc souvent à modéliser une quantité *x* (souvent le temps) à accumuler pour qu’un évènement se produise. La distribution de Weibull est définie sur l’intervalle [0 ; +$\infty$[ et a la fonction de densité suivante : 
+La distribution de Weibull est directement liée à la distribution exponentielle, cette dernière étant en fait un cas particulier de distribution Weibull. Elle sert donc souvent à modéliser une quantité *x* (souvent le temps) à accumuler pour qu’un évènement se produise. La distribution de Weibull est définie sur l’intervalle [0; +$\infty$[ et a la fonction de densité suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x;\lambda) = \frac{k}{\lambda} (\frac{x}{\lambda})^{k-1} e^{-(\frac{x}{\lambda})^k}
@@ -876,7 +873,7 @@ La distribution de Weibull est directement liée à la distribution exponentiell
 \end{equation}
 \normalsize
 
-$\lambda$ est le paramètre de dispersion (analogue a celui d’une distribution exponentielle classique) et *k* le paramètre de forme. Pour bien comprendre le rôle de *k*, prenons un exemple : la propagation d’un champignon d’un arbre à son voisin. Si $k<1$, cela signifie que le risque instantané que l’évènement modélisé se produise diminue avec le temps (en d’autres termes, plus le temps passe, plus petite devient la probabilité d’être contaminé si on ne l’a pas déjà été). Si $k=1$, alors le risque instantané que l’évènement se produise reste identique dans le temps (la loi de Weibull se résume alors à une loi exponentielle). Si $k > 1$, alors la risque instantané que l’évènement se produisent augmente avec le temps (la probabilité pour un arbre d'être contaminé s'il ne l’a pas déjà été — pas seulement le risque cumulé — augmente en fonction du temps). La distribution de Weibull est très utilisée en analyse de survie, en météorologie, en ingénierie des matériaux et dans la théorie des valeurs extrêmes.
+$\lambda$ est le paramètre de dispersion (analogue a celui d’une distribution exponentielle classique) et *k* le paramètre de forme. Pour bien comprendre le rôle de *k*, prenons un exemple&nbsp;: la propagation d’un champignon d’un arbre à son voisin. Si $k<1$, cela signifie que le risque instantané que l’évènement modélisé se produise diminue avec le temps (en d’autres termes, plus le temps passe, plus petite devient la probabilité d’être contaminé si on ne l’a pas déjà été). Si $k=1$, alors le risque instantané que l’évènement se produise reste identique dans le temps (la loi de Weibull se résume alors à une loi exponentielle). Si $k > 1$, alors la risque instantané que l’évènement se produisent augmente avec le temps (la probabilité pour un arbre d'être contaminé s'il ne l’a pas déjà été — pas seulement le risque cumulé — augmente en fonction du temps). La distribution de Weibull est très utilisée en analyse de survie, en météorologie, en ingénierie des matériaux et dans la théorie des valeurs extrêmes.
 
 ```{r fig269, echo=FALSE, fig.align='center', fig.cap="La distribution de Weibull", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape = c(1,0.5,5),
@@ -889,7 +886,7 @@ generate_plot(dweibull,parametres,real_names,xlim,colors)
 
 #### La distribution Pareto
 
-Cette distribution a été élaborée par Vilfredo Pareto pour donner une forme mathématique à ce qui porte aujourd’hui le nom de principe de Pareto et qu’on exprime souvent de manière imagée — dans une société donnée, 20 % des individus possèdent 80 % de la richesse —, mais qui est plus justement exprimée en écrivant que, de manière générale, dans toute société, la plus grande partie du capital est détenue par une petite fraction de la population. Elle est définie sur l’intervalle  $[x_m ; +\infty[$ avec la fonction de densité suivante : 
+Cette distribution a été élaborée par Vilfredo Pareto pour donner une forme mathématique à ce qui porte aujourd’hui le nom de principe de Pareto et qu’on exprime souvent de manière imagée — dans une société donnée, 20% des individus possèdent 80% de la richesse —, mais qui est plus justement exprimée en écrivant que, de manière générale, dans toute société, la plus grande partie du capital est détenue par une petite fraction de la population. Elle est définie sur l’intervalle  $[x_m; +\infty[$ avec la fonction de densité suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x;x_m;k) = (\frac{x_m}{x})^k
@@ -908,13 +905,13 @@ xlim <- c(0,15)
 generate_plot(VGAM::dpareto,parametres,real_names,xlim,colors)
 ```
 
-Au-delà de la question de la répartition des richesse, la distribution de Pareto peut également être utilisée pour décrire la répartition de la taille des villes [@William_pareto_ville], [la popularité des hommes sur tinder](https://medium.com/@worstonlinedater/tinder-experiments-ii-guys-unless-you-are-really-hot-you-are-probably-better-off-not-wasting-your-2ddf370a6e9a){target="_blank"} ou la taille des fichiers échangés sur internet [@William_pareto]. Pour ces trois exemples, nous avons une situation avec : de nombreuses petites villes, profils peu attractifs, petits fichiers échangés et à l'inverse très peu de grandes villes, profils très attractifs, gros fichiers échangés.
+Au-delà de la question de la répartition des richesse, la distribution de Pareto peut également être utilisée pour décrire la répartition de la taille des villes [@William_pareto_ville], [la popularité des hommes sur tinder](https://medium.com/@worstonlinedater/tinder-experiments-ii-guys-unless-you-are-really-hot-you-are-probably-better-off-not-wasting-your-2ddf370a6e9a){target="_blank"} ou la taille des fichiers échangés sur internet [@William_pareto]. Pour ces trois exemples, nous avons une situation avec&nbsp;: de nombreuses petites villes, profils peu attractifs, petits fichiers échangés et à l'inverse très peu de grandes villes, profils très attractifs, gros fichiers échangés.
 
 La loi de Pareto est liée à la loi exponentielle. Si une variable aléatoire suit une loi de Pareto, le logarithme du quotient de cette variable et de son paramètre de localisation est une variable aléatoire qui suit une loi exponentielle.
 
 #### Cas particuliers
 
-Sachez également qu’il existe des distributions « plus exotiques » que nous n’abordons pas ici, mais auxquelles vous pourriez être confrontés un jour :
+Sachez également qu’il existe des distributions «&nbsp;plus exotiques&nbsp;» que nous n’abordons pas ici, mais auxquelles vous pourriez être confrontés un jour&nbsp;:
 
 * Les distributions sphériques, servant à décrire des données dont le 0 est équivalent à la valeur maximale. Par exemple, des angles puisque 0 et 360 degrés sont identiques.
 
@@ -922,7 +919,7 @@ Sachez également qu’il existe des distributions « plus exotiques » que nous
 
 * Les distributions multivariées qui permettent de décrire des phénomènes multidimensionnels. Par exemple, la réussite des élèves en français et en mathématique pourrait être modélisée par une distribution gaussienne bivariée plutôt que deux distributions distinctes. Ce choix serait pertinent si l'on présume que ces deux variables sont corrélées plutôt qu'indépendantes.
 
-* Les distributions censurées décrivant des variables pour lesquels les données sont issues d'un tirage « censuré ». En d'autres termes, la variable étudiée varie sur une certaines étendue, mais du fait du processus de tirage (collecte des données), les valeurs au-delà de certaines limites sont censurées. Un bon exemple serait la mesure de la pollution sonore avec un capteur incapable de détecter des niveaux sonores en dessous de 55 décibels. Il arrive parfois en ville que les niveaux sonores descendent plus bas que ce seuil, mais les données collectées ne le montrent pas. Dans ce contexte, il est important d’utiliser des versions censurées des distributions présentées précédemment. Les observations au-delà de la limite sont conservées dans l’analyse, mais nous ne disposons que d’une information partielle à leur égard (elles sont au-delà de la limite).
+* Les distributions censurées décrivant des variables pour lesquels les données sont issues d'un tirage «&nbsp;censuré&nbsp;». En d'autres termes, la variable étudiée varie sur une certaines étendue, mais du fait du processus de tirage (collecte des données), les valeurs au-delà de certaines limites sont censurées. Un bon exemple serait la mesure de la pollution sonore avec un capteur incapable de détecter des niveaux sonores en dessous de 55 décibels. Il arrive parfois en ville que les niveaux sonores descendent plus bas que ce seuil, mais les données collectées ne le montrent pas. Dans ce contexte, il est important d’utiliser des versions censurées des distributions présentées précédemment. Les observations au-delà de la limite sont conservées dans l’analyse, mais nous ne disposons que d’une information partielle à leur égard (elles sont au-delà de la limite).
 
 * Les distributions tronquées, souvent confondues avec les distributions censurées, décrivent des situations où des données  au-delà d’une certaine limite sont impossibles à collecter et retirées simplement de l’analyse.
 
@@ -936,13 +933,13 @@ Wikipédia dispose d’informations très détaillées sur chaque distribution s
 
 ### Les paramètres de tendance centrale {#sect0251}
 
-Trois mesures de tendance centrale permettent de résumer rapidement une variable quantitative :
+Trois mesures de tendance centrale permettent de résumer rapidement une variable quantitative&nbsp;:
 
 * la **moyenne arithmétique** est simplement la somme des données d'une variable divisée par le nombre d'observations ($n$), soit $\frac{\sum_{i=1}^n x_i}{n}$ notée $\mu$ (prononcez *mu*) pour des données pour une population et $\bar{x}$ (prononcez *x barre*) pour un échantillon.
 * la **médiane** est la valeur qui coupe la distribution d'une variable d'une population ou d'un échantillon en deux parties égales. Autrement dit, 50% des valeurs des observations lui sont supérieures et 50% lui sont inférieures.
 * le **mode** est la valeur la plus fréquente parmi un ensemble d'observations pour une variable. Il s'applique ainsi à des variables discrètes (avec un nombre fini de valeurs discrètes dans un intervalle donné) et non à des variables continues (avec un nombre infini de valeurs réelles dans un intervalle donné). Prenons deux variables, l'une discrète relative au nombre d'accidents par intersection (avec $X \in \left[0,20\right]$) et l'autre continue relative à la distance de dépassement (en mètres) d'un·e cycliste par un véhicule motorisé (avec $X \in \left[0,5\right]$). Pour la première, le mode – la valeur la plus fréquente – est certainement 0. Pour la seconde, identifier le mode n'est pas pertinent puisqu'il peut y avoir un nombre infini de valeurs entre 0 et 5 mètres.
 
-Il convient de ne pas confondre moyenne et médiane ! Dans le tableau \@ref(tab:tableRevMoyMed), nous avons reporté les valeurs moyennes et médianes des revenus des ménages pour les municipalités de l'île de Montréal en 2015. Par exemple, les 8685 ménages résidant à Wesmount disposaient en moyenne d'un revenu de 295099\$; la moitié de ces 8685 ménages avaient un revenu inférieur à 100153\$  et l'autre moitié un revenu supérieur à cette valeur (médiane). Cela démontre clairement que la moyenne peut être grandement affectée par des valeurs extrêmes (faibles ou fortes); autrement dit, plus l'écart entre les valeurs de la moyenne et la médiane est importante, plus les données de la variable sont inégalement réparties. À Westmount, soit la municipalité la plus nantie de l'île de Montréal, les valeurs extrêmes sont des ménages avec des revenus très élevés tirant fortement la moyenne vers le haut. À l'inverse, le faible écart entre les valeurs moyenne et médiane dans la municipalité de Montréal-Est (58594\$ versus 50318\$) soulignent que les revenus des ménages sont plus également répartis. Cela explique que pour comparer les revenus totaux ou d'emploi entre différents groupes (selon le sexe, le groupe d'âge, le niveau d'éducation, la municipalité ou région métropolitaine, etc.), on prévilégie habituellement l'utilisation des revenus médians.
+Il convient de ne pas confondre moyenne et médiane! Dans le tableau \@ref(tab:tableRevMoyMed), nous avons reporté les valeurs moyennes et médianes des revenus des ménages pour les municipalités de l'île de Montréal en 2015. Par exemple, les 8685 ménages résidant à Wesmount disposaient en moyenne d'un revenu de 295099\$; la moitié de ces 8685 ménages avaient un revenu inférieur à 100153\$  et l'autre moitié un revenu supérieur à cette valeur (médiane). Cela démontre clairement que la moyenne peut être grandement affectée par des valeurs extrêmes (faibles ou fortes); autrement dit, plus l'écart entre les valeurs de la moyenne et la médiane est importante, plus les données de la variable sont inégalement réparties. À Westmount, soit la municipalité la plus nantie de l'île de Montréal, les valeurs extrêmes sont des ménages avec des revenus très élevés tirant fortement la moyenne vers le haut. À l'inverse, le faible écart entre les valeurs moyenne et médiane dans la municipalité de Montréal-Est (58594\$ versus 50318\$) soulignent que les revenus des ménages sont plus également répartis. Cela explique que pour comparer les revenus totaux ou d'emploi entre différents groupes (selon le sexe, le groupe d'âge, le niveau d'éducation, la municipalité ou région métropolitaine, etc.), on prévilégie habituellement l'utilisation des revenus médians.
 
 ```{r tableRevMoyMed, echo=FALSE, message=FALSE, warning=FALSE}
 df <-  read.csv("data/univariee/revenu.csv")
@@ -958,7 +955,7 @@ show_table(df2,
 
 Les paramètres de position permettent de diviser une distribution en _n_ parties égales.
 
-* Les **quartiles** qui divisent une distribution en quatre parties (25%) :
+* Les **quartiles** qui divisent une distribution en quatre parties (25%)&nbsp;:
   + Q1 (25%), soit le quartile inférieur ou premier quartile;
   + Q2 (50%), soit la médiane;
   + Q3 (75%), soit le quartile supérieur ou troisième quartile.
@@ -966,7 +963,7 @@ Les paramètres de position permettent de diviser une distribution en _n_ partie
 * Les **déciles** (de D1 à D9) qui divisent une distribution en dix parties égales (10%).
 * Les **centiles** (de C1 à C99) qui divisent une distribution en cent parties égales (1%).
 
-En cartographie, les quartiles et les quintiles sont souvent utilisés pour discrétiser une variable quantitative (continue ou discrète) en quatre ou cinq classes et plus rarement, en huit ou dix classes. Avec les quartiles, les bornes des classes qui comprendront chacune 25% des unités spatiales seront ainsi définies comme suit : [Min à Q1], [Q1 à Q2], [Q2 à Q3] et [Q3 à Max]. La méthode de discrétisation selon les quartiles ou quintiles permet alors de repérer, en un coup d'œil, à quelle tranche de 25% ou 20% des données appartient chacune des unités spatiales. Cette méthode de discrétisation est aussi utile pour comparer plusieurs cartes et vérifier si deux phénomènes sont ou non colocalisés [@pumain1994]. En guise d'exemple, les pourcentages de personnes à faible revenu et de locataires par secteur de recensement ont clairement des distributions spatiales très semblables dans la région métropolitaine de Montréal en 2016 (figure \@ref(fig:figunivarie2)).
+En cartographie, les quartiles et les quintiles sont souvent utilisés pour discrétiser une variable quantitative (continue ou discrète) en quatre ou cinq classes et plus rarement, en huit ou dix classes. Avec les quartiles, les bornes des classes qui comprendront chacune 25% des unités spatiales seront ainsi définies comme suit&nbsp;: [Min à Q1], [Q1 à Q2], [Q2 à Q3] et [Q3 à Max]. La méthode de discrétisation selon les quartiles ou quintiles permet alors de repérer, en un coup d'œil, à quelle tranche de 25% ou 20% des données appartient chacune des unités spatiales. Cette méthode de discrétisation est aussi utile pour comparer plusieurs cartes et vérifier si deux phénomènes sont ou non colocalisés [@pumain1994]. En guise d'exemple, les pourcentages de personnes à faible revenu et de locataires par secteur de recensement ont clairement des distributions spatiales très semblables dans la région métropolitaine de Montréal en 2016 (figure \@ref(fig:figunivarie2)).
 
 
 
@@ -991,11 +988,11 @@ show_table(df,
 
 
 ### Les paramètres de dispersion {#sect0253}
-Cinq principales mesures de dispersion permettent d'évaluer la variabilité des valeurs d'une variable quantitative : l'étendue, l'écart interquartile, la variance, l'écart-type et le coefficient de variation. Notez d'emblée que cette dernière mesure ne s'applique pas à des variables d'intervalle (section \@ref(sect02122)).
+Cinq principales mesures de dispersion permettent d'évaluer la variabilité des valeurs d'une variable quantitative&nbsp;: l'étendue, l'écart interquartile, la variance, l'écart-type et le coefficient de variation. Notez d'emblée que cette dernière mesure ne s'applique pas à des variables d'intervalle (section \@ref(sect02122)).
 
 * **L'étendue** est la différence entre les valeurs minimale et maximale d'une variable, soit l'intervalle des valeurs dans lequel elle a été mesurée. Il convient d'analyser avec prudence cette mesure puisqu'elle inclut dans son calcul des valeurs potentiellement extrêmes voire aberrantes (faibles ou fortes).
 
-* **L'intervalle ou écart interquartile** est la différence entre les troisième et premier quartiles ($Q3 − Q1$). Il représente ainsi une mesure de la dispersion des valeurs de 50% des observations centrales de la distribution. Plus la valeur de l'écart interquartile est élevée, plus la dispersion des 50% des observations centrales est forte. Contrairement à l'étendue, cette mesure élimine l'influence des valeurs extrêmes puisqu'elle ne tient pas compte des 25% des observations les plus faibles [Min à Q1] et des 25% des observations les plus fortes [Q3 à Max]. Graphiquement, l'intervalle interquartile est représenté à l'aide d'une boîte à moustaches (*boxplot* en anglais) : plus l'intervalle interquartile sera grand, plus la boîte sera allongée (figure \@ref(fig:figunivarie3))
+* **L'intervalle ou écart interquartile** est la différence entre les troisième et premier quartiles ($Q3 − Q1$). Il représente ainsi une mesure de la dispersion des valeurs de 50% des observations centrales de la distribution. Plus la valeur de l'écart interquartile est élevée, plus la dispersion des 50% des observations centrales est forte. Contrairement à l'étendue, cette mesure élimine l'influence des valeurs extrêmes puisqu'elle ne tient pas compte des 25% des observations les plus faibles [Min à Q1] et des 25% des observations les plus fortes [Q3 à Max]. Graphiquement, l'intervalle interquartile est représenté à l'aide d'une boîte à moustaches (*boxplot* en anglais)&nbsp;: plus l'intervalle interquartile sera grand, plus la boîte sera allongée (figure \@ref(fig:figunivarie3))
 
 ```{r figunivarie3, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Graphique en violon, boîte à moustaches et intervalle interquartile",  out.width='30%'}
 knitr::include_graphics('images/univariee/figure3.jpg', dpi = NA)
@@ -1020,7 +1017,7 @@ knitr::include_graphics('images/univariee/figure3.jpg', dpi = NA)
 \normalsize
 
 ::: {.bloc_notes data-latex=""}
-Les formules des variances et des écart-types pour une population et un échantillon sont très similaires : seul le dénominateur change avec $n$ *versus* $n-1$ observations. Par conséquent, plus le nombre d'observations de votre jeu de données sera important, plus l'écart entre ces deux mesures de dispersion pour une population et un échantillon sera minime.
+Les formules des variances et des écart-types pour une population et un échantillon sont très similaires&nbsp;: seul le dénominateur change avec $n$ *versus* $n-1$ observations. Par conséquent, plus le nombre d'observations de votre jeu de données sera important, plus l'écart entre ces deux mesures de dispersion pour une population et un échantillon sera minime.
 
 Comme dans la plupart des logiciels de statistique, les fonctions de base `var` et `sd` de R calculent la variance et l'écart-type pour un échantillon ($n-1$ au dénominateur). Si vous souhaitez les calculer pour une population, adaptez la syntaxe ci-dessous dans laquelle `df$var1` représente la variable intitulée `var1` présente dans un *dataframe* nommé `df`.
 
@@ -1030,7 +1027,7 @@ Comme dans la plupart des logiciels de statistique, les fonctions de base `var` 
 :::
 
 
-* **Le coefficient de variation (CV)** est le rapport entre l'écart-type et la moyenne, représentant ainsi une standardisation de l'écart-type ou, en d'autres termes, une mesure de dispersion relative (eq. \@ref(eq:cv)). L'écart-type étant exprimé dans l'unité de mesure de la variable, il ne peut pas être utilisé pour comparer les dispersions de variables exprimées des unités de mesure différentes (par exemple, en pourcentage, en kilomètres, en dollars, etc.). Pour y remédier, on utilisera le coefficient de variation : une variable est plus dispersée qu'une autre si la valeur de son CV est plus élevée. Certains préfèreront multiplier la valeur du CV par 100 : l'écart-type est alors exprimé en pourcentage de la moyenne.
+* **Le coefficient de variation (CV)** est le rapport entre l'écart-type et la moyenne, représentant ainsi une standardisation de l'écart-type ou, en d'autres termes, une mesure de dispersion relative (eq. \@ref(eq:cv)). L'écart-type étant exprimé dans l'unité de mesure de la variable, il ne peut pas être utilisé pour comparer les dispersions de variables exprimées des unités de mesure différentes (par exemple, en pourcentage, en kilomètres, en dollars, etc.). Pour y remédier, on utilisera le coefficient de variation&nbsp;: une variable est plus dispersée qu'une autre si la valeur de son CV est plus élevée. Certains préfèreront multiplier la valeur du CV par 100&nbsp;: l'écart-type est alors exprimé en pourcentage de la moyenne.
 
 
 \footnotesize
@@ -1041,7 +1038,7 @@ CV=\frac{\sigma}{\mu} \text{ ou } CV=\frac{s^2}{\bar{x}}
 \normalsize
 
 
-Illustrons comment calculer les cinq mesures de dispersion précédemment décrites à partir de valeurs fictives pour huit observations (colonne intitulée $x_i$ au tableau \@ref(tab:datavar)). Les différentes statistiques reportées dans ce tableau sont calculées comme suit :
+Illustrons comment calculer les cinq mesures de dispersion précédemment décrites à partir de valeurs fictives pour huit observations (colonne intitulée $x_i$ au tableau \@ref(tab:datavar)). Les différentes statistiques reportées dans ce tableau sont calculées comme suit&nbsp;:
 
 * La **moyenne** est la somme divisée par le nombre d'observations, soit $248/8=31$.
 * L'**étendue** est la différence entre les valeurs maximale et minimale, soit $40-22=30$.
@@ -1192,9 +1189,9 @@ show_table(df,
 ::: {.bloc_objectif data-latex=""}
 De nombreuses méthodes statistiques qui seront abordées dans les chapitres suivants – entre autres, la corrélation de Pearson, les test *t* et l'analyse de variance, les régressions simple et multiple – requièrent que la variable quantitative suive une **distribution normale** (nommée aussi **distribution gaussienne**).
 
-Dans cette sous-section, nous décrirons trois démarches pour vérifier si la distribution d'une variable est normale : les coefficients d'asymétrie et d'applatissement (*skewness* et *kurtosis* en anglais), les graphiques (histogramme avec courbe normale, diagramme quantile-quantile), les tests de normalité (tests de Shapiro-Wilk, Kolmogorov-Smirnov, Lilliefors, Anderson-Darling et Jarque-Bera).
+Dans cette sous-section, nous décrirons trois démarches pour vérifier si la distribution d'une variable est normale&nbsp;: les coefficients d'asymétrie et d'applatissement (*skewness* et *kurtosis* en anglais), les graphiques (histogramme avec courbe normale, diagramme quantile-quantile), les tests de normalité (tests de Shapiro-Wilk, Kolmogorov-Smirnov, Lilliefors, Anderson-Darling et Jarque-Bera).
 
-**Il est vivement recommandé de réaliser les trois démarches !**
+**Il est vivement recommandé de réaliser les trois démarches!**
 :::
 
 Une distribution est normale quand elle est symétrique et mésokurtique (figure \@ref(fig:figFormeDistr)).
@@ -1207,11 +1204,11 @@ knitr::include_graphics('images/univariee/FormeDistribution.jpg', dpi = NA)
 
 **Une distribution est dite symétrique** quand la moyenne arithmétique est au centre de la distribution, c'est-à-dire que les observations sont bien réparties de part et d'autre de la moyenne qui sera alors égale à la médiane et au mode (on utilisera uniquement le mode pour une variable discrète et non pour une variable continue). Pour évaluer l'asymétrie, on utilise habituellement le coefficient d'asymétrie (*skewness* en anglais). 
 
-Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing] : $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans R avec la fonction `skewness` du *package* `moments`), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* `DescTools` ou `e1071`, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quelle que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie)) :
+Sachez toutefois qu'il existe trois façons (formules) pour le calculer [@joanes1998comparing]&nbsp;: $g_1$ est la formule classique (eq. \@ref(eq:SkewType1), disponible dans R avec la fonction `skewness` du *package* `moments`), $G_1$ est une version ajustée (eq. \@ref(eq:SkewType2), utilisée dans les logiciels SAS et SPSS notamment) et $b_1$ est une autre version ajustée (eq. \@ref(eq:SkewType3), utilisée par les logiciels MINITAB et BMDP). Nous verrons qu'avec les *packages* `DescTools` ou `e1071`, il possible de calculer ces trois méthodes. Aussi, pour des grands échantillons ($n>100$), il y a très peu de différences entre les résultats produits par ces trois formules [@joanes1998comparing]. Quelle que soit la formule utilisée, le coefficient d'assymétrie s'interprète comme suit (figure \@ref(fig:asymetrie))&nbsp;:
 
 * quand la valeur du *skewness* est négative, la **distribution est asymétrique négative**. La distribution est alors tirée à gauche par des valeurs extrêmes faibles, mais peu nombreuses. On emploie souvent l'expression *la queue de distribution* est étirée vers la gauche. La moyenne est alors inférieure à la médiane.
 * quand la valeur du *skewness* est égale à 0, **la distribution est symétrique** (la médiane sera égale à la moyenne). Pour une variable discrète, les valeurs du mode, de la moyenne et de la médiane seront égales.
-* quand la valeur du *skewness* est positive, la **distribution est symétrique positive**. La distribution est alors tirée à droite par des valeurs extrêmes fortes, mais peu nombreuses. La queue de distribution est alors étirée vers la droite. La moyenne est alors supérieure à la médiane. En sciences sociales, les variables de revenu (totaux ou d'emploi, des individus ou des ménages) ont souvent des distributions asymétriques positives : la moyenne est affectée par quelques observations avec des valeurs de revenu très élevées et est ainsi supérieure à la médiane. En études urbaines, la densité de population pour des unités géographiques d'une métropole donnée (secteur de recensement par exemple) a aussi souvent une distribution asymétrique positive : quelques secteurs de recensement au centre de la métropole sont caractérisés par des valeurs de densité très élevées qui tirent la distribution vers la droite.
+* quand la valeur du *skewness* est positive, la **distribution est symétrique positive**. La distribution est alors tirée à droite par des valeurs extrêmes fortes, mais peu nombreuses. La queue de distribution est alors étirée vers la droite. La moyenne est alors supérieure à la médiane. En sciences sociales, les variables de revenu (totaux ou d'emploi, des individus ou des ménages) ont souvent des distributions asymétriques positives&nbsp;: la moyenne est affectée par quelques observations avec des valeurs de revenu très élevées et est ainsi supérieure à la médiane. En études urbaines, la densité de population pour des unités géographiques d'une métropole donnée (secteur de recensement par exemple) a aussi souvent une distribution asymétrique positive&nbsp;: quelques secteurs de recensement au centre de la métropole sont caractérisés par des valeurs de densité très élevées qui tirent la distribution vers la droite.
 
 \footnotesize
 \begin{equation}  
@@ -1311,7 +1308,7 @@ ggarrange(Gl, Gn, Gr, ncol = 2, nrow=2)
 ```
 
 
-**Pour évaluer l'applatissement d'une distribution**, on utilisera le coefficient d’aplatissement (*kurtosis* en anglais). Là encore, il existe trois formules pour le calculer (eq. \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3)) qui renverront des valeurs très sembables pour de grands échantillons [@joanes1998comparing]. Cette mesure s'interprète comme suit (figure \@ref(fig:asymetrie)) :
+**Pour évaluer l'applatissement d'une distribution**, on utilisera le coefficient d’aplatissement (*kurtosis* en anglais). Là encore, il existe trois formules pour le calculer (eq. \@ref(eq:KurtType1), \@ref(eq:KurtType2), \@ref(eq:KurtType3)) qui renverront des valeurs très sembables pour de grands échantillons [@joanes1998comparing]. Cette mesure s'interprète comme suit (figure \@ref(fig:asymetrie))&nbsp;:
 
 * quand la valeur du *kurtosis* est négative, la **distribution est platikurtique**. La distribution est dite plate, c'est-à-dire que la valeur de l'écart-type est importante (comparativement à une distribution normale), signalant une grande dispersion des valeurs de part et d'autre la moyenne.
 * quand la valeur du *kurtosis* est égale à 0, **la distribution est mésokurtique**, ce qui est typique d'une distribution normale.
@@ -1406,7 +1403,7 @@ round(moments::kurtosis(Normale),3)
 
 ##### Vérifier la normalité avec des graphiques
 
-Les graphiques sont un excellent moyen de vérifier visuellement si une distribution est normale ou pas. Bien entendu, les histogrammes, que nous avons déjà largement utilisés, sont un incontournable; à titre de rappel, ils permettent de représenter la forme de la distribution des données (figure \@ref(fig:CourbeNormale)). Un autre type de graphique intéressant est le **diagramme  quantile-quantile** (*Q-Q plot* en anglais) qui permet de comparer la distribution d'une variable avec une distribution gaussienne (normale). Trois éléments composent ce graphique tel qu'illustré à la figure \@ref(fig:qqplot) :
+Les graphiques sont un excellent moyen de vérifier visuellement si une distribution est normale ou pas. Bien entendu, les histogrammes, que nous avons déjà largement utilisés, sont un incontournable; à titre de rappel, ils permettent de représenter la forme de la distribution des données (figure \@ref(fig:CourbeNormale)). Un autre type de graphique intéressant est le **diagramme  quantile-quantile** (*Q-Q plot* en anglais) qui permet de comparer la distribution d'une variable avec une distribution gaussienne (normale). Trois éléments composent ce graphique tel qu'illustré à la figure \@ref(fig:qqplot)&nbsp;:
 
 * les points, représentant les observations de la variable
 * la distribution gaussienne (normale), représentée par une ligne
@@ -1450,7 +1447,7 @@ ggplot(data = melted_dist, aes(sample=valeur))+
 
 ##### Vérifier la normalité avec des tests de normalité {#sect025413}
 
-Cinq principaux tests d'hypothèse permettent de vérifier la normalité d'une variable : les tests de **Kolmogorov-Smirnov** (KS), **Lilliefors** (LF), **Shapiro-Wilk** (SW), **Anderson-Darling**, et de **Jarque-Bera** (JB); sachez toutefois qu'il y en a d'autres non discutés ici (tests de D’Agostino–Pearson, Cramer–von Mises, de Ryan-Joiner, Shapiro–Francia, etc.). Pour les formules et une description détaillée de ces tests, vous pouvez consulter Razali et al. [-@razali2011power] ou Yap et Sim [-@yap2011comparisons]. **Quel test choisir?** Plusieurs auteurs ont comparé ces différents tests à partir de plusieurs échantillons, et ce, en faisant varier la forme de la distribution et le nombre d'observations [@razali2011power;@yap2011comparisons]. Selon Razali et al. [-@razali2011power], le meilleur test semble être celui de Shapiro-Wilk, puis ceux de Anderson-Darling, Lilliefors et Kolmogorov-Smirnov. Yap et Sim [-@yap2011comparisons] concluent aussi que le Shapiro-Wilk semble être le plus performant.
+Cinq principaux tests d'hypothèse permettent de vérifier la normalité d'une variable&nbsp;: les tests de **Kolmogorov-Smirnov** (KS), **Lilliefors** (LF), **Shapiro-Wilk** (SW), **Anderson-Darling**, et de **Jarque-Bera** (JB); sachez toutefois qu'il y en a d'autres non discutés ici (tests de D’Agostino–Pearson, Cramer–von Mises, de Ryan-Joiner, Shapiro–Francia, etc.). Pour les formules et une description détaillée de ces tests, vous pouvez consulter Razali et al. [-@razali2011power] ou Yap et Sim [-@yap2011comparisons]. **Quel test choisir?** Plusieurs auteurs ont comparé ces différents tests à partir de plusieurs échantillons, et ce, en faisant varier la forme de la distribution et le nombre d'observations [@razali2011power;@yap2011comparisons]. Selon Razali et al. [-@razali2011power], le meilleur test semble être celui de Shapiro-Wilk, puis ceux de Anderson-Darling, Lilliefors et Kolmogorov-Smirnov. Yap et Sim [-@yap2011comparisons] concluent aussi que le Shapiro-Wilk semble être le plus performant.
 
 Quoi qu'il en soit, ces cinq tests postulent que la variable suit une distribution gaussienne (hypothèse nulle, h<sub>0</sub>). Cela signifie que si la valeur de P associée à la valeur de chacun des tests est supérieure au seuil alpha choisi (habituellement $\alpha=0,05$), la distribution est normale. À l'inverse, si $P<0,05$, on choisit l'hypothèse alternative (h<sub>1</sub>), c'est-à-dire que la distribution est anormale.
 
@@ -1571,13 +1568,13 @@ show_table(Tests,
 ```
 
 ::: {.bloc_attention data-latex=""}
-**Attention** ! La plupart des auteurs s'entendent sur le fait que ces tests sont très restrictifs : plus la taille de votre échantillon ($n$) est importante, plus les tests risquent de vous signaler que vos distributions sont anormales (à la lecture des valeurs de P).
+**Attention**! La plupart des auteurs s'entendent sur le fait que ces tests sont très restrictifs&nbsp;: plus la taille de votre échantillon ($n$) est importante, plus les tests risquent de vous signaler que vos distributions sont anormales (à la lecture des valeurs de P).
 
-Certains conseillent même de ne pas les utiliser quand $n>200$ et de vous fier uniquement aux graphiques (histogramme et diagramme Q-Q) !
+Certains conseillent même de ne pas les utiliser quand $n>200$ et de vous fier uniquement aux graphiques (histogramme et diagramme Q-Q)!
 :::
 
 ::: {.bloc_astuce data-latex=""}
-Bref, vérifier la normalité d'une variable n'est pas une tâche si simple. De nouveau, nous vous conseillons vivement de :
+Bref, vérifier la normalité d'une variable n'est pas une tâche si simple. De nouveau, nous vous conseillons vivement de&nbsp;:
 
 * construire les graphiques pour analyser visuellement la forme de la distribution (histogramme avec courbe normale et diagramme Q-Q)
 * calculer le *skewness* et le *kurtosis*, 
@@ -1588,16 +1585,16 @@ Bref, vérifier la normalité d'une variable n'est pas une tâche si simple. De 
 
 #### Vérifier d'autres formes de distributions{#sect02adjdistrib}
 
-Comme nous l'avons vu, la distribution normale n'est que l'une des multiples distributions existantes. Dans de nombreuses situations, elle ne sera pas adaptée pour décrire vos variables. La démarche à adopter pour trouver une distribution adaptée est la suivante : 
+Comme nous l'avons vu, la distribution normale n'est que l'une des multiples distributions existantes. Dans de nombreuses situations, elle ne sera pas adaptée pour décrire vos variables. La démarche à adopter pour trouver une distribution adaptée est la suivante&nbsp;: 
 
 1. Définissez la nature de votre variable, identifier si elle est discrète ou continue et l'intervalle dans lequel elle est définie. Une variable dont les valeurs sont positives ou négatives ne pourra pas être décrite avec une distribution Gamma par exemple (à moins de la décaler).
 2. Explorez votre variable, affichez son histogramme et son graphique de densité pour avoir une vue générale de sa morphologie.
-3. Présélectionnez un ensemble de distributions candidates compte tenu des observations précédentes. Vous pouvez également vous reporter à la littérature existante sur votre sujet d'étude pour inclure d'autres distributions. Soyez flexible ! Une variable strictement positive pourrait tout de même avoir une forme normale. De même, une variable décrivant des comptages suffisamment grands pourrait être mieux décrite par une distribution normale qu'une distribution de poisson.
+3. Présélectionnez un ensemble de distributions candidates compte tenu des observations précédentes. Vous pouvez également vous reporter à la littérature existante sur votre sujet d'étude pour inclure d'autres distributions. Soyez flexible! Une variable strictement positive pourrait tout de même avoir une forme normale. De même, une variable décrivant des comptages suffisamment grands pourrait être mieux décrite par une distribution normale qu'une distribution de poisson.
 4. Tentez d'ajuster chacune des distributions retenues à vos données et comparez les qualités d'ajustements pour retenir la plus adaptée.
 
 Pour ajuster une distribution à un jeu de données, il faut trouver les valeurs des paramètres de cette distribution qui lui permettront d'adopter une forme la plus proche possible des données. On appelle cette opération **ajuster un modèle**, puisque la distribution théorique est utilisée pour modéliser les données. L'ajustement des paramètres est un problème d'optimisation que plusieurs algorithmes sont capables de résoudre (*gradient descent*, *Newton-Raphson method*, *Fisher scoring*, etc.). Dans R, le *package* `fitdistrplus` permet d'ajuster pratiquement n'importe quelle distribution à des données en offrant plusieurs stratégies d'optimisation grâce à la fonction `fitdist`. Il suffit de disposer d'une fonction représentant la distribution de densité ou de masse de la distribution en question, généralement noté `dnomdeladistribution` (`dnorm`, `dgamma`, `dpoisson`, etc.) dans R. Notez que certains *packages* comme `VGAM` ou `gamlss.dist` ajoutent un grand nombre de fonctions de densité et de masse à celles déjà disponibles de base dans R.
 
-Pour comparer l'ajustement de plusieurs distributions théoriques à des données, trois approches doivent être combinées : 
+Pour comparer l'ajustement de plusieurs distributions théoriques à des données, trois approches doivent être combinées&nbsp;: 
 
 * Observer graphiquement l'ajustement de la courbe théorique à l'histogramme des données. Cela permet d'éliminer au premier coup d'œil les distributions qui ne correspondent pas.
 * Comparer les *loglikelihood*. Le *loglikelihood* est un score d'ajustement des distributions aux données. Pour faire simple, plus le *loglikelihood* est grand, plus la distribution théorique est proche des données. Référez-vous à l'encadré suivant pour une description plus en profondeur du *loglikelihood*.
@@ -1628,7 +1625,7 @@ print(df)
 ```
 On observe ainsi que les valeurs 7 et 8 sont très probables selon le modèle alors que la valeur 10 est très improbable.
 
-Le *likelihood* est simplement le produit de toutes ces probabilités. Il s'agit donc de **la probabilité conjointe** d'avoir observé toutes les valeurs de *v* **sous l'hypothèse** que *d* est la distribution produisant ces valeurs. Si *d* décrit efficacement *v*, alors le *likelihood* est plus grand que si *d* ne décrit pas efficacement *v*. Il s'agit d'une forme de raisonnement par l'absurde : après avoir observé *v*, on calcule la probabilité d'avoir observé *v* (*likelihood*) si notre modèle *d* était vrai. Si cette probabilité est très basse, alors c'est que notre modèle est mauvais puisqu'on a bien observé *v*.
+Le *likelihood* est simplement le produit de toutes ces probabilités. Il s'agit donc de **la probabilité conjointe** d'avoir observé toutes les valeurs de *v* **sous l'hypothèse** que *d* est la distribution produisant ces valeurs. Si *d* décrit efficacement *v*, alors le *likelihood* est plus grand que si *d* ne décrit pas efficacement *v*. Il s'agit d'une forme de raisonnement par l'absurde&nbsp;: après avoir observé *v*, on calcule la probabilité d'avoir observé *v* (*likelihood*) si notre modèle *d* était vrai. Si cette probabilité est très basse, alors c'est que notre modèle est mauvais puisqu'on a bien observé *v*.
 
 ```{r}
 likelihood_norm <- prod(probas)
@@ -1640,7 +1637,7 @@ Cependant, multiplier un grand nombre de valeurs inférieures à zéro tend à p
 loglikelihood_norm <- sum(log(probas))
 print(loglikelihood_norm)
 ```
-Comparons ce *loglikelihood* a celui d'un second modèle dans lequel nous utilisons toujours la distribution normale, mais avec une moyenne différente (faussée en rajoutant +3) : 
+Comparons ce *loglikelihood* a celui d'un second modèle dans lequel nous utilisons toujours la distribution normale, mais avec une moyenne différente (faussée en rajoutant +3)&nbsp;: 
 
 ```{r}
 probas2 <- dnorm(v, moyenne+3, ecart_type)
@@ -1671,7 +1668,7 @@ ggplot(data = data_trt_bus) +
        y = '')
 ```
 
-Compte tenu de la forme de la distribution empirique et de sa nature, quatre distributions sont envisageables : 
+Compte tenu de la forme de la distribution empirique et de sa nature, quatre distributions sont envisageables&nbsp;: 
 
 * La distribution Gamma, strictement positive et asymétrique, elle est aussi une généralisation de la distribution exponentielle utilisée pour modéliser des temps d'attente. Pour des raisons similaires, on peut aussi retenir la distribution de Weibull et la distribution log-normale. Nous écartons ici la distribution skew-normale puisque le jeu de données n'a clairement pas une forme normale au départ.
 * La distribution de Pareto, strictement positive et permettant de représenter ici le fait que la plupart des retards durent moins de 10 minutes, mais que quelques retards sont également beaucoup plus longs.
@@ -1743,7 +1740,7 @@ ks.test(data_trt_bus$Min.Delay,
         y = pgamma, shape = params$shape, rate = params$rate)
 ```
 
-La valeur de *p* est inférieure à 0,05, on ne peut donc pas accepter l'hypothèse que notre jeu de données suit effectivement un loi de Gamma. Considérant le nombre d'observations et le fait que de nombreux temps d'attente sont identiques (ce à quoi le test est très sensible), ce résultat n'est pas surprenant. La distribution de Gamma reste cependant la distribution qui représente le mieux nos données. Nous pouvons estimer grâce à cette distribution la probabilité qu'un bus ait un retard de plus de 10 minutes de la façon suivante : 
+La valeur de *p* est inférieure à 0,05, on ne peut donc pas accepter l'hypothèse que notre jeu de données suit effectivement un loi de Gamma. Considérant le nombre d'observations et le fait que de nombreux temps d'attente sont identiques (ce à quoi le test est très sensible), ce résultat n'est pas surprenant. La distribution de Gamma reste cependant la distribution qui représente le mieux nos données. Nous pouvons estimer grâce à cette distribution la probabilité qu'un bus ait un retard de plus de 10 minutes de la façon suivante&nbsp;: 
 
 ```{r message=FALSE, warning=FALSE}
 pgamma(10, shape = params$shape, rate = params$rate, lower.tail = F)
@@ -1751,14 +1748,14 @@ pgamma(10, shape = params$shape, rate = params$rate, lower.tail = F)
 
 ce qui correspond à 54% de chance. 
 
-Pour moins de 10 minutes : 
+Pour moins de 10 minutes&nbsp;: 
 ```{r message=FALSE, warning=FALSE}
 pgamma(10, shape = params$shape, rate = params$rate, lower.tail = T)
 ```
 
 soit 46%.
 
-Uun dernier exemple avec la probabilité qu'un retard dépasse 45 minutes : 
+Uun dernier exemple avec la probabilité qu'un retard dépasse 45 minutes&nbsp;: 
 
 ```{r message=FALSE, warning=FALSE}
 pgamma(45, shape = params$shape, rate = params$rate, lower.tail = F)
@@ -1843,14 +1840,14 @@ Encore une fois, on doit rejeter l'hypothèse selon laquelle le test suit une di
 
 #### Les transformations visant à atteindre la normalité  {#sect02551}
 
-Comme énoncé au début de cette section, plusieurs méthodes statistiques nécessitent que la variable quantitative soit normalement distribuée. C'est notamment le cas de l'analyse de variance et des tests *t* (abordés dans les chapitres suivants) qui fourniront des résultats plus robustes lorsque la variable est normalement distribuée. Plusieurs transformations sont possibles, les plus courantes étant la racine carrée, le logarithme et l'inverse de la variable. Selon plusieurs auteurs (notamment, Tabacknick et *et al.* [-@tabachnick2007, p. 89]), en fonction du type (positive ou négative) et du degré d'asymétrie, les transformations suivantes sont possibles afin d'améliorer la normalité de la variable :
+Comme énoncé au début de cette section, plusieurs méthodes statistiques nécessitent que la variable quantitative soit normalement distribuée. C'est notamment le cas de l'analyse de variance et des tests *t* (abordés dans les chapitres suivants) qui fourniront des résultats plus robustes lorsque la variable est normalement distribuée. Plusieurs transformations sont possibles, les plus courantes étant la racine carrée, le logarithme et l'inverse de la variable. Selon plusieurs auteurs (notamment, Tabacknick et *et al.* [-@tabachnick2007, p. 89]), en fonction du type (positive ou négative) et du degré d'asymétrie, les transformations suivantes sont possibles afin d'améliorer la normalité de la variable&nbsp;:
 
-* Asymétrie positive modérée : la racine carrée de la variable *X* avec la fonction `sqrt(df$x)`. 
-* Asymétrie positive importante : le logarithme de la variable avec `log10(df$x)`
-* Asymétrie positive sévère : l'inverse de la variable avec `1/(df$x)`
+* Asymétrie positive modérée&nbsp;: la racine carrée de la variable *X* avec la fonction `sqrt(df$x)`. 
+* Asymétrie positive importante&nbsp;: le logarithme de la variable avec `log10(df$x)`
+* Asymétrie positive sévère&nbsp;: l'inverse de la variable avec `1/(df$x)`
 
 ::: {.bloc_astuce data-latex=""}
-Attention, pour une valeur égale ou inférieure à 0, on ne peut pas calculer une racine carrée ou un logarithme. Par conséquent, il convient de décaler simplement la distribution vers la droite afin de s'assurer qu'il n'y ait plus de valeurs négative ou égale à 0 :
+Attention, pour une valeur égale ou inférieure à 0, on ne peut pas calculer une racine carrée ou un logarithme. Par conséquent, il convient de décaler simplement la distribution vers la droite afin de s'assurer qu'il n'y ait plus de valeurs négative ou égale à 0&nbsp;:
 
 * `sqrt(df$x - min(df$x+1))`avec pour une asymétrie positive avec des valeurs négatives ou égales à 0
 * `log(df$x - min(df$x+1))`pour une asymétrie positive avec des valeurs négatives ou égales à 0
@@ -1858,16 +1855,16 @@ Attention, pour une valeur égale ou inférieure à 0, on ne peut pas calculer u
 Par exemple, si la valeur minimale de la variable est égale à -10, la valeur minimale de variable décalée sera ainsi de 11.
 
 
-* Asymétrie négative modérée : `sqrt(max(df$x+1) - df$x)`. 
-* Asymétrie négative importante :`log(max(df$x+1) - df$x)`
-* Asymétrie négative sévère : `1/(max(df$x+1) - df$x)`
+* Asymétrie négative modérée&nbsp;: `sqrt(max(df$x+1) - df$x)`. 
+* Asymétrie négative importante&nbsp;:`log(max(df$x+1) - df$x)`
+* Asymétrie négative sévère&nbsp;: `1/(max(df$x+1) - df$x)`
 ::: 
 
 ::: {.bloc_attention data-latex=""}
 
-**Transformation des variables pour atteindre la normalité : ce n'est pas toujours la panacée !**
+**Transformation des variables pour atteindre la normalité&nbsp;: ce n'est pas toujours la panacée!**
 
-La transformation des données fait et fera encore longtemps débat à la fois parmi les statisticiens, les débutants et utilisateurs avancés des méthodes quantitatives. Field et al. [-@field2012discovering, pp. 193] résument le tout avec humour : « To transform or not transform, that is the question ».
+La transformation des données fait et fera encore longtemps débat à la fois parmi les statisticiens, les débutants et utilisateurs avancés des méthodes quantitatives. Field et al. [-@field2012discovering, pp. 193] résument le tout avec humour&nbsp;: «&nbsp;To transform or not transform, that is the question&nbsp;».
 
 **Avantages de la transformation**
 
@@ -1876,7 +1873,7 @@ La transformation des données fait et fera encore longtemps débat à la fois p
 
 **Inconvénients de la transformation**
 
-* *Une variable transformée est plus difficile à interpréter* puisque cela change l'unité de mesure de la variable. Prenons un exemple concret : vous souhaitez comparer les moyennes de revenu de deux groupes *A* et *B*. Vous obtenez une différence de 15000$, soit une valeur facile à interpréter. Par contre, si la variable a été préalablement transformée en logarithme, il est possible que vous obteniez une différence de 9, ce qui est beaucoup moins parlant. Aussi, en transformant la variable en *log*, vous ne comparez plus les moyennes arithmétiques des deux groupes, mais plutôt leurs moyennes géométriques [@field2012discovering, pp. 193].
+* *Une variable transformée est plus difficile à interpréter* puisque cela change l'unité de mesure de la variable. Prenons un exemple concret&nbsp;: vous souhaitez comparer les moyennes de revenu de deux groupes *A* et *B*. Vous obtenez une différence de 15000$, soit une valeur facile à interpréter. Par contre, si la variable a été préalablement transformée en logarithme, il est possible que vous obteniez une différence de 9, ce qui est beaucoup moins parlant. Aussi, en transformant la variable en *log*, vous ne comparez plus les moyennes arithmétiques des deux groupes, mais plutôt leurs moyennes géométriques [@field2012discovering, pp. 193].
 
 * *Pourquoi perdre la forme initiale de la distribution du phénomène à expliquer?* Il est possible pour de nombreuses méthodes de choisir la distribution que l'on souhaite utiliser, il n'est donc pas nécessaire de toujours se limiter à la distribution normale. Par exemple, dans les modèles de régression généralisés (GLM), on pourrait indiquer que notre variable indépendante suit une distribution de *Student* plutôt que de vouloir à tout prix la rendre normale. De même, certains tests non-paramétriques permettent d'analyser des variables ne suivant pas une distribution normale.
 
@@ -1886,12 +1883,12 @@ La transformation des données fait et fera encore longtemps débat à la fois p
 
 * *D'autres options à la transformation d'une variable dépendante (VD) sont-elles envisageables?* Identifiez la forme de la distribution de la VD et utilisez au besoin un modèle GLM adapté à cette distribution. Autrement dit, ne transformez pas automatiquement votre VD pour simplement pouvoir l'introduire dans une régression linéaire multiple.
 
-* *La transformation a-t-elle un apport significatif?* Premièrement, vérifiez si la transformation utilisée (logarithme, racine carrée, inverse, etc.) améliore la normalité de la variable. Ce n'est toujours le cas, pourquoi c'est pire ! Prenez soin de comparer les histogrammes, les valeurs de *skewness*, *kurtosis* et des différents tests de normalité avant et après la transformation. Deuxièmement, comparez les résultats de vos analyses statistiques sans et avec transformation, et ce, dans une démarche coût-avantage. Vos résultats sont-ils bien plus robustes? Par exemple, un R^2^ qui passe de 0,597 à 0,602 avant et après la transformation des variables avec des associations significatives similaires, mais plus difficiles à interpréter (du fait des transformations), n'est pas forcément un gain significatif. La modélisation en sciences sociales ne vise pas à prédire la trajectoire d'un satellite ou l'atterrissage d'un engin sur Mars ! La précision à la quatrième décimale n'est pas une condition ! Par conséquent, un modèle un peu moins robuste, mais plus facile à interpréter est parfois préférable.
+* *La transformation a-t-elle un apport significatif?* Premièrement, vérifiez si la transformation utilisée (logarithme, racine carrée, inverse, etc.) améliore la normalité de la variable. Ce n'est toujours le cas, pourquoi c'est pire! Prenez soin de comparer les histogrammes, les valeurs de *skewness*, *kurtosis* et des différents tests de normalité avant et après la transformation. Deuxièmement, comparez les résultats de vos analyses statistiques sans et avec transformation, et ce, dans une démarche coût-avantage. Vos résultats sont-ils bien plus robustes? Par exemple, un R^2^ qui passe de 0,597 à 0,602 avant et après la transformation des variables avec des associations significatives similaires, mais plus difficiles à interpréter (du fait des transformations), n'est pas forcément un gain significatif. La modélisation en sciences sociales ne vise pas à prédire la trajectoire d'un satellite ou l'atterrissage d'un engin sur Mars! La précision à la quatrième décimale n'est pas une condition! Par conséquent, un modèle un peu moins robuste, mais plus facile à interpréter est parfois préférable.
 :::
 
 #### Autres types de transformations  {#sect02552}
 
-Les trois transformations les plus couramment utilisées sont :
+Les trois transformations les plus couramment utilisées sont&nbsp;:
 
 * **La côte $z$** (*z score* en anglais) qui consiste à soustraire à chaque valeur sa moyenne (soit un centrage), puis à la diviser par son écart-type (soit une réduction) (eq. \@ref(eq:scorez)). Par conséquent, on parle aussi de variable centrée-réduite qui a comme propriétés intéressantes une moyenne égale à 0 et un écart-type égale à 1 (la variance est aussi égale à 1 puisque $1^2=1$). Nous verrons que cette transformation est largement utilisée dans les méthodes de classification (chapitre \@ref(chap13)) et les méthodes factorielles (chapitre \@ref(chap12)).
 
@@ -1964,30 +1961,30 @@ Ces trois transformations sont parfois utilisées pour générer un indice compo
 
 
 ### Mise en œuvre dans R {#sect0256}
-Il existe une multitude de *packages* dédiés au calcul des statistiques descriptives univariées. Par parcimonie, nous en utiliserons uniquement trois : `DescTools`, `nortest` et `stats`. Libre à vous de faire vos recherches sur Internet pour utiliser d'autres *packages* au besoin. Les principales fonctions que nous utilisons ici sont :
+Il existe une multitude de *packages* dédiés au calcul des statistiques descriptives univariées. Par parcimonie, nous en utiliserons uniquement trois&nbsp;: `DescTools`, `nortest` et `stats`. Libre à vous de faire vos recherches sur Internet pour utiliser d'autres *packages* au besoin. Les principales fonctions que nous utilisons ici sont&nbsp;:
 
-* `summary` : pour obtenir un résumé sommaire des statistiques descriptives (minimum, Q1, Q2 Q3, Maximum)
-* `mean` : moyenne
-* `min` : minimum
-* `max` : maximum
-* `range` : minimum et maximum
-* `quantile` : quartiles
-* `quantile((x, probs = seq(.0, 1, by = .2))` : quintiles
-* `quantile((x, probs = seq(.0, 1, by = .1))` : déciles
-* `var` : variance
-* `sd` : écart-type
-* `Skew` du *package* `DescTools` : coefficient d'asymétrie
-* `Kurt` du *package* `DescTools` : coefficient d'applatissement
-* `ks.test(x, "pnorm", mean=mean(x), sd=sd(x))` du *package* `nortest` : test de Kolmogorov-Smirnov
-* `shapiro.test` du *package* `DescTools` : test de Shapiro-Wilk
-* `lillie.test` du *package* `DescTools` : du package `nortest` : test de Lilliefors
-* `ad.test` du *package* `DescTools` : test d'Anderson-Darling
-* `JarqueBeraTest` du *package* `DescTools` : test de Jarque-Bera
+* `summary`&nbsp;: pour obtenir un résumé sommaire des statistiques descriptives (minimum, Q1, Q2 Q3, Maximum)
+* `mean`&nbsp;: moyenne
+* `min`&nbsp;: minimum
+* `max`&nbsp;: maximum
+* `range`&nbsp;: minimum et maximum
+* `quantile`&nbsp;: quartiles
+* `quantile((x, probs = seq(.0, 1, by = .2))`&nbsp;: quintiles
+* `quantile((x, probs = seq(.0, 1, by = .1))`&nbsp;: déciles
+* `var`&nbsp;: variance
+* `sd`&nbsp;: écart-type
+* `Skew` du *package* `DescTools`&nbsp;: coefficient d'asymétrie
+* `Kurt` du *package* `DescTools`&nbsp;: coefficient d'applatissement
+* `ks.test(x, "pnorm", mean=mean(x), sd=sd(x))` du *package* `nortest`&nbsp;: test de Kolmogorov-Smirnov
+* `shapiro.test` du *package* `DescTools`&nbsp;: test de Shapiro-Wilk
+* `lillie.test` du *package* `DescTools`&nbsp;: du package `nortest`&nbsp;: test de Lilliefors
+* `ad.test` du *package* `DescTools`&nbsp;: test d'Anderson-Darling
+* `JarqueBeraTest` du *package* `DescTools`&nbsp;: test de Jarque-Bera
 
 
 #### Application à une seule variable {#sect02561}
 
-Admettons que vous voulez obtenir des statistiques pour une seule variable présente dans un *dataframe* (`dataMTL$PctFRev`) :
+Admettons que vous voulez obtenir des statistiques pour une seule variable présente dans un *dataframe* (`dataMTL$PctFRev`)&nbsp;:
 
 ```{r StatDesc1, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -2055,7 +2052,7 @@ ggplot(data = dataMTL) +
 
 #### Application à plusieurs variables {#sect02562}
 
-Pour obtenir des sorties de statistiques descriptives pour plusieurs variables, nous vous conseillons :
+Pour obtenir des sorties de statistiques descriptives pour plusieurs variables, nous vous conseillons&nbsp;:
 
 * de créer un vecteur avec les noms de variables (*VarsSelect* dans la syntaxe ci-dessous)
 * d'utiliser ensuite les fonctions `sapply` et `apply.`
@@ -2184,7 +2181,7 @@ La variable *HabKm2* est asymétrique positive et leptokurtique. Tant les valeur
 
 ### Les fréquences {#sect0261}
 
-En guise de rappel, les variables nominales, ordinales et semi-quantitatives comprennent plusieurs modalités pour lesquelles plusieurs types de fréquences sont généralement calculées. Pour illustrer le tout, nous avons extrait du recensement de 2016 de Statistique Canada les effectifs des modalités de la variable sur le principal mode de transport utilisé pour les déplacements domicile-travail, et ce, pour la subdivision de recensement (MRC) de l'île de Montréal (tableau \@ref(tab:Frequences)). Les différents types de fréquences sont les suivantes :
+En guise de rappel, les variables nominales, ordinales et semi-quantitatives comprennent plusieurs modalités pour lesquelles plusieurs types de fréquences sont généralement calculées. Pour illustrer le tout, nous avons extrait du recensement de 2016 de Statistique Canada les effectifs des modalités de la variable sur le principal mode de transport utilisé pour les déplacements domicile-travail, et ce, pour la subdivision de recensement (MRC) de l'île de Montréal (tableau \@ref(tab:Frequences)). Les différents types de fréquences sont les suivantes&nbsp;:
 
 * les fréquences absolues simples (**FAS**) ou fréquences observées représentent le nombre d'observations pour chacune des modalités. Par exemple, sur 857 540 navetteurs domicile-travail (ligne totale), seulement 30 645 optent pour le vélo, alors que 427 530 conduisent un véhicule motorisé (automobile, camion ou fourgonnette) comme principal mode de transport.
 
@@ -2235,14 +2232,14 @@ show_table(df,
 
 
 ::: {.bloc_attention data-latex=""}
-**Les fréquences cumulées : peu pertinentes pour les variables nomimales**
+**Les fréquences cumulées&nbsp;: peu pertinentes pour les variables nomimales**
 
 Le calcul et l'analyse des fréquences cumulées (absolues et relatives) sont très souvent inutiles pour les variables nominales.
 
 Par exemple, au tableau \@ref(tab:Frequences), la fréquence cumulée relative (en %) est de 87,43% pour la troisième ligne. Cela signifie que 87,43% des navetteurs se déplacent en véhicule motorisé (conducteur ou passager) ou en transport en commun. Par contre, si la troisième modalité avait été *à pied*, le pourcentage aurait été de 61,02 ($52,93+8,09$). Si vous souhaitez calculer les fréquences cumulées sur une variable nominale, assurez-vous que l'ordre des modalités vous convient et de le modifier au besoin. Sinon, abstenez-vous de les calculer!
 
 
-**Les fréquences cumulées : très utiles pour l'analyse pour des variables ordinales ou semi-quantitatives**
+**Les fréquences cumulées&nbsp;: très utiles pour l'analyse pour des variables ordinales ou semi-quantitatives**
 
 Pour des modalités hiérarchisées (variable ordinale ou semi-quantitative), l'analyse des fréquences cumulées (absolues et relatives) est par contre très intéressante. Par exemple, au tableau \@ref(tab:Frequences2), elle permet de constater rapidement que sur l'île de Montréal, un peu moins du très de la population à moins de 25 ans (35,95%) et 83,33% moins de 65 ans.
 :::
@@ -2291,7 +2288,7 @@ show_table(df,
 #   kableExtra::kable_styling(font_size = font_size_table)
 ```
 
-Différents graphiques peuvent être construits pour illustrer la répartition des observations : les graphiques en barres (verticales et horizontales) avec les fréquences absolues,  les diagrammes circulaires ou en anneau pour les fréquences relatives (figure \@ref(fig:GraphiquesFreq1)). Ces graphiques seront présentés plus en détails dans le chapitre suivant.
+Différents graphiques peuvent être construits pour illustrer la répartition des observations&nbsp;: les graphiques en barres (verticales et horizontales) avec les fréquences absolues,  les diagrammes circulaires ou en anneau pour les fréquences relatives (figure \@ref(fig:GraphiquesFreq1)). Ces graphiques seront présentés plus en détails dans le chapitre suivant.
 
 ```{r GraphiquesFreq1, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Différents graphiques pour représenter les fréquences absolues et relatives", out.width='75%'}
 library(dplyr)
@@ -2385,9 +2382,9 @@ df <- data.frame(
 df
 ```
 
-## Pour aller un peu plus loin : les statistiques descriptives pondérées {#sect027}
+## Pour aller un peu plus loin&nbsp;: les statistiques descriptives pondérées {#sect027}
 
-Dans la section \@ref(sect025), les différentes statistiques descriptives sur des variables quantitatives – paramètres de tendance centrale, de position, de dispersion et de forme – ont été largement abordées. Il est possible de calculer ces différentes statistiques en tenant compte d’une pondération. La statistique descriptive pondérée la plus connue est certainement la moyenne arithmétique pondérée. Son calcul est très simple; pour chaque observation, deux valeurs sont disponibles : 
+Dans la section \@ref(sect025), les différentes statistiques descriptives sur des variables quantitatives – paramètres de tendance centrale, de position, de dispersion et de forme – ont été largement abordées. Il est possible de calculer ces différentes statistiques en tenant compte d’une pondération. La statistique descriptive pondérée la plus connue est certainement la moyenne arithmétique pondérée. Son calcul est très simple; pour chaque observation, deux valeurs sont disponibles&nbsp;: 
 
 * $x_i$, soit la valeur de la variable $X$ pour l'observation $i$
 * $w_i$, soit la valeur de la pondération pour $i$.
@@ -2435,15 +2432,15 @@ show_table(df,
 Nous n’allons pas reporter ici les formules des versions pondérées de toutes les statistiques descriptives. Retenez toutefois le principe suivant permettant de les calculer à partir de l’exemple du tableau \@ref(tab:MoyPondCalcul). Pour la variable *X*, dupliquons respectivement 20, 80, 50, 200 fois les observations 1 à 4. Si nous calculons la moyenne arithmétique sur ces valeurs dupliquées, alors cette valeur sera identique à la celle de la moyenne arithmétique pondérée. Le même principe reposant sur la duplication des valeurs s'applique à l'ensemble des statistiques descriptives.
 :::
 
-Dans un article récent, Alvarenga et al. [-@de2018accessibilite] évaluent l'accessibilité aux aires de jeux dans les parcs de la Communauté métropolitaine de Montréal (CMM). Pour les 881 secteurs de recensement de la CMM, ils ont calculé la distance à l'aire de jeux la plus proche à travers le réseau de rues. Ce résultat, cartographié à la figure \@ref(fig:FigParcCMM), permet d'avancer le constat suivant : « la quasi-totalité des secteurs de recensement de l’agglomération de Montréal présente des distances de l’aire de jeux la plus proche inférieures à 500 m, alors que les secteurs situés à plus d’un kilomètre d’une aire de jeux sont très majoritairement localisés dans les couronnes
-nord et sud de la CMM » [@de2018accessibilite, p. 238].
+Dans un article récent, Alvarenga et al. [-@de2018accessibilite] évaluent l'accessibilité aux aires de jeux dans les parcs de la Communauté métropolitaine de Montréal (CMM). Pour les 881 secteurs de recensement de la CMM, ils ont calculé la distance à l'aire de jeux la plus proche à travers le réseau de rues. Ce résultat, cartographié à la figure \@ref(fig:FigParcCMM), permet d'avancer le constat suivant&nbsp;: «&nbsp;la quasi-totalité des secteurs de recensement de l’agglomération de Montréal présente des distances de l’aire de jeux la plus proche inférieures à 500 m, alors que les secteurs situés à plus d’un kilomètre d’une aire de jeux sont très majoritairement localisés dans les couronnes
+nord et sud de la CMM&nbsp;» [@de2018accessibilite, p. 238].
 
-Pour chaque secteur de recensement, Alvarenga et al. [-@de2018accessibilite] disposent des données suivantes  :
+Pour chaque secteur de recensement, Alvarenga et al. [-@de2018accessibilite] disposent des données suivantes&nbsp;:
 
 * $x_i$, soit la distance à l'aire de jeux la plus proche pour le secteur de recensement *i* et
 * $w_i$, la pondération, soit le nombre d'enfants de moins de dix ans.
 
-Il est alors possible de calculer les statistiques descriptives de la proximité à l'aire de jeux la plus proche en tenant compte du nombre d'enfants résidant dans chaque secteur de recensement (tableau \@ref(tab:MoyPondParc)). Cet exercice permet de conclure que : « [...] globalement, les enfants ont une bonne accessibilité aux aires de jeux sur le territoire de la CMM. [...] Les enfants sont en moyenne à un peu plus de 500 m de l’aire de jeux la plus proche (moyenne = 559; médiane = 512). Toutefois, les valeurs percentiles extrêmes signalent que respectivement 10% et 5% des enfants résident à près de 800 m et à plus de 1000 m de l’aire de jeux la plus proche » [-@de2018accessibilite, p. 236].
+Il est alors possible de calculer les statistiques descriptives de la proximité à l'aire de jeux la plus proche en tenant compte du nombre d'enfants résidant dans chaque secteur de recensement (tableau \@ref(tab:MoyPondParc)). Cet exercice permet de conclure que&nbsp;: «&nbsp;[...] globalement, les enfants ont une bonne accessibilité aux aires de jeux sur le territoire de la CMM. [...] Les enfants sont en moyenne à un peu plus de 500 m de l’aire de jeux la plus proche (moyenne = 559; médiane = 512). Toutefois, les valeurs percentiles extrêmes signalent que respectivement 10% et 5% des enfants résident à près de 800 m et à plus de 1000 m de l’aire de jeux la plus proche&nbsp;» [-@de2018accessibilite, p. 236].
 
 ```{r FigParcCMM, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Accessibilité aux aires de jeux par secteur de recensement, Communauté métropolitaine de Montréal, 2016",  out.width='85%'}
 knitr::include_graphics('images/bivariee/BivarieeFigureParc.jpg', dpi = NA)
