@@ -34,25 +34,16 @@ La représentation visuelle de données consiste à transposer des informations 
 
 Cette première illustration permet de visualiser le volume de plastique que représente la consommation d'eau en bouteille&nbsp;: 480 milliards de bouteilles vendues en 10 ans! Ce chiffre astronomique est inimaginable. En revanche, une [montagne de plastique](https://graphics.reuters.com/ENVIRONMENT-PLASTIC/0100B275155/index.html){target='_blank'} de 2400 mètres surplombant Manhattan marque davantage les esprits.
 
-```{r fig3A, echo=FALSE, fig.align='center', fig.cap="Noyer dans le plastique selon Reuters Graphics", fig.pos="H", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%'}
-library(dplyr)
-knitr::include_graphics('images/magie_graphiques/Drowning-in-Plastic.jpg', dpi = NA)
-```
-
 Ce [second graphique](https://www.maplecroft.com/insights/analysis/84-of-worlds-fastest-growing-cities-face-extreme-climate-change-risks/){target='_blank'} représente quatre informations pour 234 villes à travers le monde&nbsp;: 
 
 * la croissance démographique (axe des abscisses),
 * la vulnérabilité au changement climatique (axe des ordonnées),
 * la taille des villes (taille des cercles),
-* le continent sur lequel est localisé chaque ville (couleur des cercles).
-
-```{r fig3B, echo=FALSE, fig.align='center', fig.cap="Changement climatique et vulnérabilité par Verisk Maplecroft", auto_pdf=TRUE, out.width='70%', fig.pos = "H"}
-knitr::include_graphics('images/magie_graphiques/climate_change_exposure.png', dpi = NA)
-```
+* le continent sur lequel est localisée chaque ville (couleur des cercles).
 
 Le graphique est à la fois très accrocheur et esthétique. En un coup d'œil, on constate que les villes avec une forte croissance démographique sont aussi les plus vénérables (lecture des deux axes) et qu'elles sont surtout localisées en Afrique et secondairement en Asie (en rouge et orange), quelle que soit leur taille (taille du cercle). À l'inverse, les villes européennes et américaines (en bleu) sont beaucoup moins vulnérables aux changements climatiques et avec une croissance démographique plus faible, qu'elles soient des petites, moyennes ou grandes villes.
 
-Souvent négligée, la visualisation de données est perçue comme une tâche triviale&nbsp;: il s'agit simplement de représenter une donnée sous forme d'un graphique, car c'est l'option la plus pratique ou qui prend le moins d'espace. Pourtant, les avantages de la visualisation des données sont nombreux. Par exemple, la visualisation de données intègre aujourd'hui des supports dynamiques comme des animations, des figures interactives ou des applications webs. R offre d'ailleurs des possibilités très intéressantes en la matière avec des *packages* comme `shiny`, `plotly` ou `leaflet`. Toutefois, nous ne couvrirons pas ici ces méthodes plus récentes en visualisation des données qui devraient faire l'objet d'un autre livre.
+Souvent négligée, la visualisation de données est perçue comme une tâche triviale&nbsp;: il s'agit simplement de représenter une donnée sous forme d'un graphique, car c'est l'option la plus pratique ou qui prend le moins d'espace. Pourtant, les avantages de la visualisation des données sont nombreux. Par exemple, la visualisation de données intègre aujourd'hui des supports dynamiques comme des animations, des figures interactives ou des applications web. R offre d'ailleurs des possibilités très intéressantes en la matière avec des *packages* comme `shiny`, `plotly` ou `leaflet`. Toutefois, nous ne couvrirons pas ici ces méthodes plus récentes en visualisation des données qui devraient faire l'objet d'un autre livre.
 
 **Les principaux avantages de la visualisation des données**&nbsp;: 
 
@@ -91,7 +82,7 @@ names(iris)
 ggplot()
 ```
 
-Pour le moment, le graphique est vide (figure \@ref(fig:fig31)). La seconde étape consiste à lui ajouter des données (au travers du paramètre `data`) et à définir les dimensions à associer aux données (avec le paramètre `mapping` et la fonction `aes()`). Dans notre cas, nous voulons utiliser les coodonnées *X* pour représenter la largeur des sépales, et les coordonnées *Y* pour représenter la longueur des sépales. Enfin, nous souhaitons représenter les observations par des points, nous utiliserons donc la géométrie `geom_point`.
+Pour le moment, le graphique est vide (figure \@ref(fig:fig31)). La seconde étape consiste à lui ajouter des données (au travers du paramètre `data`) et à définir les dimensions à associer aux données (avec le paramètre `mapping` et la fonction `aes()`). Dans notre cas, nous voulons utiliser les coordonnées *X* pour représenter la largeur des sépales, et les coordonnées *Y* pour représenter la longueur des sépales. Enfin, nous souhaitons représenter les observations par des points, nous utiliserons donc la géométrie `geom_point`.
 
 ```{r fig32, fig.align='center', auto_pdf = TRUE, fig.cap="Ajout des dimensions au graphique",  out.width='65%', dev = "png", dpi = 300}
 ggplot(mapping = aes(x = Sepal.Length, y = Sepal.Width), data = iris) +
@@ -416,7 +407,7 @@ L'histogramme permet de décrire graphiquement la forme de la distribution d'une
 
 #### Histogrammes simples {#sect03211}
 
-Générons quatre variables ayant respectivement une distribution gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables et combinons les avec la fonction `ggarrange` (figure \@ref(fig:fig318)).
+Générons quatre variables ayant respectivement une distribution gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables et combinons-les avec la fonction `ggarrange` (figure \@ref(fig:fig318)).
 
 ```{r fig318, fig.align='center', fig.cap="Histogrammes", message=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 
@@ -520,7 +511,7 @@ Dans notre cas, nous savons que notre variable est normalement distribuée (car 
 
 #### Histogramme avec coloration des valeurs extrêmes {#sect03214}
 
-Il peut être nécessaire d'attirer le regard sur certaines parties de l'histogramme, comme par exemple des valeurs extrêmes. Si nous reprenons notre distribution de Student, nous pouvons clairement distinguer un ensemble de valeurs fortes à droite de la distribution. On pourrait dans notre cas considérer que des valeurs au delà de&nbsp;50 constituent des cas extrêmes que nous souhaitons représenter dans une autre couleur. Pour cela, nous devons créer une variable catégorielle nous permettant de distinguer ces cas particuliers.
+Il peut être nécessaire d'attirer le regard sur certaines parties de l'histogramme, comme sur des valeurs extrêmes. Si nous reprenons notre distribution de Student, nous pouvons clairement distinguer un ensemble de valeurs fortes à droite de la distribution. On pourrait dans notre cas considérer que des valeurs au-delà de&nbsp;50 constituent des cas extrêmes que nous souhaitons représenter dans une autre couleur. Pour cela, nous devons créer une variable catégorielle nous permettant de distinguer ces cas particuliers.
 
 ```{r fig323, fig.align='center', auto_pdf = TRUE, fig.cap="Histogramme coloré",  out.width='65%', dev = "png", dpi = 300}
 distribs$cas_extreme <- ifelse(distribs$student >=50, "extrême", "normale")
@@ -691,7 +682,7 @@ ggplot(data = data_co2)+
        title = 'Relation entre urbanisation et production de CO2 par habitant')
 ```
 
-La régression quadratique (avec *x* au carré) nous indique ainsi que l'impact du niveau d'urbanisation est plus important à mesure que le niveau d'urbanisation augmente. Vous pouvez également constater que la courbe ne prédit pas de valeurs négatives comparativement à la droite précédente. Il est égalemment possible d'ajuster une courbe sans choisir au préalable sa forme (dans le cas précédent $x^2$) en utilisant une méthode d'ajustement local appelée *loess*.
+La régression quadratique (avec *x* au carré) nous indique ainsi que l'impact du niveau d'urbanisation est plus important à mesure que le niveau d'urbanisation augmente. Vous pouvez également constater que la courbe ne prédit pas de valeurs négatives comparativement à la droite précédente. Il est également possible d'ajuster une courbe sans choisir au préalable sa forme (dans le cas précédent $x^2$) en utilisant une méthode d'ajustement local appelée *loess*.
 
 
 ```{r fig334, fig.align='center', fig.cap="Nuage de points avec droite de régression non linéaire", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
@@ -935,7 +926,7 @@ Une alternative directe au graphique en barre est le graphique ou diagramme circ
 ```{r fig346, fig.align='center', fig.cap="Graphique en pointes de tarte", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 library(dplyr)
 
-# Extraire les données de 2018 pour lesquelles on connait la région
+# Extraire les données de 2018 pour lesquelles on connaît la région
 data_co2_2015 <- subset(data_co2,data_co2$year == "2015" & ! is.na(data_co2$region7))
 
 # Effectuer la somme du CO2 par région
@@ -1271,9 +1262,9 @@ treemap(data_co2_2015, index=c("region7","region23"),
 
 ## Les cartes {#sect034}
 
-Toute comme un graphique, une carte est aussi une illustration visuelle, avec la généralisation des données géographiques, il peut être utile de savoir représenter ce type de données. Si R n'est pas un logiciel de cartographie, il est possible de réaliser des cartes assez facilement, directement avec `ggplot2`. Nous avons cependant une préférence pour le *package* `tmap` qui propose de nombreuses fonctionnalités. Pour tracer des cartes, `tmap` et `ggplot2` ont besoin d'utiliser un format de données comprenant la géométrie (polyones, lignes ou points), la localisation et le système de projection des entités spatiales étudiées. Le format de fichier le plus courant pour ce type de données est le *shapefile* (*.shp*), mais vous pourrez parfois croiser des fichiers *geojson* (*.js*), ou encore *geopackages* (*.gpkg*). Pour lire ces fichiers, il est possible d'utiliser la fonction `readOGR` du *package* `rgdal`, ou la fonction *st_read* du *package* `sf`. Notez ici que ces deux fonctions ne produisent pas des *DataFrame*, mais respectivement un *SpatialDataFrame* et un objet `sf` (*simple feature collection*). Sans rentrer dans les détails, sachez que deux *packages* permettent de manipuler des objets spatiaux dans R&nbsp;: le traditionnel `sp` (avec les *SpatialDataFrame*) et le plus récent `sf` (avec les *spatial feature collections*). Il est assez facile de convertir un objet de `sp` vers `sf` (et inversement) et cette opération est souvent nécessaire car de nombreux *packages* dédiés à l'analyse spatiale utilisent l'un ou l'autre des formats. Dans le cas de `tmap`, des objets de `sp` et de `sf` peuvent être utilisés sans distinction. En revanche, pour cartographier directement avec `ggplot2`, il est plus facile d'utiliser un objet de type `sf`. Toutefois, nous vous recommandons fortement d'utiliser le *package* `sf`, puisque `sp` (et son format *SpatialDataFrame*) sont progressivement délaissés dans R.
+Toute comme un graphique, une carte est aussi une illustration visuelle, avec la généralisation des données géographiques, il peut être utile de savoir représenter ce type de données. Si R n'est pas un logiciel de cartographie, il est possible de réaliser des cartes assez facilement, directement avec `ggplot2`. Nous avons cependant une préférence pour le *package* `tmap` qui propose de nombreuses fonctionnalités. Pour tracer des cartes, `tmap` et `ggplot2` ont besoin d'utiliser un format de données comprenant la géométrie (polygones, lignes ou points), la localisation et le système de projection des entités spatiales étudiées. Le format de fichier le plus courant pour ce type de données est le *shapefile* (*.shp*), mais vous pourrez parfois croiser des fichiers *geojson* (*.js*), ou encore *geopackages* (*.gpkg*). Pour lire ces fichiers, il est possible d'utiliser la fonction `readOGR` du *package* `rgdal`, ou la fonction *st_read* du *package* `sf`. Notez ici que ces deux fonctions ne produisent pas des *DataFrame*, mais respectivement un *SpatialDataFrame* et un objet `sf` (*simple feature collection*). Sans rentrer dans les détails, sachez que deux *packages* permettent de manipuler des objets spatiaux dans R&nbsp;: le traditionnel `sp` (avec les *SpatialDataFrame*) et le plus récent `sf` (avec les *spatial feature collections*). Il est assez facile de convertir un objet de `sp` vers `sf` (et inversement) et cette opération est souvent nécessaire, car de nombreux *packages* dédiés à l'analyse spatiale utilisent l'un ou l'autre des formats. Dans le cas de `tmap`, des objets de `sp` et de `sf` peuvent être utilisés sans distinction. En revanche, pour cartographier directement avec `ggplot2`, il est plus facile d'utiliser un objet de type `sf`. Toutefois, nous vous recommandons fortement d'utiliser le *package* `sf`, puisque `sp` (et son format *SpatialDataFrame*) sont progressivement délaissés dans R.
 
-Une carte thématique permet de représenter la répartition spatiale de variables qualitatives ou quantitatives. On les distingue des cartes topographiques dont l'objectif est de représenter la localisation d'objets spécifiques (route, habitation, rivière, lac, etc.). Les premières sont relativement faciles à construire dans R car elles se limitent à quelques symboles relativement peu complexes. Pour les secondes, on préferera généralement un logiciel comme [QGis](https://qgis.org/en/site/){target="_blank"}.
+Une carte thématique permet de représenter la répartition spatiale de variables qualitatives ou quantitatives. On les distingue des cartes topographiques dont l'objectif est de représenter la localisation d'objets spécifiques (route, habitation, rivière, lac, etc.). Les premières sont relativement faciles à construire dans R car elles se limitent à quelques symboles relativement peu complexes. Pour les secondes, on préfère généralement utiliser un logiciel comme [QGis](https://qgis.org/en/site/){target="_blank"}.
 
 Créons une carte thématique à partir des données de densité de végétation sur l'île de Montréal avec les *packages* `ggplot2` puis `tmap`.
 
@@ -1380,7 +1371,7 @@ ggsave(filename = 'graphique.pdf',
 Pour les graphiques n'étant pas réalisés avec `ggplot2`, l'alternative à la fonction `ggsave` est l'ensemble de fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`, qui permettent d'exporter n'importe quel graphique dans ces différents formats. Le processus comprend trois étapes&nbsp;: 
 
 1. Ouvrir une connexion vers le fichier dans lequel le graphique sera exporté avec une des fonctions `png`, `bmp`, `jpeg`, `tiff` et `pdf`.
-2. Réaliser son graphique comme si on souhaitait l'afficher dans RSudio. Il n'apparaitra cependant pas, car il sera écrit dans le fichier en question à la place.
+2. Réaliser son graphique comme si on souhaitait l'afficher dans RSudio. Il n'apparaîtra cependant pas, car il sera écrit dans le fichier en question à la place.
 3. Fermer la connexion au fichier avec la fonction `dev.off` pour définitivement enregistrer le graphique.
 
 ```{r warning=FALSE, eval = FALSE}
@@ -1402,8 +1393,8 @@ dev.off()
 
 Vous avez pu constater que les capacités de représentation graphique de R sont vastes et pourtant nous n'avons fait qu'observer la partie émergée de l'iceberg dans ce chapitre. Il est également possible de réaliser de la visualisation en 3D dans R (**plot3D**, **rgl**), d'animer des graphiques pour en faire des *GIF* ou des vidéos (**gganimate**), de rendre des graphiques interactifs, ou même de construire des plateformes de visualisation de données disponibles en ligne (**shiny**). Vous continuerez à découvrir de nouvelles formes de représentations au fur et à mesure de votre pratique, en apprenant de nouvelles méthodes nécessitant des visualisations spécifiques.
 
-Voici également deux références trés utiles qui nous ont notamment aidé à construire ce chapitre&nbsp;: 
+Voici également deux références très utiles qui nous ont notamment aidés à construire ce chapitre&nbsp;: 
 
-* [The R Graph Gallery](https://www.r-graph-gallery.com/){target="_blank"}, probablement **LE** site web proposant le plus de matériel sur la réalisation des grahiques dans R.
+* [The R Graph Gallery](https://www.r-graph-gallery.com/){target="_blank"}, probablement **LE** site web proposant le plus de matériel sur la réalisation des graphiques dans R.
 * [Data to viz](https://www.data-to-viz.com/){target="_blank"}, si vous ne savez pas quel graphique pourrait le mieux correspondre à vos données, Data to viz est là pour vous aider. Vous y trouverez un arbre de décision pour vous indiquer quel graphique utiliser dans quelle situation, ainsi que de nombreux conseils sur la visualisation de données.
 
