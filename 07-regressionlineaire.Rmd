@@ -184,7 +184,7 @@ Un modèle est bien construit s'il respecte plusieurs hypothèses liées à la r
 * **Hypothèse 2**.  *La variance de chaque VI doit être supérieure à 0*. Autrement dit, toutes les observations ne peuvent avoir la même valeur.
 * **Hypothèse 3**. *Indépendance des termes d'erreur*. Les résidus des observations ($\epsilon_{1}, \epsilon_{2}, \ldots, \epsilon_{n}$) ne doivent pas être corrélés entre eux. Autrement dit, les observations doivent être indépendantes les unes des autres, ce qui n'est souvent pas le cas pour des mesures temporelles. Par exemple, l'application du cadre conceptuel sur la modélisation de l'exposition des cyclistes au bruit et à la pollution atmosphérique (figure \@ref(fig:figcadreconcept)) est basée sur des données primaires collectées lors de trajets réalisés à vélo dans une ville donnée. Par conséquent, deux observations qui se suivent ont bien plus de chances de se ressembler – du point de vue des mesures de pollution et des caractéristiques de l'environnement urbain – que deux observations tirées au hasard dans le jeu de données. Ce problème d'autocorrélation temporelle doit être contrôlé, sinon, les coefficients de régression seront biaisés.
 * **Hypothèse 4**. *Normalité des résidus* avec une moyenne centrée sur zéro.
-* **Hypothèse 5**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, on ne peut pas introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100&nbsp;%. On a donc une corrélation parfaite entre ces deux variables&nbsp;: le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne pourra pas être estimé avec ces deux variables et l'une des deux sera automatiquement ôtée.
+* **Hypothèse 5**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, on ne peut pas introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100%. On a donc une corrélation parfaite entre ces deux variables&nbsp;: le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne pourra pas être estimé avec ces deux variables et l'une des deux sera automatiquement ôtée.
 * **Hypothèse 6**. *Homoscédasticité des erreurs (ou absence d'hétéroscédasticité)*. Les résidus doivent avoir une variance constante, c'est-à-dire qu'elle doit être la même pour chaque observation. Il y a homoscédasticité lorsqu'il y a une absence de corrélation entre les résidus et les valeurs prédites. Si cette condition n'est pas respectée, on parle alors d'hétéroscédasticité.
 * **Hypothèse 7**. *Le modèle est bien spécifié*. On dira qu'un modèle est mal spécifié (construit) quand « une ou plusieurs variables non pertinentes sont incluses dans le modèle » ou « qu’une ou plusieurs variables pertinentes sont exclues du modèle » [@bressoux2010, p. 138-139]. Concrètement, l'inclusion d'une variable non pertinente ou l'omission d'une variable peut entraîner une mauvaise estimation des effets des variables explicatives du modèle.
 
@@ -352,7 +352,7 @@ R^2_{\text {ajusté}}= 1 - \frac{(1-R^2)(n-1)}{n-k-1} \mbox{ avec } R^2_{\text {
 \end{equation}
 \normalsize
 
-Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif? Pour y répondre, il convient de comparer les valeurs des statistiques *F* des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de *p* qui lui est associé avec comme degrés de liberté, le nombre de variables indépendantes ajoutées ($k_2-k_1$) et $n-k_2-1$. Si la valeur de *p*&nbsp;<&nbsp;0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5&nbsp;%). 
+Si le R^2^ ajusté du second modèle est supérieur au premier modèle, cela signifie qu'il y a un gain de la variance expliquée entre le premier et le second modèle. Ce gain est-il pour autant significatif? Pour y répondre, il convient de comparer les valeurs des statistiques *F* des deux modèles. Pour ce faire, on calcule le *F* incrémentiel et la valeur de *p* qui lui est associé avec comme degrés de liberté, le nombre de variables indépendantes ajoutées ($k_2-k_1$) et $n-k_2-1$. Si la valeur de *p*&nbsp;<&nbsp;0,05, on pourra conclure que le gain de variance expliquée par le second modèle est significatif comparativement au premier modèle (au seuil de 5%). 
 
 \footnotesize 
 \begin{equation}
@@ -412,7 +412,7 @@ anova(modele1, modele2)
 
 ## Les différentes mesures pour les coefficients de régression {#sect074}
 
-La fonction `summary(nom du modèle)` permet d'obtenir les résultats du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (*F*(6,10203)&nbsp;=&nbsp;1123, *p*&nbsp;=&nbsp;0,000) avec un R^2^ de 0,4182 indiquant que les variables indépendantes du modèle expliquent 41,82&nbsp;% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
+La fonction `summary(nom du modèle)` permet d'obtenir les résultats du modèle de régression. D'emblée, signalons que le modèle est globalement significatif (*F*(6,10203)&nbsp;=&nbsp;1123, *p*&nbsp;=&nbsp;0,000) avec un R^2^ de 0,4182 indiquant que les variables indépendantes du modèle expliquent 41,82% de la variance du pourcentage de végétation dans les îlots de l'île de Montréal.
 
 
 ```{r dataregmodel1, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -456,7 +456,7 @@ show_table(data.frame(tabreg),
 
 Le signe du coefficient de régression indique si la variable indépendante est associée positivement ou négativement avec la variable dépendante. Par exemple, plus la densité de population est importante à travers les îlots de l'île de Montréal, plus la couverture végétale diminue.
 
-Quant à la valeur absolue du coefficient, elle indique la taille de l'effet du prédicteur. Par exemple, 1,084 signifie que si toutes les autres variables indépendantes restaient constantes, alors le pourcentage de végétation dans l'îlot augmenterait de 1,084 points de pourcentage pour chaque différence d’un point de pourcentage d'enfants de moins de 15 ans. Toutes choses étant égales par ailleurs, une augmentation de 10&nbsp;% d'enfants dans un îlot entraînerait alors une hausse de 10,8&nbsp;% de la couverture végétale dans l'îlot.
+Quant à la valeur absolue du coefficient, elle indique la taille de l'effet du prédicteur. Par exemple, 1,084 signifie que si toutes les autres variables indépendantes restaient constantes, alors le pourcentage de végétation dans l'îlot augmenterait de 1,084 points de pourcentage pour chaque différence d’un point de pourcentage d'enfants de moins de 15 ans. Toutes choses étant égales par ailleurs, une augmentation de 10% d'enfants dans un îlot entraînerait alors une hausse de 10,8% de la couverture végétale dans l'îlot.
 
 L'analyse des coefficients montre ainsi qu'une fois contrôlées les deux caractéristiques relatives à la forme urbaine (densité de population et âge médian des bâtiments), plus les pourcentages d'enfants et de personnes âgées sont élevés, plus la couverture végétale de l'îlot est importante (B&nbsp;=&nbsp;1,084 et 0,401), toutes choses étant égales par ailleurs. À l'inverse, de plus grands pourcentages de personnes à faible revenu et de minorités sont associés à une plus faible couverture végétale (B&nbsp;=&nbsp;−0,348 et −0,031).
 
@@ -572,7 +572,7 @@ $−0,070401 / 0,002202 = −31,975$.
 1. Poser l'hypothèse nulle (*H~0~*) stipulant que le coefficient est égal à 0, soit $H_0 : \beta_k = 0$. L'hypothèse alternative (*H~1~*) est que le coefficient est différent de 0, soit $H_1 : B_k \neq 0$.
 2. Calculer la valeur de *t*, soit le coefficient de régression divisé par son erreur type (équation \@ref(eq:ValeurT)).
 3. Calculer le nombre de degrés de liberté, soit $dl = n − k - 1$, *n* et *k* étant respectivement les nombres d'observations et de variables indépendantes.
-4. Choisir un seuil de signification alpha (5&nbsp;%, 1&nbsp;% ou 0,1&nbsp;%, soit *p*&nbsp;=&nbsp;0,05, 0,01 ou 0,01).
+4. Choisir un seuil de signification alpha (5%, 1% ou 0,1%, soit *p*&nbsp;=&nbsp;0,05, 0,01 ou 0,01).
 5. Trouver la valeur critique de *t* dans la table T de Student (\@ref(annexe3)) avec *p* et le nombre de degrés de liberté (*dl*).
 6. Valider ou réfuter l'hypothèse nulle (*H~0~*)&nbsp;:
   - si la valeur de *t* est inférieure à la valeur critique de *t* avec *dl* et le seuil choisi, on valide *H~0~*&nbsp;: le coefficient n'est pas significativement différent de 0.
@@ -583,11 +583,11 @@ $−0,070401 / 0,002202 = −31,975$.
 
 Lorsque le nombre de degrés de liberté (*n − k - 1*) est très important (supérieur à 2500), et donc le nombre d'observations de votre jeu de données, on retient habituellement les valeurs critiques suivantes&nbsp;: **1,65 (*p*&nbsp;=&nbsp;0,10), 1,96 (*p*&nbsp;=&nbsp;0,05)**, **2,58 (*p*&nbsp;=&nbsp;0,01)** et **3,29 (*p*=0,001)**. Concrètement, cela signifie que&nbsp;:
 
-* une valeur de *t* supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *t* supérieure à 1,96 ou inférieure à -1,96 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 5% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de *t* supérieure à 2,58 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5&nbsp;%. Autrement dit, vous avez moins de 1&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *t* supérieure à 2,58 ou inférieure à -2,58 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
-* une valeur de *t* supérieure à 3,29 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5&nbsp;%. Autrement dit, vous avez moins de 0,1&nbsp;% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
+* une valeur de *t* supérieure à 3,29 ou inférieure à -3,29 nous informe que la relation entre la variable indépendante et la variable dépendante est significative positivement ou négativement au seuil de 5%. Autrement dit, vous avez moins de 0,1% de chances de vous tromper en affirmant que le coefficient de régression est bien significativement différent de 0.
 
 Concrètement, retenez et utilisez les seuils de $\pm1,96$, $\pm2,58$ et $\pm3,29$ pour repérer les variables significatives positivement ou négativement aux seuils respectifs de 0,5, 0,1 et 0,001.
 
@@ -596,7 +596,7 @@ Concrètement, retenez et utilisez les seuils de $\pm1,96$, $\pm2,58$ et $\pm3,2
 L'interprétation exacte des seuils de significativité des coefficients d'une régression est quelque peu alambiquée, mais mérite que l'on s'y attarde. En effet, indiquer qu'un coefficient est significatif est souvent perçu comme un argument fort pour une théorie, il est donc nécessaire d'avoir du recul et de bien comprendre ce que l'on entend par **significatif**. 
 
 
-Si un coefficient est significatif au seuil de 5&nbsp;% dans notre modèle, cela signifie que si, pour l’ensemble d’une population, la valeur du coefficient est de 0 en réalité, alors nous avions moins de 5&nbsp;% de chances de collecter un échantillon (pour cette population) ayant produit un coefficient aussi fort que celui que nous observons dans notre propre échantillon. Par conséquent, il serait très invraisemblable que le coefficient soit 0 puisque nous avons effectivement collecté un tel échantillon. Il s'agit d'une forme d'argumentation par l'absurde propre à la statistique fréquentiste. 
+Si un coefficient est significatif au seuil de 5% dans notre modèle, cela signifie que si, pour l’ensemble d’une population, la valeur du coefficient est de 0 en réalité, alors nous avions moins de 5% de chances de collecter un échantillon (pour cette population) ayant produit un coefficient aussi fort que celui que nous observons dans notre propre échantillon. Par conséquent, il serait très invraisemblable que le coefficient soit 0 puisque nous avons effectivement collecté un tel échantillon. Il s'agit d'une forme d'argumentation par l'absurde propre à la statistique fréquentiste. 
 
 Notez que si 100 études étaient conduites sur le même sujet et dans les mêmes conditions, on s'attendrait à ce que 5 d'entre elles trouvent un coefficient significatif, du fait de la variation des échantillons. Ce constat souligne le fait que la recherche est un effort collectif et qu'une seule étude n'est pas suffisante pour trancher sur un sujet. Les revues systématiques de la littérature sont donc des travaux particulièrement importants pour la construction du consensus scientifique.
 :::
@@ -611,7 +611,7 @@ Prenons deux variables indépendantes du tableau \@ref(tab:dataregmodel2) – `H
 6. Valider ou réfuter l'hypothèse nulle (*H~0~*)&nbsp;:
   - pour `HABHA`, la valeur absolue de T (−31,975) est supérieure à la valeur critique de 3,29. Son coefficient de régression est donc significativement différent de 0. Autrement dit, ce prédicteur a un effet significatif et négatif sur la variable dépendante.
 
-  - pour `AgeMedian`, la valeur absolue de *t* (1,694) est supérieure à 1,65 (*p*&nbsp;=&nbsp;0,10), mais inférieure à 1,96 (*p*&nbsp;=&nbsp;0,05), 2,58 (*p*&nbsp;=&nbsp;0,01), 3,29 (*p*&nbsp;=&nbsp;0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de *p*&nbsp;=&nbsp;0,10 et non au seuil de *p*&nbsp;=&nbsp;0,05. Cela signifie qu'on a un peu moins de 10&nbsp;% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
+  - pour `AgeMedian`, la valeur absolue de *t* (1,694) est supérieure à 1,65 (*p*&nbsp;=&nbsp;0,10), mais inférieure à 1,96 (*p*&nbsp;=&nbsp;0,05), 2,58 (*p*&nbsp;=&nbsp;0,01), 3,29 (*p*&nbsp;=&nbsp;0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de *p*&nbsp;=&nbsp;0,10 et non au seuil de *p*&nbsp;=&nbsp;0,05. Cela signifie qu'on a un peu moins de 10% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
 
 
 ::: {.bloc_astuce data-latex=""}
@@ -661,7 +661,7 @@ Finalement, il est possible de calculer l'intervalle de confiance d'un coefficie
 * il permet de vérifier si le coefficient est ou non significatif au seuil retenu. Pour cela la borne inférieure et la borne supérieure du coefficient doivent être toutes deux négatives ou positives. À l'inverse, un intervalle à cheval sur 0, soit avec une borne inférieure négative et une borne supérieure positive, n'est pas significatif.
 * il permet d'estimer la précision de l'estimation; plus l'intervalle du coefficient est réduit, plus l'estimation de l'effet de la variable indépendante est précise. Inversement, un intervalle large signale que le coefficient est incertain.
 
-Cela explique que de nombreux auteurs reportent les intervalles de confiance dans les articles scientifiques (habituellement à 95&nbsp;%). Dans le modèle ici présenté, il serait alors possible d'écrire&nbsp;: toutes choses étant égales par ailleurs, le pourcentage d'enfants de moins de 15 ans est positivement et significativement associé avec le pourcentage de la couverture végétale dans l'îlot (B&nbsp;=&nbsp;1,084; IC 95&nbsp;% = [1,021 - 1,148], *p* < 0,001).
+Cela explique que de nombreux auteurs reportent les intervalles de confiance dans les articles scientifiques (habituellement à 95%). Dans le modèle ici présenté, il serait alors possible d'écrire&nbsp;: toutes choses étant égales par ailleurs, le pourcentage d'enfants de moins de 15 ans est positivement et significativement associé avec le pourcentage de la couverture végétale dans l'îlot (B&nbsp;=&nbsp;1,084; IC 95% = [1,021 - 1,148], *p* < 0,001).
 
 En guise d'exemple, à la lecture de la sortie R ci-dessous, l'estimation de l'effet de la variable indépendante `AgeMedian` sur la variable `VegPct` se situe dans l'intervalle -0,002 à 0,023 qui est à cheval sur 0. Contrairement aux autres variables, on ne peut donc pas en conclure que cet effet est significatif avec *p*&nbsp;=&nbsp;0,05.
 
@@ -678,7 +678,7 @@ L'intervalle du coefficient est obtenu à partir de&nbsp;:
 
 1. la valeur du coefficient ($\beta_k$),
 2. la valeur de son erreur type $s(\beta_k)$ et 
-3. la valeur critique de T ($t_{\alpha/2}$) obtenue avec $n-k-1$ degrés de liberté et le niveau de significativité retenu (95&nbsp;%, 99&nbsp;% ou 99,9&nbsp;%).
+3. la valeur critique de T ($t_{\alpha/2}$) obtenue avec $n-k-1$ degrés de liberté et le niveau de significativité retenu (95%, 99% ou 99,9%).
 
 \footnotesize
 \begin{equation}
@@ -710,7 +710,7 @@ Autrement dit, lorsque vous disposez d'un nombre très important d'observations,
 \end{equation}
 \normalsize
 
-La syntaxe R ci-dessous illustre comment calculer les intervalles de confiance à 95&nbsp;% à partir de l'équation \@ref(eq:ICcoef). Rappelez-vous toutefois qu'il est bien plus simple d'utiliser la fonction `confint`:
+La syntaxe R ci-dessous illustre comment calculer les intervalles de confiance à 95% à partir de l'équation \@ref(eq:ICcoef). Rappelez-vous toutefois qu'il est bien plus simple d'utiliser la fonction `confint`:
 
 * `round(confint(Modele1, level=.95),3) `
 * `round(confint(Modele1, level=.99),3)`
@@ -847,7 +847,7 @@ anova(modele1, modele2)
 
 Pour visualiser la relation linéaire et curvilinéaire, nous vous proposons de réaliser un graphique des effets marginaux à partir de la syntaxe ci-dessous.
 
-Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X~1~* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, et seule *X~1~* est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de *Y* quand *X~1~* augmente ou diminue, et ce, toutes choses étant égales par ailleurs (puisque toutes les autres variables ont une valeur fixe). Cette approche est particulièrement intéressante pour décrire des effets non linéaires obtenus avec des polynomiales, mais aussi des interactions comme nous le verrons plus tard. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap08) et \@ref(chap11)). Notez qu'il est aussi important de représenter sur ce type de graphique l'incertitude de la prédiction. Pour cela, il est possible de construire des intervalles de confiance à 95&nbsp;% autour de la prédiction en utilisant l'erreur standard de la prédiction (renvoyée par la fonction `predict`).
+Les graphiques des effets marginaux permettent de visualiser l'impact d'une variable indépendante sur la variable dépendante d'une régression. On se base pour cela sur les prédictions effectuées par le modèle. Admettons que nous nous intéressons à l'effet de la variable *X~1~* sur la variable *Y*. Il est possible de créer de nouvelles données fictives pour lesquelles l'ensemble des autres variables *X* sont fixées à leurs moyennes respectives, et seule *X~1~* est autorisée à varier. En utilisant l'équation de régression du modèle sur ces données fictives, on peut observer l'évolution de la valeur prédite de *Y* quand *X~1~* augmente ou diminue, et ce, toutes choses étant égales par ailleurs (puisque toutes les autres variables ont une valeur fixe). Cette approche est particulièrement intéressante pour décrire des effets non linéaires obtenus avec des polynomiales, mais aussi des interactions comme nous le verrons plus tard. Elle est également utilisée dans les modèles linéaires généralisés (GLM) et additifs (GAM) (chapitres \@ref(chap08) et \@ref(chap11)). Notez qu'il est aussi important de représenter sur ce type de graphique l'incertitude de la prédiction. Pour cela, il est possible de construire des intervalles de confiance à 95% autour de la prédiction en utilisant l'erreur standard de la prédiction (renvoyée par la fonction `predict`).
 
 
 ```{r calculRegPoly2, echo=TRUE, fig.align='center', fig.cap="Relations linéaire et curvilinéaire", message=FALSE, warning=FALSE, out.width='75%'}
@@ -908,9 +908,9 @@ La figure \@ref(fig:calculRegPoly2) démontre bien que la relation linéaire n'e
 
 #### Variable indépendante sous forme logarithmique {#sect07512}
 
-Une autre manière d'explorer une relation non linéaire est d'intégrer la variable sous forme logarithmique [@hanck2019introduction, p. 212-218]. L'interprétation du coefficient de régression est alors plus complexe&nbsp;: un 1&nbsp;% d'augmentation de la variable $X_k$ entraîne un changement de $0,01 \times \beta_k$ de la variable dépendante. Autrement dit, il n'est plus exprimé dans les unités de mesure originales des deux variables.
+Une autre manière d'explorer une relation non linéaire est d'intégrer la variable sous forme logarithmique [@hanck2019introduction, p. 212-218]. L'interprétation du coefficient de régression est alors plus complexe&nbsp;: un 1% d'augmentation de la variable $X_k$ entraîne un changement de $0,01 \times \beta_k$ de la variable dépendante. Autrement dit, il n'est plus exprimé dans les unités de mesure originales des deux variables.
 
-Au tableau \@ref(tab:regmodeleLog), le coefficient de `-6,855` pour la variable `logHABHA` s'interprète alors comme suit&nbsp;: un changement de 1&nbsp;% de la variable densité de population entraîne une diminution de $0,01 \times -6,855 = -0,07$ de la couverture végétale dans l'île, toutes choses étant égales par ailleurs.
+Au tableau \@ref(tab:regmodeleLog), le coefficient de `-6,855` pour la variable `logHABHA` s'interprète alors comme suit&nbsp;: un changement de 1% de la variable densité de population entraîne une diminution de $0,01 \times -6,855 = -0,07$ de la couverture végétale dans l'île, toutes choses étant égales par ailleurs.
 
 ```{r regmodeleLog, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 DataFinal$logHABHA <- log(DataFinal$HABHA)
@@ -981,7 +981,7 @@ Il est très fréquent d'introduire une variable qualitative dichotomique comme 
 
 Dans le modèle ci-dessous, nous voulons vérifier si un îlot situé sur le territoire de la Ville de Montréal a proportionnellement moins de végétation qu'un îlot situé dans une autre municipalité de l'île de Montréal, toutes choses étant égales par ailleurs. Pour ce faire, nous créons une variable binaire dénommée `VilleMtl` qui prend la valeur de 1 pour les îlots de la Ville de Montréal et 0 pour ceux d'autre municipalité.
 
-Nous obtenons ainsi un coefficient de régression pour `VilleMtl` de -7,699. Cela signifie que si toutes les autres variables indépendantes du modèle étaient constantes, alors en moyenne, un îlot de la Ville de Montréal aurait une valeur de -7,7&nbsp;% de moins de végétation comparativement à un îlot situé dans une autre municipalité.
+Nous obtenons ainsi un coefficient de régression pour `VilleMtl` de -7,699. Cela signifie que si toutes les autres variables indépendantes du modèle étaient constantes, alors en moyenne, un îlot de la Ville de Montréal aurait une valeur de -7,7% de moins de végétation comparativement à un îlot situé dans une autre municipalité.
 
 ```{r regmodeleDich, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -1020,7 +1020,7 @@ Autrement dit, si la variable avait été codée&nbsp;: 0 pour la Ville et de Mo
 Pour éviter d'oublier quelle est la modalité de référence (valeur de 0), nous verrons plus tard (dans la section mise en œuvre des modèles de régression dans R (section \@ref(sect077)) qu'il peut être préférable de définir un facteur avec la fonction `as.factor` et d'indiquer la catégorie de référence avec la fonction `relevel(x, ref)`.
 :::
 
-Comme pour une variable indépendante introduite avec une fonction polynomiale, il peut être très intéressant d'illustrer l'effet marginal de la variable dichotomique avec un graphique qui montre l'écart entre les moyennes des deux modalités, une fois contrôlées les autres variables indépendantes (figure \@ref(fig:EffetMarginalDich)). Notez que dans ce graphique, les barres d'erreurs situées au sommet des rectangles représentent les intervalles à 95&nbsp;% des prédictions du modèle.
+Comme pour une variable indépendante introduite avec une fonction polynomiale, il peut être très intéressant d'illustrer l'effet marginal de la variable dichotomique avec un graphique qui montre l'écart entre les moyennes des deux modalités, une fois contrôlées les autres variables indépendantes (figure \@ref(fig:EffetMarginalDich)). Notez que dans ce graphique, les barres d'erreurs situées au sommet des rectangles représentent les intervalles à 95% des prédictions du modèle.
 
 ```{r EffetMarginalDich, echo=FALSE, fig.align='center', fig.cap="Effet marginal d'une variable dichotomique", message=FALSE, warning=FALSE, out.width='70%'}
 library(ggplot2)
@@ -1096,8 +1096,8 @@ Y = b_{0} + b_{1}X_{1} + b_{2A}X_{2A} + b_{2B}X_{2B} + b_{2C}X_{2C} + e
 
 Les coefficients des différentes modalités s'interprètent en fonction de la catégorie de référence. Dans l'exemple ci-dessous, nous avons inclus la Ville de Montréal comme catégorie de référence (tableau \@ref(tab:ModeleVarPoly1)). On peut alors constater que toutes choses étant égales par ailleurs&nbsp;:
 
-* en moyenne, les îlots résidentiels de Senneville et Baie-D’Urfé ont respectivement 23,235&nbsp;% et 21,400&nbsp;% plus de végétation que ceux de la Ville de Montréal.
-* la seule municipalité comprenant en moyenne moins de végétation dans ses îlots résidentiels est Montréal-Est (-13,334&nbsp;%) 
+* en moyenne, les îlots résidentiels de Senneville et Baie-D’Urfé ont respectivement 23,235% et 21,400% plus de végétation que ceux de la Ville de Montréal.
+* la seule municipalité comprenant en moyenne moins de végétation dans ses îlots résidentiels est Montréal-Est (-13,334%) 
 * on remarque aussi que les îlots des municipalités de Sainte-Anne-de-Bellevue, Montréal-Ouest et Côte-Saint-Luc ne présentent pas significativement moins ou plus de végétation que ceux de la Ville de Montréal (leurs valeurs de P sont supérieures à 0,05).
 
 Par conséquent, les valeurs de T et de P pour une modalité permettent de vérifier si elle est ou non significativement différente de la catégorie de référence.
@@ -1161,7 +1161,7 @@ Mais surtout, éviter de choisir une catégorie comprenant très peu d'observati
 
 #### L'effet marginal d'une variable explicative qualitative polytomique  {#sect07533}
 
-Comme pour une variable dichotomique, il est possible d'illustrer l'effet marginal de la variable qualitative dichotomique avec un graphique. Quelle que soit la catégorie de référence choisie, le graphique sera le même. La figure \@ref(fig:EffetMarginalPoly) illustre ainsi la valeur moyenne, avec son intervalle de confiance à 95&nbsp;%, de la végétation dans les îlots résidentiels de chacune des municipalités de la région de Montréal, *ceteris paribus*.
+Comme pour une variable dichotomique, il est possible d'illustrer l'effet marginal de la variable qualitative dichotomique avec un graphique. Quelle que soit la catégorie de référence choisie, le graphique sera le même. La figure \@ref(fig:EffetMarginalPoly) illustre ainsi la valeur moyenne, avec son intervalle de confiance à 95%, de la végétation dans les îlots résidentiels de chacune des municipalités de la région de Montréal, *ceteris paribus*.
 
 ```{r EffetMarginalPoly, echo=FALSE, fig.align='center', fig.cap="Effet marginal d'une variable polytomique", message=FALSE, warning=FALSE, out.width='90%'}
 library(ggplot2)
@@ -1197,7 +1197,7 @@ Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \beta_{3}(X_{1}\times X_{2}) +
 
 Un nouveau coefficient ($\beta_{3}$) s'ajoute pour l'interaction (la multiplication) entre les deux variables continues. **Pourquoi ajouter une interaction entre deux variables?** L'objectif est d'évaluer l'effet d'une augmentation de $\beta_{1}$ en fonction d'un niveau donné de $\beta_{2}$ et inversement. Cela permet ainsi de répondre à la question suivante&nbsp;: l'effet de la variable $\beta_{1}$ est-il influencé par la variable $\beta_{2}$ et inversement?
 
-Prenons un exemple concret pour illustrer le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B&nbsp;=&nbsp;0,659, *p*&nbsp;<&nbsp;0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59&nbsp;% plus de végétation (tableau \@ref(tab:ModeleInteraction1)).
+Prenons un exemple concret pour illustrer le tout. Premièrement, nous ajoutons `DistCBDkm` comme VI, soit la distance au centre-ville exprimée en kilomètres. Notez que pour ne pas surspécifier le modèle, les variables dichotomique `VilleMtl` ou polytomique `Municipalité` ont été préalablement ôtées. Le coefficient (B&nbsp;=&nbsp;0,659, *p*&nbsp;<&nbsp;0,001) signale que plus on s'éloigne du centre-ville, plus la couverture végétale des îlots augmente significativement. En guise d'exemple, toutes choses étant égales par ailleurs, un îlot situé à dix kilomètres du centre-ville aura en moyenne 6,59% plus de végétation (tableau \@ref(tab:ModeleInteraction1)).
 
 ```{r ModeleInteraction1, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 modele5 <- lm(VegPct ~ log(HABHA)+poly(AgeMedian,2)+
@@ -1237,7 +1237,7 @@ tabreg <- build_table(modele6, confid = F, std_digits = 3, coef_digits = 3, z_di
              )
 ```
 
-À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variable dépendante, ce qu'il est possible de faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interaction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95&nbsp;% de la prédiction dans les deuxième et troisième panneaux. 
+À nouveau, il est possible de représenter l'effet de cette interaction à l'aide d'un graphique des effets marginaux. Notez cependant que nous devons représenter l'effet simultané de deux variables indépendantes sur notre variable dépendante, ce qu'il est possible de faire avec une carte de chaleur. La figure \@ref(fig:ModeleInteraction2heat) représente donc l'effet moyen de l'interaction sur la prédiction dans le premier panneau,  ainsi que l'intervalle de confiance à 95% de la prédiction dans les deuxième et troisième panneaux. 
 
 On constate ainsi que le modèle prédit des valeurs de végétation les plus faibles lorsque le pourcentage de personnes à faible revenu est élevé et que la distance au centre-ville est élevée (en haut à droite à la figure \@ref(fig:ModeleInteraction2heat)). En revanche, les valeurs les plus élevées de végétation sont atteintes lorsque la distance au centre-ville est élevée et que le pourcentage de personnes à faible revenu est faible (en bas à droite). Il semble donc que l'éloignement au centre-ville soit associé avec une augmentation de la densité végétale, mais que cette augmentation puisse être mitigée par l'augmentation parallèle du pourcentage de personnes à faible revenu.
 
@@ -1551,7 +1551,7 @@ X_1 = b_0 + b_2X_2 +\ldots+ b_kX_k + e
 \end{equation}
 \normalsize
 
-2. À partir de cette équation, on obtient ainsi un $R^2$ qui nous indique la proportion de la variance de $X_1$ expliquée par les autres VI. Par convention, on calcule la tolérance (équation \@ref(eq:ToleranceVIF)) qui indique la proportion de la variance de $X_k$ n'étant pas expliquée par les autres VI. En guise d'exemple, une valeur de tolérance égale à 0,1 signale que 90&nbsp;% de la variance de $X_k$ est expliqué par les autres variables, ce qui est un problème de multicolinéarité en soit. Concrètement, plus la valeur de la tolérance est proche de zéro, plus c’est problématique.
+2. À partir de cette équation, on obtient ainsi un $R^2$ qui nous indique la proportion de la variance de $X_1$ expliquée par les autres VI. Par convention, on calcule la tolérance (équation \@ref(eq:ToleranceVIF)) qui indique la proportion de la variance de $X_k$ n'étant pas expliquée par les autres VI. En guise d'exemple, une valeur de tolérance égale à 0,1 signale que 90% de la variance de $X_k$ est expliqué par les autres variables, ce qui est un problème de multicolinéarité en soit. Concrètement, plus la valeur de la tolérance est proche de zéro, plus c’est problématique.
 
 \footnotesize
 \begin{equation} 
@@ -1824,7 +1824,7 @@ anova(modele1, modele2, modele4, modele5, modele7)
 ::: {.bloc_attention  data-latex=""}
 **Quel modèle choisir?** 
 
-Nous avons déjà évoqué le principe de parcimonie. À titre de rappel, l'ajout de variables indépendantes qui s'avèrent significatives fait inévitablement augmenter la variance expliquée et ainsi la valeur R^2^ ajusté. Par contre, elle peut rendre le modèle plus complexe à analyser, voire entraîner un surajustement du modèle. Nous avons vu que l'introduction des variables ditchtomique, polytomique et d'interaction avait pour effet d'augmenter la capacité de prédiction du modèle. Quoi qu'il en soit, le gain de variance expliquée s'élève à environ 4&nbsp;% entre le troisième modèle versus le cinquième et le sixième&nbsp;:
+Nous avons déjà évoqué le principe de parcimonie. À titre de rappel, l'ajout de variables indépendantes qui s'avèrent significatives fait inévitablement augmenter la variance expliquée et ainsi la valeur R^2^ ajusté. Par contre, elle peut rendre le modèle plus complexe à analyser, voire entraîner un surajustement du modèle. Nous avons vu que l'introduction des variables ditchtomique, polytomique et d'interaction avait pour effet d'augmenter la capacité de prédiction du modèle. Quoi qu'il en soit, le gain de variance expliquée s'élève à environ 4% entre le troisième modèle versus le cinquième et le sixième&nbsp;:
 
 * Modèle 3 (R^2^=0,465). `VegPct ~ log(HABHA) + poly(AgeMedian, 2) + Pct_014 + Pct_65P + Pct_MV + Pct_FR`
 * Modèle 5 (R^2^=0,506). `VegPct ~ log(HABHA) + poly(AgeMedian, 2) + Pct_014 + Pct_65P + Muni`

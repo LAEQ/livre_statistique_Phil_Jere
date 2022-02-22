@@ -392,7 +392,7 @@ knitr::include_graphics('images/magie_graphiques/all_colors.png', dpi = NA)
 
 * En indiquant le code hexadécimal de la couleur. Il s'agit d'une suite de six lettres et de chiffres précédée par un dièse&nbsp;: `"#99ff33"`.
 
-* En utilisant une notation RGB (rouge, vert, bleu, transparence). Cette notation doit contenir quatre nombres entre 0 et 1 (0&nbsp;% et 100&nbsp;%), le premier indiquant la quantité de rouge, le second de vert, le troisième de bleu, et le quatrième la transparence. Ces quatre nombres sont donnés comme argument à la fonction `rgb`&nbsp;: `rgb(0.6, 1, 0.2, 0)`.
+* En utilisant une notation RGB (rouge, vert, bleu, transparence). Cette notation doit contenir quatre nombres entre 0 et 1 (0% et 100%), le premier indiquant la quantité de rouge, le second de vert, le troisième de bleu, et le quatrième la transparence. Ces quatre nombres sont donnés comme argument à la fonction `rgb`&nbsp;: `rgb(0.6, 1, 0.2, 0)`.
 
 Le choix des couleurs est un problème plus complexe que la manière de les spécifier. Il existe d'ailleurs tout un pan de la sémiologie graphique dédié à la question du choix et de l'association des couleurs. Une première ressource intéressante est  [ColorBrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3){target="_blank"}. Il s'agit d'une sélection de palettes de couleurs particulièrement efficaces et dont certaines sont même adaptées pour les personnes daltoniennes (figure \@ref(fig:figcolorBrewer)). Il est possible d'accéder directement aux palettes dans R grâce au *package* `RColorBrewer` et la fonction `brewer.pal`&nbsp;: 
 
@@ -494,7 +494,7 @@ plot2 <- ggplot(data = distribs) +
 ggarrange(plotlist = list(plot1, plot2), ncol = 2)
 ```
 
-Le graphique de droite (fréquence) nous indique donc que plus de 100 observations ont une valeur d'environ&nbsp;5 (entre 4,76 et 5,34, compte tenu de la largeur de la barre), ce qui se traduit par une probabilité de presque 30&nbsp;% d'obtenir cette valeur en tirant une observation au hasard dans le jeu de données.
+Le graphique de droite (fréquence) nous indique donc que plus de 100 observations ont une valeur d'environ&nbsp;5 (entre 4,76 et 5,34, compte tenu de la largeur de la barre), ce qui se traduit par une probabilité de presque 30% d'obtenir cette valeur en tirant une observation au hasard dans le jeu de données.
 
 #### Histogramme avec courbe de distribution {#sect03213}
 
@@ -589,7 +589,7 @@ graphique <- ggplot(data = data_co2)+
 show_as_png(graphique, out = "images/magie_graphiques/fig326.png", dpi = 300)
 ```
 
-À la première lecture de ce graphique, on observe immédiatement un ensemble de points étranges dont le volume de CO~2~ par habitant annuel est au-dessus de 150 tonnes et dont le niveau d'urbanisation est proche de 50&nbsp;%. Isolons ces données pour observer de quoi il s'agit.
+À la première lecture de ce graphique, on observe immédiatement un ensemble de points étranges dont le volume de CO~2~ par habitant annuel est au-dessus de 150 tonnes et dont le niveau d'urbanisation est proche de 50%. Isolons ces données pour observer de quoi il s'agit.
 
 ```{r}
 cas_etrange <- subset(data_co2, data_co2$CO2t_hab >= 150)
@@ -733,7 +733,7 @@ On remarque notamment qu'aucune donnée avant 2005 n'est disponible pour le Liec
 
 #### Barre d'erreur et en bande {#sect03241}
 
-Sur un graphique, il est souvent pertinent de représenter l'incertitude que nous avons sur nos données. Cela peut être fait à l'aide de barres d'erreur ou à l'aide de polygones délimitant les marges d'incertitude. En guise d'exemple, admettons que les données précédentes sont fiables à plus ou moins 10&nbsp;%. En d'autres termes, la valeur d'émission de CO~2~ annuelle serait relativement incertaine et pourrait se situer dans un intervalle de 10&nbsp;% autour de la valeur fournie par la Banque Mondiale. Nous obtenons ainsi une borne inférieure (valeur donnée - 10&nbsp;%) et une borne supérieure (valeur donnée + 10&nbsp;%). Nous pouvons facilement calculer ces bornes et les faire apparaître dans notre graphique précédent.
+Sur un graphique, il est souvent pertinent de représenter l'incertitude que nous avons sur nos données. Cela peut être fait à l'aide de barres d'erreur ou à l'aide de polygones délimitant les marges d'incertitude. En guise d'exemple, admettons que les données précédentes sont fiables à plus ou moins 10%. En d'autres termes, la valeur d'émission de CO~2~ annuelle serait relativement incertaine et pourrait se situer dans un intervalle de 10% autour de la valeur fournie par la Banque Mondiale. Nous obtenons ainsi une borne inférieure (valeur donnée - 10%) et une borne supérieure (valeur donnée + 10%). Nous pouvons facilement calculer ces bornes et les faire apparaître dans notre graphique précédent.
 
 ```{r fig336, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne avec barres d'erreur",  out.width='65%', dev = "png", dpi = 300}
 

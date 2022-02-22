@@ -133,7 +133,7 @@ Comme son nom l'indique, le modèle vide ne comprend aucune variable explicative
 \end{equation}
 \normalsize
 
-Les résultats du modèle vide (inconditionnel) à partir des données de Pham et al. [-@apparicio2017disentangling] sont présentés au tableau \@ref(tab:TableauModeleVide). La variance du niveau&nbsp;1 est de 92,93 contre 19,82 au niveau&nbsp;2. Le coefficient de corrélation intraclasse vaut alors&nbsp;: $\mbox{19,82 / (19,82 + 92,93) = 0,1758}$. Cela signifie que 18&nbsp;% de la variance de la variable dépendante sont imputables au niveau&nbsp;2 (des secteurs de recensement) et 82&nbsp;% au niveau&nbsp;1 (des tronçons). Nous verrons comment évolue ce coefficient dans les modèles subséquents.
+Les résultats du modèle vide (inconditionnel) à partir des données de Pham et al. [-@apparicio2017disentangling] sont présentés au tableau \@ref(tab:TableauModeleVide). La variance du niveau&nbsp;1 est de 92,93 contre 19,82 au niveau&nbsp;2. Le coefficient de corrélation intraclasse vaut alors&nbsp;: $\mbox{19,82 / (19,82 + 92,93) = 0,1758}$. Cela signifie que 18% de la variance de la variable dépendante sont imputables au niveau&nbsp;2 (des secteurs de recensement) et 82% au niveau&nbsp;1 (des tronçons). Nous verrons comment évolue ce coefficient dans les modèles subséquents.
 
 ```{r TableauModeleVide, echo=FALSE, message=FALSE, warning=FALSE}
 library("lme4")
@@ -199,7 +199,7 @@ Dans ce second modèle, nous introduisons uniquement les variables explicatives 
 
 Les résultats du second modèle sont présentés au tableau \@ref(tab:TableauModele2). 
 
-**La répartition de la variance entre les deux niveaux**. La variance du niveau&nbsp;1 est désormais de 15,263 contre 80,317 au niveau&nbsp;2, ce qui permet d'obtenir un coefficient de corrélation intraclasse de 0,1597. Cela signifie que de 16&nbsp;% de la variance de la variable dépendante sont imputables au niveau&nbsp;2 (des secteurs de recensement), une fois contrôlées les caractéristiques des tronçons.
+**La répartition de la variance entre les deux niveaux**. La variance du niveau&nbsp;1 est désormais de 15,263 contre 80,317 au niveau&nbsp;2, ce qui permet d'obtenir un coefficient de corrélation intraclasse de 0,1597. Cela signifie que de 16% de la variance de la variable dépendante sont imputables au niveau&nbsp;2 (des secteurs de recensement), une fois contrôlées les caractéristiques des tronçons.
 
 **La qualité d'ajustement du modèle**. Dans le chapitre précédent sur les GLMM, nous avons largement décrit plusieurs mesures de la qualité d'ajustement du modèle, notamment l'AIC et les R^2^ marginal et conditionnel. À titre de rappel, voici comment interpréter ces mesures&nbsp;:
 
@@ -284,7 +284,7 @@ Dans la plupart des livres sur les régressions multiniveaux, le centrage est re
 Il est à noter que certains auteurs vont centrer et réduire l'ensemble des variables du modèle. À titre de rappel, le centrage consiste à soustraire à chaque valeur la moyenne de la variable; la réduction à la diviser par l'écart-type de la variable (section \@ref(sect02552)). Pour chaque variable, la moyenne est alors égale à 0 et l'écart-type à 1. Les coefficients s'interprètent alors en termes d'augmentation d'une unité d'écart-type tant pour la VI que la VD. Ils correspondent alors à des coefficients de régression standardisés (abordés dans la section \@ref(sect0742)). Ce processus de centrage et de réduction des variables peut être motivé par des problèmes de convergence du modèle (lorsque l'algorithme d'optimisation n'arrive pas à trouver une solution pour produire les coefficients).
 :::
 
-Par conséquent, nous vous proposons de centrer les variables du niveau&nbsp;1 de notre jeu de données. Si vous comparez les tableaux \@ref(tab:TableauModele2) et \@ref(tab:TableauModele2b), vous constaterez que les valeurs relatives aux coefficients, aux mesures de la répartition de la variance et à la qualité d'ajustement du modèle sont les mêmes. Seule la valeur de la constante change&nbsp;: elle passe de −1028,618 à 7,228. Elle s'interprète désormais de la façon suivante&nbsp;: si toutes les variables explicatives étaient égales à leurs moyennes respectives, alors le pourcentage de la superficie du tronçon couverte par des arbres serait égal à 7,228&nbsp;%.
+Par conséquent, nous vous proposons de centrer les variables du niveau&nbsp;1 de notre jeu de données. Si vous comparez les tableaux \@ref(tab:TableauModele2) et \@ref(tab:TableauModele2b), vous constaterez que les valeurs relatives aux coefficients, aux mesures de la répartition de la variance et à la qualité d'ajustement du modèle sont les mêmes. Seule la valeur de la constante change&nbsp;: elle passe de −1028,618 à 7,228. Elle s'interprète désormais de la façon suivante&nbsp;: si toutes les variables explicatives étaient égales à leurs moyennes respectives, alors le pourcentage de la superficie du tronçon couverte par des arbres serait égal à 7,228%.
 
 ```{r TableauModele2b, echo=FALSE, message=FALSE, warning=FALSE}
 

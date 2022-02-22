@@ -43,7 +43,7 @@ Le **t de Student**, appelé aussi **test _t_** (*t-test* en anglais), est un te
 
 **Condition d'application**. Pour utiliser les tests de Student et de Welch, la variable continue doit être normalement distribuée. Si elle est fortement anormale, nous utiliserons le test non paramétrique de Wilcoxon (section \@ref(sect0612)). Il existe trois principaux tests pour comparer les moyennes de deux groupes&nbsp;:
 
-* Test de Student (test *t*) avec échantillons indépendants et variances similaires (méthode *pooled*).  Les variances de deux groupes sont semblables quand leur ratio varie de 0,5 à 2, soit $\mbox{0,5}< (S^2_{X_A}/S^2_{X_B})<2$.
+* Test de Student (test *t*) avec échantillons indépendants et variances similaires (méthode *pooled*).  Les variances de deux groupes sont semblables quand leur ratio varie de 0,5 à 2, soit $\mbox{0,5}< (S^2_{X_A}/S^2_{X_B})<\mbox{2}$.
 * Test de Welch (appelé aussi Satterthwaite) avec échantillons indépendants quand les variances des deux groupes sont dissemblables.
 * Test de Student (test *t*) avec échantillons dépendants.
 
@@ -51,7 +51,7 @@ Il s'agit de vérifier si les moyennes des deux groupes sont statistiquement dif
 
 * Nous posons l'hypothèse nulle (*H~0~*), soit que les moyennes des deux groupes *A* et *B* ne sont pas différentes ($\bar{X}_{A}=\bar{X}_{B}$) ou, autrement dit, la différence des deux moyennes est nulle ($\bar{X}_{A}-\bar{X}_{B}=0$). L'hypothèse alternative (*H~1~*) est donc $\bar{X}_{A}\ne\bar{X}_{B}$.
 * Nous calculons la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* est négative quand la moyenne du groupe A est inférieure au groupe B et inversement.
-* Nous comparons la valeur absolue de *t* ($\mid t \mid$) avec celle issue de la table des valeurs critiques de T (voir section \@ref(annexe2)) avec le bon nombre de degrés de liberté et en choisissant un degré de signification (habituellement, *p*&nbsp;=&nbsp;0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
+* Nous comparons la valeur absolue de *t* ($\mbox{|t|}$) avec celle issue de la table des valeurs critiques de T (voir section \@ref(annexe2)) avec le bon nombre de degrés de liberté et en choisissant un degré de signification (habituellement, *p*&nbsp;=&nbsp;0,05). Si $\mbox{|t|}$ est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
 * Si les moyennes sont statistiquement différentes, nous pouvons calculer la taille de l'effet.
 
 
@@ -179,7 +179,7 @@ Nous disposons de plusieurs personnes pour lesquelles nous avons mesuré un phé
 
 * Nous posons l'hypothèse nulle (*H~0~*), soit que la moyenne des différences entre les deux séries est égale à 0 ($\bar{D} = 0$ avec $d = {x}_{t_1}- {x}_{t_2}$). L'hypothèse alternative (*H~1~*) est donc $\bar{D} \ne 0$. Notez que nous pouvons tester une autre valeur que 0.
 * Nous calculons la valeur de *t* et le nombre de degrés de liberté. La valeur de *t* est négative quand la moyenne des différences entre ${X}_{t_1}$ et ${X}_{t_2}$ est négative et inversement.
-* Nous comparons la valeur absolue de *t* ($\mid t \mid$) avec celle issue de la table des valeurs critiques de T avec le nombre de degrés de liberté et en choisissant un degré de signification (habituellement, *p*&nbsp;=&nbsp;0,05). Si ($\mid t \mid$) est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
+* Nous comparons la valeur absolue de *t* ($\mbox{|t|}$) avec celle issue de la table des valeurs critiques de T avec le nombre de degrés de liberté et en choisissant un degré de signification (habituellement, *p*&nbsp;=&nbsp;0,05). Si $\mbox{|t|}$ est supérieure à la valeur *t* critique, alors les moyennes sont statistiquement différentes au degré de signification retenu.
 
 Pour le test de Student avec des échantillons appariés, la valeur de *t* se calcule comme suit&nbsp;:
 
@@ -314,7 +314,8 @@ df <- data.frame(
         Cohen = c("", "0,2 : Faible", "0,5 : Moyen","0,8 : Fort", "", ""))
 
 show_table(df,
-           caption = 'Conventions pour l’interprétation du *d* de Cohen'
+           caption = 'Conventions pour l’interprétation du *d* de Cohen',
+           position = 'HOLD_position'
            )
 ```
 
@@ -347,12 +348,12 @@ Notez que pour toutes ces fonctions, deux écritures sont possibles&nbsp;:
 
 La figure \@ref(fig:figlocataires) représente la cartographie du pourcentage de locataires par secteur de recensement (SR) pour la région métropolitaine de recensement de Montréal (RMR) en 2016, soit une variable continue. L'objectif est de vérifier si la moyenne de ce pourcentage des SR de l'agglomération de Montréal est significativement différente de celles de SR hors de l'agglomération. 
 
-Les résultats de la syntaxe  ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7&nbsp;%; écart-type = 21,4&nbsp;%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3&nbsp;%; écart-type = 20,1&nbsp;%). Cette différence de 32,5 points de pourcentage est d'ailleurs significative et très forte (*t*&nbsp;=&nbsp;-23,95; *p*&nbsp;<&nbsp;0,001, d de Cohen&nbsp;=&nbsp;1,54).
-
-
 ```{r figlocataires, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Pourcentage de locataires par secteur de recensement, région métropolitaine de recensement de Montréal, 2016",  out.width='100%'}
 knitr::include_graphics('images/bivariee/FigureLocataires.jpg', dpi = NA)
 ```
+
+Les résultats de la syntaxe  ci-dessous signalent que le pourcentage de locataires par SR est bien supérieur dans l'agglomération (moyenne = 59,7%; écart-type = 21,4%) qu'en dehors de l'agglomération de Montréal (moyenne = 27,3%; écart-type = 20,1%). Cette différence de 32,5 points de pourcentage est d'ailleurs significative et très forte (*t*&nbsp;=&nbsp;-23,95; *p*&nbsp;<&nbsp;0,001, d de Cohen&nbsp;=&nbsp;1,54).
+
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library("foreign")
@@ -504,7 +505,7 @@ Pour les différentes versions du test, il est important de rapporter les valeur
 * Nous constatons une diminution significative de la perception du risque après l'activité (moyenne = 49,9; écart-type = 5,7) comparativement à avant (moyenne&nbsp;=&nbsp;74,8; écart-type&nbsp;=&nbsp;6,1), avec une différence de -24,8 (*t*(29)&nbsp;=&nbsp;-18,7; *p*&nbsp;<&nbsp;0,001).
 * Les résultats du pré-test (moyenne&nbsp;=&nbsp;49,9; écart-type&nbsp;=&nbsp;5,7) et du post-test (moyenne&nbsp;=&nbsp;74,8; écart-type&nbsp;=&nbsp;6,1) montrent qu'il y une diminution significative de la perception du risque (*t*(29)&nbsp;=&nbsp;-18,7; *p*&nbsp;<&nbsp;0,001).
 
-Pour un texte en anglais, vous consultez
+Pour un texte en anglais, consultez
 [https://www.socscistatistics.com/tutorials/ttest/default.aspx](https://www.socscistatistics.com/tutorials/ttest/default.aspx){target="_blank"}.
 
 
@@ -661,7 +662,7 @@ Examinons un premier jeu de données fictives sur la vitesse de déplacement de 
 * la **variance intergroupe** (expliquée, *VE*), elle est égale à $\mbox{5}\times(\mbox{17,580-17,339})^2+\mbox{7}\times(\mbox{12,257-17,339})^2+\mbox{6}\times(\mbox{23,067-17,339})^2 = \mbox{377,904}$.
 * la **variance intragroupe** (non expliquée, *VNE*) est égale à $\mbox{11,228+21,537+13,993=46,758}$. 
 
-Nous avons donc $VT = Var_{inter} + Var_{intra}$, soit $\mbox{424,663 = 377,904 + 46,758}$ et $\eta_2 = \mbox{377,904 / 424,663 = 0,89}$. Cela signale que 89&nbsp;% de la variance de la vitesse des cyclistes est expliquée par le type de vélo utilisé.
+Nous avons donc $VT = Var_{inter} + Var_{intra}$, soit $\mbox{424,663 = 377,904 + 46,758}$ et $\eta_2 = \mbox{377,904 / 424,663 = 0,89}$. Cela signale que 89% de la variance de la vitesse des cyclistes est expliquée par le type de vélo utilisé.
 
 ```{r aovfictive1, echo=FALSE, message=FALSE, warning=FALSE}
 VeloA <- c(16.9, 20.4, 16.1, 17.7, 16.8)
@@ -733,7 +734,7 @@ Examinons un deuxième jeu de données fictives pour lequel le type de vélo uti
 * la **variance intergroupe** (expliquée, *VE*) est égale à $\mbox{5}\times(\mbox{19,300-18,528})^2+\mbox{7}\times(\mbox{17,871-18,528})^2+\mbox{6}\times(\mbox{18,650-18,528})^2 = \mbox{6,087}$.
 * la **variance intragroupe** (non expliquée, *VNE*) est égale à $\mbox{9,140+50,254+56,275 = 115,669}$.
 
-Nous avons donc $VT = Var_{inter} + Var_{intra}$, soit $\mbox{121,756 = 6,087 + 115,669}$ et $\eta_2 = \mbox{6,087 / 121,756 = 0,05}$. Cela signale que 5&nbsp;% de la variance de la vitesse des cyclistes est uniquement expliquée par le type de vélo utilisé.
+Nous avons donc $VT = Var_{inter} + Var_{intra}$, soit $\mbox{121,756 = 6,087 + 115,669}$ et $\eta_2 = \mbox{6,087 / 121,756 = 0,05}$. Cela signale que 5% de la variance de la vitesse des cyclistes est uniquement expliquée par le type de vélo utilisé.
 
 ```{r aovfictive2, echo=FALSE, message=FALSE, warning=FALSE}
 VeloA <- c(17.5, 19.0, 19.7, 18.7, 21.6)
@@ -817,7 +818,7 @@ $\alpha$ (*p*=0,05 habituellement) (voir la table des valeurs critiques de *F*, 
 
 Appliquons rapidement la démarche du test *F* à nos deux jeux de données fictives qui comprennent 3&nbsp;modalités pour la variable qualitative et 18 observations. Avec $\alpha$ = 0,05, 2&nbsp;degrés de liberté (3-1) au numérateur et 15 au dénominateur (18-3), la valeur critique de F est de 3,68. Nous en concluons alors que&nbsp;:
 
-* pour le cas A, le *F* calculé est égal à $\mbox{(377,904 / 2) / (46,758 / 15) = 60,62}$. Il est  supérieur à la valeur *F* critique; les moyennes sont donc statistiquement différentes au seuil 0,05. Autrement dit, nous aurions eu moins de 5&nbsp;% de chance d'obtenir un échantillon produisant ces résultats si en réalité la différence entre les moyennes était de 0.
+* pour le cas A, le *F* calculé est égal à $\mbox{(377,904 / 2) / (46,758 / 15) = 60,62}$. Il est  supérieur à la valeur *F* critique; les moyennes sont donc statistiquement différentes au seuil 0,05. Autrement dit, nous aurions eu moins de 5% de chance d'obtenir un échantillon produisant ces résultats si en réalité la différence entre les moyennes était de 0.
 * pour le cas B, le *F* calculé est égal à $\mbox{(6,087 / 2) / (115,669 / 15) = 0,39}$. Il est inférieur à la valeur *F* critique; les moyennes ne sont donc pas statistiquement différentes au seuil de 0,05.
 
 #### Conditions d'application de l'ANOVA et solutions de rechange {#sect06213}

@@ -178,6 +178,7 @@ knitr::include_graphics('images/CargoAmbre.png', dpi = NA)
 ## quelques parametres generaux en fonction du type de document
 library(tidyverse)
 library(ggpubr)
+library(kableExtra)
 
 if (knitr::is_latex_output()){
   font_size_table <- 8
@@ -267,7 +268,7 @@ clean_df_latex <- function(df){
 }
 
 show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, 
-                       col.width = NULL, digits = getOption("digits"),
+                       col.width = NULL, digits = getOption("digits"), 
                        align = NULL, row.names = FALSE, position = NULL, ...){
   options(knitr.kable.NA = '')
   if(is.null(position)){
@@ -292,17 +293,19 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
     if(length(df2) == 1){
       df2 <- df2[[1]]
     }
-    table1 <- knitr::kable(
-      df2, booktabs = TRUE,
-      format = "latex",
-      digits = digits,
-      format.args = list(decimal.mark = ",", big.mark = " "),
-      valign = 't', row.names = row.names,
-      align = align,
-      col.names = col.names,
-      caption = caption,
-      escape = FALSE, ...) %>% 
-      kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
+    table1 <- df2 %>% 
+      mutate_all(linebreak)  %>% 
+       knitr::kable(
+        booktabs = TRUE,
+        format = "latex",
+        digits = digits,
+        format.args = list(decimal.mark = ",", big.mark = " "),
+        valign = 't', row.names = row.names,
+        align = align,
+        col.names = col.names,
+        caption = caption,
+        escape = FALSE, ...) %>% 
+        kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
     if (is.null(col.to.resize) == FALSE){
       table1 <- table1 %>% 
         kableExtra::column_spec(col.to.resize, width=col.width)
