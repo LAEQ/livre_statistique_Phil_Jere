@@ -422,7 +422,11 @@ sign_col <- function(tableau){
     }else if (j == ""){
       return("")
     }else{
-      num <- as.numeric(gsub("<","",j, fixed=T))
+      num <- as.numeric(
+        gsub(",", ".",
+             gsub("<","",j, fixed=T)
+              ,fixed=T)
+        )
       if(num<=0.001){
         return("***")
       }else if (num <= 0.01){
@@ -451,7 +455,7 @@ build_table <- function(model, confid = T, sign = T, coef_digits = 2, std_digits
   }
 
   if(sign){
-    if (class(tableau) == "matrix"){
+    if ("matrix" %in% class(tableau)){
       newcol <- sign_col(tableau)
       new_names <- c(colnames(tableau),"Signif. codes")
       tableau <- cbind(tableau, newcol)
@@ -534,6 +538,9 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
     i<-match("Pr(>|t|)", colnames(base_table))
     base_table[,i] <- round(base_table[,i], p_digits)
   }
+
+  # formatting the values
+  base_table <- format(base_table, big.mark  = " ", decimal.mark = ",")
 
   params_names <- as.character(model$terms)
   params_names <- params_names[3:length(params_names)]
@@ -747,6 +754,8 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
     params_types <- c("numeric", params_types)
   }
 
+  # formatting the values
+  base_table <- format(base_table, big.mark  = " ", decimal.mark = ",")
 
   ## creation d'un beau tableau
   allrows <- lapply(1:length(params_names), function(i){
@@ -941,6 +950,9 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
   i<-match("Pr(>|z|)", colnames(base_table))
   base_table[,i] <- round(base_table[,i], p_digits)
 
+  # formatting the values
+  base_table <- format(base_table, big.mark  = " ", decimal.mark = ",")
+
   params_names <- strsplit(as.character(model@terms)," ~ ")[[1]][[2]]
   params_names <- strsplit(params_names," + ", fixed = T)[[1]]
   params_types <- sapply(params_names, function(i){
@@ -954,16 +966,21 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
     params_types <- c(rep("numeric", length(inter_names)),params_types)
 
     ##NB : dealing with not parallel elements
-    elements <- as.character(model@family@infos()$parallel[[3]])
-    if ("+" %in% elements){
-      not_paralelle <- elements[2:length(elements)]
+    if (isTRUE(model@family@infos()$parallel) == FALSE){
+      elements <- as.character(model@family@infos()$parallel[[3]])
+      if ("+" %in% elements){
+        not_paralelle <- elements[2:length(elements)]
+      }else{
+        not_paralelle <- elements
+      }
+
+      test <- (params_names %in%  not_paralelle) == F
+      params_names <- params_names[test]
+      params_types <- params_types[test]
     }else{
-      not_paralelle <- elements
+      not_paralelle <- c()
     }
 
-    test <- (params_names %in%  not_paralelle) == F
-    params_names <- params_names[test]
-    params_types <- params_types[test]
 
   }else{
     params_names <- c("Constante",params_names)
