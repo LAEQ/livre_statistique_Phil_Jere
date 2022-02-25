@@ -191,7 +191,7 @@ Un des problèmes inhérents à l'approche des polynomiales est la difficulté d
 
 ### Non linéarité par segments {#sect1113}
 
-Un compromis intéressant offrant une interprétation simple et une relation potentiellement complexe consiste à découper la variable *X* en segments, puis d'ajuster un coefficient pour chacun de ces segments. On obtient ainsi une ligne brisée et des coefficients faciles à interpréter (figure \@ref(fig:figgam7)). Nous ne présentons pas d'exemple d'application dans R, mais sachez que le *package* `segmented` permets d'ajuster ce type de modèle. 
+Un compromis intéressant offrant une interprétation simple et une relation potentiellement complexe consiste à découper la variable *X* en segments, puis d'ajuster un coefficient pour chacun de ces segments. Nous obtenons ainsi une ligne brisée et des coefficients faciles à interpréter (figure \@ref(fig:figgam7)). Nous ne présentons pas d'exemple d'application dans R, mais sachez que le *package* `segmented` permets d'ajuster ce type de modèle. 
 
 ```{r figgam7, echo=FALSE, fig.align='center', fig.cap="Régression par segment", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 library(segmented)
@@ -256,7 +256,7 @@ ggplot() +
   geom_line(aes(x = X, y = value, color = variable), size = 1, data = df) + theme(legend.position = "none") 
 ```
 
-On remarque ainsi que les bases correspondant à des valeurs plus fortes de *Y* ont reçu des coefficients plus élevés. Pour reconstituer la fonction non linéaire, il suffit d'additionner ces bases multipliées par leurs coefficients, soit la ligne bleue à la figure \@ref(fig:figgam10).
+Nous remarquons ainsi que les bases correspondant à des valeurs plus fortes de *Y* ont reçu des coefficients plus élevés. Pour reconstituer la fonction non linéaire, il suffit d'additionner ces bases multipliées par leurs coefficients, soit la ligne bleue à la figure \@ref(fig:figgam10).
 
 ```{r figgam10, echo=FALSE, fig.align='center', fig.cap="Spline triangulaire", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 
@@ -379,7 +379,7 @@ Les approches que nous venons de décrire sont regroupées sous l'appellation de
 
 ## Spline de régression et spline de lissage {#sect112}
 
-Dans les exemples précédents, nous avons vu que la construction d'une *spline* nécessite d'effectuer deux choix importants&nbsp;: le nombre de nœuds et leur localisation. Un trop grand nombre de nœuds conduit à un surajustement du modèle alors qu'un trop faible nombre de nœuds conduit à un sous-ajustement. Lorsque ces choix sont effectués par l'utilisateur et que les bases sont ajoutées manuellement dans le modèle tel que décrit précédemment, on parle alors de **splines de régression** (*Regression Spline* en anglais).
+Dans les exemples précédents, nous avons vu que la construction d'une *spline* nécessite d'effectuer deux choix importants&nbsp;: le nombre de nœuds et leur localisation. Un trop grand nombre de nœuds conduit à un surajustement du modèle alors qu'un trop faible nombre de nœuds conduit à un sous-ajustement. Lorsque ces choix sont effectués par l'utilisateur et que les bases sont ajoutées manuellement dans le modèle tel que décrit précédemment, nous parlons alors de **splines de régression** (*Regression Spline* en anglais).
 
 Une approche a été proposée pour faciliter le choix du nombre de nœuds il s'agit de **splines de lissage**  (*smoothing spline* en anglais). L'idée derrière cette approche est d'introduire dans le modèle une pénalisation associée avec le nombre de nœuds (ou degré de liberté) de la *spline*, dans un souci de parcimonie&nbsp;: chaque noeud supplémentaire doit suffisamment contribuer au modèle pour être conservé. Il n'est pas nécessaire ici de rentrer dans le détail mathématique de cette pénalisation qui est un peu complexe. Retenez simplement qu'elle dépend d'un paramètre appelé $\lambda$&nbsp;:
 
@@ -388,7 +388,7 @@ Une approche a été proposée pour faciliter le choix du nombre de nœuds il s'
 
 Cela est illustré à la figure \@ref(fig:figgam12) comprenant trois splines avec 20 nœuds et des valeurs $\lambda$ différentes contrôlant la force de la pénalité. 
 
-Bien évidemment, on constate qu'avec la *spline* de régression (non pénalisée), 20 nœuds conduisent à un fort surajustement du modèle. En revanche, les *splines* de lissage (pénalisées) permettent de corriger ce problème de surajustement. Toutefois, une valeur trop importante de $\lambda$ conduit à un sous-ajustement du modèle (ici $\lambda = 3$ et $\lambda = 100$, lignes verte et bleue).
+Bien évidemment, nous constatons qu'avec la *spline* de régression (non pénalisée), 20 nœuds conduisent à un fort surajustement du modèle. En revanche, les *splines* de lissage (pénalisées) permettent de corriger ce problème de surajustement. Toutefois, une valeur trop importante de $\lambda$ conduit à un sous-ajustement du modèle (ici $\lambda = 3$ et $\lambda = 100$, lignes verte et bleue).
 
 
 ```{r figgam12, echo=FALSE, fig.align='center', fig.cap="Pénalisation des splines", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
@@ -430,9 +430,9 @@ Avec les *splines* de lissage, l'enjeu est alors de sélectionner une valeur opt
 
 ## Interpréter une spline {#sect113}
 
-L'interprétation d'une *spline* se fait à l'aide de graphiques. En effet, puisqu'elle est composée d'un ensemble de coefficients appliqués à des bases, il est difficile d'interpréter directement ces derniers. On préfère alors représenter la fonction obtenue à l'aide d'un graphique, illustrant son **effet marginal**. Ce graphique est construit en trois étapes&nbsp;: 
+L'interprétation d'une *spline* se fait à l'aide de graphiques. En effet, puisqu'elle est composée d'un ensemble de coefficients appliqués à des bases, il est difficile d'interpréter directement ces derniers. Nous préférons alors représenter la fonction obtenue à l'aide d'un graphique, illustrant son **effet marginal**. Ce graphique est construit en trois étapes&nbsp;: 
 
-1. créer un jeu de données fictif dans lequel l'ensemble des variables indépendantes sont fixées à leurs moyennes respectives, sauf la variable pour laquelle on souhaite représenter la *spline*. Pour cette dernière, un ensemble de valeurs allant de son minimum à son maximum est utilisé;
+1. créer un jeu de données fictif dans lequel l'ensemble des variables indépendantes sont fixées à leurs moyennes respectives, sauf la variable pour laquelle nous souhaitons représenter la *spline*. Pour cette dernière, un ensemble de valeurs allant de son minimum à son maximum est utilisé;
 2. utiliser le modèle pour prédire les valeurs attendues de la variable dépendante pour chacune des observations fictives ainsi créées;
 3. afficher les prédictions obtenues dans un graphique.
 
@@ -472,7 +472,7 @@ show_table(df,
 
 Une *spline* cyclique est une extension d'une *spline* classique dont les bases aux extrémités sont spécifiées de telle sorte que la valeur au départ de la *spline* soit la même que celle à la fin de la *spline*. Ceci permet à la *spline* de former une boucle ce qui est particulièrement intéressant pour des variables dont le 0 et la valeur maximale correspondent en réalité à la même valeur. L'exemple le plus parlant est certainement le cas d'une variable représentant la mesure d'un angle en degrés. Les valeurs de 0 et 360 sont identiques et les valeurs 350 et 10 sont toutes les deux à une distance de 10 degrés de 0. Un autre exemple possible serait de considérer l'heure comme une variable continue; dans ce cas, 24&nbsp;h et 0&nbsp;h signifient la même chose.
 
-Prenons un exemple concret. Nous souhaitons modéliser la concentration de dioxyde d'azote (NO~2~) à Paris, mesurée par un ensemble de stations fixes. On pourrait s'attendre à ce que le NO~2~ suive chaque jour un certain patron. Concrètement, à proximité d'axes routiers majeurs, on s'attendrait à observer des pics suivant les flux pendulaires. À la figure \@ref(fig:figgam13), on retrouve bien les deux pics attendus correspondant aux heures de pointe du matin et du soir. Aussi, tel qu'indiqué par la ligne rouge, la valeur prédite par la *spline* est la même à 24&nbsp;h et à 0&nbsp;h.
+Prenons un exemple concret. Nous souhaitons modéliser la concentration de dioxyde d'azote (NO~2~) à Paris, mesurée par un ensemble de stations fixes. Nous pourrions nous attendre à ce que le NO~2~ suive chaque jour un certain patron. Concrètement, à proximité d'axes routiers majeurs, nous nous attendrions à observer des pics suivant les flux pendulaires. À la figure \@ref(fig:figgam13), nous retrouvons bien les deux pics attendus correspondant aux heures de pointe du matin et du soir. Aussi, tel qu'indiqué par la ligne rouge, la valeur prédite par la *spline* est la même à 24&nbsp;h et à 0&nbsp;h.
 
 
 ```{r figgam13, echo=FALSE, fig.align='center', fig.cap="Spline cyclique pour modéliser la concentration de NO2", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%', fig.pos = "H", dev = 'png', dpi = 300}
@@ -511,7 +511,7 @@ ggplot() +
 
 ### Splines par groupe {#sect1152}
 
-Tel qu'abordé dans les chapitres précédents, il arrive régulièrement que les observations appartiennent à  différents groupes. Dans ce cas de figure, on peut être amené à vérifier si la relation décrite par une *spline* est identique pour chacun des groupes d'observations. Il s'agit alors d'ajuster une *spline* différente par groupe. Dans l'exemple précédent, chaque valeur de NO~2~ a été mesurée par une station fixe de mesure spécifique. Compte tenu du fait que l'environnement autour de chaque station est particulier, on pourrait s'attendre à ce que les valeurs de NO^2 ne présentent pas exactement les mêmes patrons journaliers pour chaque station.
+Tel qu'abordé dans les chapitres précédents, il arrive régulièrement que les observations appartiennent à  différents groupes. Dans ce cas de figure, nous pouvons être amené à vérifier si la relation décrite par une *spline* est identique pour chacun des groupes d'observations. Il s'agit alors d'ajuster une *spline* différente par groupe. Dans l'exemple précédent, chaque valeur de NO~2~ a été mesurée par une station fixe de mesure spécifique. Compte tenu du fait que l'environnement autour de chaque station est particulier, nous pourrions s'attendre à ce que les valeurs de NO^2 ne présentent pas exactement les mêmes patrons journaliers pour chaque station.
 
 À la figure \@ref(fig:figgam14), il est possible de constater que le NO~2~ suit globalement le même patron temporel pour l'ensemble des stations à l'exception de trois d'entres-elles. Il s'agit en réalité de stations situées dans des secteurs ruraux de la région parisienne et donc moins impactées par le trafic routier.
 
@@ -548,13 +548,13 @@ ggplot() +
 
 ### Splines multivariées et splines d'interaction {#sect1153}
 
-Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante; cependant, il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non linéaires entre les variables indépendantes combinées dans une même *spline*. Prenons un exemple concret, dans la section sur les modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des îlots de chaleur. Parmi les variables indépendantes, nous avions notamment utilisé la distance au centre-ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables impactent conjointement et de façon non linéaire la proportion de la surface d'îlot de chaleur dans chaque AD. Pour représenter une *spline* sur plusieurs dimensions, on utilise alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
+Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante; cependant, il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non linéaires entre les variables indépendantes combinées dans une même *spline*. Prenons un exemple concret, dans la section sur les modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des îlots de chaleur. Parmi les variables indépendantes, nous avions notamment utilisé la distance au centre-ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables impactent conjointement et de façon non linéaire la proportion de la surface d'îlot de chaleur dans chaque AD. Pour représenter une *spline* sur plusieurs dimensions, nous utilisons alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
 
 Il est important de distinguer la *spline* d'**interaction** et la spline **multivariée**. La première est utilisée lorsque les variables indépendantes introduites dans la spline ne sont pas exprimées sur la même échelle et n'évoluent pas conjointement. L'exemple donné ci-dessus avec les variables de végétation et de distance au centre-ville est un exemple de *spline* d'interaction, la première variable étant exprimée en pourcentage et l'autre en mètres. De plus, ces deux variables ne sont pas conjointes, mais bien distinctes l'une de l'autre. Un cas typique où une *spline* multivariée serait à privilégier est le cas de l'ajout des coordonnées spatiales dans le modèle. L'emplacement des AD est mesuré par deux variables (coordonnées spatiales X et Y) toutes les deux exprimées en mètres évoluant conjointement, au sens où les coordonnées X n'interagissent pas avec les coordonnées Y, mais forment à elles deux un espace propre. Au-delà de la problématique de l'échelle des données, il est important de retenir que les *splines* d'interactions tendent à être davantage pénalisées que les splines *multivariées*.
 
-La *spline* d'interaction représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande proportion de leur surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre-ville, au-delà de cette distance, cette proportion chute en bas de 0,1, soit 10% de la surface de l'AD. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de même marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
+La *spline* d'interaction représentée à la figure \@ref(fig:figgam15) indique que les AD avec la plus grande proportion de leur surface couverte par des îlots de chaleur sont situés à moins de 25 kilomètres du centre-ville, au-delà de cette distance, cette proportion chute en bas de 0,1, soit 10&nbsp;% de la surface de l'AD. En revanche, à proximité du centre-ville (moins d'un kilomètre), même les AD disposant d'un fort pourcentage de surface végétalisée sont tout de même marquées par un fort pourcentage de surface couverte par des îlots de chaleur.
 
-Les *splines* bivariées sont fréquemment utilisées pour capturer un potentiel patron spatial dans les données. En effet, si l'on dispose des coordonnées spatiales de chaque observation (*x,y*), il est possible d'ajuster une *spline* bivariée sur ces coordonnées qui contrôlera ainsi l'effet de l'espace. 
+Les *splines* bivariées sont fréquemment utilisées pour capturer un potentiel patron spatial dans les données. En effet, si nous disposons des coordonnées spatiales de chaque observation (*x,y*), il est possible d'ajuster une *spline* bivariée sur ces coordonnées qui contrôlera ainsi l'effet de l'espace. 
 
 ```{r figgam15, echo=FALSE, fig.align='center', fig.cap="Spline d'interaction bivariée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%', dev = "png", dpi = 300}
 dataset <- read.csv("data/glm/data_chaleur.csv")
@@ -616,7 +616,7 @@ Notez ici que la syntaxe à employer est très simple, il suffit de spécifier `
 AIC(refmodel, model0, model1)
 ```
 
-On constate que la valeur d'AIC du second modèle est plus réduite, indiquant un meilleur ajustement du modèle avec une *spline* de régression. Notons cependant que la différence avec la *spline* de lissage est anecdotique (deux points d'AIC) et que nous connaissions a priori le bon nombre de nœuds à utiliser. Pour des relations plus complexes, les *splines* de lissage ont tendance à nettement mieux performer. Voyons à présent comment représenter ces trois termes non linéaires.
+Nous constatons que la valeur d'AIC du second modèle est plus réduite, indiquant un meilleur ajustement du modèle avec une *spline* de régression. Notons cependant que la différence avec la *spline* de lissage est anecdotique (deux points d'AIC) et que nous connaissions a priori le bon nombre de nœuds à utiliser. Pour des relations plus complexes, les *splines* de lissage ont tendance à nettement mieux performer. Voyons à présent comment représenter ces trois termes non linéaires.
 
 ```{r message=FALSE, warning=FALSE, figgam16, fig.align='center', fig.cap="Comparaison d'une spline et d'une polynomiale", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
 # Création d'un dataframe de prédiction dans lequel seule
@@ -675,7 +675,7 @@ ggplot(dfpred) +
             size = 1)
 ```
 
-On constate que les trois termes renvoient des prédictions très similaires et qu'une légère différence n'est observable que pour les secteurs avec les plus hauts niveaux de végétation (supérieurs à 75%).
+Nous constatons que les trois termes renvoient des prédictions très similaires et qu'une légère différence n'est observable que pour les secteurs avec les plus hauts niveaux de végétation (supérieurs à 75&nbsp;%).
 
 Jusqu'ici, nous utilisions l'arrondissement dans lequel est comprise chaque aire de diffusion comme une variable nominale afin de capturer la dimension spatiale du jeu de données. Puisque nous avons abordé la notion de *splines* bivariées, il serait certainement plus efficace d'en construire une à partir des coordonnées géographiques (x,y) des centroïdes des aires de diffusion. En effet, il est plus probable que la distribution des îlots de chaleur suive un patron spatial continu sur le territoire plutôt que les délimitations arbitraires des arrondissements.
 
@@ -720,7 +720,7 @@ La dernière partie du résumé comprend deux indicateurs de qualité d'ajusteme
 AIC(refmodel, model1, model2)
 ```
 
-On peut constater que le fait d'introduire la *spline* spatiale dans le modèle contribue à réduire encore la valeur de l'AIC et donc à améliorer le modèle. À ce stade, on pourrait tenter de forcer la *spline* à être plus complexe en augmentant le nombre de nœuds.
+Nous pouvons constater que le fait d'introduire la *spline* spatiale dans le modèle contribue à réduire encore la valeur de l'AIC et donc à améliorer le modèle. À ce stade, nous pourrions tenter de forcer la *spline* à être plus complexe en augmentant le nombre de nœuds.
 
 ```{r message=FALSE, warning=FALSE}
 # Augmentation de la complexité de la spline spatiale
@@ -817,7 +817,7 @@ L'enjeu est ensuite d'extraire la variance propre à cet effet aléatoire ainsi 
 gam.vcomp(model4)
 ```
 
-On constate donc que l'écart-type de l'effet aléatoire des arrondissements est de 0.39, ce qui signifie que les effets de chaque arrondissement seront compris à 95% entre -1,17 et 1,17 (`1.17 = 3*0.39`) sur l'échelle du prédicteur linéaire. En effet, rappelons que les effets aléatoires sont modélisés comme des distributions normales et que 95% de la densité d'une distribution normale se situe entre -3 et +3 écarts-types. Pour extraire les interceptes spécifiques de chaque arrondissement, on peut utiliser la fonction `get_random` du *package* `itsadug.`
+Nous constatons donc que l'écart-type de l'effet aléatoire des arrondissements est de 0.39, ce qui signifie que les effets de chaque arrondissement seront compris à 95&nbsp;% entre -1,17 et 1,17 (`1.17 = 3*0.39`) sur l'échelle du prédicteur linéaire. En effet, rappelons que les effets aléatoires sont modélisés comme des distributions normales et que 95&nbsp;% de la densité d'une distribution normale se situe entre -3 et +3 écarts-types. Pour extraire les interceptes spécifiques de chaque arrondissement, nous pouvons utiliser la fonction `get_random` du *package* `itsadug.`
 
 ```{r randomconstGAM, message=FALSE, warning=FALSE, dev = "png", dpi = 300, fig.cap = "Constantes aléatoires pour les arrondissements"}
 library(itsadug)
@@ -833,7 +833,7 @@ ggplot(df) +
   labs(y = "Arrondissement", x = "intercepte aléatoire")
 ```
 
-On constate ainsi à la figure \@ref(fig:randomconstGAM) que pour une partie des arrondissements, la densité d'îlot de chaleur est systématiquement supérieure à la moyenne régionale représentée ici par la ligne rouge (0 = effet moyen pour tous les arrondissements). Il convient alors d’améliorer ce graphique en ajoutant le niveau d'incertitude associé à chaque intercepte. Pour ce faire, nous utilisons la fonction `extract_random_effects` du *package* `mixedup.` Notez que ce *package* n'est actuellement pas disponible sur CRAN et doit être téléchargé sur **github** avec la commande suivante&nbsp;:
+Nous constatons ainsi à la figure \@ref(fig:randomconstGAM) que pour une partie des arrondissements, la densité d'îlot de chaleur est systématiquement supérieure à la moyenne régionale représentée ici par la ligne rouge (0 = effet moyen pour tous les arrondissements). Il convient alors d’améliorer ce graphique en ajoutant le niveau d'incertitude associé à chaque intercepte. Pour ce faire, nous utilisons la fonction `extract_random_effects` du *package* `mixedup.` Notez que ce *package* n'est actuellement pas disponible sur CRAN et doit être téléchargé sur **github** avec la commande suivante&nbsp;:
 
 ```{r message=FALSE, warning=FALSE, eval = FALSE}
 remotes::install_github('m-clark/mixedup')
@@ -845,7 +845,7 @@ Avec la version 4.0.1 de R, nous avons rencontré des difficultés pour installe
 source("code_complementaire/gam_functions.R")
 ```
 
-On peut ensuite procéder à l'extraction des effets aléatoires et les représenter à nouveau (figure \@ref(fig:randomconstGAM2)).
+Nous pouvons ensuite procéder à l'extraction des effets aléatoires et les représenter à nouveau (figure \@ref(fig:randomconstGAM2)).
 
 ```{r randomconstGAM2, message=FALSE, warning=FALSE, dev = "png", dpi = 300, fig.cap = "Constantes aléatoires pour les arrondissements avec intervalle de confiance"}
 df_re <- extract_random_effects.gam(model4, re = "Arrond")
@@ -857,7 +857,7 @@ ggplot(df_re) +
   labs(y = "Arrondissement", x = "Intercepte aléatoire")
 ```
 
-Cela permet de distinguer quels écarts sont significativement différents de 0 au seuil de 95%. À titre de rappel, pour être significatif à ce seuil, un intervalle représenté par une ligne noire horizontale ne doit pas intersecter la ligne rouge verticale. Puisque nous utilisons ici la distribution *beta* et une fonction de lien logistique, nous devons utiliser des prédictions pour simplifier l'interprétation des coefficients. Nous allons ici fixer toutes les variables à leur moyenne respective sauf l'arrondissement et calculer les prédictions dans l'échelle originale (0 à 1).
+Cela permet de distinguer quels écarts sont significativement différents de 0 au seuil de 95&nbsp;%. À titre de rappel, pour être significatif à ce seuil, un intervalle représenté par une ligne noire horizontale ne doit pas intersecter la ligne rouge verticale. Puisque nous utilisons ici la distribution *beta* et une fonction de lien logistique, nous devons utiliser des prédictions pour simplifier l'interprétation des coefficients. Nous allons ici fixer toutes les variables à leur moyenne respective sauf l'arrondissement et calculer les prédictions dans l'échelle originale (0 à 1).
 
 ```{r randomconstGAM3, message=FALSE, warning=FALSE, dev = "png", dpi = 300, fig.cap = "Prédictions pour les différents arrondissements pour une AD fictive moyenne"}
 dfpred <- data.frame(
@@ -896,7 +896,7 @@ ggplot(dfpred) +
 
 ```
 
-On constante ainsi à la figure \@ref(fig:randomconstGAM3) que, pour une hypothétique aire de diffusion moyenne, la différence de densité d'îlot de chaleur peut être de 0,32 (32% de la surface de l'AD) entre les arrondissements Verdun et Dollard-des-Ormeaux.
+Nous constatons ainsi à la figure \@ref(fig:randomconstGAM3) que, pour une hypothétique aire de diffusion moyenne, la différence de densité d'îlot de chaleur peut être de 0,32 (32&nbsp;% de la surface de l'AD) entre les arrondissements Verdun et Dollard-des-Ormeaux.
 
 #### GAMM et coefficients aléatoires {#sect1172}
 
@@ -929,7 +929,7 @@ ggplot(df_re) +
   labs(y = "Arrondissement", x = "coefficient aléatoire")
 ```
 
-On constate notamment que seuls trois arrondissements ont des coefficients aléatoires significativement différents de 0. Ainsi, pour les arrondissements Anjou et Plateau-Mont-Royal, les coefficients aléatoires sont respectivement de `r tofr(df_re[df_re$group == "Anjou",]$value[[1]])` et `r tofr(df_re[df_re$group == "Le Plateau-Mont-Royal",]$value[[1]])`, et viennent donc se retrancher à la valeur moyenne régionale de `r tofr(round(model5$coefficients[[4]],4))` qui atteint alors presque 0. Du point de vue de l'interprétation, on peut en conclure que le groupe des personnes à faible revenu ne subit pas de surexposition aux îlots de chaleur à l'échelle des AD dans ces arrondissements.
+Nous constatons notamment que seuls trois arrondissements ont des coefficients aléatoires significativement différents de 0. Ainsi, pour les arrondissements Anjou et Plateau-Mont-Royal, les coefficients aléatoires sont respectivement de `r tofr(df_re[df_re$group == "Anjou",]$value[[1]])` et `r tofr(df_re[df_re$group == "Le Plateau-Mont-Royal",]$value[[1]])`, et viennent donc se retrancher à la valeur moyenne régionale de `r tofr(round(model5$coefficients[[4]],4))` qui atteint alors presque 0. Du point de vue de l'interprétation, nous pouvons en conclure que le groupe des personnes à faible revenu ne subit pas de surexposition aux îlots de chaleur à l'échelle des AD dans ces arrondissements.
 
 En revanche, dans l'arrondissement Mercier-Hochelaga-Maisonneuve, la situation est à l'inverse plus systématiquement en défaveur des populations à faible revenu, avec une taille d'effet prêt de deux fois supérieure à la moyenne régionale. En effet, l'effet moyen régional (coefficient fixe) est de `r tofr(round(model5$coefficients[[4]],4))` auquel vient se rajouter l'effet spécifique (coefficient aléatoire) de Mercier-Hochelaga-Maisonneuve, soit `r tofr(df_re[df_re$group == "Mercier-Hochelaga-Maisonneuve",]$value[[1]])`, pour un effet total de `r tofr(df_re[df_re$group == "Mercier-Hochelaga-Maisonneuve",]$value[[1]] + round(model5$coefficients[[4]],4))`
 
@@ -951,14 +951,14 @@ model6 <- gamlss(hot ~
         data = dataset, family = BE(mu.link = "logit"))
 ```
 
-On peut ensuite accéder à la partie du modèle qui nous intéresse, soit celle concernant les effets aléatoires.
+Nous pouvons ensuite accéder à la partie du modèle qui nous intéresse, soit celle concernant les effets aléatoires.
 
 ```{r message=FALSE, warning=FALSE}
 randomPart <- model6$mu.coefSmo[[2]]
 print(randomPart)
 ```
 
-À lecture de la partie du résumé consacrée aux résultats pour les effets aléatoires, on constate que la corrélation entre les interceptes aléatoires et les coefficients aléatoires est de -0,65. Cela signifie que pour les arrondissements avec des interceptes élevés (plus grande proportion d'îlots de chaleur), l'effet de la variable `PopFRPct` tend à être plus faible. Autrement dit, dans les arrondissements avec beaucoup d'îlots de chaleur, les personnes à faible revenu ont tendance à être moins exposées, tel qu'illustré à la figure \@ref(fig:corrrandom).
+À lecture de la partie du résumé consacrée aux résultats pour les effets aléatoires, nous constatons que la corrélation entre les interceptes aléatoires et les coefficients aléatoires est de -0,65. Cela signifie que pour les arrondissements avec des interceptes élevés (plus grande proportion d'îlots de chaleur), l'effet de la variable `PopFRPct` tend à être plus faible. Autrement dit, dans les arrondissements avec beaucoup d'îlots de chaleur, les personnes à faible revenu ont tendance à être moins exposées, tel qu'illustré à la figure \@ref(fig:corrrandom).
 
 ```{r corrrandom, fig.align='center', fig.cap="Relation entre les effets aléatoires des arrondissements et la variable population à faible revenu", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', fig.pos = "H", out.extra = "",auto_pdf = TRUE}
 

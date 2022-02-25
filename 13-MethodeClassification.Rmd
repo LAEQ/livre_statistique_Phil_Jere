@@ -28,7 +28,7 @@ Un exemple classique est l'identification de profils d'individus ayant répondu 
 Un second exemple serait de regrouper les secteurs d'une ville selon leurs caractéristiques environnementales (présence de végétation, niveau de bruit, pollution atmosphérique, etc.) et socioéconomiques (revenu médian des ménages, pourcentages d’immigrants, de personnes à faible scolarité, taux de chômage, etc.).
 :::
 
-## Une multitude des méthodes de classication&nbsp; un aperçu {#sect131}
+## Méthodes de classication&nbsp; un aperçu {#sect131}
 
 Il existe une multitude de méthodes de classification généralement regroupées dans plusieurs familles imbriquées à partir de deux distinctions importantes.
 
@@ -74,7 +74,7 @@ La distance en analyse de données est définie comme une fonction (*d*) permett
 
 Il existe un grand nombre de types de distance que l'on peut utiliser pour déterminer le degré de (dis)similarité entre les observations. Nous présentons ici les six types les plus fréquemment utilisées en sciences sociales, mais retenez qu’il en existe bien d'autres.
 
-#### La distance euclidienne
+#### Distance euclidienne
 
 Il s'agit vraisemblablement de la distance la plus couramment utilisée, soit la longueur de la ligne droite la plus courte entre les deux objets considérés. Pour la représenter, admettons que nous nous intéressons à trois classes d'étudiant·e·s A, B et C pour lesquelles nous avons calculé la moyenne de leurs notes dans les cours de méthodes quantitatives et qualitatives. Ces deux variables sont mesurées dans la même unité et varient de 0 à 100. Le nuage de points à la figure \@ref(fig:dist0) illustre cette situation avec des données fictives.
 
@@ -173,7 +173,7 @@ ggplot(x2) +
 ```
 :::
 
-#### La distance de Manhattan
+#### Distance de Manhattan
 
 Cette seconde distance est également couramment utilisée. Elle doit son nom au réseau de rue de l'île de Manhattan qui suit un plan quadrillé. La distance de Manhattan correspond à la somme des écarts absolus entre les valeurs des différentes variables décrivant les observations (équation \@ref(eq:manhattandist)). La figure \@ref(fig:dist2) illustre que la distance Manhattan (lignes noires) représente les deux côtés opposés de l'hypoténuse d’un triangle rectangle; l'hypoténuse représentant quant à lui la distance euclidienne.
 
@@ -211,9 +211,9 @@ Calculons la distance de Manhattan pour nos deux paires d'observations&nbsp;
 * $d(A,B)=|85-80|+|80-77| = 8$
 * $d(B,C)=|80-83|+|79-77| = 5$
 
-#### La distance du Chi^2^
+#### Distance du Khi-deux
 
-La distance du $\chi^2$ est basée sur le test du $\chi^2$ et est généralement utilisée pour calculer la distance entre deux histogrammes, deux images ou deux ensembles de mots. Plus précisemment, elle permet de mesure la distance entre deux observations A et B, pour lesquels nous disposons d'un ensemble de variables étant toutes des variables de comptage.
+La distance du Khi-deux est basée sur le test du Khi-deux et est généralement utilisée pour calculer la distance entre deux histogrammes, deux images ou deux ensembles de mots. Plus précisemment, elle permet de mesure la distance entre deux observations A et B, pour lesquels nous disposons d'un ensemble de variables étant toutes des variables de comptage.
 
 Prenons un exemple concret en générant trois histogrammes A, B et C sur l'intervalle [0,50] à partir d'une distribution normale, log-normale et gamma et comptons le nombre de valeur tombant de chaque unité (1,2,3,4, ect.). Ces histogrammes sont représentés à la figure \@ref(fig:dist3).
 
@@ -287,7 +287,7 @@ Avec $a_i$ et $b_i$ les comptages pour les histogrammes. Notez que si $a_i$ et $
 
 À première vue, cette distance peut paraître moins utile que les deux précédentes. Pourtant, de nombreuses données sont collectées comme des histogrammes. Un premier exemple serait des images que l'on peut représenter sous forme de trois histogrammes, un pour chaque cannal de couleur (rouge, vert et bleu). Un second exemple serait des données sonores, souvent synthétisées sous formes d'histogrammes des fréquences sonores enregistrées (octaves ou tiers d'octaves). Un dernier exemple pourrait être le nombre d'accidents de la route enregistré à diverses intersections d'une ville à chaque heures. Dans ce contexte, un histogramme serait formé par intersection avec les heures de la journées comme limites de bandes et le nombre d'accident comme hauteur de bande.
 
-#### La distance de Mahalanobis
+#### Distance de Mahalanobis
 
 Introduite originalement par @chandra1936generalised, la distance de Mahalanobis se base sur la matrice de covariance des variables analysées. Plus spécifiquement, elle est utilisée pour calculer la distance entre un point et une distribution normale multivariée. Elle permet notamment de tenir compte du fait que certaines variables sont corrélées, soit éviter de sur-estimer les distances entre des observations dans des jeux de données comprenant des variables corrélées entre-elles.
 
@@ -300,7 +300,7 @@ d(a,b) = \sqrt{(a-b)^TS^{-1}(a-b)}
 \end{equation}
 \normalsize
 
-#### La distance de Hamming
+#### Distance de Hamming
 
 Cette dernière distance est utilisée quand les écarts entre les variables de deux observations sont uniquement binaires. Un bon exemple serait un jeu de données ne comprenant que des variables qualitatives, pouvant avoir une valeur identique pour deux observations (distance = 0) ou différente (distance = 1). La distance de Hamming est la simple addition de ces écarts.
 
@@ -347,7 +347,7 @@ show_table(house_dists,
 Nous pouvons ainsi constater au tableau tableau \@ref(tab:tabdist5)) que les maisons 2 et 3 sont les plus dissimilaires (distance de Hamming = 5), et les maisons 1 et 2 les plus similaires (distance de Hamming = 1).
 
 
-#### La distance de Gower
+#### Distance de Gower
 
 La distance de Gower [@gower1971general] peut être utilisées pour mesurer la distance entre deux observations lorsque les données sont à la fois qualitatives et quantitatives. Cette distance est comprise dans un intervalle de 0 à 1, 0 signifiant que les deux observations sont identiques et 1 que les observations sont radicalement différentes.
 
@@ -569,9 +569,9 @@ Cette animation a été réalisée par David Sheehan et est également accessibl
 
 Une fois que l'algorithme a été appliqué aux données et le dendrogramme obtenu, il faut encore choisir le nombre adéquat de groupes pour la classification finale. Chaque embranchement du dendrogramme constitue une classification possible, allant de la plus complexe (chaque observation appartient à un groupe formé d'elle seule) à la plus simple (toutes les observations appartiennent au même groupe). Si le nombre de groupes n'est pas connu à l'avance et qu'aucune forte justification théorique n'existe, il est possible d'utiliser plusieurs techniques pour déterminer un nombre de groupes judicieux à partir des données. Nous en présentons ici trois, mais il convient de ne pas s'en tenir uniquement à ses critères arbitraires. Il est important d'explorer les résultats de sa classification pour plusieurs valeurs de *k* candidates et de tenir compte de la qualité des informations qu'elles donnent. Au final, il est pertinente de retenir la classification dont les résultats offrent l'inreprétation la plus claire, la plus vraisemblable, avec un nombre de groupes réduit (principe de parcimonie).
 
-#### La méthode du coude
+#### Méthode du coude
 
-Cette première approche est la plus simple à mettre en oeuvre. Il s'agit simplement de produire plusieurs classification à partir du dendrogramme avec différentes valeurs de *k* (nombre de groupes) et de calculer à chaque fois la part de l'inertie expliquée. Chaque groupe supplémentaire ne peut qu'améliorer l'inertie expliquée car pour rappel, si $k=n$, alors on explique 100% de l'inertie totale. L'objectif est de déterminer à quel moment l'ajout d'un groupe supplémentaire ne contribue que de façon marginale à améliorer l'inertie expliquée. Si l'on représente les valeurs d'inerties expliquées pour les différentes valeurs de *k* dans un graphique, une rupture (un coude) indiquerait ce point au delà duquel les groupes supplémentaires ne captent finalement que du bruit et plus de l'information.
+Cette première approche est la plus simple à mettre en oeuvre. Il s'agit simplement de produire plusieurs classification à partir du dendrogramme avec différentes valeurs de *k* (nombre de groupes) et de calculer à chaque fois la part de l'inertie expliquée. Chaque groupe supplémentaire ne peut qu'améliorer l'inertie expliquée car pour rappel, si $k=n$, alors on explique 100&nbsp;% de l'inertie totale. L'objectif est de déterminer à quel moment l'ajout d'un groupe supplémentaire ne contribue que de façon marginale à améliorer l'inertie expliquée. Si l'on représente les valeurs d'inerties expliquées pour les différentes valeurs de *k* dans un graphique, une rupture (un coude) indiquerait ce point au delà duquel les groupes supplémentaires ne captent finalement que du bruit et plus de l'information.
 
 Si l'on reprend l'exemple du jeu de données iris, nous pouvons créer ce graphique avec k allant de 2 à 10.
 
@@ -634,7 +634,7 @@ Un premier coude très net est observable pour $k = 3$ et un second plus faible 
 :::
 
 
-#### L'indicateur de silhouette
+#### Indicateur de silhouette
 
 Si un coude nette ne s'observe pas pour la méthode précédente, il est possible de se tourner vers l'indicateur de silhouette. Il permet de mesurer pour une classification à quel point une observation est similaires à celles dans son propre groupe (cohésion) comparativement aux observations des autres groupes. Elle se calcule de la façon suivante&nbsp; 
 
@@ -684,7 +684,7 @@ ggplot(rows) +
 L'indice de silhouette semble indiquer que seulement trois groupes serait un choix optimal (valeur la plus haute).
 
 
-#### La méthode GAP
+#### Méthode GAP
 
 Cette méthode a été proposée par @tibshirani2001estimating, elle consiste à comparer l'inertie intra groupe (inexpliquée) avec l'inertie observée pour un jeu de données généré aléatoirement (distribution uniforme des valeurs entre le minimum et le maximum de chaque variable) pour différentes valeurs successives de *k*. Une fois ces calculs effectués, l'objectif est de trouver la valeur de *k* tel que la valeur de GAP à *k+1* n'est pas plus grande qu'un écart type pour GAP à *k+1*.
 
@@ -746,7 +746,7 @@ ggplot(tab) +
 ```
 Selon cette méthode, il faudrait sélectionner 4 comme nombre de groupes car il s'agit de la première valeur de *k* validant le critère de cette méthode. La seconde valeur retenue par cette méthode serait 6.
 
-### Limites de la Classification Ascendante Hiérarchique
+### Limites de la classification ascendante hiérarchique
 
 Bien que très flexible (choix de la fonction de distance et du critère d'aggrégation), la CAH fait face à un enjeu majeur&nbsp; la vitesse d'exécution et la consommation de mémoire lorsque des grands jeux de données sont utilisés. En effet, il est nécessaire de calculer à chaque étape une matrice de distance entre les groupes. Si un jeu de données comprends 1000 observations, cette matrice comprends donc 1000 x 1000 cases soit un million de distances. Même en divisant ce nombre par deux (les éléments de la matrice sont symétriques, donc $d(ij) = d(ji)$) ce nombre augmente avec le carré du nombre d'observations. Pour de grands jeux de données elle peut donc échouer à cause des limites de l'ordinateur utilisé. Il existe des versions plus performante de l'algorithme réduisant cette limite, mais il convient de la garder en mémoire. Quand un très grand jeu de données doit être analysé, les méthodes des nuées dynamiques doivent être considérées.
 
@@ -942,9 +942,9 @@ group_rows(my_table,
 
 * Le premier groupe correspond à de grands parcs (superficie généralement comprise entre 5 et plus de 20 hectares), il comporte 104 observations. Ces grands parcs sont en moyenne équipés de deux terrains de sport et d'un équipement d'hiver. Il s'agit vraisemblablement des grands parcs identifié dans l'article original, dans lesquels se retrouvent également les parcs à vocation métropolitaines.
 * Le second groupe (225 parcs) correspond à de très petits parcs (moins d'un hectare) comportant chacun une aire de jeu, mais presque aucun autre équipement. Il s'agit clairement de la classe A (Très petit parc (moins d’un hectare) avec une aire de jeux) identifiée dans l'article original.
-* Le troisième groupe (141 parcs) correspond à des petits parcs (entre 1 et 5 hectares), souvent équipés d'une piscine extérieure (28,4% des cas), et en moyenne de deux terrains de sports (essentiellement des terrains de tennis et de soccer). Ces parcs comprennent en moyenne plus de 4 équipements et doivent donc correspondre à la classe D dans l'article original (Petit parc (1 à 5 ha) avec en moyenne six équipements, dont une patinoire et une piscine).
+* Le troisième groupe (141 parcs) correspond à des petits parcs (entre 1 et 5 hectares), souvent équipés d'une piscine extérieure (28,4&nbsp;% des cas), et en moyenne de deux terrains de sports (essentiellement des terrains de tennis et de soccer). Ces parcs comprennent en moyenne plus de 4 équipements et doivent donc correspondre à la classe D dans l'article original (Petit parc (1 à 5 ha) avec en moyenne six équipements, dont une patinoire et une piscine).
 * Le quatrième groupe (71 parcs) correspond à de très petits parcs (moins de 1 hectares) avec en moyenne plus de trois équipements dont une pataugeoire et une aire de jeux. Il s'agit vraisemblablement d'un sous groupe au sein de la classe A identifiée dans l'article original.
-* Le cinquième groupe (81 parcs) correspond à des petits parcs et quelques grandes parcs, il est caractérisé par une présence plus marquée de pataugeoires (84%) et a le plus haut taux d'infrastructure de patins à routes alignées. Il comprends en moyenne plus de trois équipements.
+* Le cinquième groupe (81 parcs) correspond à des petits parcs et quelques grandes parcs, il est caractérisé par une présence plus marquée de pataugeoires (84&nbsp;%) et a le plus haut taux d'infrastructure de patins à routes alignées. Il comprends en moyenne plus de trois équipements.
 * Le dernier groupe (71 parcs) comprends des petits parcs (entre 1 et 5 hectares) et ressemblent aux parcs du groupe 2 mais tendent à disposer en plus d'un terrain de sport (Baseball ou basketball).
 
 Considérant les différences minimes entre certains des groupes que nous avons obtenu, il est clair que retenir seulement trois ou cinq groupes aurait été préférable. Notez également l'importance du choix de la distance car nous obtenons des résultats sensiblement différents de ceux de l'article original en ayant opté pour la distance du $\Phi^2$ plutôt que la distance Euclidienne au carré.
@@ -1579,7 +1579,7 @@ tmap_arrange(map1, map2, map3,
 
 Les trois cartes sont très similaires (figure \@ref(fig:kmeansM)), ce qui signifie que les trois algorithmes tendent à attribuer les observations aux mêmes groupes. Cependant, on peut noter des différences, notamment au Nord avec des observations alternant entre les groupes 2 et 3 selon la méthode employée. Ceci peut notamment signifier que ces observations sont "indécises", qu'il est difficile de les attribuer définitivement à une catégorie en particulier. Pour prendre en compte cette forme d'incertitude, il est possible d'opter pour des méthodes de classication en logique floue.
 
-### Les extensions en logique floue&nbsp; c-means, c-medoids  {#sect1344}
+### Extensions en logique floue&nbsp; c-means, c-medoids  {#sect1344}
 
 Comme nous l'avions mentionné en introduction de cette section, les méthodes de classification floues ont pour objectif d'évaluer le degré d'appartenance de chaque observation à chaque groupe plutôt que d'attribuer chaque observation à un seul groupe. Il est ainsi possible de repérer des observations incertaines, à cheval entre plusieurs groupes. Nous présentons ici deux algorithmes appartenant à cette famille&nbsp; le *c-means* et le *c-medoids*. Il s'agit dans les deux cas d'extensions des *k-means* et *k-medoids* vus précédemment.
 

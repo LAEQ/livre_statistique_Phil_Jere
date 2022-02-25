@@ -486,7 +486,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
     base_table[,4] <- 2 * pnorm(abs(base_table[,3]), lower.tail = FALSE)
   }
 
-  ## calcule des intervale de confiance sur les coeffs
+  ## calcule des intervalles de confiance sur les coeffs
   if(confid){
     if (is.null(robust_se)){
       base_table <- cbind(base_table, round(confint(model),coef_digits))

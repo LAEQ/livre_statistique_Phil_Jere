@@ -224,7 +224,7 @@ show_table(df,
            col.names = c("Corrélation","Négative","Positive"))
 ```
 
-Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
+Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49&nbsp;% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
 
 ```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Coefficient de corrélation et proportion de la variance expliquée', out.width='75%'}
 library("ggplot2")
@@ -256,7 +256,7 @@ R2 <- R^2
    annotate(geom="text", x =.15, y=0.8, label="Faible et \n positive", color="black", hjust = 0.5, size = 3.5)
 ```
 
-**Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes ou extrêmes. D’ailleurs, plus le nombre d’observations est réduit, plus la présence de valeurs extrêmes a une répercussion importante sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, dans le nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui se démarquent nettement dans le jeu de données&nbsp;: six observations avec une densité de population supérieure à 20&nbsp;000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55%. Si l'on supprime ces observations (ce qui est défendable dans ce contexte) – soit moins d'un pour cent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
+**Condition d'application.** L'utilisation du coefficient de corrélation de Pearson nécessite que les deux variables continues soient normalement distribuées et qu'elles ne comprennent pas de valeurs aberrantes ou extrêmes. D’ailleurs, plus le nombre d’observations est réduit, plus la présence de valeurs extrêmes a une répercussion importante sur le résultat du coefficient de corrélation de Pearson. En guise d’exemple, dans le nuage de points à gauche de la figure \@ref(fig:fig7), il est possible d’identifier des valeurs extrêmes qui se démarquent nettement dans le jeu de données&nbsp;: six observations avec une densité de population supérieure à 20&nbsp;000 habitants au km^2^ et deux observations avec un pourcentage de 65 ans et plus supérieur à 55&nbsp;%. Si l'on supprime ces observations (ce qui est défendable dans ce contexte) – soit moins d'un pour cent des observations du jeu de données initial –, la valeur du coefficient de corrélation passe de −0,158 à −0,194, signalant une augmentation du degré d'association entre les deux variables.
 
 ```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Illustation de l’effet des valeurs extrêmes sur le coefficient de Pearson', out.width='75%'}
 library("ggplot2")
@@ -394,7 +394,7 @@ Dans l'exemple donné à la figure \@ref(fig:fig7), nous avions identifié des v
 
 Comme le souligne l'équation \@ref(eq:bicor), la *Biweight midcorrelation* est basée sur les écarts à la médiane, plutôt que sur les écarts à la moyenne.
 
-Assez proche de la *Biweight midcorrelation*, la *Percentage bend correlation* se base également sur la médiane des variables *X* et *Y*. Le principe général est de donner un poids plus faible dans le calcul de cette corrélation à un certain pourcentage des observations (20% sont généralement recommandés) dont la valeur est éloignée de la médiane. Pour une description complète de la méthode, vous pouvez lire l'article de @wilcox1994percentage.
+Assez proche de la *Biweight midcorrelation*, la *Percentage bend correlation* se base également sur la médiane des variables *X* et *Y*. Le principe général est de donner un poids plus faible dans le calcul de cette corrélation à un certain pourcentage des observations (20&nbsp;% sont généralement recommandés) dont la valeur est éloignée de la médiane. Pour une description complète de la méthode, vous pouvez lire l'article de @wilcox1994percentage.
 
 Enfin, une autre option est l'utilisation de la corrélation $pi$ de Sherphred [@Schwarzkopf2012]. Il s'agit simplement d'une méthode en deux étapes. Premièrement, les valeurs extrêmes sont identifiées à l'aide d'une approche par *bootstrap* utilisant la distance de Mahalanobis (calculant les écarts multivariés entre les observations). Deuxièmement, le coefficient de *Spearman* est calculé sur les observations restantes.
 
@@ -432,7 +432,7 @@ Il est intéressant de mentionner que ces trois corrélations sont rarement util
 
 ### Significativité des coefficients de corrélation {#sect0435} 
 
-Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonnage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents? Le calcul de ce degré de significativité permet de quantifier le niveau de certitude quant à l'existence d'une corrélation entre les deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté&nbsp;: $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant respectivement le coefficient de corrélation et le nombre d'observations. De manière classique, nous utiliserons la table des valeurs critiques de la distribution de $t$&nbsp;: si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degrés de liberté), alors le coefficient est significatif à 5%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon serait inférieure à 5%. Dans ce contexte, nous peuvons raisonnablement rejeter l'hypothèse nulle (corrélation de 0). 
+Quelle que soit la méthode utilisée, il convient de vérifier si le coefficient de corrélation est ou non statistiquement différent de 0. En effet, nous travaillons la plupart du temps avec des données d'échantillonnage, et très rarement avec des populations complètes. En collectant un nouvel échantillon, aurions-nous obtenu des résultats différents? Le calcul de ce degré de significativité permet de quantifier le niveau de certitude quant à l'existence d'une corrélation entre les deux variables, positive ou négative. Cet objectif est réalisé en calculant la valeur de _t_ et le nombre de degrés de liberté&nbsp;: $t=\sqrt{\frac{n-2}{1-r^2}}$ et $dl = n-2$ avec $r$ et $n$ étant respectivement le coefficient de corrélation et le nombre d'observations. De manière classique, nous utiliserons la table des valeurs critiques de la distribution de $t$&nbsp;: si la valeur de $t$ est supérieure à la valeur critique (avec  _p_ = 0,05 et le nombre de degrés de liberté), alors le coefficient est significatif à 5&nbsp;%. En d'autres termes, si la vraie corrélation entre les deux variables (calculable uniquement à partir des populations complètes) était 0, alors la probabilité de collecter notre échantillon serait inférieure à 5&nbsp;%. Dans ce contexte, nous peuvons raisonnablement rejeter l'hypothèse nulle (corrélation de 0). 
 
 La courte syntaxe ci-dessous illustre comment calculer la valeur de $t$, le nombre de degrés de liberté et la valeur de _p_ pour une corrélation donnée.
 
@@ -449,7 +449,7 @@ cat("\nCorrélation =", round(r, 4),
     "\np=", round(p, 4))        
 ```
 
-Plus simplement, la fonction `cor.test` permet d'obtenir en une seule ligne de code le coefficient de corrélation, l'intervalle de confiance à 95% et les valeurs de _t_ et de _p_, comme illustré dans la syntaxe  ci-dessous. Si l'intervalle de confiance est à cheval sur 0, c'est-à-dire que la borne inférieure est négative et la borne supérieure positive, alors le coefficient de corrélation n'est pas significatif au seuil choisi (95% habituellement). Dans l'exemple ci-dessous, la relation linéaire entre les deux variables est significativement négative avec une corrélation de Pearson de −0,158 (*p*&nbsp;=&nbsp;0,000) et un intervalle de confiance à 95% de −0,219 à −0,095.
+Plus simplement, la fonction `cor.test` permet d'obtenir en une seule ligne de code le coefficient de corrélation, l'intervalle de confiance à 95&nbsp;% et les valeurs de _t_ et de _p_, comme illustré dans la syntaxe  ci-dessous. Si l'intervalle de confiance est à cheval sur 0, c'est-à-dire que la borne inférieure est négative et la borne supérieure positive, alors le coefficient de corrélation n'est pas significatif au seuil choisi (95&nbsp;% habituellement). Dans l'exemple ci-dessous, la relation linéaire entre les deux variables est significativement négative avec une corrélation de Pearson de −0,158 (*p*&nbsp;=&nbsp;0,000) et un intervalle de confiance à 95&nbsp;% de −0,219 à −0,095.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Intervalle de confiance à 95 %
@@ -466,7 +466,7 @@ cor.test(df$HabKm2, df$A65plus, method = "spearman")
 cor.test(df$HabKm2, df$A65plus, method="kendall")
 ```
 
-On pourra aussi modifier l'intervalle de confiance, par exemple à 90% ou 99%. L'intervalle de confiance et le seuil de significativité doivent être définis avant l'étude. Leur choix doit s'appuyer sur les standards de la littérature du domaine étudié, du niveau de preuve attendu et de la quantité de données.
+On pourra aussi modifier l'intervalle de confiance, par exemple à 90&nbsp;% ou 99&nbsp;%. L'intervalle de confiance et le seuil de significativité doivent être définis avant l'étude. Leur choix doit s'appuyer sur les standards de la littérature du domaine étudié, du niveau de preuve attendu et de la quantité de données.
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Intervalle à 90 %
 cor.test(df$HabKm2, df$A65plus, method ="pearson", conf.level = .90)
@@ -507,7 +507,7 @@ p <- cor.test(df$HabKm2, df$A65plus)
 cat(round(p$estimate,5), " [", round(p$conf.int[1],4), " ",round(p$conf.int[2],4), "]", sep="")
 ```
 
-Le _bootstrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Les intervalles de confiance obtenus à partir des différentes méthodes d'estimation (normale, basique, pourcentage et BCa) ne sont pas à cheval sur 0, indiquant que le coefficient est significatif à 5%.
+Le _bootstrap_ renvoie un coefficient de corrélation de Pearson de −0,158. Les intervalles de confiance obtenus à partir des différentes méthodes d'estimation (normale, basique, pourcentage et BCa) ne sont pas à cheval sur 0, indiquant que le coefficient est significatif à 5&nbsp;%.
 
 ### Corrélation partielle {#sect0436} 
 
@@ -681,7 +681,7 @@ Les chercheurs et les chercheures savent bien que la consommation de chocolat ne
 
 Pour approfondir le sujet sur la confusion entre corrélation, régression simple et causalité, vous pouvez visionner cette courte vidéo ludique de vulgarisation (https://www.youtube.com/embed/A-_naeATJ6o).
 
-L'association entre deux variables peut aussi être simplement le fruit du hasard. Si nous explorons de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du forage ou de la fouille de données (*data mining* en anglais), le hasard fera que nous risquons d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret&nbsp;: admettons que nous ayons collecté 100 variables et que nous calculons les corrélations entre chaque paire de variables. Nous obtenons une matrice de corrélation de 100&nbsp;x&nbsp;100, à laquelle nous pouvons enlever la diagonale et une moitié de la matrice, ce qui nous laisse un total de 4950 corrélations différentes. Admettons que nous choisissions un seuil de significativité de 5%, nous devons alors nous attendre à ce que le hasard produise des résultats significatifs dans 5% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément illustrer ce fait avec la syntaxe  suivante&nbsp;:
+L'association entre deux variables peut aussi être simplement le fruit du hasard. Si nous explorons de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du forage ou de la fouille de données (*data mining* en anglais), le hasard fera que nous risquons d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret&nbsp;: admettons que nous ayons collecté 100 variables et que nous calculons les corrélations entre chaque paire de variables. Nous obtenons une matrice de corrélation de 100&nbsp;x&nbsp;100, à laquelle nous pouvons enlever la diagonale et une moitié de la matrice, ce qui nous laisse un total de 4950 corrélations différentes. Admettons que nous choisissions un seuil de significativité de 5&nbsp;%, nous devons alors nous attendre à ce que le hasard produise des résultats significatifs dans 5&nbsp;% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément illustrer ce fait avec la syntaxe  suivante&nbsp;:
 
 ```{r corraleatoire, message=FALSE, warning=FALSE, out.width='60%', eval = FALSE}
 library("Hmisc")
@@ -881,7 +881,7 @@ show_table(df,
            )
 ``` 
 
-### Mesurer la qualité d'ajustement du modèle {#sect0443}
+### Mesure de la qualité d'ajustement du modèle {#sect0443}
 Les trois mesures les plus courantes pour évaluer la qualité d'ajustement d'un modèle de régression linéaire simple sont l'erreur quadratique moyenne (*root-mean-square error* en anglais, *RMSE*), le coefficient de détermination (*R^2^*) et la statistique *F* de Fisher. Pour mieux appréhender le calcul de ces trois mesures, rappelons que l'équation de régression s'écrit&nbsp;: 
 
 \footnotesize
@@ -977,7 +977,7 @@ R^2 = \frac{SCE}{SCT} \mbox{ avec } R^2 \in \left[0,1\right]
 \end{equation}
 \normalsize
 
-Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence/est capable de prédire *Y*. Dans le cas présent, nous avons&nbsp;: R^2^ = 227,04 / 279,3 = 0,8129, ce qui signale que 81,3% de la variance du pourcentage de cyclistes est expliquée par la distance entre la municipalité et le centre-ville de la région métropolitaine. Tel que signalé dans la section \@ref(sect0432), la racine carrée du coefficient de détermination (*R^2^*) est égale au coefficient de corrélation ($r$) entre les deux variables. 
+Comparativement au RMSE qui est une mesure absolue, le coefficient de détermination est une **mesure relative** qui varie de 0 à 1. Il exprime la proportion de la variance de *Y* qui est expliquée par la variable *X*; autrement dit, plus sa valeur est élevée, plus *X* influence/est capable de prédire *Y*. Dans le cas présent, nous avons&nbsp;: R^2^ = 227,04 / 279,3 = 0,8129, ce qui signale que 81,3&nbsp;% de la variance du pourcentage de cyclistes est expliquée par la distance entre la municipalité et le centre-ville de la région métropolitaine. Tel que signalé dans la section \@ref(sect0432), la racine carrée du coefficient de détermination (*R^2^*) est égale au coefficient de corrélation ($r$) entre les deux variables. 
 
 **Calcul de la statistique _F_ de Fisher**
 
