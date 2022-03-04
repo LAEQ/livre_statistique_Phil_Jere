@@ -177,7 +177,8 @@ show_table(TableauModele1[,c(1,2,3,4)],
            digits = 3,
            caption = "Résultats du modèle vide (modèle 1)",
            col.names=c("Paramètre","Coefficient","Erreur type", "Valeur de T"),
-           align= c("l","r","r", "r")
+           align= c("l","r","r", "r"),
+           position="HOLD_position"
            )
 ```
 
@@ -206,7 +207,6 @@ Les résultats du second modèle sont présentés au tableau \@ref(tab:TableauMo
 * Plus la valeur de l'AIC est faible, mieux le modèle est ajusté. En comparant les valeurs d'AIC du modèle vide et du modèle avec les variables explicatives du niveau&nbsp;1 (80&nbsp;305 *versus* 78&nbsp;785), nous constatons, sans surprise, que ce dernier modèle est plus performant.
 
 * Le R^2^ marginal indique la proportion de la variance expliquée uniquement si les effets fixes sont pris en compte (ici, 0,129). Quant au R^2^ conditionnel, il indique la proportion de la variance expliquée à la fois par les effets fixes et aléatoires (ici, 0,268). L'écart important entre les deux R^2^ signale que les secteurs de recensement (effets aléatoires, niveau&nbsp;2) jouent un rôle important dans le modèle.
-
 
 **Quelles informations peut-on tirer des coefficients de régression?**
 Les variables indépendantes relatives à la forme urbaine les plus importantes sont&nbsp;: le pourcentage de bâtiments résidentiels (`ResiPCT`), la largeur de la rue (`Width`) et le nombre de bâtiments (`NoLog`). Aussi, la distance entre le bâtiment et la rue (`Setback`) est associée positivement avec la variable dépendante. En effet, à chaque ajout d'un mètre de la distance moyenne entre les bâtiments et le tronçon de rue, la couverture des arbres sur le tronçon augmente de 0,202 point de pourcentage, toutes choses étant égales par ailleurs.
@@ -254,14 +254,15 @@ show_table(TableauModele2[,c(1,2,3,4)],
            digits = 3,
            caption = 'Résultats du modèle avec les variables indépendantes au niveau 1 (modèle 2)',
            col.names=c("Paramètre","Coefficient","Erreur type", "Valeur de T"),
-           align= c("l","r","r", "r")
+           align= c("l","r","r", "r"),
+           position="HOLD_position"
            )
 ```
 
 Remarquez la valeur de la constante&nbsp;: −1028,618. À titre de rappel, la constante est la valeur que prend la variable dépendante quand toutes les variables indépendantes sont égales à 0. Or, il est impossible qu'elles soient toutes égales à zéro. 
 
 ::: {.bloc_astuce data-latex=""}
-*Centrage des variables quantitatives mesurées au niveau&nbsp;1**
+**Centrage des variables quantitatives mesurées au niveau&nbsp;1**
 
 En analyse multiniveau, il est très courant et souvent recommandé de centrer les variables explicatives quantitatives au niveau&nbsp;1. Deux options sont alors possibles&nbsp;:
 
@@ -335,7 +336,8 @@ show_table(TableauModele2[,c(1,2,3,4)],
            digits = 3,
            caption = 'Résultats du modèle avec les variables indépendantes centrées au niveau 1 (modèle 2)',
            col.names=c("Paramètre","Coefficient","Erreur type", "Valeur de T"),
-           align= c("l","r","r", "r")
+           align= c("l","r","r", "r"),
+           position="HOLD_position"
            )
 ```
 
@@ -413,7 +415,8 @@ show_table(TableauModele3[,c(1,2,3,4)],
            digits = 3,
            caption = 'Résultats du modèle avec les variables indépendantes aux niveaux 1 et 2 (modèle 3)',
            col.names=c("Paramètre","Coefficient","Erreur type", "Valeur de T"),
-           align= c("l","r","r", "r")
+           align= c("l","r","r", "r"),
+           position="HOLD_position"
            )
 ```
 
@@ -496,7 +499,8 @@ show_table(TableauModele4[,c(1,2,3,4)],
            digits = 3,
            caption = "Résultats du modèle avec une variable d'interaction entre les deux niveaux 1 et 2 (modèle 4)",
            col.names=c("Paramètre","Coefficient","Erreur type", "Valeur de T"),
-           align= c("l","r","r", "r")
+           align= c("l","r","r", "r"),
+           position="HOLD_position"
            )
 ```
 
