@@ -284,7 +284,7 @@ RMSE = \sqrt{\frac{\sum_{i=1}^n (y_{i}-\widehat{y})^2}{n}} = \sqrt{\frac{SCR}{n}
 
 Globalement, plus un modèle de régression est efficace, plus les valeurs du R^2^ et de la statistique *F* sont élevées et inversement, plus celle de RMSE est faible. En effet, remarquez qu'à l'équation \@ref(eq:regmFFisher), la statistique *F* peut être obtenue à partir du R^2^; par conséquent, plus la valeur du R^2^ est forte (proche de 1), plus celle de *F* est aussi élevée. Notez aussi que plus un modèle est performant, plus la partie expliquée par le modèle (SCE) est importante et plus celle non expliquée (SCR) est faible; ce qui signifie que plus le R^2^ est proche de 1 (équation \@ref(eq:regmR2)), plus le RMSE – calculé à partir du SCR – est faible (équation \@ref(eq:regmRMSE)).
 
-La syntaxe R ci-dessous illustre comment calculer les différentes variances (SCT, SCE et SCR) à partir des valeurs observées et prédites par le modèle, puis les valeurs du R^2^, de* F* et du RMSE. Nous verrons par la suite qu'il est possible d'obtenir directement ces valeurs à partir de la fonction `summary(VotreModele)`.
+La syntaxe R ci-dessous illustre comment calculer les différentes variances (SCT, SCE et SCR) à partir des valeurs observées et prédites par le modèle, puis les valeurs du R^2^, de *F* et du RMSE. Nous verrons par la suite qu'il est possible d'obtenir directement ces valeurs à partir de la fonction `summary(VotreModele)`.
 
 ```{r dataregcalculs, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 # Chargement des données
@@ -526,10 +526,8 @@ lm.beta(lm(VegPct ~ HABHA+AgeMedian+Pct_014+Pct_65P+Pct_MV+Pct_FR, data = DataFi
 ```
 
 ```{r CoefStand2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
-
 # Construction d'un tableau pour les coefficients
-TabCoef <- data.frame(cbind(VI, round(VIet,3), round(coefs,3), round(coefstand,3)))
-
+TabCoef <- data.frame(V1=VI, V2=round(VIet,3), V3=round(coefs,3), V4=round(coefstand,3))
 show_table(TabCoef,
            digits = 3,
            caption = 'Calcul des coefficients standardisés',
@@ -599,6 +597,12 @@ L'interprétation exacte des seuils de significativité des coefficients d'une r
 Si un coefficient est significatif au seuil de 5&nbsp;% dans notre modèle, cela signifie que si, pour l’ensemble d’une population, la valeur du coefficient est de 0 en réalité, alors nous avions moins de 5&nbsp;% de chances de collecter un échantillon (pour cette population) ayant produit un coefficient aussi fort que celui que nous observons dans notre propre échantillon. Par conséquent, il serait très invraisemblable que le coefficient soit 0 puisque nous avons effectivement collecté un tel échantillon. Il s'agit d'une forme d'argumentation par l'absurde propre à la statistique fréquentiste. 
 
 Notez que si 100 études étaient conduites sur le même sujet et dans les mêmes conditions, nous nous attendrions à ce que 5 d'entre elles trouvent un coefficient significatif, du fait de la variation des échantillons. Ce constat souligne le fait que la recherche est un effort collectif et qu'une seule étude n'est pas suffisante pour trancher sur un sujet. Les revues systématiques de la littérature sont donc des travaux particulièrement importants pour la construction du consensus scientifique.
+
+**Ne pas confondre significativité et effet de la variable indépendante**
+
+Attention, un coefficient significatif n’est pas toujours intéressant! Autrement dit, bien qu’il soit significatif à un seuil donné (par exemple, *p*&nbsp;=&nbsp;0,05), cela ne veut pas dire pour autant qu’il ait un effet important sur la variable dépendante. Il faut donc analyser simultanément les valeurs de *p* et des coefficients de régression.
+Afin de mieux saisir l'effet d'un coefficient significatif, il est intéressant de représenter graphiquement l’effet marginal d’une variable indépendante (VI) sur une variable dépendante (VD), une fois contrôlées les autres VI du modèle de régression (section \@ref(sect0774)).
+
 :::
 
 Prenons deux variables indépendantes du tableau \@ref(tab:dataregmodel2) – `HABHA` et `AgeMedian` – et vérifions si leurs coefficients de régression respectifs (−0,070 et 0,011) sont significatifs. Appliquons la démarche décrite dans l'encadré ci-dessus&nbsp;:
@@ -612,7 +616,6 @@ Prenons deux variables indépendantes du tableau \@ref(tab:dataregmodel2) – `H
   - pour `HABHA`, la valeur absolue de *t* (−31,975) est supérieure à la valeur critique de 3,29. Son coefficient de régression est donc significativement différent de 0. Autrement dit, ce prédicteur a un effet significatif et négatif sur la variable dépendante.
 
   - pour `AgeMedian`, la valeur absolue de *t* (1,694) est supérieure à 1,65 (*p*&nbsp;=&nbsp;0,10), mais inférieure à 1,96 (*p*&nbsp;=&nbsp;0,05), à 2,58 (*p*&nbsp;=&nbsp;0,01), à 3,29 (*p*&nbsp;=&nbsp;0,001). Par conséquent, ce coefficient est différent de 0 uniquement au seuil de *p*&nbsp;=&nbsp;0,10 et non au seuil de *p*&nbsp;=&nbsp;0,05. Cela signifie que bous avons un peu moins de 10&nbsp;% de chances de se tromper en affirmant que cette variable a un effet significatif sur la variable dépendante.
-
 
 ::: {.bloc_astuce data-latex=""}
 
@@ -981,7 +984,7 @@ Il est très fréquent d'introduire une variable qualitative dichotomique comme 
 
 Dans le modèle ci-dessous, nous voulons vérifier si un îlot situé sur le territoire de la ville de Montréal a proportionnellement moins de végétation qu'un îlot situé dans une autre municipalité de l'île de Montréal, toutes choses étant égales par ailleurs. Pour ce faire, nous créons une variable binaire dénommée `VilleMtl` qui prend la valeur de 1 pour les îlots de la ville de Montréal et 0 pour ceux d'une autre municipalité.
 
-Nous obtenons ainsi un coefficient de régression pour `VilleMtl` de -7,699. Cela signifie que si toutes les autres variables indépendantes du modèle étaient constantes, alors un îlot de la ville de Montréal aurait en moyenne une valeur de -7,7&nbsp;% de moins de végétation comparativement à un îlot situé dans une autre municipalité.
+Nous obtenons ainsi un coefficient de régression pour `VilleMtl` de -7,699 (tableau \@ref(tab:regmodeleDich2)). Cela signifie que si toutes les autres variables indépendantes du modèle étaient constantes, alors un îlot de la ville de Montréal aurait en moyenne une valeur de -7,7&nbsp;% de moins de végétation comparativement à un îlot situé dans une autre municipalité.
 
 ```{r regmodeleDich, echo=TRUE, message=FALSE, warning=FALSE}
 

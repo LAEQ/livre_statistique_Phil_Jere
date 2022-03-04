@@ -2,7 +2,7 @@
 
 # Statistiques descriptives univariées {#chap02}
 
-Dans ce chapitre, nous décrivons la notion de variable, permettant l’opérationnalisation d’un concept. Comprendre les différents types de variables est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les tests d’hypothèse et les méthodes de statistique inférentielle que l’on pourra appliquer seront différents. Nous distinguerons ainsi cinq types de variables&nbsp;: nominale, ordinale, discrète, continue et semi-quantitative. Aussi, nous abordons un concept central de la statistique&nbsp;: les distributions. Nous présenterons ensuite les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
+Comprendre la notion de variable et ses différents types est essentiel en statistiques. En effet, en fonction du type de variable à l'étude, les méthodes de statistique exploratoire ou inférentielle qui peuvent être utilisées sont différentes. Nous distinguerons ainsi cinq types de variables&nbsp;: nominale, ordinale, discrète, continue et semi-quantitative. Aussi, nous abordons un concept central de la statistique&nbsp;: les distributions. Finalement, dans ce chapitre, nous présentons les différentes statistiques descriptives univariées qui peuvent s’appliquer à ces types de variables.
 
 ::: {.bloc_package data-latex=""}
 Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;: 
@@ -23,27 +23,20 @@ Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;:
   - `foreign` pour importer des fichiers externes.
 :::
 
-## Notion de variable {#sect021}
+## Notion et types de variable {#sect021}
 
-### La variable&nbsp;: l'opérationnalisation d'un concept {#sect0211}
+### Notion de variable {#sect0211}
 
-Une variable permet d'opérationnaliser un concept, soit une «&nbsp;idée générale et abstraite que se fait l'esprit humain d'un objet de pensée concret ou abstrait, et qui lui permet de rattacher à ce même objet les diverses perceptions qu'il en a, et d'en organiser les connaissances&nbsp;» ([Larousse](https://www.larousse.fr/dictionnaires/francais/concept/17875?q=concept#17749){target="_blank"}). Pour valider un modèle théorique, il convient alors d'opérationnaliser ses différents concepts et d'établir les relations qu'ils partagent. L'opérationnalisation d'un concept nécessite soit de mesurer (dans un intervalle de valeurs, c'est-à-dire de manière quantitative), soit de qualifier (avec plusieurs catégories, c'est-à-dire de manière qualitative) un phénomène. 
+Du point de vue empirique, une variable est une propriété, une caractéristique d'une unité statistique, d'une observation. Il convient alors de bien saisir à quelle unité d'analyse (ou unité d'observation) s'appliquent les valeurs d'une variable&nbsp;: des personnes, des ménages, des municipalités, des entreprises, etc. Par exemple, pour des individus, l'*âge*, le *genre* ou encore le *revenu* sont autant de caractéristiques qui être mesurées à partir de variables. Autrement dit, une variable permet de mesurer (dans un intervalle de valeurs, c'est-à-dire de manière quantitative) ou de qualifier (avec plusieurs catégories, c'est-à-dire de manière qualitative) un phénomène.
 
-Selon [Statistique Canada](https://www.statcan.gc.ca/fra/concepts/variable){target="_blank"}, «&nbsp;une variable est une caractéristique d'une unité statistique que l'on observe et pour laquelle une valeur numérique ou une catégorie d'une classification peut être attribuée&nbsp;». Il convient alors de bien saisir à quelle unité statistique (ou unité d'observation) s'appliquent les valeurs d'une variable&nbsp;: des personnes, des ménages, des municipalités, etc. 
-
-Prenons deux exemples concrets tirés du recensement de 2016 de Statistique Canada&nbsp;:
-
-* Le concept **famille de recensement** est défini comme étant «&nbsp;un couple marié et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des conjoints; un couple en union libre et les enfants, le cas échéant, du couple et/ou de l'un ou l'autre des partenaires; ou un parent seul, peu importe son état matrimonial, habitant avec au moins un enfant dans le même logement et cet ou ces enfants. Tous les membres d'une famille de recensement particulière habitent le même logement. Un couple peut être de sexe opposé ou de même sexe. Les enfants peuvent être des enfants naturels, par le mariage, par l'union libre ou par adoption, peu importe leur âge ou leur état matrimonial, du moment qu'ils habitent dans le logement sans leur propre conjoint marié, partenaire en union libre ou enfant. Les petits-enfants habitant avec leurs grands-parents, alors qu'aucun des parents n'est présent, constituent également une famille de recensement&nbsp;» ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/fam004-fra.cfm){target="_blank"}).
-À partir de cette définition, les familles de recensement peuvent être qualifiées selon plusieurs modalités&nbsp;: couples mariés sans enfant, couples mariés avec enfants, couples en union libre sans enfant, couples en union libre avec enfant, famille monoparentale (avec un parent de sexe féminin), famille monoparentale (avec un parent de sexe masculin).
-* Le concept de **revenu d'emploi** est défini comme étant «&nbsp;tous les revenus reçus sous forme de traitements, salaires et commissions d'un travail rémunéré ou le revenu net d'un travail autonome dans une entreprise agricole ou non agricole non constituée en société et/ou dans l'exercice d'une profession au cours de la période de référence. Pour le Recensement de 2016, la période de référence est l'année civile 2015 pour toutes les variables de revenu&nbsp;» ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop027-fra.cfm){target="_blank"}). 
-Il est donc mesuré en dollars pour chaque individu de 15 ans et plus. Pour l'ensemble de la population de 15 ans et plus, il peut ensuite être classé en déciles de revenu d'emploi, soit en dix groupes ([Statistique Canada](https://www12.statcan.gc.ca/census-recensement/2016/ref/dict/pop204-fra.cfm"}){target="_blank"}).
+Du'un point de vue plus théorique, une variable permet d'opérationnaliser un concept en sciences sociales [@gilles1994elements, pp. 30], soit une «&nbsp;idée générale et abstraite que se fait l'esprit humain d'un objet de pensée concret ou abstrait, et qui lui permet de rattacher à ce même objet les diverses perceptions qu'il en a, et d'en organiser les connaissances&nbsp;» ([Larousse](https://www.larousse.fr/dictionnaires/francais/concept/17875?q=concept#17749){target="_blank"}). En effet, la construction d'un modèle théorique suppose d'opérationnaliser différents concepts et d'établir les relations qu'ils partagent entre eux. Or, l'opérationnalisation d'un concept nécessite soit de mesurer (dans un intervalle de valeurs, c'est-à-dire de manière quantitative), soit de qualifier (avec plusieurs catégories, c'est-à-dire de manière qualitative) un phénomène. 
 
 ::: {.bloc_attention data-latex=""}
 **Maîtriser la définition des variables que vous utilisez&nbsp;: un enjeu crucial! **
 
-Nous avons vu qu'une variable est l'opérationnalisation d'un concept. Par conséquent, ne pas maîtriser la définition d'une variable revient à ne pas bien saisir le concept sous-jacent qu'elle tente de mesurer. Si vous exploitez des données secondaires – par exemple, issues d'un recensement de population ou d'une enquête longitudinale ou transversale –, il faut impérativement lire les définitions des variables que vous souhaiteriez utiliser. Ne pas le faire risque d'aboutir à&nbsp;:
+Ne pas maîtriser la définition d'une variable revient à ne pas bien saisir la caractéristique ou encore le concept sous-jacent qu'elle tente de mesurer. Si vous exploitez des données secondaires – par exemple, issues d'un recensement de population ou d'une enquête longitudinale ou transversale –, il faut impérativement lire les définitions des variables que vous souhaiteriez utiliser. Ne pas le faire risque d'aboutir à&nbsp;:
 
-* Une mauvaise opérationnalisation de votre modèle théorique, même si votre analyse est bien menée statistiquement parlant. Autrement dit, vous risquez de ne pas sélectionner les bonnes variables. Prenons un exemple concret. Vous avez construit un modèle théorique dans lequel vous souhaitez inclure un concept sur la langue des personnes. Dans le recensement canadien de 2016, plusieurs variables relatives à la langue sont disponibles&nbsp;: connaissance des langues officielles, langue parlée à la maison, langue maternelle, première langue officielle parlée, connaissance des langues non officielles et langue de travail (Statistique Canada, 2016, (https://www12.statcan.gc.ca/census-recensement/2016/ref/guides/003/98-500-x2016003-fra.cfm)). La sélection de l'une de ces variables doit être faite de manière rigoureuse, c'est-à-dire en lien avec votre cadre théorique et suite à une bonne compréhension des définitions des variables. Dans une étude sur le marché du travail, nous pourrions probablement sélectionner la variable *sur la connaissance des langues officielles du Canada*, afin d'évaluer son effet sur l'employabilité, toutes choses étant égales par ailleurs. Dans une autre étude portant sur la réussite ou la performance scolaire, il est probable qu'on utilise plutôt la *langue maternelle*.
+* Une mauvaise opérationnalisation de votre modèle théorique, même si votre analyse est bien menée statistiquement parlant. Autrement dit, vous risquez de ne pas sélectionner les bonnes variables. Prenons un exemple concret. Vous avez construit un modèle théorique dans lequel vous souhaitez inclure un concept sur la langue des personnes. Dans le recensement canadien de 2016, plusieurs variables relatives à la langue sont disponibles&nbsp;: connaissance des langues officielles, langue parlée à la maison, langue maternelle, première langue officielle parlée, connaissance des langues non officielles et langue de travail (https://www12.statcan.gc.ca/census-recensement/2016/ref/guides/003/98-500-x2016003-fra.cfm). La sélection de l'une de ces variables doit être faite de manière rigoureuse, c'est-à-dire en lien avec votre cadre théorique et suite à une bonne compréhension des définitions des variables. Dans une étude sur le marché du travail, nous pourrions probablement sélectionner la variable *sur la connaissance des langues officielles du Canada*, afin d'évaluer son effet sur l'employabilité, toutes choses étant égales par ailleurs. Dans une autre étude portant sur la réussite ou la performance scolaire, il est probable qu'on utilise plutôt la *langue maternelle*.
 
 * Une mauvaise interprétation et discussion de vos résultats en lien avec votre cadre théorique.
 * Une mauvaise identification des pistes de recherche.
@@ -52,8 +45,8 @@ Finalement, la définition d'une variable peut évoluer à travers plusieurs rec
 
 **Comprendre les variables utilisées dans un article scientifique&nbsp;: un exercice indispensable dans l'élaboration d'une revue de littérature**
 
-Une lecture rigoureuse d'un article scientifique suppose, entre autres, de bien comprendre les concepts et variables mobilisés. Il convient alors de lire attentivement la section méthodologique (pas uniquement la section des résultats ou pire le résumé), sans quoi vous risquez d'aboutir à une revue de littérature approximative. 
-Ayez aussi un **regard critique** sur les variables visant à opérationnaliser les  concepts clés de l'étude. Certains concepts sont très difficiles à traduire en variables; leurs opérationnalisations (mesures) peuvent ainsi faire l'objet de vifs débats au sein de la communauté scientifique. Très succinctement, c'est notamment le cas du concept de capital social. D'une part, les définitions et ancrages sont bien différents selon Bourdieu (sociologue, ancrage au niveau des individus) et Putman (politologue, ancrage au niveau des collectivités); d'autre part, aucun consensus ne semble clairement se dégager quant à la définition de variables permettant de le mesurer efficacement (de manière quantitative).   
+Une lecture rigoureuse d'un article scientifique suppose, entre autres, de bien comprendre les concepts et les variables mobilisés. Il convient alors de lire attentivement la section méthodologique (pas uniquement la section des résultats ou pire le résumé), sans quoi vous risquez d'aboutir à une revue de littérature approximative. 
+Ayez aussi un **regard critique** sur les variables utilisées en lien avec le cadre théorique. Certains concepts sont très difficiles à traduire en variables; leurs opérationnalisations (mesures) peuvent ainsi faire l'objet de vifs débats au sein de la communauté scientifique. Très succinctement, c'est notamment le cas du concept de capital social. D'une part, les définitions et ancrages sont bien différents selon Bourdieu (sociologue, ancrage au niveau des individus) et Putman (politologue, ancrage au niveau des collectivités); d'autre part, aucun consensus ne semble clairement se dégager quant à la définition de variables permettant de le mesurer efficacement (de manière quantitative).   
 
 **Variable de substitution (*proxy variable* en anglais)**
 
@@ -61,11 +54,11 @@ On fait la moins pire des recherches! En effet, les données disponibles sont pa
 
 * Des bases de données peuvent être en effet imparfaites. Par exemple, en criminologie, lorsqu'une étude est basée sur l'exploitation de données policières, la limite du **chiffre noir** est souvent signalée&nbsp;: les données policières comprennent uniquement les crimes et délits découverts par la police et occultent ainsi les crimes non découverts; ils ne peuvent ainsi refléter la criminalité réelle sur un territoire donné.
 
-* Des variables peuvent aussi être imparfaites. Dans un jeu de données, il est fréquent qu'une variable opérationnalisant un concept précis ne soit pas disponible ou qu'elle n'ait tout simplement pas été  mesurée. Nous cherchons alors une variable de substitution (*proxy*) pour la remplacer. Prenons un exemple concret portant sur l'exposition des cyclistes à la pollution atmosphérique ou au bruit environnemental. L'un des principaux facteurs d'exposition à ces pollutions est le trafic routier&nbsp;: plus ce dernier est élevé, plus les cyclistes risquent de rouler dans un environnement bruyant et pollué. Toutefois, il est rare de disposer de mesures du trafic en temps réel qui nécessitent des comptages de véhicules pendant le trajet des cyclistes (par exemple, à partir de vidéos captées par une caméra fixée sur le guidon). Pour pallier l'absence de mesures directes, plusieurs auteur(e)s utilisent des variables de substitution de la densité du trafic, comme la typologie des types d'axes (primaire, secondaire, tertiaire, rue locale, etc.), supposant ainsi qu'un axe primaire supporte un volume de véhicules supérieur à un axe secondaire.
+* Des variables peuvent aussi être imparfaites. Dans un jeu de données, il est fréquent qu'une variable ne soit pas disponible ou qu'elle n'ait tout simplement pas été  mesurée. Nous cherchons alors une variable de substitution (*proxy*) pour la remplacer. Prenons un exemple concret portant sur l'exposition des cyclistes à la pollution atmosphérique ou au bruit environnemental. L'un des principaux facteurs d'exposition à ces pollutions est le trafic routier&nbsp;: plus ce dernier est élevé, plus les cyclistes risquent de rouler dans un environnement bruyant et pollué. Toutefois, il est rare de disposer de mesures du trafic en temps réel qui nécessitent des comptages de véhicules pendant le trajet des cyclistes (par exemple, à partir de vidéos captées par une caméra fixée sur le guidon). Pour pallier l'absence de mesures directes, plusieurs auteur(e)s utilisent des variables de substitution de la densité du trafic, comme la typologie des types d'axes (primaire, secondaire, tertiaire, rue locale, etc.), supposant ainsi qu'un axe primaire supporte un volume de véhicules supérieur à un axe secondaire.
 :::
 
 ### Types de variables {#sect0212}
-Nous distinguons habituellement les variables qualitatives (nominale ou ordinale) des variables quantitatives (discrète ou continue). Tel qu'illustré à la figure \@ref(fig:figunivarie1), l'opérationnalisation du concept en variable est réalisée par différents mécanismes visant à qualifier, classer, compter ou mesurer afin de caractériser les unités statistiques (observations) d'une population ou d'un échantillon.
+Nous distinguons habituellement les variables qualitatives (nominale ou ordinale) des variables quantitatives (discrète ou continue). Tel qu'illustré à la figure \@ref(fig:figunivarie1), plusieurs mécanismes différents visent à qualifier, classer, compter ou mesurer afin de caractériser les unités statistiques (observations) d'une population ou d'un échantillon.
 
 ```{r figunivarie1, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Types de variables",  out.width='70%'}
 knitr::include_graphics('images/univariee/figure1.jpg', dpi = NA)
@@ -106,9 +99,9 @@ Différents types de données sont utilisés en sciences sociales. L'objectif ic
 Les **données secondaires** sont des données qui existent déjà au début de votre projet de recherche&nbsp;: nul besoin de les collecter, il suffit de les exploiter! Une multitude de données de recensements ou d'enquêtes de Statistique Canada sont disponibles et largement exploitées en sciences sociales (par exemple, l'enquête nationale auprès des ménages – ENM, l'enquête sur la dynamique du marché du travail et du revenu – EDTR, l'enquête longitudinale auprès des immigrants – ELIC, etc.). 
   
 ::: {.bloc_notes data-latex=""}
-Au Canada, les chercheur(e)s (étudiant(e)s et professeur(e)s) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du Réseau canadien des Centres de données de recherche (https://crdcn.org/fr/donn%C3%A9es){target="_blank"} afin d'explorer les différentes enquêtes disponibles.
+Au Canada, les chercheur(e)s (étudiant(e)s et professeur(e)s) ont accès aux microdonnées des enquêtes de Statistique Canada dans les Centres de données de recherche (CDR). Vous pouvez consulter le moteur de recherche du Réseau canadien des Centres de données de recherche (https://crdcn.org/fr/donn%C3%A9es) afin d'explorer les différentes enquêtes disponibles.
 
-Au Québec, l'accès à ces enquêtes est possible dans les différentes antennes du Centre interuniversitaire québécois de statistiques sociales de Statistique Canada (https://www.ciqss.org/){target="_blank"}).
+Au Québec, l'accès à ces enquêtes est possible dans les différentes antennes du Centre interuniversitaire québécois de statistiques sociales de Statistique Canada (https://www.ciqss.org/).
 :::
 
 Par opposition, les **données primaires** n'existent pas quand vous démarrez votre projet&nbsp;: vous devez les collecter spécifiquement pour votre étude! Par exemple, une chercheure souhaitant analyser l'exposition des cyclistes au bruit et à la pollution dans une ville donnée devra réaliser une collecte de données avec idéalement plusieurs participant(e)s (équipé(e)s de différents capteurs), et ce, sur plusieurs jours. 
@@ -194,6 +187,7 @@ Nous distinguons habituellement deux grandes familles de méthodes statistiques&
 
 * «&nbsp;**La statistique descriptive et exploratoire**&nbsp;: elle permet, par des résumés et des graphiques plus ou moins élaborés, de décrire des ensembles de données statistiques, d’établir des relations entre les variables sans faire jouer de rôle privilégié à une variable particulière. Les conclusions ne portent dans cette phase de travail que sur les données étudiées, sans être inférées à une population plus large. L’analyse exploratoire s’appuie essentiellement sur des notions élémentaires telles que des indicateurs de moyenne et de dispersion, sur des représentations graphiques. [...]
 * **La statistique inférentielle et confirmatoire**&nbsp;: elle permet de valider ou d’infirmer, à partir de tests statistiques ou de modèles probabilistes, des hypothèses formulées a priori (ou après une phase exploratoire), et d’extrapoler, c’est-à-dire d’étendre certaines propriétés d’un échantillon à une population plus large. Les conclusions obtenues à partir des données vont au-delà de ces données. La statistique confirmatoire fait surtout appel aux méthodes dites explicatives et prévisionnelles, destinées comme leurs noms l’indiquent, à expliquer puis à prévoir, suivant des règles de décision, une variable privilégiée à l’aide d’une ou plusieurs variables explicatives (régressions multiples et logistiques, analyse de variance, analyse discriminante, segmentation, etc.)&nbsp;» [@lebart1995statistique, pp. 209].
+
 
 ## Notion de distribution {#sect024}
 
@@ -1575,7 +1569,7 @@ Tests <- data.frame(t(Tests))
 show_table(Tests,
            col.names = c("","Normale","Asymétrie négative",
                            "Asymétrie positive","Leptokurtique", "Platikurtique"),
-           caption = "Calculs des tests de normalité pour différentes distributions")
+           caption = "Tests de normalité pour différentes distributions")
 ```
 
 ::: {.bloc_attention data-latex=""}
@@ -2154,7 +2148,8 @@ sapply(dataMTL[VarsSelect], shapiro.test)
 Graph1 <- ggplot(data = dataMTL) +
           geom_histogram(aes(x = HabKm2, y = ..density..),
                  bins = 30, color = "#343a40", fill = "#a8dadc") +
-          labs(x="Habitants au km2", y = "densité")+
+          labs(x=expression("Habitants au km"^2), 
+               y = "densité")+
           stat_function(fun = dnorm, 
                         args = list(mean = mean(dataMTL$HabKm2), 
                                     sd = sd(dataMTL$HabKm2)), 
@@ -2163,7 +2158,8 @@ Graph1 <- ggplot(data = dataMTL) +
 Graph2 <- ggplot(data = dataMTL) +
           geom_histogram(aes(x = HabKm2_log, y = ..density..),
                          bins = 30, color = "#343a40", fill = "#a8dadc") +
-          labs(x="habitants au km2 (logarithme)", y = "densité")+
+          labs(x=expression("Logarithme de habitants au km"^2),
+               y = "densité")+
           stat_function(fun = dnorm, 
                         args = list(mean = mean(dataMTL$HabKm2_log), 
                                     sd = sd(dataMTL$HabKm2_log)), 
@@ -2172,7 +2168,8 @@ Graph2 <- ggplot(data = dataMTL) +
 Graph3 <- ggplot(data = dataMTL) +
           geom_histogram(aes(x = HabKm2_sqrt, y = ..density..),
                          bins = 30, color = "#343a40", fill = "#a8dadc") +
-          labs(x="habitants au km2 (racine carrée)", y = "densité")+
+          labs(x=expression("Racine carrée de habitants au km"^2),
+               y = "densité")+
           stat_function(fun = dnorm, 
                         args = list(mean = mean(dataMTL$HabKm2_sqrt), 
                                     sd = sd(dataMTL$HabKm2_sqrt)), 
@@ -2181,7 +2178,8 @@ Graph3 <- ggplot(data = dataMTL) +
 Graph4 <- ggplot(data = dataMTL) +
           geom_histogram(aes(x = HabKm2_inv, y = ..density..),
                          bins = 30, color = "#343a40", fill = "#a8dadc") +
-          labs(x="habitants au km2 (inverse)", y = "densité")+
+          labs(x=expression("Inverse de habitants au km"^2),
+               y = "densité")+
           stat_function(fun = dnorm, 
                         args = list(mean = mean(dataMTL$HabKm2_inv), sd = sd(dataMTL$HabKm2_inv)), 
                         color = "#e63946", size = 1.2)
