@@ -340,6 +340,35 @@ adresse <- '4225 rue de la gauchetiere'
 proprietaire <- TRUE
 ```
 
+::: {.bloc_notes  data-latex=""}
+**Simples ou doubles quotes?**
+
+Pour déclarer des données de type texte, il est possible d'utiliser des quotes simples `'` (apostrophe) ou des quotes doubles `"` (guillemets), cela ne fait aucune différence pour R. Cependant, si la chaîne de caractères que vous créez contient une apostrophe, il est nécessaire d'utiliser des quotes doubles et inversement si votre chaîne de caractère contient des guillemets.
+
+```{r}
+phrase1 <- "J'adore le langage R!"
+phrase2 <- 'Je cite : "il est le meilleur langage de statistique".'
+```
+
+Si la chaîne de caractère contient des guillemets et des apostrophes, il est nécessaire d'utiliser l'antislash `\` pour indiquer à R que ces apostrophes ou ces guillemets ne doivent pas être considérés comme la fin de la chaîne de caractère.
+
+```{r}
+phrase3 <- "Je cite : \"j'en rêve la nuit\"."
+cat(phrase3)
+```
+
+Les antislashs ne font pas partie de la chaîne de caractère, ils sont là pour "échapper" les guillemets qui doivent rester dans la chaîne de caractère. 
+
+Si une chaîne de caractère doit contenir un antislash, alors il faut l'échapper également en utilisant un deuxième antislash.
+
+```{r}
+phrase4 <- "Une phrase avec un antislash : \\"
+cat(phrase4)
+```
+Faites attention à la coloration syntaxique de Rstudio! Elle peut vous aider à repérer facilement une chaîne de caractère qui aurait été interrompue par un guillemet ou une apostrophe mal placés.
+
+:::
+
 Si vous avez un doute sur le type de données stockées dans une variable, vous pouvez utiliser la fonction `typeof`. Par exemple, cela permet de repérer si des données qui sont censées être numériques sont en fait stockées sous forme de texte comme dans l'exemple ci-dessous.
 
 ```{r}
