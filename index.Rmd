@@ -392,6 +392,15 @@ print_number <- function(x, digits = NULL){
   cat(x2)
 }
 
+
+as_error_text <- function(x) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\errorMessage{%s}\\normalfont\\color{black}",x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span class='error_message'>%s</span>",x)
+  } else x
+}
+
 ```
 
 
