@@ -228,7 +228,7 @@ AutresMesuresKhi2 <- function(x, y){
   nc <- ncol(testChi2$observed) # Nombre de colonnes
   l <- nrow(testChi2$observed) # Nombre de lignes
   dl <- (nc-1)*(l-1)            # Nombre de degrés de libertés
-  chi2 <- testChi2$statistic   # Valeeur du khi-deux
+  chi2 <- testChi2$statistic   # Valeur du khi-deux
   Pchi2 <- testChi2$p.value    # P pour le khi-deux
   
   #Ratio de vraisemblance du khi-deux
@@ -246,7 +246,7 @@ AutresMesuresKhi2 <- function(x, y){
   polychoricCorr <- correlation::cor_test(df1,"x","y",method = "polychoric")
   polyR <- polychoricCorr$rho
   polyP <- polychoricCorr$p
-  
+
   # Coefficient Phi et V de Cramer
   phi <- sqrt(chi2/n)
   vc <- sqrt(chi2/(n*min(nc-1,l-1)))
@@ -259,7 +259,7 @@ AutresMesuresKhi2 <- function(x, y){
                         "Corrélation Polychorique",
                         "Coefficient de Phi",
                         "V de Cramer"), 
-        Valeur = round(c(Pchi2, G, MH, polyR, phi, vc),3), 
+        Valeur = round(c(chi2, G, MH, polyR, phi, vc),3), 
         P = round(c(Pchi2, PG, PMH, polyP , NA, NA),10))
   return(dfsortie)
 }
