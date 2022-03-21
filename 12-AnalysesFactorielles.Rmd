@@ -10,7 +10,7 @@ Ce chapitre n'a pas encore fait l'objet d'une révision linguistique. Il compren
 Dans le cadre de ce chapitre, nous présentons les trois méthodes factorielles les plus utilisées en sciences sociales&nbsp;: l'analyse en composantes principales (ACP, section \@ref(sect122)), l'analyse factorielle des correspondances (AFC, section \@ref(sect123)) et l'analyse factorielle des correspondances multiples (ACM, section \@ref(sect124)). Ces méthodes qui permettent d'explorer et de synthétiser l'information de différents tableaux de données relèvent de la statistique exploratoire multidimensionnelle.
 
 ::: {.bloc_package data-latex=""}
-Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;: 
+Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;: 
 
 * Pour créer des graphiques&nbsp;:
   - `ggplot2`, le seul, l'unique!
@@ -56,7 +56,8 @@ typesaf <- data.frame(Metho= c("Analyse en composantes principales",
 show_table(typesaf,
            caption = "Trois principales méthodes factorielles",
            col.names=c("Méthode factorielle","Abr.","Type de données", "Type de distance"),
-           align= c("l", "l", "l", "l")
+           align= c("l", "l", "l", "l"),
+           position = "HOLD_position"
            )
 ```
 
@@ -232,6 +233,7 @@ Les termes **composantes principales** et **axes factoriels** sont des synonymes
 
 Pour illustrer les aides à l'interprétation de l'ACP, nous utilisons un jeu de données spatiales tiré d'un article sur l'agglomération lyonnaise en France [@2021_4]. Ce jeu de données comprend dix variables, dont quatre environnementales (EN) et six socioéconomiques (SE),  pour les îlots regroupés pour l'information statistique (IRIS) de l'agglomération lyonnaise (tableau&nbsp;\@ref(tab:dataacp) et figure&nbsp;\@ref(fig:datacartoacp)). Sur ces dix variables, nous calculons une **ACP normée**.
 
+\newpage
 
 ```{r dataacp, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 library(geocmeans)
@@ -263,7 +265,8 @@ show_table(stats,
            digits = 1,
             caption = "Statistiques descriptives pour le jeu de données utilisé pour l'ACP",
            col.names=c("Nom","Intitulé","Type","Moy.", "E.-T.", "Min.", "Max."),
-           align= c("l","l", "c","r", "r", "r", "r")
+           align= c("l","l", "c","r", "r", "r", "r"),
+           position = "HOLD_position"
            )
 ```
 
@@ -1082,6 +1085,7 @@ show_table(dataafex1,
            )
 ```
 
+
 ```{r encadreAFCACP2, echo=FALSE, message=FALSE, warning=FALSE}
 dataafex2 <- dataAFCex
 rownames(dataafex2) <- c("i1", "i2", "i3", "i4")
@@ -1094,7 +1098,7 @@ dataafex2$V4  <- round(dataafex2$V4 / dataafex2$MargeJ *100, 1)
 dataafex2$V5  <- round(dataafex2$V5 / dataafex2$MargeJ *100, 1)
 dataafex2$MargeJ <- NULL
 show_table(dataafex2,
-           caption = "Exemple d'un tableau de contingence transformé (% en ligne) pour l'ACP",
+           caption = "Exemple d'un tableau de contingence transformé (pourcentage en ligne) pour l'ACP",
            row.names = TRUE,
           align= c("r", "r", "r", "r", "r"),
           position = 'HOLD_position'
@@ -1124,6 +1128,9 @@ d_{\chi_{jk}^2} = \sum_i \frac{1}{f_{i.}}(\frac{f_{ij}}{f_{.j}}-\frac{f_{ik}}{f_
 
 Prenons un exemple fictif pour calculer ces deux distances. Le tableau \@ref(tab:afcdataex1) comprend trois modalités en ligne (*I*) et trois autres en colonnes (*J*). Le total des effectifs de ce tableau de contingence est égal à 1&nbsp;665.
 
+À partir des données brutes, il est facile de construire deux tableaux&nbsp;: le profil des lignes et le profil des colonnes (tableau \@ref(tab:afcProfilsLignesCols)), c'est-à-dire les proportions en ligne et en colonne.
+
+\newpage
 
 ```{r afcdataex1, echo=FALSE, message=FALSE, warning=FALSE}
 # Fréquences brutes
@@ -1160,11 +1167,11 @@ show_table(dfAFC1,
            row.names = TRUE,
            col.names = c("j1","j2","j3","Total (ligne)"),
            caption = "Données brutes du tableau de contingence",
-           align= c("c","c","c","c")
+           align= c("c","c","c","c"),
+           position = "HOLD_position"
            )
 ```
 
-À partir des données brutes, il est facile de construire deux tableaux&nbsp;: le profil des lignes et le profil des colonnes (tableau \@ref(tab:afcProfilsLignesCols)), c'est-à-dire les proportions en ligne et en colonne.
 
 ```{r afcProfilsLignesCols, echo=FALSE, message=FALSE, warning=FALSE}
 profilcol$Total <- NA
@@ -1178,7 +1185,8 @@ montableau <- show_table(profils,
                digits = 3,
                col.names = c("","j1","j2","j3","Total"),
                caption = "Profils des lignes et des colonnes",
-               align= c("c","c","c","c","c")
+               align= c("c","c","c","c","c"),
+               position = "HOLD_position"
                )
 group_rows(montableau,
            index = c("Profil des lignes" = 3,
@@ -1201,18 +1209,19 @@ show_table(dfAFC1fij,
            row.names = TRUE,
            col.names = c("j1","j2","j3","Total (fi.)"),
            caption = "Données relatives du tableau de contingence (fij)",
-           align= c("r","r","r","r")
+           align= c("r","r","r","r"),
+           position = "HOLD_position"
            )
 ```
 
 Il est possible de calculer les distances entre les différentes modalités  de *I* en appliquant l'équation \@ref(eq:khideuxlignes); par exemple, la distance entre les observations `i1` et `i2` est égale à&nbsp;:
 
-$d_{(i1,i2)}=\frac{\mbox{1}}{\mbox{0,556}}(\mbox{0,216}-\mbox{0,252})^2+\frac{\mbox{1}}{\mbox{0,084}}(\mbox{0,039}-\mbox{0,042})^2+
-\frac{\mbox{1}}{\mbox{0,360}}(\mbox{0,165}-\mbox{0,174})^2=\mbox{0,003}$
+$$d_{(i1,i2)}=\frac{\mbox{1}}{\mbox{0,556}}(\mbox{0,216}-\mbox{0,252})^2+\frac{\mbox{1}}{\mbox{0,084}}(\mbox{0,039}-\mbox{0,042})^2+
+\frac{\mbox{1}}{\mbox{0,360}}(\mbox{0,165}-\mbox{0,174})^2=\mbox{0,003}$$
 
 Avec l'équation \@ref(eq:khideuxcolonnes), la distance entre les modalités `j1` et `j2` de *J* est égale à&nbsp;:
 
-$d_{(j1,j2)}=\frac{\mbox{1}}{\mbox{0,420}}(\mbox{0,216}-\mbox{0,039})^2+ \frac{\mbox{1}}{\mbox{0,468}}(\mbox{0,252}-\mbox{0,042})^2 + \frac{\mbox{1}}{\mbox{0,111}}(\mbox{0,087}-\mbox{0,003})^2=\mbox{0,233}$
+$$d_{(j1,j2)}=\frac{\mbox{1}}{\mbox{0,420}}(\mbox{0,216}-\mbox{0,039})^2+ \frac{\mbox{1}}{\mbox{0,468}}(\mbox{0,252}-\mbox{0,042})^2 + \frac{\mbox{1}}{\mbox{0,111}}(\mbox{0,087}-\mbox{0,003})^2=\mbox{0,233}$$
 
 
 À la lecture du tableau \@ref(tab:MatriceDistKhi), les modalités les plus sont semblables sont 
@@ -1286,7 +1295,8 @@ montableau <- show_table(stats,
            digits = 1,
             caption = "Jeu de données utilisé pour l'analyse factorielle des correspondances",
            col.names=c("Nom","Intitulé","Somme"),
-           align= c("l","l", "r")
+           align= c("l","l", "r"),
+           position = "HOLD_position"
            )
 group_rows(montableau,
            index = c("Modalités de la variable utilisée dans l'AFC (mode de transport)" = 6,
@@ -1346,8 +1356,9 @@ show_table(dfkhi,
 
 Nous avons vu qu'en ACP normée (section \@ref(sect12221)), la somme des valeurs propres est égale au nombre de variables puisqu'elles sont centrées réduites. Par contre, en AFC, cette somme est égale à l'inertie totale du tableau de contingence, c'est-à-dire à la valeur du khi-deux divisée par le nombre total des effectifs bruts (soit le coefficient phi au carré, $\phi^2$) (section \@ref(sect052)). Le tableau \@ref(tab:dataafcValeurPropres) permet de vérifier que la somme des valeurs propres est bien égale au coefficient phi au carré&nbsp;: 
 
-$\mbox{0,156}+\mbox{0,046}+\mbox{0,031}+\mbox{0,004}+\mbox{0,004} = \mbox{0,24} \\ \phi^2 = \chi^2 / n_{ij}=\mbox{203 971}/ \mbox{849 795} = \mbox{0,24}$
+$$\mbox{0,156}+\mbox{0,046}+\mbox{0,031}+\mbox{0,004}+\mbox{0,004} = \mbox{0,24}$$
 
+$$\phi^2 = \chi^2 / n_{ij}=\mbox{203 971}/ \mbox{849 795} = \mbox{0,24}$$
 
 ```{r dataafcValeurPropres, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 library(FactoMineR)
@@ -1366,6 +1377,8 @@ show_table(dfAFCvp,
            align= c("r", "r","r", "r")
            )
 ```
+
+\newpage
 
 **Combien d'axes d'une AFC faut-il retenir?**
 
@@ -1436,7 +1449,8 @@ montableau <- show_table(dfAFCVars2,
                    digits = 3,
                    caption = "Vérification des deux propriétés des coordonnées factorielles pour les variables",
                    col.names=c("Modalité","f.j","1","2","1","2","1","2"),
-                   align= c("l","r","r","r","r","r","r","r")
+                   align= c("l","r","r","r","r","r","r","r"),
+                   position = "HOLD_position"
                    )
 add_header_above(montableau, c(" " = 2, "Coord." = 2, "f.j x Coord." = 2, "f.j x Coord2" = 2))
 ```
@@ -1488,7 +1502,8 @@ montableau <- show_table(dfAFCVars,
                    digits = 2,
                    caption = "Résultats de l'AFC pour les variables",
                    col.names=c("Modalité","1","2","1","2","1","2"),
-                   align= c("l","r","r","r","r","r","r")
+                   align= c("l","r","r","r","r","r","r"),
+                   position = "HOLD_position"
                    )
 add_header_above(montableau, c(" " = 1, "Coordonnées" = 2, "Cosinus carrés" = 2, "Contributions (%)" = 2))
 ```
@@ -1608,7 +1623,7 @@ summary(res.afc)
 
 Comme pour l'ACP, `factoextra` dispose de plusieurs fonctions très intéressantes pour construire rapidement des graphiques avec les résultats de l'AFC. Premièrement, la syntaxe ci-dessous (avec la fonction `fviz_screeplot`) renvoie deux graphiques pour analyser les résultats des valeurs propres de l'AFC (figure&nbsp;\@ref(fig:factoextraAFC1)).
 
-```{r factoextraAFC1, echo=TRUE, fig.align='center', fig.cap="Graphiques pour les valeurs propres de l'AFC avec factoextra", quietly = TRUE, warn.conflicts = TRUE,   message=FALSE, auto_pdf=TRUE, out.width='75%', dev="png", dpi=300}
+```{r factoextraAFC1, echo=TRUE, fig.align='center', fig.cap="Graphiques pour les valeurs propres de l'AFC avec factoextra", quietly = TRUE, warn.conflicts = TRUE,   message=FALSE, auto_pdf=TRUE, out.width='65%', dev="png", dpi=300, fig.pos = "H"}
 library(factoextra)
 library(ggplot2)
 library(ggpubr)
@@ -1635,10 +1650,9 @@ G2 <- fviz_screeplot(res.afc, choice="variance", addlabels = TRUE, ylim = c(0, 7
 ggarrange(G1, G2)
 ```
 
-
 Avec les fonctions `fviz_contrib` et `fviz_cos2`, il est très facile de réaliser des histogrammes pour les contributions et les cosinus carrés pour les variables (colonnes) ou les individus (lignes), et ce avec le paramètre `choice = c("row", "col")` (figure&nbsp;\@ref(fig:acp1erplanfactVars2a)).
 
-```{r acp1erplanfactVars2a, echo=TRUE, fig.align='center', fig.cap="Contributions des variables avec factoextra", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='75%', quietly=TRUE, warn.conflicts=TRUE}
+```{r acp1erplanfactVars2a, echo=TRUE, fig.align='center', fig.cap="Contributions des variables avec factoextra", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='65%', quietly=TRUE, warn.conflicts=TRUE, fig.pos = "H"}
 library(factoextra)
 library(ggplot2)
 library(ggpubr)
@@ -1651,7 +1665,7 @@ ggarrange(G1, G2, ncol = 2, nrow = 1)
 
 Quant aux fonctions `fviz_ca_col` et `fviz_ca_row`, elles permettent rapidement de construire le premier plan factoriel pour les colonnes (variables) et les lignes (individus) (figure&nbsp;\@ref(fig:afc1erplanfactVars2b)). Aussi, la fonction `fviz_ca_biplot` permet de construire un plan factoriel, mais avec les lignes et les colonnes simultanément.
  
-```{r afc1erplanfactVars2b, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'AFC pour les variables et les individus avec factoextra", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='75%', quietly=TRUE, warn.conflicts=TRUE}
+```{r afc1erplanfactVars2b, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'AFC pour les variables et les individus avec factoextra", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='65%', quietly=TRUE, warn.conflicts=TRUE, fig.pos = "H"}
 G3 <- fviz_ca_col(res.afc,
             repel = TRUE,
             geom= c("text","point"),
@@ -1666,14 +1680,13 @@ G4 <- fviz_ca_row(res.afc,
             title = "Secteurs de recensement",
             xlab=paste0("Axe 1 (", VP1pct, " %)"),
             ylab=paste0("Axe 2 (", VP2pct, " %)"))
-
 ggarrange(G3, G4, ncol = 2, nrow = 1)
 ```
 
 
 La syntaxe ci-dessous permet d'ajouter des modalités supplémentaires dans l'AFC et de constuire le graphique du premier plan factoriel (figure&nbsp;\@ref(fig:afcAjoutModalites2)).
 
-```{r afcAjoutModalites2, echo=TRUE, fig.align='center', fig.cap="Ajout de modalités supplémentaires sur le premier plan factoriel l'AFC avec factoextra", fig.pos="H", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='75%', quietly=TRUE, warn.conflicts=TRUE}
+```{r afcAjoutModalites2, echo=TRUE, fig.align='center', fig.cap="Ajout de modalités supplémentaires sur le premier plan factoriel l'AFC avec factoextra", fig.pos="H", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='65%', quietly=TRUE, warn.conflicts=TRUE, fig.pos = "H"}
 # Les colonnes 7 à 11 sont mises comme des variables supplémentaires dans l'AFC
 res.afc2 <- CA(dfDonneesAFC, col.sup = 7:11, graph = FALSE)
 VP1pct <- round(res.afc2$eig[1,2],2)
@@ -1690,7 +1703,7 @@ fviz_ca_col(res.afc2,
 Finalement, la syntaxe ci-dessous permet de cartographier les coordonnées factorielles des individus de l’ACF avec le *package* `tmap` (figure&nbsp;\@ref(fig:afc1erplanfactInds2B)).
  
 
-```{r afc1erplanfactInds2B, echo=TRUE, fig.align='center', fig.cap="Cartographie de coordonnées factorielles des individus pour l'ACF", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='85%', quietly=TRUE, warn.conflicts=TRUE}
+```{r afc1erplanfactInds2B, echo=TRUE, fig.align='center', fig.cap="Cartographie de coordonnées factorielles des individus pour l'ACF", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='85%', quietly=TRUE, warn.conflicts=TRUE, fig.pos = "H"}
 library(tmap)
 library(stringr)
 dfAFCInd <- data.frame(Coord = res.afc$row$coord, 
@@ -1762,7 +1775,8 @@ show_table(tabCond,
            row.names = TRUE,
            caption = "Tableau condensé (données brutes)",
            col.names=c("Sexe","Groupe d'âge", "Mode de transport"), 
-           align= c("c","c","c"))
+           align= c("c","c","c"),
+           position = "HOLD_position")
 ```
 
 ```{r TabACM3, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -1775,9 +1789,10 @@ montableau <-show_table(tabDisjComplet,
                caption = "Tableau disjonctif complet",
                col.names=c("Individu", "Homme","Femme", 
                            "Moins de 20 ans", "20 à 39 ans", "40 à 59 ans", "60 ans et plus",
-                           "Automobile", "Transp. en commun", "Marche", "Vélo"), 
+                           "Auto.", "T.C.", "Marche", "Vélo"), 
                 align= c("c","c","c","c",
-                         "c","c","c","c"))
+                         "c","c","c","c"),
+               position = "HOLD_position")
 add_header_above(montableau, c(" " = 1,"Sexe" = 2, "Groupe d'âge" = 4, "Mode de transport" = 4))
 ```
 
@@ -1970,7 +1985,7 @@ montableau <- show_table(dfmodalites,
 add_header_above(montableau, c(" " = 1, "Coordonnées" = 3, "Cosinus carrés" = 3, "Contributions (%)" = 3))
 ```
 
-```{r ACMValeursCoordFig1, echo=FALSE, fig.align='center', fig.cap="Graphiques pour les résultats des modalités de l'axe 1 de l'ACM", auto_pdf=TRUE, dev="png", dpi=300, out.width='100%'}
+```{r ACMValeursCoordFig1, echo=FALSE, fig.align='center', fig.cap="Graphiques pour les résultats des modalités de l'axe 1 de l'ACM", auto_pdf=TRUE, dev="png", dpi=300, fig.pos="H", out.width='90%'}
 # Histogrammes pour les coordonnées des modalités
 couleursCoords <- c("lightsalmon","steelblue")
 plotCoordF1 <- ggplot(dfmodalites,
@@ -2039,7 +2054,7 @@ Quatre modalités concourent le plus à la formation de l'axe&nbsp;2 résumant 8
 **En résumé, l'axe&nbsp;2** permet surtout d'identifier des personnes pratiquant l'agriculture urbaine depuis quelques années (de 1 à 4 ans), mais cultivant déjà de nombreuses sortes de fruits et légumes et partageant aussi leurs semis ou récoltes.
 
 
-```{r ACMValeursCoordFig2, echo=FALSE, fig.align='center', fig.cap="Graphiques pour les résultats des modalités de l'axe 2 de l'ACM", auto_pdf=TRUE, dev="png", dpi=300, out.width='100%'}
+```{r ACMValeursCoordFig2, echo=FALSE, fig.align='center', fig.cap="Graphiques pour les résultats des modalités de l'axe 2 de l'ACM", auto_pdf=TRUE, dev="png", dpi=300, out.width='90%'}
 # Histogrammes pour les coordonnées des modalités
 ggarrange(plotCoordF2, plotCtrF2, ncol = 1, nrow = 2)
 ```
@@ -2109,7 +2124,7 @@ fviz_mca_var(res.acm, repel = TRUE,
 
 Lorsque les variables qualitatives sont ordinales et non nominales, il peut être intéressant de relier les différentes modalités avec une ligne. Cela permet de comprendre en un coup d'œil la trajectoire que suivent les modalités sur les deux axes factoriels. En guise d'exemple, nous réalisons cet exercice pour les variables `Q3` et `Q9` (figure&nbsp;\@ref(fig:ACMordinaleTrajectoire)).
 
-```{r ACMordinaleTrajectoire, echo=FALSE, fig.align='center', fig.cap="Trajectoires des variables ordinales sur le premier plan factoriel de l'ACM ", auto_pdf=TRUE, dev="png", dpi=300, out.width='100%'}
+```{r ACMordinaleTrajectoire, echo=FALSE, fig.align='center', fig.cap="Trajectoires des variables ordinales sur le premier plan factoriel de l'ACM ", auto_pdf=TRUE, dev="png", dpi=300, fig.pos="H",out.width='70%'}
 library(ggpubr)
 Q3 <- dfmodalites[1:4, 1:3]
 Q9 <- dfmodalites[13:16, 1:3]
@@ -2303,7 +2318,7 @@ fviz_mca_var(res.acm, repel = TRUE,
 
 Finalement, la syntaxe ci-dessous renvoie un graphique avec la trajectoire la variable `Q3` (figure&nbsp;\@ref(fig:ACMMiseEnOeuvreVars4)).
 
-```{r ACMMiseEnOeuvreVars4, echo=TRUE, fig.align='center', fig.cap="Trajectoires des variables ordinales sur le premier plan factoriel de l'ACM ", auto_pdf=TRUE, dev="png", dpi=300, out.width='100%'}
+```{r ACMMiseEnOeuvreVars4, echo=TRUE, fig.align='center', fig.cap="Trajectoires des variables ordinales sur le premier plan factoriel de l'ACM ", auto_pdf=TRUE, dev="png", dpi=300, out.width='70%'}
 library(ggpubr)
 Q3 <- dfmodalites[1:4, 1:3]
 ggplot(Q3, aes(x=CoordF1, y=CoordF2, label=Modalite))+
@@ -2325,7 +2340,7 @@ D'autres fonctions de `factoextra` produisent rapidement des graphiques pour les
 
 La syntaxe ci-dessous produit le premier axe factoriel pour les individus (figure&nbsp;\@ref(fig:ACMPlanFactoInd1Facto)).
 
-```{r ACMPlanFactoInd1Facto, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'ACM pour les individus avec factoextra", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='100%'}
+```{r ACMPlanFactoInd1Facto, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'ACM pour les individus avec factoextra", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='70%'}
 fviz_mca_ind(res.acm, col.ind = "cos2",
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE,
@@ -2335,7 +2350,7 @@ fviz_mca_ind(res.acm, col.ind = "cos2",
 
 La syntaxe ci-dessous produit aussi le premier plan factoriel pour les individus, mais attribuant une couleur différente aux modalités de la variable `q12` (figure&nbsp;\@ref(fig:ACMPlanFactoInd2Facto)).
 
-```{r ACMPlanFactoInd2Facto, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'ACM pour les individus avec coloration d'une variable avec factoextra", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='100%'}
+```{r ACMPlanFactoInd2Facto, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'ACM pour les individus avec coloration d'une variable avec factoextra", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='70%'}
 fviz_mca_ind (res.acm,
               label = "none",
               habillage = "q12", # colorer par groupes
@@ -2350,3 +2365,4 @@ fviz_mca_ind (res.acm,
 Chapitre12_AnalysesFacto <- quizz("quizzs/Chapitre12_AnalysesFacto.yml", "Chapitre12_AnalysesFacto")
 render_quizz(Chapitre12_AnalysesFacto)
 ```
+
