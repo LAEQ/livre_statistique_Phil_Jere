@@ -8,7 +8,7 @@ Dans ce chapitre, nous revenons brièvement sur l’histoire de R et la philosop
 Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;: 
 
 * Pour importer des fichiers externes&nbsp;:
-  - `foreign` pour entre autres les fichiers *dbase* et ceux des logiciels SPSS et Stata
+  - `foreign` pour entre autres les fichiers *dbase* et ceux des logiciels SPSS et Stata.
   - `sas7bdat` pour les fichiers du logiciel SAS.
   - `xlsx` pour les fichiers Excel.
 * Pour manipuler des chaînes de caractères et des dates&nbsp;: 
@@ -45,11 +45,11 @@ Les nombreux atouts de R justifient largement sa popularité sans cesse croissan
 * R dispose de nombreuses interfaces lui permettant de communiquer, notamment avec des systèmes de bases de données SQL et non SQL (MySQL, PostgresSQL, MongoDB, etc.), avec des systèmes de *big data* (Spark, Hadoop), avec des systèmes d'information géographique (QGIS, ArcGIS) et même avec des services en ligne comme Microsoft Azure ou Amazon AWS.
 * R est un langage de programmation à part entière, ce qui lui donne plus de flexibilité que ses concurrents commerciaux (SPSS, SAS, STATA). Avec R, vous pouvez accomplir de nombreuses tâches&nbsp;: monter un site web, créer un robot collectant des données en ligne, combiner des fichiers PDF, composer des diapositives pour une présentation ou même éditer un livre (comme celui-ci), mais aussi, et surtout, réaliser des analyses statistiques.
 
-Un des principaux attraits de R est la quantité astronomique de *packages* actuellement disponibles. **Un *package* est un ensemble de nouvelles fonctionnalités développées par des personnes utilisatrices de R et mises à disposition de l'ensemble de la communauté**. Par exemple, le *package* `ggplot2` est dédié à la réalisation de graphiques; les *packages* `data.table` et `plyr` permettent de manipuler des tableaux de données; le *package* `car` offre de nombreux outils pour faciliter l'analyse de modèles de régressions, etc. Ce partage de *packages* rend accessible à tous des méthodes d'analyses complexes et récentes et favorise grandement la reproductibilité de la recherche. Cependant, ce fonctionnement implique quelques désavantages&nbsp;: 
+Un des principaux attraits de R est la quantité astronomique de *packages* actuellement disponibles. **Un *package* est un ensemble de nouvelles fonctionnalités développées par des personnes utilisatrices de R et mises à disposition de l'ensemble de la communauté**. Par exemple, le *package* `ggplot2` est dédié à la réalisation de graphiques; les *packages* `data.table` et `dplyr` permettent de manipuler des tableaux de données; le *package* `car` offre de nombreux outils pour faciliter l'analyse de modèles de régressions, etc. Ce partage de *packages* rend accessible à tous des méthodes d'analyses complexes et récentes et favorise grandement la reproductibilité de la recherche. Cependant, ce fonctionnement implique quelques désavantages&nbsp;: 
 
-* il existe généralement plusieurs *packages* pour effectuer le même type d'analyse, ce qui peut devenir une source de confusion;
-* certains *packages* cessent d'être mis à jour au fil des années, ce qui nécessite de trouver des solutions de rechange (et ainsi apprendre la syntaxe de nouveaux *packages*);
-* il est impératif de s'assurer de la fiabilité des *packages* que vous souhaitez utiliser, car n'importe qui peut proposer un *package*.
+* Il existe généralement plusieurs *packages* pour effectuer le même type d'analyse, ce qui peut devenir une source de confusion.
+* Certains *packages* cessent d'être mis à jour au fil des années, ce qui nécessite de trouver des solutions de rechange (et ainsi apprendre la syntaxe de nouveaux *packages*).
+* Il est impératif de s'assurer de la fiabilité des *packages* que vous souhaitez utiliser, car n'importe qui peut proposer un *package*.
 
 Il nous semble important de relativiser d'emblée la portée du dernier point. Il est rarement nécessaire de lire et d'analyser le code source d'un *package* pour s'assurer de sa fiabilité. Nous ne sommes pas des spécialistes de tous les sujets et il peut être extrêmement ardu de comprendre la logique d'un code écrit par une autre personne. Nous vous recommandons donc de privilégier l'utilisation de *packages* qui&nbsp;:
 
@@ -68,7 +68,7 @@ knitr::include_graphics('images/introduction/softwares_and_cars.jpeg', dpi = NA)
 
 Dans ce livre, nous détaillons les *packages* utilisés dans chaque section avec un encadré spécifique, accompagné de l'icône présentée à la figure \@ref(fig:fig04).
 
-```{r fig04, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Icône des encadrés dédiés aux *packages*",  out.width='20%'}
+```{r fig04, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Icône des encadrés dédiés aux packages",  out.width='20%'}
 knitr::include_graphics('css/images/package.png', dpi = NA)
 ```
 
@@ -88,7 +88,7 @@ Notez que vous pouvez aussi télécharger des versions plus anciennes de R en al
 
 ### Environnement RStudio{#sect0122}
 
-Rares sont les adeptes de R qui préfèrent travailler directement avec la console classique. Nous vous recommandons vivement d'utiliser RStudio, un environnement de développement (*IDE*) dédié à R offrant une intégration très intéressante d'une console, d'un éditeur de texte, d'une fenêtre de visualisation des données, et d'une autre pour les graphiques, d'un accès à la documentation, etc. En d'autres termes, si R est un vélo minimaliste, RStudio permet d'y rajouter des freins, des vitesses, un porte-bagages, des garde-boues et une selle confortable. Vous pouvez [télécharger](https://rstudio.com/products/rstudio/download){target="_blank"} et installer RStudio sur Windows, Linux et Mac. La version de base est gratuite, mais l'entreprise qui développe ce logiciel propose aussi des versions commerciales du logiciel qui assurent essentiellement une assistance technique. Il existe d'autres environnements de développement pour travailler avec R (VisualStudio, Jupyter, Tinn-R, Radiant, RIDE, etc.), mais RStudio offre à ce jour la meilleure option en termes de facilité d'installation, de prise en main et de fonctionnalités proposées (voir l'interface de RStudio à la figure \@ref(fig:fig06)).
+Rares sont les adeptes de R qui préfèrent travailler directement avec la console classique. Nous vous recommandons vivement d'utiliser RStudio, un environnement de développement (*IDE*) dédié à R offrant une intégration très intéressante d'une console, d'un éditeur de texte, d'une fenêtre de visualisation des données et d'une autre pour les graphiques, d'un accès à la documentation, etc. En d'autres termes, si R est un vélo minimaliste, RStudio permet d'y rajouter des freins, des vitesses, un porte-bagages, des garde-boues et une selle confortable. Vous pouvez [télécharger](https://rstudio.com/products/rstudio/download){target="_blank"} et installer RStudio sur Windows, Linux et Mac. La version de base est gratuite, mais l'entreprise qui développe ce logiciel propose aussi des versions commerciales du logiciel qui assurent essentiellement une assistance technique. Il existe d'autres environnements de développement pour travailler avec R (VisualStudio, Jupyter, Tinn-R, Radiant, RIDE, etc.), mais RStudio offre à ce jour la meilleure option en termes de facilité d'installation, de prise en main et de fonctionnalités proposées (voir l'interface de RStudio à la figure \@ref(fig:fig06)).
 
 ```{r fig06, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Environnement de base de RStudio",  out.width='85%'}
 knitr::include_graphics('images/introduction/r_studio_01.jpeg', dpi = NA)
@@ -107,7 +107,7 @@ Une fois ces détails réglés, vous pouvez ouvrir votre première feuille de co
 
 1. L'éditeur de code, vous permettant d'écrire le script que vous voulez exécuter et de garder une trace de votre travail. Ce script peut être enregistré sur votre ordinateur avec l'extension **.R**, mais ce n'est qu'un simple fichier texte.
 2. La console vous permettant d'exécuter votre code R et de voir les résultats s'afficher au fur et à mesure.
-3. La fenêtre d'environnement vous montrant les objets, fonctions et les jeux de données actuellement disponibles dans votre session (chargés dans la mémoire vive).
+3. La fenêtre d'environnement vous montrant les objets, les fonctions et les jeux de données actuellement disponibles dans votre session (chargés dans la mémoire vive).
 4. La fenêtre de l'aide, des graphiques et de l'explorateur de fichiers. Vous pouvez accéder ici à la documentation de R et des *packages* que vous utilisez, aux sorties graphiques que vous produisez et aux dossiers de votre environnement de travail.
 
 ```{r fig08, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Fenêtres de RStudio",  out.width='90%'}
@@ -120,13 +120,13 @@ Prenons un bref exemple&nbsp;: tapez la syntaxe suivante dans l'éditeur de code
 ma_somme <- 4+4
 ```
 
-Sélectionnez ensuite cette syntaxe (mettre en surbrillance avec la souris) et utilisez le raccourci *Ctrl+Entrer* ou cliquez sur le bouton *Run* (avec la flèche verte) pour envoyer cette syntaxe à la console qui l'exécutera immédiatement. Notez que rien ne se passe tant que le code n'est pas envoyé à la console. Il s'agit donc de deux étapes distinctes&nbsp;: écrire son code, puis l'envoyer à la console. Constatez également qu'un objet *ma_somme* est apparu dans votre environnement et que sa valeur est bien 8. Votre console se «&nbsp;souvient&nbsp;» de cette valeur&nbsp;: elle est actuellement stockée dans votre mémoire vive sous le nom de *ma_somme* (figure \@ref(fig:fig09)).
+Sélectionnez ensuite cette syntaxe (mettre en surbrillance avec la souris) et utilisez le raccourci *Ctrl+Entrée* ou cliquez sur le bouton *Run* (avec la flèche verte) pour envoyer cette syntaxe à la console qui l'exécutera immédiatement. Notez que rien ne se passe tant que le code n'est pas envoyé à la console. Il s'agit donc de deux étapes distinctes&nbsp;: écrire son code, puis l'envoyer à la console. Constatez également qu'un objet *ma_somme* est apparu dans votre environnement et que sa valeur est bien 8. Votre console se «&nbsp;souvient&nbsp;» de cette valeur&nbsp;: elle est actuellement stockée dans votre mémoire vive sous le nom de *ma_somme* (figure \@ref(fig:fig09)).
 
 ```{r fig09, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Exécuter du code dans RStudio",  out.width='90%'}
 knitr::include_graphics('images/introduction/r_studio_04.jpeg', dpi = NA)
 ```
 
-Pour conclure cette section, nous vous invitons à enregistrer votre première syntaxe R (*File/Save As*) dans un fichier **.R** que vous pouvez appeler `mon_premier_script.R` par exemple. Fermez ensuite RStudio, redémarrez-le et ouvrez (*File/Open File*) votre fichier `mon_premier_script.R`. Vous pouvez constater que votre code est toujours présent, mais que votre environnement est vide tant que vous n'exécutez pas votre syntaxe. En effet, lorsque vous fermez RStudio, l'environnement est vidé pour libérer de la mémoire vive. Celaz peut poser problème lorsque certains codes sont très longs à exécuter, nous verrons donc plus tard comment enregistrer l'environnement en cours pour le recharger par la suite.
+Pour conclure cette section, nous vous invitons à enregistrer votre première syntaxe R (*File/Save As*) dans un fichier **.R** que vous pouvez appeler `mon_premier_script.R` par exemple. Fermez ensuite RStudio, redémarrez-le et ouvrez (*File/Open File*) votre fichier `mon_premier_script.R`. Vous pouvez constater que votre code est toujours présent, mais que votre environnement est vide tant que vous n'exécutez pas votre syntaxe. En effet, lorsque vous fermez RStudio, l'environnement est vidé pour libérer de la mémoire vive. Cela peut poser problème lorsque certains codes sont très longs à exécuter, nous verrons donc plus tard comment enregistrer l'environnement en cours pour le recharger par la suite.
 
 
 ### Installation et chargement un *package*{#sect0123}
@@ -219,7 +219,7 @@ R est un langage de programmation. Il vous permet de communiquer avec votre ordi
 
 ### *Hello World*! {#sect0131}
 
-Une introduction à un langage de programmation se doit de commencer par le rite de passage *Hello World*. Il s'agit d'une forme de tradition consistant à montrer aux nouveaux utilisateurs(trices) comment afficher le message `Hello World` à l'écran avec le langage en question.
+Une introduction à un langage de programmation se doit de commencer par le rite de passage *Hello World*. Il s'agit d'une forme de tradition consistant à montrer aux néophites comment afficher le message `Hello World` à l'écran avec le langage en question.
 
 ```{r}
 print("Hello World")
@@ -229,7 +229,7 @@ Bravo! Vous venez officiellement de faire votre premier pas dans R!
 
 ### Objets et expressions {#sect0132}
 
-Dans R, nous passons notre temps à manipuler des **objets** à l'aide d'**expressions**. Prenons un exemple concret&nbsp;: si vous tapez la syntaxe `4 + 3`, vous manipulez deux objets (4 et 3) à l'aide d'une expression indiquant que vous souhaitez obtenir la somme des deux objets.
+Dans R, nous passons notre temps à manipuler des **objets** à l'aide d'**expressions**. Prenons un exemple concret&nbsp;: si vous tapez la syntaxe `4 + 3`, vous manipulez deux objets (4 et 3) avec une expression indiquant que vous souhaitez obtenir la somme des deux objets.
 
 ```{r}
 4 + 3
@@ -281,13 +281,13 @@ Nous utilisons la fonction `round`, dont l'objectif est d'arrondir un nombre ave
 round(taille)
 ```
 
-Pour effectuer leurs opérations, les fonctions ont généralement besoin d'**arguments**. Ici, `taille` est un argument passé à la fonction `round`. Si nous regardons la documentation de `round` avec `help(round)` (figure \@ref(fig:fig011)), nous constatons que cette fonction prend en réalité deux arguments&nbsp;: *x* et *digits*. Le premier est le nombre que nous souhaitons arrondir et le second le nombre de décimales à conserver. Nous pouvons lire dans la documentation que la valeur par défaut de *digits* est 0, ce qui explique que `round(taille)` a produit le résultat de 176.
+Pour effectuer leurs opérations, les fonctions ont généralement besoin d'**arguments**. Ici, `taille` est un argument passé à la fonction `round`. Si nous regardons la documentation de `round` avec `help(round)` (figure \@ref(fig:fig011)), nous constatons que cette fonction prend en réalité deux arguments&nbsp;: *x* et *digits*. Le premier est le nombre que nous souhaitons arrondir et le second est le nombre de décimales à conserver. Nous pouvons lire dans la documentation que la valeur par défaut de *digits* est 0, ce qui explique que `round(taille)` a produit le résultat de 176.
 
 ```{r fig011, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Arguments de la fonction round",  out.width='45%'}
 knitr::include_graphics('images/introduction/help_round.jpeg', dpi = NA)
 ```
 
-Réutilisons maintenant la fonction `round` mais en gardant une décimale&nbsp;: 
+Réutilisons maintenant la fonction `round`, mais en gardant une décimale&nbsp;: 
 
 ```{r}
 round(taille, digits = 1)
@@ -315,7 +315,7 @@ round("Hello World")
 
 `r as_error_text('Erreur dans round("Hello World") : argument non numérique pour une fonction mathématique')`
 
-À nouveau le message est très explicite&nbsp;: nous avons passé un argument non numérique à une fonction mathématique. Lisez toujours vos messages d'erreurs, ils permettent de repérer les coquilles et de corriger votre code!
+À nouveau le message est très explicite&nbsp;: nous avons passé un argument non numérique à une fonction mathématique. Lisez toujours vos messages d'erreurs&nbsp;: ils permettent de repérer les coquilles et de corriger votre code!
 
 Nous terminons cette section avec une fonction essentielle, `print`, qui permet d'afficher la valeur d'une variable.
 
@@ -328,9 +328,9 @@ print(ma_somme)
 
 Depuis le début de ce chapitre, nous avons déclaré plusieurs variables et essentiellement des données numériques. Dans R, il existe trois principaux types de données de base&nbsp;: 
 
-* Les données numériques, qui peuvent être des nombres entiers (appelés *integers*), ou des nombres décimaux (appelés *floats* ou *doubles*), par exemple `15` et `15.3`.
+* Les données numériques qui peuvent être des nombres entiers (appelés *integers*) ou des nombres décimaux (appelés *floats* ou *doubles*), par exemple `15` et `15.3`.
 * Les données de type texte qui sont des chaînes de caractères (appelées *strings*) et déclarées entre guillemets `"abcdefg"`.
-* Les données booléennes (*booleans*) qui ne peuvent avoir que deux valeurs&nbsp;: vrai (`TRUE`) ou faux (`FALSE`).
+* Les données booléennes (*booleans*) qui peuvent n'avoir que deux valeurs&nbsp;: vrai (`TRUE`) ou faux (`FALSE`).
 
 Déclarons une variable pour chacun de ces types&nbsp;: 
 
@@ -351,22 +351,20 @@ phrase1 <- "J'adore le langage R!"
 phrase2 <- 'Je cite : "il est le meilleur langage de statistique".'
 ```
 
-Si la chaîne de caractère contient des guillemets et des apostrophes, il est nécessaire d'utiliser l'antislash `\` pour indiquer à R que ces apostrophes ou ces guillemets ne doivent pas être considérés comme la fin de la chaîne de caractère.
+Si la chaîne de caractère contient des guillemets et des apostrophes, il est nécessaire d'utiliser la barre oblique inversée `\` pour indiquer à R que ces apostrophes ou ces guillemets ne doivent pas être considérés comme la fin de la chaîne de caractère.
 
 ```{r}
 phrase3 <- "Je cite : \"j'en rêve la nuit\"."
 cat(phrase3)
 ```
 
-Les antislashs ne font pas partie de la chaîne de caractère, ils sont là pour "échapper" les guillemets qui doivent rester dans la chaîne de caractère. 
-
-Si une chaîne de caractère doit contenir un antislash, alors il faut l'échapper également en utilisant un deuxième antislash.
+Les barres obliques inversées ne font pas partie de la chaîne de caractère, ils sont là pour "échapper" les guillemets qui doivent rester dans la chaîne de caractère. Si une chaîne de caractère doit contenir une barre oblique inversée, alors il faut l'échapper également en utilisant une deuxième barre oblique inversée.
 
 ```{r}
-phrase4 <- "Une phrase avec un antislash : \\"
+phrase4 <- "Une phrase avec une barre oblique inversée : \\"
 cat(phrase4)
 ```
-Faites attention à la coloration syntaxique de Rstudio! Elle peut vous aider à repérer facilement une chaîne de caractère qui aurait été interrompue par un guillemet ou une apostrophe mal placés.
+Faites attention à la coloration syntaxique de RStudio! Elle peut vous aider à repérer facilement une chaîne de caractère qui aurait été interrompue par un guillemet ou une apostrophe mal placés.
 
 :::
 
@@ -420,6 +418,7 @@ df <- data.frame(
 show_table(df, 
            col.names = c("Opérateur","Description","Syntaxe","Résultat"),
            caption = 'Opérateurs mathématiques',
+           align= c("l", "l", "l", "r"),
            position = "HOLD_position"
            )
 
@@ -440,6 +439,7 @@ df <- data.frame(
 show_table(df, 
            col.names = c("Opérateur","Description","Syntaxe","Résultat"),
            caption = 'Opérateurs relationnels',
+                      align= c("l", "l", "l", "l"),
            position = "HOLD_position"
            )
 ```
@@ -456,7 +456,6 @@ Les opérateurs logiques (tableau \@ref(tab:tableOperateurLogi)) permettent de c
 
 
 ```{r tableOperateurLogi, echo=FALSE, message=FALSE, warning=FALSE}
-
 df <- data.frame(
         Operateur = c("`&`","`|`","`!`"),
         Description = c("ET", "OU", "NOT"),
@@ -466,6 +465,7 @@ df <- data.frame(
 show_table(df, 
            col.names = c("Opérateur","Description","Syntaxe","Résultat"),
            caption = 'Opérateurs logiques',
+           align= c("l", "l", "l", "l"),
            position = "HOLD_position"
            )
 ```
@@ -585,7 +585,7 @@ Quasiment toutes les fonctions utilisent des vecteurs. Par exemple, nous pouvons
 mean(ages)
 ```
 
-Cela démontre bien que le vecteur est la brique élémentaire de R! Toutes les variables que nous avons déclarées dans les sections précédentes sont aussi des vecteurs, mais de longueur 1!
+Cela démontre bien que le vecteur est la brique élémentaire de R! Toutes les variables que nous avons déclarées dans les sections précédentes sont aussi des vecteurs, mais de longueur 1.
 
 #### Matrices {#sect01362}
 
@@ -611,7 +611,7 @@ Comme vous pouvez le constater, la fonction `cbind` permet de concaténer des ve
 knitr::include_graphics('images/introduction/vecteur_to_matrix.png', dpi = NA)
 ```
 
-Notez que vous pouvez transposer une matrice avec la fonction `t`. Si nous essayons maintenant de comparer la matrice 1 et la matrice 2 nous allons avoir une erreur, car elles n'ont pas les mêmes dimensions.
+Notez que vous pouvez transposer une matrice avec la fonction `t`. Si nous essayons maintenant de comparer la matrice 1 à la matrice 2 nous allons avoir une erreur, car elles n'ont pas les mêmes dimensions.
 
 ```{r eval = FALSE}
 matrice1 == matrice2
@@ -631,7 +631,7 @@ Le résultat souligne bien que nous avons les mêmes valeurs dans les deux matri
 
 S'il est rare de travailler avec des matrices, il est encore plus rare de manipuler des *arrays*. Un *array* est une matrice spéciale qui peut avoir plus que deux dimensions. Un cas simple serait un *array* en trois dimensions&nbsp;: lignes, colonnes, profondeur, que nous pourrions représenter comme un cube, ou une série de matrices de mêmes dimensions et empilées. Au-delà de trois dimensions, il devient difficile de les représenter mentalement. Cette structure de données peut être utilisée pour représenter les différentes bandes spectrales d'une image satellitaire. Les lignes et les colonnes délimiteraient les pixels de l'image et la profondeur délimiterait les différentes bandes composant l'image (figure \@ref(fig:fig012)).
 
-```{r fig013, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Un array avec trois dimension",  out.width='15%'}
+```{r fig013, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Un array avec trois dimensions",  out.width='15%'}
 knitr::include_graphics('images/introduction/array.png', dpi = NA)
 ```
 
@@ -650,7 +650,7 @@ print(mon_array)
 
 #### *DataFrames* {#sect01364}
 
-S'il est rare de manipuler des matrices et des *arrays*, le *DataFrame* (tableau de données en français) est la structure de données la plus souvent utilisée. Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une caractéristique de cet individu. Ces colonnes ont des noms, ce qui permet facilement d'accéder à leurs valeurs. Créons un *DataFrame* (tableau \@ref(tab:tabfirsttable)) à partir de nos quatre vecteurs et de la fonction `data.frame`.
+S'il est rare de manipuler des matrices et des *arrays*, le *DataFrame* (tableau de données en français) est la structure de données la plus souvent utilisée. Dans cette structure, chaque ligne du tableau représente un individu et chaque colonne représente une caractéristique de cet individu. Ces colonnes ont des noms qui permettent facilement d'accéder à leurs valeurs. Créons un *DataFrame* (tableau \@ref(tab:tabfirsttable)) à partir de nos quatre vecteurs et de la fonction `data.frame`.
 
 ```{r}
 df <- data.frame(
@@ -663,7 +663,9 @@ df <- data.frame(
 
 ```{r tabfirsttable, echo=FALSE, message=FALSE, warning=FALSE}
 show_table(df, 
-           caption = 'Premier DataFrame')
+           caption = 'Premier DataFrame',
+           align= c("c", "c", "l", "l")
+)
 ```
 
 Dans RStudio, vous pouvez visualiser votre tableau de données avec la fonction `View(df)`. Comme vous pouvez le constater, chaque vecteur est devenu une colonne de votre tableau de données *df*. La figure \@ref(fig:fig014) résume ce passage d'une simple donnée à un *DataFrame* en passant par un vecteur.
@@ -748,7 +750,7 @@ Plus rarement, il se peut que vous ayez à charger des fichiers provenant de log
 * *.sav* (SPSS);
 * *.dta* (STATA).
 
-Pour lire la plupart de ces fichiers, nous utilisons le *package* `foreign` dédié à l'importation d'une multitude de formats. Commencez donc par l'installer (`install.packages("foreign")`). Ensuite, nous chargeons cinq fois le même jeu de données enregistré dans des formats différents (*csv*, *dbf*, *dta*, *sas7bdat* et *xlsx*) et nous mesurons le temps nécessaire pour importer chacun de ces fichiers avec la fonction `Sys.time`.
+Pour lire la plupart de ces fichiers, nous utilisons le *package* `foreign` dédié à l'importation d'une multitude de formats. Nous commençons donc par l'installer (`install.packages("foreign")`). Ensuite, nous chargeons cinq fois le même jeu de données enregistré dans des formats différents (*csv*, *dbf*, *dta*, *sas7bdat* et *xlsx*) et nous mesurons le temps nécessaire pour importer chacun de ces fichiers avec la fonction `Sys.time`.
 
 #### Lecture d'un fichier *csv* {#sect01411}
 
@@ -762,7 +764,7 @@ df1 <- read.csv("data/priseenmain/SR_MTL_2016.csv",
 t2 <- Sys.time()
 d1 <- as.numeric(difftime(t2,t1,units="secs"))
 
-cat("le dataframe df1 a ",nrow(df1),' observations',
+cat("le DataFrame df1 a ",nrow(df1),' observations',
     'et ',ncol(df1),"colonnes\n")
 ```
 
@@ -770,7 +772,7 @@ Rien de bien compliqué! Notez tout de même que&nbsp;:
 
 * Lorsque vous chargez un fichier *csv*, vous devez connaître le **délimiteur** (ou **séparateur**), soit le caractère utilisé pour délimiter les colonnes. Dans le cas présent, il s'agit d'une virgule (spécifiez avec l'argument `sep = ","`), mais il pourrait tout aussi bien être un point virgule (`sep = ";"`), une tabulation (`sep = "    "`), etc.
 * Vous devez également spécifier le caractère utilisé comme séparateur de décimales. Le plus souvent, ce sera le point (`dec = "."`), mais certains logiciels avec des paramètres régionaux de langue française (notamment Excel) exportent des fichiers *csv* avec des virgules comme séparateur de décimales (utilisez alors `dec = ","`).
-* L'argument `header` indique si la première ligne (l'entête) du fichier comprend ou non les noms des colonnes du jeu de données (avec les valeurs `TRUE` ou `FALSE`). Il arrive que certains fichiers *csv* soient fournis sans entête et que les noms et la description des colonnes soient fournis dans un autre fichier.
+* L'argument `header` indique si la première ligne (l'entête) du fichier comprend ou non les noms des colonnes du jeu de données (avec les valeurs `TRUE` ou `FALSE`). Il arrive que certains fichiers *csv* soient fournis sans entête et que le nom et la description des colonnes soient fournis dans un autre fichier.
 * L'argument `stringsAsFactors` permet d'indiquer à R que les colonnes comportant du texte doivent être chargées comme des vecteurs de type texte et non de type facteur.
 
 #### Lecture d'un fichier *dbase* {#sect01412}
@@ -785,7 +787,7 @@ df2 <- read.dbf("data/priseenmain/SR_MTL_2016.dbf")
 t2 <- Sys.time()
 d2 <- as.numeric(difftime(t2,t1,units="secs"))
 
-cat("le dataframe df2 a ",nrow(df2)," observations",
+cat("le DataFrame df2 a ",nrow(df2)," observations",
     "et ",ncol(df2)," colonnes\n")
 ```
 
@@ -801,7 +803,7 @@ df3 <- read.dta("data/priseenmain/SR_MTL_2016.dta")
 t2 <- Sys.time()
 d3 <- as.numeric(difftime(t2,t1,units="secs"))
 
-cat("le dataframe df3 a ",nrow(df3)," observations ",
+cat("le DataFrame df3 a ",nrow(df3)," observations ",
     "et ",ncol(df3),"colonnes\n", sep = "")
 ```
 
@@ -816,7 +818,7 @@ df4 <- as.data.frame(read.spss("data/priseenmain/SR_MTL_2016.sav"))
 t2 <- Sys.time()
 d4 <- as.numeric(difftime(t2,t1,units="secs"))
 
-cat("le dataframe df4 a ",nrow(df4)," observations ",
+cat("le DataFrame df4 a ",nrow(df4)," observations ",
     "et ",ncol(df4),"colonnes\n", sep = "")
 ```
 
@@ -832,7 +834,7 @@ df5 <- read.sas7bdat("data/priseenmain/SR_MTL_2016.sas7bdat")
 t2 <- Sys.time()
 d5 <- as.numeric(difftime(t2,t1,units="secs"))
 
-cat("le dataframe df5 a ",nrow(df5)," observations ",
+cat("le DataFrame df5 a ",nrow(df5)," observations ",
     "et ",ncol(df5)," colonnes\n", sep ="")
 ```
 
@@ -853,8 +855,8 @@ df6 <- read.xlsx(file="data/priseenmain/SR_MTL_2016.xlsx",
 t2 <- Sys.time()
 d6 <- as.numeric(difftime(t2,t1,units="secs"))
 
-cat("le dataframe df6 a ",nrow(df6)," observations ",
-    "et ",ncol(df6),"colonnes\n", sep = "")
+cat("le DataFrame df6 a ",nrow(df6)," observations ",
+    "et ",ncol(df6)," colonnes\n", sep = "")
 ```
 
 Il est possible d'accélérer significativement la vitesse de lecture d'un fichier *xlsx* en utilisant la fonction `read.xlsx2`. Il faut cependant indiquer à cette dernière le type de données de chaque colonne. Dans le cas présent, les cinq premières colonnes contiennent des données de type texte (`character`), alors que les 43 autres sont des données numériques (`numeric`). Nous utilisons la fonction `rep` afin de ne pas avoir à écrire plusieurs fois *character* et *numeric*.
@@ -871,14 +873,13 @@ df7 <- read.xlsx2(file="data/priseenmain/SR_MTL_2016.xlsx",
 t2 <- Sys.time()
 d7 <- as.numeric(difftime(t2,t1,units="secs"))
 
-cat("le dataframe df6 a ",nrow(df7)," observations ",
+cat("le DataFrame df6 a ",nrow(df7)," observations ",
     "et ",ncol(df7),"colonnes\n", sep = "")
 ```
 
 Si nous comparons les temps d'exécution (tableau \@ref(tab:tableduration)), nous constatons que la lecture des fichiers *xlsx* peut être extrêmement longue si nous ne spécifions pas le type des colonnes, ce qui peut devenir problématique pour des fichiers volumineux. Notez également que la lecture d'un fichier *csv* devient de plus en plus laborieuse à mesure que sa taille augmente. Si vous devez un jour charger des fichiers *csv* de plusieurs gigaoctets, nous vous recommandons vivement d'utiliser la fonction `fread` du *package* `data.table` qui est beaucoup plus rapide.
 
 ```{r tableduration, echo=FALSE, message=FALSE, warning=FALSE}
-
 DureeImportation <- data.frame(
   "duree" = c(d1,d2,d3,d4,d5,d6,d7),
   "fonction" = c("read.csv","read.dbf","read.spss","read.dta",
@@ -887,8 +888,9 @@ DureeImportation <- data.frame(
 
 show_table(DureeImportation, 
            digits = 2, 
-           col.names = c("Durée (s)","fonction"),
+           col.names = c("Durée (secondes)","Fonction"),
            caption = 'Temps nécessaire pour lire les données en fonction du type de fichiers',
+           align= c("r", "l"),
            position = "HOLD_position")
 ```
 
@@ -920,6 +922,7 @@ show_table(df,
       col.names = c("Avantage du tidyverse",
                   "Problème posé par le tidyverse"),
       caption = 'Avantages et inconvénients du tidyverse', 
+      align= c("l", "l"),
       col.to.resize = c(1,2), 
       col.width = "7cm")
 ```
@@ -940,7 +943,7 @@ df <- read.csv(file="data/priseenmain/SR_MTL_2016.csv",
 
 ##### Sélection d'une colonne {#sect014221}
 
-Rappelon qu'il est possible d'accéder aux colonnes dans ce *DataFrame* en utilisant le symbole dollar `$ma_colonne` ou les doubles crochets `[["ma_colonne"]]`.
+Rappelons qu'il est possible d'accéder aux colonnes dans ce *DataFrame* en utilisant le symbole dollar `$ma_colonne` ou les doubles crochets `[["ma_colonne"]]`.
 
 ```{r message=FALSE, warning=FALSE}
 # Calcul de la superficie totale de l'Île de Montréal
@@ -1036,13 +1039,13 @@ Retenez ici que R applique le calcul à chaque ligne de votre jeu de données et
 
 R propose un ensemble de fonctions de base pour effectuer du calcul. Voici une liste non exhaustive des principales fonctions&nbsp;: 
 
-* `abs` calcule les valeurs absolues des valeurs d'un vecteur;
-* `sqrt` calcule les racines carrées des valeurs d'un vecteur;
-* `log` calcule les logarithmes des valeurs d'un vecteur;
-* `exp` calcule les exponentielles des valeurs d'un vecteur;
-* `factorial` calcule les factorielles des valeurs d'un vecteur;
-* `round` arrondit les valeurs d'un vecteur;
-* `ceiling`, `floor` arrondit à l'unité supérieure ou inférieure les valeurs d'un vecteur;
+* `abs` calcule la valeur absolue de chaque valeur d'un vecteur;
+* `sqrt` calcule la racine carrée de chaque valeur d'un vecteur;
+* `log` calcule le logarithme de chaque valeur d'un vecteur;
+* `exp` calcule l'exponentielle de chaque valeur d'un vecteur;
+* `factorial` calcule la factorielle de chaque valeur d'un vecteur;
+* `round` arrondit la valeur d'un vecteur;
+* `ceiling`, `floor` arrondit à l'unité supérieure ou inférieure de chaque valeur d'un vecteur;
 * `sin`, `asin`, `cos`, `acos`, `tan`, `atan` sont des fonctions de trigonométrie;
 * `cumsum` calcule la somme cumulative des valeurs d'un vecteur.
 
@@ -1184,7 +1187,7 @@ Actuellement, les colonnes `HEURE_ACCDN` et `DT_ACCDN` sont au format texte. Nou
 head(accidents_df, n = 5)
 ```
 
-Un peu de ménage s'impose&nbsp;: les heures sont indiquées comme des périodes d'une heure. Nous utilisons la fonction `str_split_fixed` du *package* `stringr` pour ne garder que la première partie de l'heure (avant le tiret). Nous concaténons ensuite l'heure et la date avec la fonction `paste`, puis nous convertissons ce résultat en un objet *date-time*.
+Un peu de ménage s'impose&nbsp;: les heures sont indiquées comme des périodes d'une heure. Nous utilisons la fonction `str_split_fixed` du *package* `stringr` pour ne garder que la première partie de l'heure (avant le tiret). Ensuite, Nous concaténons l'heure et la date avec la fonction `paste`, puis nous convertissons ce résultat en un objet *date-time*.
 
 ```{r message=FALSE, warning=FALSE}
 library(lubridate)
@@ -1214,7 +1217,7 @@ Pour effectuer la conversion, nous avons utilisé la fonction `as_datetime` du *
 
 Notez que les caractères séparant les années, jours, heures, etc. sont aussi à indiquer dans le format. Dans notre exemple, nous utilisons la barre oblique (`/`) pour séparer les éléments de la date et le deux points (`:`) pour l'heure, et une espace pour séparer la date et l'heure.
 
-Il existe d'autres nomenclatures pour spécifier un format *datetime*&nbsp;: par exemple, des mois renseignés par leur nom, l'indication AM-PM, etc. Vous pouvez vous référer à la documentation de la fonction `strptime` (`help(strptime)`) pour explorer les différentes nomenclatures et choisir celle qui vous convient. Bien évidemment, il est **nécessaire** que toutes les dates de votre colonne soient renseignées dans le même format, pour éviter que la fonction ne retourne la valeur `NA` lorsqu'elle ne peut lire le format. Après toutes ces opérations, rejetons un oeil à notre *DataFrame*.
+Il existe d'autres nomenclatures pour spécifier un format *datetime*&nbsp;: par exemple, des mois renseignés par leur nom, l'indication AM-PM, etc. Vous pouvez vous référer à la documentation de la fonction `strptime` (`help(strptime)`) pour explorer les différentes nomenclatures et choisir celle qui vous convient. Bien évidemment, il est nécessaire que toutes les dates de votre colonne soient renseignées dans le même format, pour éviter que la fonction ne retourne la valeur `NA` lorsqu'elle ne peut lire le format. Après toutes ces opérations, rejetons un oeil à notre *DataFrame*.
 
 ```{r message=FALSE, warning=FALSE}
 head(accidents_df, n = 5)
@@ -1238,7 +1241,7 @@ head(accidents_df[c("jour", "AM", "PM")], n=5)
 
 Il est aussi possible d'accéder aux sous-éléments d'un *datetime* comme l'année, le mois, le jour, l'heure, la minute et la seconde avec les fonctions `year()`, `month()`,`day()`, `hour()`,  `minute()` et `second()`.
 
-##### Calcul une durée entre deux *datetime* {#sect014263}
+##### Calcul d'une durée entre deux *datetime* {#sect014263}
 
 Une autre utilisation intéressante du format *datetime* est de calculer des différences de temps. Par exemple, nous pourrions utiliser le nombre de minutes écoulées depuis 7 h comme une variable dans une analyse visant à déterminer le moment critique des collisions routières durant l'heure de pointe du matin. 
 Pour cela, nous devons créer un *datetime* de référence en concaténant la date de chaque observation, et le temps `07:00:00`, qui est notre point de départ.
@@ -1384,7 +1387,7 @@ Sous-sélectionner des lignes avec une condition peut être effectué soit avec 
 iris_virginica1 <- iris[iris$Species == "virginica",]
 iris_virginica2 <- subset(iris, iris$Species == "virginica")
 
-# Vérifions que les deux dataframes ont le même nombre de lignes
+# Vérifions que les deux DataFrames ont le même nombre de lignes
 nrow(iris_virginica1) == nrow(iris_virginica2)
 ```
 
@@ -1526,8 +1529,8 @@ print(df3)
 
 Terminons ici avec quelques conseils sur la rédaction d’un code R. Bien rédiger son code est essentiel pour trois raisons&nbsp;:
 
-1. Pouvoir relire et réutiliser son code dans le futur;
-2. Permettre à d'autres personnes de bien lire et de réutiliser votre code;
+1. Pouvoir relire et réutiliser son code dans le futur.
+2. Permettre à d'autres personnes de bien lire et de réutiliser votre code.
 3. Minimiser les risques d'erreurs.
 
 Ne négligez pas l'importance d'un code bien rédigé et bien documenté, vous vous éviterez ainsi des migraines lorsque vous devrez exhumer du code écrit il y a plusieurs mois.
@@ -1550,13 +1553,13 @@ iris_l <- iris[sel_noms]
 2. **Documenter et commenter son code le plus possible**&nbsp;: il est possible d'ajouter du texte dans un code R qui ne sera pas exécuté, ce que nous appelons des commentaires. Typiquement, une ligne commençant par un `#` n'est pas interprétée par le logiciel. Utilisez des commentaires le plus souvent possible pour décrire les actions que vous souhaitez effectuer avec votre code. Il sera ainsi plus facile de le relire, de naviguer dedans, mais également de repérer d'éventuelles erreurs. Si nous reprenons l'exemple précédent&nbsp;: 
 
 ```{r message=FALSE, warning=FALSE}
-# Récupération du nom des colonnes dans le dataframe iris
+# Récupération du nom des colonnes dans le DataFrame iris
 noms_cols <- names(iris)
 
 # Sélection des colonnes avec les caractères "Length"
 sel_noms <- noms_cols[grepl("Length",noms_cols, fixed = TRUE)]
 
-# Extraction des colonnes sélectionnées dans un nouveau dataframe
+# Extraction des colonnes sélectionnées dans un nouveau DataFrame
 iris_l <- iris[sel_noms]
 ```
 
@@ -1594,7 +1597,7 @@ summary_all_num_cols <- function(dataset){
   d. Effectuer au besoin les opérations de manipulation sur les données.
   e. Effectuer les analyses nécessaires en scindant si possible les différentes étapes. Notez également que l'étape de définition des fonctions complémentaires peut être effectuée dans une feuille de code séparée, et l'ensemble de ces fonctions chargées à l'aide de la fonction `source`. De même, si la manipulation des données est conséquente, il est recommandé de l'effectuer avec un code à part, d'enregistrer les données structurées, puis de les charger directement au début de votre code dédié à l'analyse.
 
-7. **Exploiter les commentaires délimitant les sections dans Rstudio**&nbsp;:  il est possible d'écrire des commentaires d'une certaine façon pour que l'IDE les détecte comme des délimiteurs de sections. L'intérêt principal est que nous pouvons ensuite facilement naviguer entre ces sections en utilisant Rstudio comme montré à la figure \@ref(fig:sectionsRstudio), mais aussi masquer des sections afin de faciliter la lecture du reste du code. Pour délimiter une section, il suffit d'ajouter une ligne de commentaire comprenant quatre fois les caractères `-`, `=` ou `#` à la suite&nbsp;:  
+7. **Exploiter les commentaires délimitant les sections dans RStudio**&nbsp;:  il est possible d'écrire des commentaires d'une certaine façon pour que l'IDE les détecte comme des délimiteurs de sections. L'intérêt principal est que nous pouvons ensuite facilement naviguer entre ces sections en utilisant RStudio comme montré à la figure \@ref(fig:sectionsRstudio), mais aussi masquer des sections afin de faciliter la lecture du reste du code. Pour délimiter une section, il suffit d'ajouter une ligne de commentaire comprenant quatre fois les caractères `-`, `=` ou `#` à la suite&nbsp;:  
 
 
 ```{r
@@ -1611,23 +1614,23 @@ summary_all_num_cols <- function(dataset){
 #### Titre de ma section 4 ####
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ```
-```{r sectionsRstudio, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap='Naviguation dans des sections de codes avec RStudio',  out.width='50%'}
+```{r sectionsRstudio, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap='Navigation dans des sections de codes avec RStudio',  out.width='50%'}
 knitr::include_graphics('images/introduction/sections_rstudio.png', dpi = NA)
 ```
 
-8. **Adopter une structure globale pour vos projets**&nbsp;: au-delà du script, il est nécessaire de bien structurer vos projets, le plus important étant d'utiliser une structure commune à chaque projet pour vous faciliter le travail. Nous proposons ci-dessus (figure \@ref(fig:structFolder)) un exemple de structure assez générale pouvant être utilisée dans la plupart des cas. Elle sépare notamment les données originales des données structurées, ainsi que les fonctions complémentaires et la structuration des données du principal bloc d'analyse.
+8. **Adopter une structure globale pour vos projets**&nbsp;: au-delà du script, il est nécessaire de bien structurer vos projets, le plus important étant d'utiliser une structure commune à chaque projet pour vous faciliter le travail. Nous proposons à la figure \@ref(fig:structFolder) un exemple de structure assez générale pouvant être utilisée dans la plupart des cas. Elle sépare notamment les données originales des données structurées, ainsi que les fonctions complémentaires et la structuration des données du principal bloc d'analyse.
 
-```{r structFolder, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html'), auto_pdf = TRUE, fig.cap="Structure de dossier recommandée pour un projet avec R",  out.width='50%', fig.pos = "H"}
-knitr::include_graphics('images/introduction/structuration projet.png', dpi = NA)
+```{r structFolder, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Structure de dossier recommandée pour un projet avec R",  out.width='50%', fig.pos = "H"}
+knitr::include_graphics('images/introduction/structurationprojet.png', dpi = NA)
 ```
 
 **Ne négligez jamais l'importance d'un code bien écrit et documenté !**
 
 ## Enregistrement des résultats {#sect017}
 
-Comme nous l'avons indiqué précédemment, l'ensemble des objets actuellement chargés dans votre session R sont perdus si vous la fermez. Cela peut être problématique si certains résultats nécessitent de longs temps de calcul ou si vous avez besoin de partager les objets obtenus avec d'autres personnes, mais pas le code pour les obtenir. Il est possible de retrouver les résultats d'une session précédente si ceux-ci ont été enregistrés sur votre disque dur. L'idée est donc de faire passer vos objets présents dans votre mémoire vive dans des fichiers stockés sur votre disque dur. Vous pouvez pour cela utiliser la fonction `save.image` ou `save`.
+Comme nous l'avons indiqué précédemment, l'ensemble des objets actuellement chargés dans votre session R sont perdus si vous la fermez. Cela peut être problématique si certains résultats nécessitent de longs temps de calcul ou si vous avez besoin de partager les objets obtenus avec d'autres personnes, mais pas le code pour les obtenir. Il est possible de retrouver les résultats d'une session précédente si ceux-ci ont été enregistrés sur votre disque dur puisque l'action d'enregistrer permet de faire passer vos objets présents dans votre mémoire vive dans des fichiers stockés sur votre disque dur. Vous pouvez pour cela utiliser la fonction `save.image` ou `save`.
 
-`save.image` enregistre une copie exacte de votre session actuelle avec tous les objets présents dans votre environnement dans un fichier `RData`. La fonction `save` permets d'être plus sélectif et de ne garder que certains objets spécifiques.
+`save.image` enregistre une copie exacte de votre session actuelle avec tous les objets présents dans votre environnement dans un fichier `RData`. La fonction `save` permet d'être plus sélectif et de ne garder que certains objets spécifiques.
 
 Voici la syntaxe pour enregistrer toute votre session&nbsp;:
 
@@ -1689,7 +1692,7 @@ setwd(paste0(dirname(rstudioapi::getActiveDocumentContext()$path), "/.."))
 
 Le double point (`..`) indique que nous souhaitons remonter dans le dossier parent du dossier dans lequel nous se trouvons acutellement.
 
-Il existe deux options de rechange à l'utilisation de `setwd` que certains jugent un peu démodé.
+Il existe deux solutions de rechange à l'utilisation de `setwd` que certains jugent un peu démodé.
 
 * La première est le package `here` permettant de spécifier plus facilement des chemins relatifs et de définir un *top-level directory* pour votre projet.
 * La seconde est l'utilisation de la fonctionnalité [projects](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects) de RStudio.
@@ -1722,9 +1725,9 @@ if(knitr::is_latex_output()){
 }
 ```
 
-## Quiz final sur la prise en main de R {#sect0110}
+\newpage
 
-Voici un court quiz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
+## Quiz de révision du chapitre {#sect0110}
 
 ```{r quizIntro, echo=FALSE, warning=FALSE, results="asis"}
 quizz_intro <- quizz("quizzs/Chapitre1_manipulerdesdonnees.yml", "quizz_intro")

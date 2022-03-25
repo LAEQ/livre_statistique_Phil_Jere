@@ -1,7 +1,7 @@
 --- 
 title: "Méthodes quantitatives en sciences sociales avec R"
 author: "Philippe Apparicio et Jérémy Gelb"
-date: "`r Sys.Date()`"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
 colorlinks: yes
 cover-image: images/cover.png
 bibliography: book.bib
@@ -52,7 +52,7 @@ Apparicio, Philippe et Jérémy Gelb. 2022. *Méthodes quantitatives en sciences
 - Utiliser la même licence ou une licence similaire à toutes versions dérivées.
 
 ::: {.bloc_astuce data-latex=""}
-**Suggestions d'adaptation du manuel**. 
+**Suggestions d'adaptation du manuel**
 
 Notez que pour chaque méthode statistique abordée dans le livre sont disponibles une description détaillée et une mise en œuvre dans R. Par conséquent, plusieurs adaptations du manuel sont possibles&nbsp;:
 
@@ -137,7 +137,7 @@ Dans le chapitre \@ref(chap03), nous illustrons les incroyables capacités graph
 **Partie 3. Analyses bivariées.** Cette troisième partie comprend trois chapitres dans lesquelles sont présentées les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables. Plus spécifiquement, nous présentons puis mettons en œuvre dans R les méthodes permettant d'explorer les relations entre deux variables quantitatives (covariance, corrélation et régression linéaire simple) dans le chapitre \@ref(chap04), deux variables qualitatives (tableau de contingence et test du khi-deux) dans le chapitre \@ref(chap05) et une variable quantitative avec une variable qualitative avec deux modalités (tests de Student, de Welch et de Wilcoxon) ou avec plus de deux modalités (ANOVA et test de Kruskal-Wallis) dans le chapitre \@ref(chap06).
 
 
-**Partie 4. Modèles de régression**. Dans cette quatrième partie, sont présentées les principales méthodes de statistique inférentielle utilisées en sciences sociales&nbsp;: la régression linéaire multiple (chapitre \@ref(chap07)), les régressions linéaires généralisées (chapitre \@ref(chap08)), les régressions à effets mixtes (chapitre \@ref(chap09)), les régressions à effets mixtes (chapitre \@ref(chap10)), les régressions multiniveaux (chapitre \@ref(chap11)) et les modèles généralisés additifs (chapitre \@ref(chap12)).
+**Partie 4. Modèles de régression**. Dans cette quatrième partie, sont présentées les principales méthodes de statistique inférentielle utilisées en sciences sociales&nbsp;: la régression linéaire multiple (chapitre \@ref(chap07)), les régressions linéaires généralisées (chapitre \@ref(chap08)), les régressions à effets mixtes (chapitre \@ref(chap09)), les régressions multiniveaux (chapitre \@ref(chap10)),  (chapitre \@ref(chap11)) et les modèles généralisés additifs (chapitre \@ref(chap11)).
 
 **Partie 5. Analyses exploratoires multivariées**. Dans cette cinquième partie, sont abordées les méthodes de statistique exploratoire et descriptive permettant de décrire des tableaux de données comprenant plusieurs variables. Nous décrivons d'abord les méthodes de réduction de données&nbsp;: les méthodes factorielles dans le chapitre \@ref(chap12) (analyses de composantes principales, analyses factorielles de correspondances, analyses factorielles de correspondances multiples) et les méthodes de classification non supervisées dans le chapitre \@ref(chap13) (classification ascendante hiérarchique, k-moyennes, k-médianes, k-médoïdes et leurs extensions en logique floue comme les c-moyennes et c-médianes).
 
@@ -306,7 +306,23 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
     if(length(df2) == 1){
       df2 <- df2[[1]]
     }
-    table1 <- df2 %>% 
+    
+    if(class(df2) == "list"){
+      table1 <- df2 %>% 
+      #mutate_all(linebreak)  %>% 
+       knitr::kable(
+        booktabs = TRUE,
+        format = "latex",
+        digits = digits,
+        format.args = list(decimal.mark = ",", big.mark = "\ua0"),
+        valign = 't', row.names = row.names,
+        align = align,
+        col.names = col.names,
+        caption = caption,
+        escape = FALSE, ...) %>% 
+        kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
+    }else{
+      table1 <- df2 %>% 
       mutate_all(linebreak)  %>% 
        knitr::kable(
         booktabs = TRUE,
@@ -319,6 +335,8 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
         caption = caption,
         escape = FALSE, ...) %>% 
         kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
+    }
+    
     if (is.null(col.to.resize) == FALSE){
       table1 <- table1 %>% 
         kableExtra::column_spec(col.to.resize, width=col.width)

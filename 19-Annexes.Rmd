@@ -2,7 +2,7 @@
 
 ## Table des valeurs critiques de khi-deux {#annexe1}
 
-La courte syntaxe R ci-dessous permet de générer le tableau \@ref(tab:tableCritiqueChi2) avec les valeurs critiques du khi-deux pour différents degrés de signification (valeurs de *p*).
+La courte syntaxe R ci-dessous permet de générer le tableau \@ref(tab:tableCritiqueKhi2) avec les valeurs critiques du khi-deux pour différents degrés de signification (valeurs de *p*).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
 library(stargazer)
@@ -11,23 +11,29 @@ library(stargazer)
 dl <- c(1:30, 40, 50, 100, 250, 500) 
 # la fonction qchisq permet d'obtenir la valeur théorique en fonction 
 # d'une valeur de p et d'un nombre de degrés de liberté
-tableChi2 <- cbind(dl,
+tableKhi2 <- cbind(dl,
                 p0.10 =  round(qchisq(p=0.90,  df=dl, lower.tail = TRUE),3),
                 p0.05 =  round(qchisq(p=0.95,  df=dl, lower.tail = TRUE),3),
                 p0.01 =  round(qchisq(p=0.99,  df=dl, lower.tail = TRUE),3),
                 p0.001 = round(qchisq(p=0.999, df=dl, lower.tail = TRUE),3))
 # Impression du tableau avec la library stargazer
-stargazer(tableChi2, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 2,
+stargazer(tableKhi2, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 2,
            title="Distribution des valeurs critiques du Khi2")
 ```
 
-```{r tableCritiqueChi2, echo=FALSE, message=FALSE, warning=FALSE}
-show_table(tableChi2, 
+\newpage
+
+```{r tableCritiqueKhi2, echo=FALSE, message=FALSE, warning=FALSE}
+show_table(tableKhi2, 
            digits = 2,
-           caption = "Distribution des valeurs critiques du khi2",
-           col.names=c("dl", "p = 0,10", "p = 0,05", "p = 0,01", "p = 0,001")
+           caption = "Distribution des valeurs critiques du khi-deux",
+           col.names=c("dl", "p = 0,10", "p = 0,05", "p = 0,01", "p = 0,001"),
+           align= c("r", "r", "r", "r", "r"),
+           position = "HOLD_position"
 )
 ```
+
+\newpage
 
 ## Table des valeurs critiques de Fisher {#annexe2}
 
@@ -52,24 +58,38 @@ stargazer(tableF_p0.05, type="text", summary=FALSE, rownames=FALSE, align = TRUE
           title="Distribution des valeurs critiques de F avec p = 0,05")
 ```
 
+\newpage
+
 ```{r tableCritiqueF1, echo=FALSE, message=FALSE, warning=FALSE}
 nomcols <- names(tableF_p0.05)
 show_table(tableF_p0.05[,1:11], 
            caption = "Distribution des valeurs critiques de F avec p = 0,05",
-           col.names=nomcols[1:11])
+           col.names=nomcols[1:11],
+           align= c("r", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"),
+           position = "HOLD_position")
 ```
+
+\newpage
+
 
 ```{r tableCritiqueF2, echo=FALSE, message=FALSE, warning=FALSE}
 show_table(tableF_p0.05[,c(1,12:20)], 
            caption = "Distribution des valeurs critiques de F avec p = 0,05 (suite)",
-           col.names=nomcols[c(1,12:20)])
+           col.names=nomcols[c(1,12:20)],
+           align= c("r", "r", "r", "r", "r", "r", "r", "r", "r", "r"),
+           position = "HOLD_position")
 ```
+\newpage
+
 
 ```{r tableCritiqueF3, echo=FALSE, message=FALSE, warning=FALSE}
 show_table(tableF_p0.05[,c(1,21:26)], 
            caption = "Distribution des valeurs critiques de F avec p = 0,05 (suite)",
-           col.names=nomcols[c(1,21:26)])
+           col.names=nomcols[c(1,21:26)],
+           align= c("r", "r", "r", "r", "r", "r", "r"),
+           position = "HOLD_position")
 ```
+\newpage
 
 ## Table des valeurs critiques de *t* {#annexe3}
 
@@ -91,12 +111,16 @@ tableT <- cbind(dl,
 stargazer(tableT, type="text", summary=FALSE, rownames=FALSE, align = TRUE, digits = 2,
           title="Distribution des valeurs critiques de t")
 ```
-
+\newpage
 
 ```{r tableCritiqueT, echo=FALSE, message=FALSE, warning=FALSE}
 # vecteur pour les degrés de liberté de 1 à 30, puis 40 et 50
 show_table(tableT, 
            caption = "Distribution des valeurs critiques de t",
-           col.names=c("dl", "p = 0,10", "p = 0,05", "p = 0,01", "p = 0,001")
+           col.names=c("dl", "p = 0,10", "p = 0,05", "p = 0,01", "p = 0,001"),
+           align=c("r", "r", "r", "r", "r"),
+           position = "HOLD_position"
 )
 ```
+
+\newpage

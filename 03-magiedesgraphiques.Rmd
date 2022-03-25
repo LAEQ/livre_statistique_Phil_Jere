@@ -124,7 +124,8 @@ df <- data.frame(
 show_table(df,
            col.names = c("Géométrie","Fonction"),
            caption = 'Principales géométries proposées par `ggplot2`',
-           position = "HOLD_position"
+           position = "HOLD_position",
+           align= c("l", "l")
            )
 ```
 
@@ -444,9 +445,9 @@ ggarrange(plotlist = histogrammes, ncol = 2, nrow = 2)
 
 ```
 
-Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable empiler nos données, ce qui signifie changer la forme du *dataframe* actuel qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* `reshape2`.
+Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable empiler nos données, ce qui signifie changer la forme du *DataFrame* actuel qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* `reshape2`.
 
-```{r fig319, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Empiler les données d'un dataframe",  out.width='30%', dev = "png", dpi = 300}
+```{r fig319, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Empiler les données d'un DataFrame",  out.width='30%', dev = "png", dpi = 300}
 knitr::include_graphics('images/magie_graphiques/melting.png', dpi = NA)
 ```
 
@@ -456,7 +457,7 @@ library(reshape2)
 #faire fondre le jeu de données
 melted_distribs <- melt(distribs, measure.vars = c("gaussien", "gamma",
                                                    "beta","student"))
-#renommer les colonnes du nouveau dataframe
+#renommer les colonnes du nouveau DataFrame
 names(melted_distribs) <- c("distribution", "valeur")
 #convertir la variable catégorielle en facteur
 melted_distribs$distribution <- as.factor(melted_distribs$distribution)
@@ -575,13 +576,11 @@ ggplot(data = data_co2)+
 
 
 ```{r fig326, echo=FALSE, fig.align='center', fig.cap="Nuage de points simple", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
-graphique <- ggplot(data = data_co2)+
+ ggplot(data = data_co2)+
   geom_point(aes(x = Urbanisation, y = CO2t_hab))+
   labs(x = "Niveau d'urbanisation (%)",
        y = 'Tonnes de CO2 annuelle / habitant',
        title = 'Relation entre urbanisation et production de CO2 par habitant')
-
-show_as_png(graphique, out = "images/magie_graphiques/fig326.png", dpi = 300)
 ```
 
 À la première lecture de ce graphique, nous observons immédiatement un ensemble de points étranges dont le volume de CO~2~ par habitant annuel est au-dessus de 150 tonnes et dont le niveau d'urbanisation est proche de 50%. Isolons ces données pour observer de quoi il s'agit.
@@ -751,7 +750,8 @@ Ces barres d'erreurs indiquent notamment qu'il n'y a finalement aucun écart sig
 ```{r fig337, fig.align='center', auto_pdf = TRUE, fig.cap="Graphique en ligne avec marge d'erreur",  out.width='65%', dev = "png", dpi = 300}
 ggplot(data = data_europe)+
   geom_path(aes(x = an, y = CO2t_hab, color = Country.Name), size = 0.7)+
-  geom_ribbon(aes(x = an, ymin = borne_basse, ymax = borne_haute, fill = Country.Name), alpha = 0.4)+
+  geom_ribbon(aes(x = an, ymin = borne_basse, ymax = borne_haute,
+                  fill = Country.Name), alpha = 0.4)+
   labs(x = "Années",
        y = 'Tonnes de CO2 annuelle / habitant',
        color = "Pays",
@@ -804,7 +804,8 @@ Les boîtes à moustaches donnent des informations pertinentes sur le centre et 
 
 ```{r fig341, fig.align='center', fig.cap="Graphiques en violon", warning=FALSE, auto_pdf=TRUE, out.width='65%', dev = "png", dpi = 300}
 # retirons les observations de régions que nous ne souhaitons par garder
-data_co2_comp <- subset(data_co2, (! data_co2$region7 %in% c("Sub-Saharan Africa", "South Asia")) 
+data_co2_comp <- subset(data_co2, (! data_co2$region7 %in% 
+                                     c("Sub-Saharan Africa", "South Asia")) 
                         & is.na(data_co2$region7)==FALSE)
 
 ggplot(data = data_co2_comp)+
@@ -828,7 +829,7 @@ ggplot(data = data_co2_comp)+
 
 ### Graphique en barre {#sect0327}
 
-Les graphiques en barre permettent de représenter des quantités (hauteur des barres) réparties dans des catégories (une barre par catégorie). Nous proposons ici un exemple avec des données de déplacements issues de l'*enquête origine destination de Communauté urbaine de 2017* au niveau des grands secteurs. La figure \@ref(fig:fig342) tirée du [rapport](https://www.transports.gouv.qc.ca/fr/ministere/Planification-transports/enquetes-origine-destination/quebec/2017/Documents/EOD17_faits_saillants_VF.pdf) *FAITS SAILLANTS DE L’ENQUÊTE-MÉNAGES – EOD 2017 QUÉBEC-LÉVIS* délimite ces grands secteurs.
+Les graphiques en barre permettent de représenter des quantités (hauteur des barres) réparties dans des catégories (une barre par catégorie). Nous proposons ici un exemple avec des données de déplacements issues de l'*enquête origine destination de Communauté urbaine de 2017* au niveau des grands secteurs. La figure \@ref(fig:fig342) tirée du [rapport](https://www.transports.gouv.qc.ca/fr/ministere/Planification-transports/enquetes-origine-destination/quebec/2017/Documents/EOD17_faits_saillants_VF.pdf) intitulé *La mobilité des personnes dans la région de Québec-Lévis (Volet Enquête-ménages. Faits saillants)* délimite ces grands secteurs.
 
 ```{r fig343, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Grands secteurs de Québec",  out.width='60%'}
 knitr::include_graphics('images/magie_graphiques/carte_secteurs.jpg', dpi = NA)
@@ -887,7 +888,7 @@ tot_plot <- ggarrange(plotlist = list_plot, ncol = 1)
 nom_secteurs <- paste(df$code, df$secteur, sep= ' : ')
 string_names <- paste(nom_secteurs, collapse = '\n')
 
-titre <- "Déplacements journaliers moyens en heures de pointe de la région de Québec"
+titre <- "Déplacements journaliers moyens en heures de pointe"
 # Production finale de la figure
 annotate_figure(tot_plot,
                 top = text_grob(titre, face = "bold", size = 11, just = "left"),
@@ -1085,7 +1086,7 @@ library(chorddiag)
 matriceOD <- read.csv('data/graphique/Quebec_2017_OD_MJ.csv',
                  header = FALSE, sep = ';') # fichier csv sans entête
 
-# Transformation du dataframe en matrice
+# Transformation du DataFrame en matrice
 matriceOD <- as.matrix(matriceOD)
 codes <- c('A','B','C','D','E','F','G','H','I','J','K','X')
 secteurs <- c('Arr. de Beauport',
@@ -1185,7 +1186,7 @@ model <- udpipe_load_model('data/graphique/french-sequoia-ud-2.4-190531.udpipe')
 # model <- udpipe_load_model(model)
 
 # Étape 5 : analyse de la nature des mots du texte avec le dictionnaire fr
-# Nous obtenons des dataframes décrivant les mots des textes
+# Nous obtenons des DataFrames décrivant les mots des textes
 annote_qc <- udpipe_annotate(model, text_qc)
 df_qc <- data.frame(annote_qc)
 
