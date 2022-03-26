@@ -80,34 +80,30 @@ Outre le khi-deux, d'autres mesures d'association permettent de mesurer le degr�
 
 
 ```{r EncadreAsso, echo=FALSE, message=FALSE, warning=FALSE, auto_pdf = TRUE}
-df<-data.frame(
-      Statistique = c("Khi-deux",
-                      "Ratio de vraisemblance du khi-deux",
-                      "khi-deux de Mantel-Haenszel",
-                      "Corrélation polychorique",
-                      "Coefficient Phi",
-                      "V de Cramer"),
-      
-      Formule = c("$\\chi^2 = \\sum \\frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$",
-                  "$G^2 = 2 \\sum f_{ij} \\ln{(\\frac{f_{ij}}{ft_{ij}})}$",
-                  "$Q_{MH}=(N−1)r^2$",
-                  "Obtenue itérativement par \\n maximum de vraisemblance",
-                  "$\\phi=\\sqrt{\\frac{\\chi^2}{n}}$",
-                  "$V=\\sqrt{\\frac{\\chi^2/n}{min(c-1,l-1)}}$"),
-      
-      Propr = c("Mesure classique du khi-deux calculée à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible",
-                
-                "Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible",
-                
-                "avec *r* étant le coefficient de corrélation entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.",
-                
-                "Dans le même esprit que le khi-deux de Mantel-Haenszel, la corrélation polychorique s'applique à deux variables **ordinales**. Plus spécifiquement, elle formule le postulat que deux variables théoriques normalement distribuées ont été mesurées de façon approximative avec deux échelles ordinales. Par exemple, en psychologie, le sentiment de bien-être et le sentiment de sécurité peuvent être conceptualisés comme deux variables continues normalement distribuées. Cependant, les mesurer directement est très difficile, nous avons donc recours à des échelles de Likert allant de 1 à 10. Pour cet exemple, il est pertinent d'utiliser la corrélation polychorique. Comme pour une corrélation de Pearson, la corrélation polychorique varie de -1 à 1, une valeur négative indiquant une relation inverse entre les deux variables théoriques et inversement. Une valeur de *p* peut être obtenue.",
-                
-                "Simplement le khi-deux divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune alors $\\phi$ varie de −1 à 1; sinon, de 0 à $min(\\sqrt{c-1}, \\sqrt{l-1})$ avec *c* et *l* étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est surtout utile pour les tableaux comprenant deux modalités pour chacune des variables. Pas de valeur de *p* disponible.",
-                
-                "Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte, plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que, pour un tableau de 2x2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.")
 
-)
+Statistique = c("Khi-deux",
+                "Ratio de vraisemblance du khi-deux",
+                "khi-deux de Mantel-Haenszel",
+                "Corrélation polychorique",
+                "Coefficient Phi",
+                "V de Cramer")
+      
+Formule = c("$\\chi^2 = \\sum \\frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$",
+            "$G^2 = 2 \\sum f_{ij} \\ln{(\\frac{f_{ij}}{ft_{ij}})}$",
+            "$Q_{MH}=(N−1)r^2$",
+            "Obtenue itérativement par \n maximum de vraisemblance",
+            "$\\phi=\\sqrt{\\frac{\\chi^2}{n}}$",
+            "$V=\\sqrt{\\frac{\\chi^2/n}{min(c-1,l-1)}}$")
+      
+Propr = c(
+"Mesure classique du khi-deux calculée à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible",
+"Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible",
+"avec *r* étant le coefficient de corrélation entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.",
+"Dans le même esprit que le khi-deux de Mantel-Haenszel, la corrélation polychorique s'applique à deux variables **ordinales**. Plus spécifiquement, elle formule le postulat que deux variables théoriques normalement distribuées ont été mesurées de façon approximative avec deux échelles ordinales. Par exemple, en psychologie, le sentiment de bien-être et le sentiment de sécurité peuvent être conceptualisés comme deux variables continues normalement distribuées. Cependant, les mesurer directement est très difficile, nous avons donc recours à des échelles de Likert allant de 1 à 10. Pour cet exemple, il est pertinent d'utiliser la corrélation polychorique. Comme pour une corrélation de Pearson, la corrélation polychorique varie de -1 à 1, une valeur négative indiquant une relation inverse entre les deux variables théoriques et inversement. Une valeur de *p* peut être obtenue.",
+"Simplement le khi-deux divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune alors $\\phi$ varie de −1 à 1; sinon, de 0 à $min(\\sqrt{c-1}, \\sqrt{l-1})$ avec *c* et *l* étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est surtout utile pour les tableaux comprenant deux modalités pour chacune des variables. Pas de valeur de *p* disponible.",
+"Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte, plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que, pour un tableau de 2x2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.")
+
+df <- data.frame(Stat=Statistique, Form=Formule, Pro=Propr)
 
 if(knitr::is_latex_output()){
   show_table(df,
@@ -120,6 +116,7 @@ if(knitr::is_latex_output()){
 )
   
 }else{
+  df[4,2] <- "Obtenue itérativement par \\n maximum de vraisemblance"
   show_table(df,
            col.names = c("Statistique","Formule","Propriété et interprétation"),
            align= c("l", "l", "l"),
