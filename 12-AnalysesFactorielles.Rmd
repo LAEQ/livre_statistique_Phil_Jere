@@ -794,7 +794,7 @@ text1 <- paste0("Somme des valeurs propres supérieures à 1 : ",
                 vpsup1,
                 ".\nPourcentage cumulé des valeurs propres supérieures à 1 : ",
                 vpsup1cumul, "%.")
-annotate_figure(ggarrange(plotVP1, plotVP2, plotVP3, ncol=2),
+annotate_figure(ggarrange(plotVP1, plotVP2, plotVP3, ncol=2, nrow=2),
                 text_grob("Analyse des valeurs propres", 
                          color = "black", face = "bold", size = 12),
                 bottom = text_grob(text1,
@@ -973,14 +973,15 @@ annotate_figure(ggarrange(plotCoordF1, plotCoordF2, plotCoordF3, nrow = nComp),
                           color = "black", face = "bold", size = 12))
 ```
 
-```{r acpmesgraphs3, echo=FALSE, fig.align='center', fig.cap="Graphiques personnalisés avec les contributions des variables", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='75%'}
+```{r acpmesgraphs3, echo=FALSE, fig.align='center', fig.cap="Graphiques personnalisés avec les contributions des variables", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='75%'}
 library(corrplot)
-# couleurs <- colorRampPalette(c("#ffffd4","#993404"))
-corrplot(CtrVar, is.corr=FALSE, method ="square", addCoef.col = 1, cl.pos = FALSE)
+couleurs <- colorRampPalette(c("#ffffd4","#993404"))
+corrplot(CtrVar, is.corr=FALSE, method ="square", addCoef.col = 1, cl.pos = FALSE, col=couleurs(100))
 ```
 
 ```{r acpmesgraphs4, echo=FALSE, fig.align='center', fig.cap="Graphiques personnalisés avec les cosinus carrés des variables", auto_pdf=TRUE, dev="png", dpi=300, out.width='75%'}
-corrplot(Cos2Var, is.corr=FALSE, method ="square", addCoef.col = 1, cl.pos = FALSE)
+couleurs <- colorRampPalette(c("#ffffd4","#993404"))
+corrplot(Cos2Var, is.corr=FALSE, method ="square", addCoef.col = 1, cl.pos = FALSE, col=couleurs(100))
 ```
 
 ```{r acpmesgraphs5, echo=FALSE, fig.align='center', fig.cap="Graphique personnalisé avec la qualité des variables sur les axes retenus de l'ACP", auto_pdf=TRUE, dev="png", dpi=300, out.width='75%'}
