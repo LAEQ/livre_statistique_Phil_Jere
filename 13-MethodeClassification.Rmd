@@ -579,11 +579,11 @@ Une fois que l'algorithme a été appliqué aux données et le dendrogramme obte
 
 Cette première approche est la plus simple à mettre en oeuvre. Il s'agit simplement de produire plusieurs classifications à partir du dendrogramme avec différentes valeurs de *k* (nombre de groupes) et de calculer à chaque fois la part de l'inertie expliquée. Chaque groupe supplémentaire ne peut qu'améliorer l'inertie expliquée, car pour rappel, si $k=n$, alors nous expliquons 100&nbsp;% de l'inertie totale. L'objectif est de déterminer à quel moment l'ajout d'un groupe supplémentaire ne contribue que de façon marginale à améliorer l'inertie expliquée. Si nous représentons les valeurs d'inertie expliquée pour les différentes valeurs de *k* dans un graphique, une rupture (un coude) indiquerait ce point au-delà duquel les groupes supplémentaires ne captent finalement que du bruit et non plus de l'information.
 
-Si nous reprenons l'exemple du jeu de données iris, nous pouvons créer ce graphique avec *k* allant de 2 à 10 (figure \@ref(fig:kmeans2)). Un premier coude très net est observable pour $k = 3$ et un second plus faible, mais tout de même marqué pour $k = 4$. 
+Si nous reprenons l'exemple du jeu de données iris, nous pouvons créer ce graphique avec *k* allant de 2 à 8 (figure \@ref(fig:kmeans2)). Un premier coude très net est observable pour $k = 3$ et un second plus faible, mais tout de même marqué pour $k = 4$. 
 
 ```{r kmeans2, echo=FALSE, fig.align='center', fig.cap="Méthode du coude", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 
-ks <- 1:10
+ks <- 1:8
 data(iris)
 X <- as.matrix(iris[,1:4])
 D <- dist(X)
@@ -668,7 +668,7 @@ La valeur totale de l'indice est simplement la moyenne des valeurs moyennes des 
 ```{r kmeans3, echo=FALSE, fig.align='center', fig.cap="Méthode de l'indice de silhouette", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 
 library(clusterCrit)
-ks <- 2:10
+ks <- 2:8
 
 rows <- t(sapply(ks, function(k){
   classif <- cutree(clust,k)
@@ -725,7 +725,7 @@ hclustfun <- function(x,k){
   ))
 }
 
-vals <- clusGap(X, hclustfun, K.max = 10)
+vals <- clusGap(X, hclustfun, K.max = 8)
 tab <- data.frame(vals$Tab)
 tab$k <- 1:nrow(tab)
 
@@ -942,12 +942,17 @@ group_rows(my_table,
 
 ```
 
-* Le premier groupe correspond à de grands parcs (superficie généralement comprise entre 5 et plus de 20 hectares), il comporte 104 observations. Ces grands parcs sont en moyenne équipés de deux terrains de sport et d'un équipement d'hiver. Il s'agit vraisemblablement des grands parcs identifiés dans l'article original, dans lesquels se retrouvent également les parcs à vocation métropolitaine.
-* Le second groupe (225 parcs) correspond à de très petits parcs (moins d'un hectare) comportant chacun une aire de jeu, mais presque aucun autre équipement. Il s'agit clairement de la classe A (Très petit parc (moins d’un hectare) avec une aire de jeux) identifiée dans l'article original.
-* Le troisième groupe (141 parcs) correspond à des petits parcs (entre 1 et 5 hectares), souvent équipés d'une piscine extérieure (28,4&nbsp;% des cas), et en moyenne de deux terrains de sports (essentiellement des terrains de tennis et de soccer). Ces parcs comprennent en moyenne plus de 4&nbsp;équipements et doivent donc correspondre à la classe D dans l'article original (Petit parc (1&nbsp;à 5&nbsp;ha) avec en moyenne six équipements, dont une patinoire et une piscine).
-* Le quatrième groupe (71 parcs) correspond à de très petits parcs (moins d'un hectare) avec en moyenne plus de trois équipements, dont une pataugeoire et une aire de jeux. Il s'agit vraisemblablement d'un sous-groupe au sein de la classe A identifiée dans l'article original.
-* Le cinquième groupe (81 parcs) correspond à des petits parcs et quelques grands parcs, il est caractérisé par une présence plus marquée de pataugeoires (84&nbsp;%) et a le plus haut taux d'infrastructure de patins à routes alignées. Il comprend en moyenne plus de trois équipements.
-* Le dernier groupe (71 parcs) comprend des petits parcs (entre 1 et 5 hectares) qui ressemblent aux parcs du groupe 2 mais tendent à disposer en plus d'un terrain de sport (baseball ou basketball).
+* Le premier groupe correspond à de grands parcs (superficie généralement comprise entre 5 et plus de 20 hectares), il comporte 116 observations. Ces grands parcs sont en moyenne équipés de deux terrains de sport et d'un équipement d'hiver. Il s'agit vraisemblablement des grands parcs identifiés dans l'article original, dans lesquels se retrouvent également les parcs à vocation métropolitaine.
+
+* Le second groupe (212 parcs) correspond à de très petits parcs (moins d'un hectare) comportant uniquement une aire de jeu.
+
+* Le troisième groupe (197 parcs) correspond à des petits parcs (entre 1 et 5 hectares), souvent équipés d'une piscine extérieure (27,4&nbsp;% des cas), et en moyenne de deux terrains de sports (essentiellement des terrains de tennis et de soccer). Ces parcs comprennent en moyenne plus de 4&nbsp;équipements et doivent donc correspondre à la classe D dans l'article original (Petit parc (1&nbsp;à 5&nbsp;ha) avec en moyenne six équipements, dont une patinoire et une piscine).
+
+* Le quatrième groupe (49 parcs) comprend des petits parcs (entre 1 et 5 hectares) qui ressemblent aux parcs du groupe 2 mais tendent à disposer en plus d'un terrain de sport (baseball ou basketball).
+
+* Le quatrième groupe (84 parcs) correspond à des petits parcs, il est caractérisé par une présence plus marquée de pataugeoires (39&nbsp;%).
+
+* Le cinquième groupe (35 parcs) est très similaire au second groupe (uniquement une aire de jeux), excepté sont d'une taille supérieure (de 1 à 5 hectares).
 
 Considérant les différences minimes entre certains des groupes que nous avons obtenus, il est clair que retenir seulement trois ou cinq groupes aurait été préférable. Notez également l'importance du choix de la distance, car nous obtenons des résultats sensiblement différents de ceux de l'article original en ayant opté pour la distance du $\Phi^2$ plutôt que la distance euclidienne au carré.
 
@@ -1517,7 +1522,9 @@ tableau_tot <- do.call(rbind, tableaux)
 
 ```{r kmeansK, echo = FALSE, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
 library(fastDummies)
-tableau_tot <- data.frame(tableau_tot)
+
+tableau_tot2 <- apply(tableau_tot, MARGIN = 2, unlist)
+tableau_tot <- data.frame(tableau_tot2)
 tableau_tot$stat <- rep(row.names(tableaux[[1]]),4)
 tableau_tot <- tableau_tot[,c("stat", names(X2))]
 
@@ -1526,7 +1533,7 @@ ok_col_names <- gsub("_","",names(X2),fixed = TRUE)
 my_table <- show_table(tableau_tot, row.names = FALSE, 
                        digits = 1,
                        col.names = c("", ok_col_names), 
-                       caption = "Statistiques descriptives de quatre groupes obtenus",
+                       caption = "Descriptions des quatre groupes obtenus",
                        align = c("l", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"))
 
 my_table2 <- group_rows(my_table,
@@ -1539,7 +1546,7 @@ my_table2 <- group_rows(my_table,
   )
 
 my_table2 <- gsub(pattern = "NApadding", replacement = "padding",x = my_table2, fixed = T)
-my_table2 <- gsub(pattern = "<th>", replacement = '<th style = "padding : 0.2em"; font-size = "14px">',x = my_table2, fixed = T)
+my_table2 <- gsub(pattern = "<th>", replacement = '<th style = "padding : 0.2em"; font-size = "13px">',x = my_table2, fixed = T)
 my_table2
 ```
 
@@ -1814,6 +1821,7 @@ tableau_tot <- do.call(rbind, tableaux)
 ```
 
 ```{r cmeansG, echo = FALSE, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
+tableau_tot <- apply(tableau_tot, MARGIN = 2, unlist)
 tableau_tot <- data.frame(tableau_tot)
 tableau_tot$stat <- rep(row.names(tableaux[[1]]),4)
 tableau_tot <- tableau_tot[,c("stat", names(X2))]
@@ -1823,7 +1831,7 @@ ok_col_names <- gsub("_","",names(X2),fixed = TRUE)
 my_table <- show_table(tableau_tot, row.names = FALSE, 
                        col.names = c("", ok_col_names),
                        align=c("l", "r", "r", "r", "r", "r", "r", "r", "r", "r", "r"),
-                       caption = "Statistiques descriptives de quatre groupes obtenus avec la méthode c-means")
+                       caption = "Description des groupes avec la méthode c-means")
 
 my_table2 <- group_rows(my_table,
            index = c(
@@ -1835,7 +1843,8 @@ my_table2 <- group_rows(my_table,
   )
 
 my_table2 <- gsub(pattern = "NApadding", replacement = "padding",x = my_table2, fixed = T)
-my_table2 <- gsub(pattern = "<th>", replacement = '<th style = "padding : 0.2em" ; font-size = "14px">',x = my_table2, fixed = T)
+my_table2 <- gsub(pattern = "padding-left: 2em", replacement = "padding-left: 0em",x = my_table2, fixed = T)
+my_table2 <- gsub(pattern = "<th>", replacement = '<th style = "padding : 0em" ; font-size = "13px">',x = my_table2, fixed = T)
 my_table2
 ```
 
