@@ -583,7 +583,7 @@ Si nous reprenons l'exemple du jeu de données iris, nous pouvons créer ce grap
 
 ```{r kmeans2, echo=FALSE, fig.align='center', fig.cap="Méthode du coude", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 
-ks <- 1:8
+ks <- 2:8
 data(iris)
 X <- as.matrix(iris[,1:4])
 D <- dist(X)
@@ -627,10 +627,9 @@ names(rows) <- c("k","exp_inertia")
 ggplot(rows) + 
   geom_path(aes(x = k, y = exp_inertia)) + 
   geom_point(aes(x = k, y = exp_inertia), color = "red") + 
-  scale_x_continuous(breaks = 2:10)+
+  scale_x_continuous(breaks = 2:8)+
   labs(x = "nombre de groupes", 
        y = "inertie expliquée")
-
 
 ```
 
@@ -736,7 +735,7 @@ is_valid <- sapply(2:nrow(tab), function(i){
 valids <- subset(tab,is_valid)[1,]
 valids2 <- subset(tab,is_valid)[2,]
 
-ggplot(tab) + 
+ggplot(tab[2:8,]) + 
   geom_line(aes(x = k, y = gap)) + 
   geom_segment(x = valids$k, xend = valids$k, y = min(tab$gap), yend = valids$gap, 
                linetype = "dashed") +
