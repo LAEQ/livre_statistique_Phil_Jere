@@ -315,7 +315,8 @@ df <- data.frame(
 
 show_table(df,
            caption = 'Conventions pour l’interprétation du *d* de Cohen',
-           position = 'HOLD_position'
+           position = 'HOLD_position',
+           align= c("l", "l")
            )
 ```
 
@@ -333,15 +334,15 @@ La fonction `t.test` permet ainsi de calculer les tests de Student et de Welch&n
 
 Les fonctions `cohens_d` et `hedges_g` du *package* `effectsize` renvoient respectivement les mesures de *d* de Cohen et du *g* de Hedge&nbsp;:
 
-* `cohens_d(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou  `cohens_d(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
-* `hedges_g(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `hedges_g(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
+* `cohens_d(x ~ y, data = DataFrame, paired = FALSE, pooled_sd = TRUE)` ou  `cohens_d(x, y, data = DataFrame, paired = FALSE, pooled_sd = TRUE)`
+* `hedges_g(x ~ y, data = DataFrame, paired = FALSE, pooled_sd = TRUE)` ou `hedges_g(x, y, data = DataFrame, paired = FALSE, pooled_sd = TRUE)`
 
-* `glass_delta(x ~ y, data = dataframe, paired = FALSE, pooled_sd = TRUE)` ou `glass_delta(x, y, data = dataframe, paired = FALSE, pooled_sd = TRUE)`
+* `glass_delta(x ~ y, data = DataFrame, paired = FALSE, pooled_sd = TRUE)` ou `glass_delta(x, y, data = DataFrame, paired = FALSE, pooled_sd = TRUE)`
 
 
 Notez que pour toutes ces fonctions, deux écritures sont possibles&nbsp;:
 
-* `x ~ y, data=` avec un `dataframe` dans lequel `x` est une variable continue et `y` et un facteur binaire
+* `x ~ y, data=` avec un `DataFrame` dans lequel `x` est une variable continue et `y` et un facteur binaire
 * `x, y` qui sont tous deux des vecteurs numériques (variable continue).
 
 **Exemple de test pour des échantillons indépendants**
@@ -395,7 +396,7 @@ if(p >= 0.05){
   cat("\n Les variances ne diffèrent pas!",
      "\n Nous utilisons le test de Student avec l'option var.equal=TRUE", sep="")
     t.test(Locataire ~ Montreal,  # variable continue ~ facteur binaire 
-           data=dfRMR,            # nom du dataframe
+           data=dfRMR,            # nom du DataFrame
            conf.level=.95,        # intervalle de confiance pour la valeur de t
            paired = FALSE,        # échantillons non pairés (indépendants)
            var.equal=TRUE)        # variances égales
@@ -403,7 +404,7 @@ if(p >= 0.05){
   cat("\n Les variances diffèrent!",
       "\n Nous utiliseons le test de Welch avec l'option var.equal=FALSE", sep="")
   t.test(Locataire ~ Montreal,   # variable continue ~ facteur binaire 
-         data=dfRMR,             # nom du dataframe
+         data=dfRMR,             # nom du DataFrame
          conf.level=.95,         # intervalle de confiance pour la valeur de t
          paired = FALSE,         # échantillons non pairés (indépendants)
          var.equal=FALSE)        # variances différentes
@@ -530,7 +531,8 @@ dfRMR <- read.dbf("data/bivariee/SRRMRMTL2016.dbf")
 dfRMR$Montreal <- factor(dfRMR$Montreal, 
                            levels=  c(0,1), 
                            labels = c("Hors de Montréal","Montréal"))
-# Calcul du nombre d'observations, des moyennes et des écarts-types des rangs pour les deux échantillons
+# Calcul du nombre d'observations, des moyennes et 
+# des écarts-types des rangs pour les deux échantillons
 group_by(dfRMR, Montreal) %>%
   summarise(
     n = n(),
@@ -724,7 +726,8 @@ show_table(tabl,
                 "$(y_{i}-\\overline{y_{A}})^2$",
                 "$(y_{i}-\\overline{y_{B}})^2$",
                 "$(y_{i}-\\overline{y_{C}})^2$"
-                )
+                ),
+                align= c("l", "c", "r", "r", "r", "r")
 )
 ```
 
@@ -796,7 +799,8 @@ show_table(tabl,
                 "$(y_{i}-\\overline{y_{A}})^2$",
                 "$(y_{i}-\\overline{y_{B}})^2$",
                 "$(y_{i}-\\overline{y_{C}})^2$"
-                )
+                ),
+            align= c("l", "c", "r", "r", "r", "r")
            )
 ```
 
@@ -858,7 +862,7 @@ Le test non paramétrique de Kruskal-Wallis est une solution de rechange à l'AN
 
 ### Mise en œuvre dans R {#sect0623}
 
-Dans une étude récente, Apparicio *et al.* [-@apparicio2018exposure] ont comparé les expositions au bruit et à la pollution atmosphérique aux heures de pointe à Montréal en fonction du mode de transport utilisé. Pour ce faire, trois équipes de trois personnes ont été constituées&nbsp;: une personne à vélo, une autre en automobile et une dernière se déplaçant en transport en commun, équipées de capteurs de pollution, de sonomètres, de vêtements biométriques et d’une montre GPS. Chaque matin, à huit heures précises, les membres de chaque équipe ont réalisé un trajet d'un quartier périphérique de Montréal vers un pôle d'enseignement (université) ou d'emploi localisé au centre-ville. Le trajet inverse était réalisé le soir à 17&nbsp;h. Au total, une centaine de trajets ont ainsi été réalisés. Des analyses de variance ont ainsi permis de comparer les trois modes (automobile, vélo et transport en commun) en fonction des temps de déplacement, des niveaux d'exposition au bruit, des niveaux d'exposition au dioxyde d'azote et de la dose totale inhalée de dioxyde d'azote. Nous vous proposons ici d'analyser une partie de ces données.
+Dans une étude récente, Apparicio *et al.* [-@2018_1] ont comparé les expositions au bruit et à la pollution atmosphérique aux heures de pointe à Montréal en fonction du mode de transport utilisé. Pour ce faire, trois équipes de trois personnes ont été constituées&nbsp;: une personne à vélo, une autre en automobile et une dernière se déplaçant en transport en commun, équipées de capteurs de pollution, de sonomètres, de vêtements biométriques et d’une montre GPS. Chaque matin, à huit heures précises, les membres de chaque équipe ont réalisé un trajet d'un quartier périphérique de Montréal vers un pôle d'enseignement (université) ou d'emploi localisé au centre-ville. Le trajet inverse était réalisé le soir à 17&nbsp;h. Au total, une centaine de trajets ont ainsi été réalisés. Des analyses de variance ont ainsi permis de comparer les trois modes (automobile, vélo et transport en commun) en fonction des temps de déplacement, des niveaux d'exposition au bruit, des niveaux d'exposition au dioxyde d'azote et de la dose totale inhalée de dioxyde d'azote. Nous vous proposons ici d'analyser une partie de ces données.
 
 
 #### Première ANOVA&nbsp;: différences entre les temps de déplacement {#sect06231}
@@ -869,10 +873,10 @@ Dans un premier temps, nous calculons les moyennes des différents groupes. Nous
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library("rstatix")
-# chargement des dataframes
+# chargement des DataFrames
 load("data/bivariee/dataPollution.RData")
 # Statistiques descriptives pour les groupes (moyenne et écart-type)
-df_TrajetsDuree %>%                                 # Nom du dataframe
+df_TrajetsDuree %>%                                 # Nom du DataFrame
     group_by(Mode) %>%                                # Variable qualitative
     get_summary_stats(DureeMinute, type = "mean_sd")  # Variable continue 
 ```
@@ -908,7 +912,7 @@ library("ggpubr")
 library("rstatix")
 # Condition 1 : normalité des échantillons
 # Test pour la normalité des échantillons (groupes) : test de Shapiro
- df_TrajetsDuree %>%          # Nom du dataframe
+ df_TrajetsDuree %>%          # Nom du DataFrame
    group_by(Mode) %>%         # Variable qualitative
    shapiro_test(DureeMinute)  # Variable continue 
 # Graphiques qqplot pour les groupes
@@ -929,7 +933,7 @@ bartlett.test(DureeMinute ~ Mode, data = df_TrajetsDuree)
 bptest(DureeMinute ~ Mode, data = df_TrajetsDuree)
 ```
 
-Deux fonctions peuvent être utilisées pour calculer l'analyse de variance&nbsp;: la fonction de base `aov(variable continue ~ variable qualitative, data = votre dataframe)` ou bien la fonction `anova_test(variable continue ~ variable qualitative, data = votre dataframe)` du package `rstatix`. Comparativement à `aov`, l'avantage de la fonction `anova_test` est qu'elle calcule aussi le *Eta^2^*.
+Deux fonctions peuvent être utilisées pour calculer l'analyse de variance&nbsp;: la fonction de base `aov(variable continue ~ variable qualitative, data = votre DataFrame)` ou bien la fonction `anova_test(variable continue ~ variable qualitative, data = votre DataFrame)` du package `rstatix`. Comparativement à `aov`, l'avantage de la fonction `anova_test` est qu'elle calcule aussi le *Eta^2^*.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library("rstatix")
@@ -952,10 +956,10 @@ Dans ce second exercice, nous analysons les différences d'exposition au bruit. 
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library("rstatix")
-# chargement des dataframes
+# chargement des DataFrames
 load("data/bivariee/dataPollution.RData")
 # Statistiques descriptives pour les groupes (moyenne et écart-type)
- df_Bruit %>%                                 # Nom du dataframe
+ df_Bruit %>%                                 # Nom du DataFrame
    group_by(Mode) %>%                                # Variable qualitative
    get_summary_stats(laeq, type = "mean_sd")  # Variable continue 
 ```
@@ -991,7 +995,7 @@ library("ggpubr")
 library("rstatix")
 # Condition 1 : normalité des échantillons
 # Test pour la normalité des échantillons (groupes) : test de Shapiro
-df_Bruit %>%          # Nom du dataframe
+df_Bruit %>%          # Nom du DataFrame
   group_by(Mode) %>%         # Variable qualitative
   shapiro_test(laeq)  # Variable continue 
 # Graphiques qqplot pour les groupes
@@ -1080,6 +1084,7 @@ Dans le cadre de cette troisième partie du livre, nous avons abordé les princi
 knitr::include_graphics('images/bivariee/figure1.jpg', dpi = NA)
 ```
 
+\newpage
 
 ## Quiz de révision du chapitre {#sect064}
 

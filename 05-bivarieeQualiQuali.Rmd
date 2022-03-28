@@ -68,10 +68,9 @@ cat("Valeurs critiques du khi-deux avec le nombre de degrés de liberté", "\n",
     round(qchisq(p=0.95,  df=12, lower.tail = FALSE),3), "avec p=0,05", "\n",
     round(qchisq(p=0.99,  df=12, lower.tail = FALSE),3), "avec p=0,01", "\n",
     round(qchisq(p=0.999, df=12, lower.tail = FALSE),3), "avec p=0,0001")
-cat("Valeur de p du khi-deux obtenu (63.54291) avec 12 degrés de liberté :", "\n",
+cat("Valeur de p du khi-deux obtenu (63,54291) avec 12 degrés de liberté :", "\n",
     pchisq(q=63.54291, df=12, lower.tail = FALSE))
 ```
-
 
 \newpage
 
@@ -79,31 +78,37 @@ cat("Valeur de p du khi-deux obtenu (63.54291) avec 12 degrés de liberté :", "
 ::: {.bloc_aller_loin data-latex=""}
 Outre le khi-deux, d'autres mesures d'association permettent de mesurer le degré d'association entre deux variables qualitatives. Les plus courantes sont reportées dans le tableau suivant. À des fins de comparaison, le khi-deux décrit précédemment est aussi reporté sur la première ligne du tableau.
 
+
 ```{r EncadreAsso, echo=FALSE, message=FALSE, warning=FALSE, auto_pdf = TRUE}
-df<-data.frame(
-      Statistique = c("Khi-deux",
-                      "Ratio de vraisemblance du khi-deux",
-                      "khi-deux de Mantel-Haenszel",
-                      "Corrélation polychorique",
-                      "Coefficient Phi",
-                      "V de Cramer"),
-      Formule = c("$\\chi^2 = \\sum \\frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$",
-                  "$G^2 = 2 \\sum f_{ij} \\ln{(\\frac{f_{ij}}{ft_{ij}})}$",
-                  "$Q_{MH}=(N−1)r^2$",
-                  "obtenue itérativement par \n maximum de vraisemblance",
-                  "$\\phi=\\sqrt{\\frac{\\chi^2}{n}}$",
-                  "$V=\\sqrt{\\frac{\\chi^2/n}{min(c-1,l-1)}}$"),
-      Propr = c("Mesure classique du khi-deux calculée à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible",
-                "Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible",
-                "avec *r* étant le coefficient de corrélation entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.",
-                "Dans le même esprit que le khi-deux de Mantel-Haenszel, la corrélation polychorique s'applique à deux variables **ordinales**. Plus spécifiquement, elle formule le postulat que deux variables théoriques normalement distribuées ont été mesurées de façon approximative avec deux échelles ordinales. Par exemple, en psychologie, le sentiment de bien-être et le sentiment de sécurité peuvent être conceptualisés comme deux variables continues normalement distribuées. Cependant, les mesurer directement est très difficile, nous avons donc recours à des échelles de Likert allant de 1 à 10. Pour cet exemple, il est pertinent d'utiliser la corrélation polychorique. Comme pour une corrélation de Pearson, la corrélation polychorique varie de -1 à 1, une valeur négative indiquant une relation inverse entre les deux variables théoriques et inversement. Une valeur de *p* peut être obtenue.",
-                "Simplement le khi-deux divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune alors $\\phi$ varie de −1 à 1; sinon, de 0 à $min(\\sqrt{c-1}, \\sqrt{l-1})$ avec *c* et *l* étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est surtout utile pour les tableaux comprenant deux modalités pour chacune des variables. Pas de valeur de *p* disponible.",
-                "Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte, plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que, pour un tableau de 2x2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.")
-)
+
+Statistique = c("Khi-deux",
+                "Ratio de vraisemblance du khi-deux",
+                "khi-deux de Mantel-Haenszel",
+                "Corrélation polychorique",
+                "Coefficient Phi",
+                "V de Cramer")
+      
+Formule = c("$\\chi^2 = \\sum \\frac{(f_{ij}-ft_{ij})^2}{ft_{ij}}$",
+            "$G^2 = 2 \\sum f_{ij} \\ln{(\\frac{f_{ij}}{ft_{ij}})}$",
+            "$Q_{MH}=(N−1)r^2$",
+            "Obtenue itérativement par \n maximum de vraisemblance",
+            "$\\phi=\\sqrt{\\frac{\\chi^2}{n}}$",
+            "$V=\\sqrt{\\frac{\\chi^2/n}{min(c-1,l-1)}}$")
+      
+Propr = c(
+"Mesure classique du khi-deux calculée à partir des différences entre les fréquences observées et attendues. Valeur de *p* disponible",
+"Calculé à partir du ratio entre les fréquences observées et attendues. Valeur de *p* disponible",
+"avec *r* étant le coefficient de corrélation entre les deux variables qualitatives; par exemple, entre les valeurs des modalités de 1 à 5 de la variable *période de construction* et celles de 1 à 4 de la variable *taille du projet* HLM. Ce coefficient est très utile quand les deux variables qualitatives ne sont pas nominales, mais **ordinales**. Valeur de *p* disponible.",
+"Dans le même esprit que le khi-deux de Mantel-Haenszel, la corrélation polychorique s'applique à deux variables **ordinales**. Plus spécifiquement, elle formule le postulat que deux variables théoriques normalement distribuées ont été mesurées de façon approximative avec deux échelles ordinales. Par exemple, en psychologie, le sentiment de bien-être et le sentiment de sécurité peuvent être conceptualisés comme deux variables continues normalement distribuées. Cependant, les mesurer directement est très difficile, nous avons donc recours à des échelles de Likert allant de 1 à 10. Pour cet exemple, il est pertinent d'utiliser la corrélation polychorique. Comme pour une corrélation de Pearson, la corrélation polychorique varie de -1 à 1, une valeur négative indiquant une relation inverse entre les deux variables théoriques et inversement. Une valeur de *p* peut être obtenue.",
+"Simplement le khi-deux divisé par le nombre d'observations. Si les deux variables qualitatives comprennent deux modalités chacune alors $\\phi$ varie de −1 à 1; sinon, de 0 à $min(\\sqrt{c-1}, \\sqrt{l-1})$ avec *c* et *l* étant le nombre de modalités en colonne et en ligne. Par conséquent, ce coefficient est surtout utile pour les tableaux comprenant deux modalités pour chacune des variables. Pas de valeur de *p* disponible.",
+"Il représente un ajustement du coefficient Phi et varie de 0 à 1. Plus sa valeur est forte, plus les deux variables sont associées. À la lecture des deux formules, vous constaterez que, pour un tableau de 2x2, la valeur du V de Carmer sera égale à celle du Coefficient Phi. Pas de valeur de *p* disponible.")
+
+df <- data.frame(Stat=Statistique, Form=Formule, Pro=Propr)
 
 if(knitr::is_latex_output()){
   show_table(df,
            col.names = c("Statistique","Formule","Propriété et interprétation"),
+          align= c("l", "l", "l"),
            caption = "Autres mesures d'association entre deux variables qualitatives",
            position = "HOLD_position",
           col.to.resize = c(1,3),
@@ -111,8 +116,11 @@ if(knitr::is_latex_output()){
 )
   
 }else{
+  df[4,2] <- "Obtenue itérativement par \\n maximum de vraisemblance"
   show_table(df,
            col.names = c("Statistique","Formule","Propriété et interprétation"),
+           align= c("l", "l", "l"),
+           position = "HOLD_position",
            caption = "Autres mesures d'association entre deux variables qualitatives",
           format = "simple"
 )
@@ -120,7 +128,6 @@ if(knitr::is_latex_output()){
 
 
 ```
-
 
 :::
 
@@ -228,7 +235,7 @@ AutresMesuresKhi2 <- function(x, y){
   nc <- ncol(testChi2$observed) # Nombre de colonnes
   l <- nrow(testChi2$observed) # Nombre de lignes
   dl <- (nc-1)*(l-1)            # Nombre de degrés de libertés
-  chi2 <- testChi2$statistic   # Valeeur du khi-deux
+  chi2 <- testChi2$statistic   # Valeur du khi-deux
   Pchi2 <- testChi2$p.value    # P pour le khi-deux
   
   #Ratio de vraisemblance du khi-deux
@@ -246,7 +253,7 @@ AutresMesuresKhi2 <- function(x, y){
   polychoricCorr <- correlation::cor_test(df1,"x","y",method = "polychoric")
   polyR <- polychoricCorr$rho
   polyP <- polychoricCorr$p
-  
+
   # Coefficient Phi et V de Cramer
   phi <- sqrt(chi2/n)
   vc <- sqrt(chi2/(n*min(nc-1,l-1)))
@@ -259,7 +266,7 @@ AutresMesuresKhi2 <- function(x, y){
                         "Corrélation Polychorique",
                         "Coefficient de Phi",
                         "V de Cramer"), 
-        Valeur = round(c(Pchi2, G, MH, polyR, phi, vc),3), 
+        Valeur = round(c(chi2, G, MH, polyR, phi, vc),3), 
         P = round(c(Pchi2, PG, PMH, polyP , NA, NA),10))
   return(dfsortie)
 }
@@ -277,7 +284,8 @@ stargazer(dfkhi2, type="text", summary=FALSE, rownames=FALSE, align = FALSE, dig
 show_table(dfkhi2,
            digits = 3,
            caption="Mesures d'association entre deux variables qualitatives",
-           position = "HOLD_position"
+           position = "HOLD_position",
+           align= c("l", "r", "r"),
            )
 ```
 
@@ -295,14 +303,14 @@ Nous vous proposons une démarche très simple pour vérifier l'association entr
 Pour repérer rapidement les cellules où les contributions au khi-deux sont les plus fortes, vous pouvez construire un graphique avec la fonction `mosaic` du *package* `vcd`. À la figure \@ref(fig:figVDC), la taille des rectangles représente les effectifs entre les deux modalités tandis que les associations sont représentées comme suit&nbsp;: 
 en gris lorsqu'elles ne sont pas significatives, en rouge pour des déviations significatives et négatives et en bleu pour des déviations significatives et positives.
 
-```{r figVDC, fig.pos="H", auto_pdf=TRUE, echo=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Figure avec la fonction mosaic du package vcd'}
-
+```{r figVDC, echo=TRUE, fig.align='center', fig.cap="Figure avec la fonction mosaic du package vcd", fig.pos="H", message=FALSE, warning=FALSE, auto_pdf=TRUE}
 library(vcd)
 mosaic(~ Taille+Periode, 
          data=dataHLM,shade=TRUE, legend=TRUE,
          labeling= labeling_border(rot_labels = c(45, 90),
          just_labels = c("left", "center")))
 ```
+::: 
 
 **Exemple d'interprétation.** «&nbsp;Les résultats du test du khi-deux signalent qu'il existe des associations entre les modalités de la taille et de la période de construction des projets d'habitation ($\chi$&nbsp;=&nbsp;63,5, *p*&nbsp;<&nbsp;0,001). Les fortes contributions au khi-deux et le signe positif ou négatif des déviations correspondantes permettent de repérer cinq associations majeures entre les modalités de taille et de période de construction des projets HLM&nbsp;: **1)** la répulsion entre les projets d’habitation de moins de 25 logements et la période de construction 1964-1974; **2)** l’attraction entre les projets d’habitation de 100&nbsp;logements et plus et la période de construction de 1969-1974; **3)** l’attraction entre les projets d’habitation de moins de 25 logements et la période de construction de 1990-1994; **4)** la répulsion entre les projets d’habitation de 50 à 99 logements et la période de construction 1990-1994; **5)** la répulsion entre les projets d’habitation de 100&nbsp;logements et plus et la période de construction 1990-1994.
 On observe donc une tendance bien marquée dans l’évolution du type de construction entre 1970 et 1994&nbsp;: entre 1969 et 1974, on a construit de grandes habitations dépassant souvent 100 logements; du milieu des années 1970 à la fin des années 1980, on privilégie la construction d’habitations de taille plus modeste, entre 50 et 100 logements; tandis qu’au début des années 1990, on opte plutôt pour des habitations de taille réduite (moins de 50 logements). Quelques chiffres à l’appui&nbsp;: sur les 56 habitations réalisées entre 1969 et 1974, 20 ont plus de 100 logements, 20 comprennent entre 50 et 99 logements et seules 10 ont moins de 25 logements. Près de la moitié des habitations construites entre 1975 et 1989 regroupent 50 à 99 logements (43,8&nbsp;% pour la période 1975-1979, 45,8&nbsp;% pour 1980-1984 et 44,7&nbsp;% pour 1985-1989). Par contre, 51&nbsp;% des habitations érigés à partir de 1990 disposent de moins de 25 logements&nbsp;» (@TheseApparicio, p. 117-118). Notez que cette évolution décroissante est aussi soutenue par le coefficient négatif de la corrélation polychorique.
@@ -319,6 +327,7 @@ Le test du khi-deux a été réalisé pour examiner la relation entre la taille 
 
 Pour un texte en anglais, consultez [https://www.socscistatistics.com/tutorials/chisquare/default.aspx](https://www.socscistatistics.com/tutorials/chisquare/default.aspx){target="_blank"}.
 
+\newpage
 
 ## Quiz de révision du chapitre {#sect055}
 
@@ -326,9 +335,4 @@ Pour un texte en anglais, consultez [https://www.socscistatistics.com/tutorials/
 Chapitre5_QualiQuali <- quizz("quizzs/Chapitre5_QualiQuali.yml", "Chapitre5_QualiQuali")
 render_quizz(Chapitre5_QualiQuali)
 ```
-
-
-
-
-
 

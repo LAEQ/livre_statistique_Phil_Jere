@@ -40,7 +40,7 @@ La seconde approche est exploratoire et très utilisée en forage ou en fouille 
 
 Pour bien construire un modèle de régression, il convient de définir un cadre conceptuel élaboré à la suite à une revue de littérature sur le sujet de recherche. Ce cadre conceptuel permet d’identifier les dimensions et les concepts clefs permettant d’expliquer le phénomène à l’étude. Par la suite, pour chacun de ces concepts ou les dimensions, il est alors possible 1)&nbsp;d’identifier les différentes variables indépendantes qui sont introduites dans le modèle et 2)&nbsp;de formuler une hypothèse pour chacune d’elles. Par exemple, pour telle ou telle variable explicative, on s’attendra à ce qu’elle fasse augmenter ou diminuer significativement la variable dépendante. De nouveau, la formulation de cette hypothèse doit s'appuyer sur une interprétation théorique de la relation entre la VI et la VD.
 
-Prenons en guise d'exemple une étude récente portant sur la multiexposition des cyclistes au bruit et à la pollution atmosphérique [@gelb2020modelling]. Dans cet article, les auteurs s’intéressent aux caractéristiques de l’environnement urbain qui contribuent à augmenter ou réduire l’exposition des cyclistes à la pollution de l’air et au bruit routier. Pour ce faire, une collecte de données primaires a été réalisée avec trois cyclistes dans les rues de Paris du 4 au 7 septembre 2017. Au total, 64 heures et 964 kilomètres ont ainsi été parcourus à vélo afin de maximiser la couverture de la ville de Paris et les types d'environnements urbains traversés.
+Prenons en guise d'exemple une étude récente portant sur la multiexposition des cyclistes au bruit et à la pollution atmosphérique [@2020_3]. Dans cet article, les auteurs s’intéressent aux caractéristiques de l’environnement urbain qui contribuent à augmenter ou réduire l’exposition des cyclistes à la pollution de l’air et au bruit routier. Pour ce faire, une collecte de données primaires a été réalisée avec trois cyclistes dans les rues de Paris du 4 au 7 septembre 2017. Au total, 64 heures et 964 kilomètres ont ainsi été parcourus à vélo afin de maximiser la couverture de la ville de Paris et les types d'environnements urbains traversés.
 
 Leur cadre conceptuel est schématisé à la figure \@ref(fig:figcadreconcept). Les deux variables indépendantes (à expliquer) sont l'exposition au dioxyde d'azote (NO~2~) et l'exposition au bruit (mesurée en décibel dB(A)). Avant d'identifier les caractéristiques de l'environnement urbain affectant ces deux expositions, plusieurs facteurs, dits **variables de contrôle**, sont considérés. Par exemple, la concentration de NO~2~ varie en fonction des conditions météorologiques (vent, température et humidité) et de la pollution d'arrière-plan (variant selon le moment de la journée, le jour de la semaine et la localisation géographique au sein de la ville). Ces dimensions ne sont pas le centre d'intérêt direct de l'étude. En effet, les auteurs s'intéressent aux impacts des caractéristiques locales de l'environnement urbain. Pour pouvoir les identifier sans biais, il est nécessaire de contrôler (filtrer) l'ensemble de ces autres facteurs.
 
@@ -186,9 +186,9 @@ Un modèle est bien construit s'il respecte plusieurs hypothèses liées à la r
 * **Hypothèse 4**. *Normalité des résidus* avec une moyenne centrée sur zéro.
 * **Hypothèse 5**. *Absence de colinéarité parfaite entre les variables explicatives*. Par exemple, dans un modèle, nous ne pouvons pas introduire à la fois les pourcentages de locataires et de propriétaires, car pour chaque observation, la somme des deux donne 100nbsp;%. Nous avons donc une corrélation parfaite entre ces deux variables&nbsp;: le coefficient de corrélation de Pearson entre ces deux variables est égal à 1. Par conséquent, le modèle ne peut pas être estimé avec ces deux variables et l'une des deux est automatiquement ôtée.
 * **Hypothèse 6**. *Homoscédasticité des erreurs (ou absence d'hétéroscédasticité)*. Les résidus doivent avoir une variance constante, c'est-à-dire qu'elle doit être la même pour chaque observation. Il y a homoscédasticité lorsqu'il y a une absence de corrélation entre les résidus et les valeurs prédites. Si cette condition n'est pas respectée, nous parlons alors d'hétéroscédasticité.
-* **Hypothèse 7**. *Le modèle est bien spécifié*. Un modèle est mal spécifié (construit) quand «&nbsp;une ou plusieurs variables non pertinentes sont incluses dans le modèle&nbsp;» ou «&nbsp;qu’une ou plusieurs variables pertinentes sont exclues du modèle&nbsp;» [@bressoux2010, pp. 138-139]. Concrètement, l'inclusion d'une variable non pertinente ou l'omission d'une variable peut entraîner une mauvaise estimation des effets des variables explicatives du modèle.
+* **Hypothèse 7**. *Le modèle est bien spécifié*. Un modèle est mal spécifié (construit) quand «&nbsp;une ou plusieurs variables non pertinentes sont incluses dans le modèle&nbsp;» ou «&nbsp;qu’une ou plusieurs variables pertinentes sont exclues du modèle&nbsp;» [@bressoux2010, p.138-139]. Concrètement, l'inclusion d'une variable non pertinente ou l'omission d'une variable peut entraîner une mauvaise estimation des effets des variables explicatives du modèle.
 
-Pour connaître les conséquences de la violation de chacune de ces hypothèses, vous pourrez notamment consulter l'excellent ouvrage de Bressoux [-@bressoux2010, pp. 103-110]. Retenez ici que le non-respect de ces hypothèses produit des coefficients de régression biaisés.
+Pour connaître les conséquences de la violation de chacune de ces hypothèses, vous pourrez notamment consulter l'excellent ouvrage de Bressoux [-@bressoux2010, p.103-110]. Retenez ici que le non-respect de ces hypothèses produit des coefficients de régression biaisés.
 
 
 ## Évaluation de  la qualité d’ajustement du modèle {#sect073}
@@ -858,7 +858,7 @@ library(ggplot2)
 # Statistique sur la variable AgeMedian qui varie de 0 à 226 ans
 summary(DataFinal$AgeMedian)
 
-# Création d'un dataframe temporaire
+# Création d'un DataFrame temporaire
 # remarquez que les autres variables indépendantes sont constantes :
 # nous leur avons attribué leur moyenne correspondante
 df <- data.frame(
@@ -911,7 +911,7 @@ La figure \@ref(fig:calculRegPoly2) démontre bien que la relation linéaire n'e
 
 #### Variable indépendante sous forme logarithmique {#sect07512}
 
-Une autre manière d'explorer une relation non linéaire est d'intégrer la variable sous forme logarithmique [@hanck2019introduction, pp. 212-218]. L'interprétation du coefficient de régression est alors plus complexe&nbsp;: un 1&nbsp;% d'augmentation de la variable $X_k$ entraîne un changement de $\mbox{0,01} \times \beta_k$ de la variable dépendante. Autrement dit, il n'est plus exprimé dans les unités de mesure originales des deux variables.
+Une autre manière d'explorer une relation non linéaire est d'intégrer la variable sous forme logarithmique [@hanck2019introduction, p.212-218]. L'interprétation du coefficient de régression est alors plus complexe&nbsp;: un 1&nbsp;% d'augmentation de la variable $X_k$ entraîne un changement de $\mbox{0,01} \times \beta_k$ de la variable dépendante. Autrement dit, il n'est plus exprimé dans les unités de mesure originales des deux variables.
 
 Au tableau \@ref(tab:regmodeleLog), le coefficient de `-6,855` pour la variable `logHABHA` s'interprète alors comme suit&nbsp;: un changement de 1&nbsp;% de la variable densité de population entraîne une diminution de $\mbox{0,01} \times -\mbox{6,855 =} -\mbox{0,07}$ de la couverture végétale dans l'île, toutes choses étant égales par ailleurs.
 
@@ -1074,7 +1074,7 @@ show_table(df,
            )
 ```
 
-* Toutes les modalités transformées en variables muettes sont introduites dans le modèle comme variables indépendantes **sauf celle servant de catégorie de référence**. Pourquoi sauf une? Si nous mettions toutes les modalités en variable muette, alors chaque observation serait repérée par une valeur de 1, «&nbsp;il y aurait alors une parfaite multicolinéarité et aucune solution unique pour les coefficients de régression ne pourrait être trouvée&nbsp;» [@bressoux2010, pp. 128]. 
+* Toutes les modalités transformées en variables muettes sont introduites dans le modèle comme variables indépendantes **sauf celle servant de catégorie de référence**. Pourquoi sauf une? Si nous mettions toutes les modalités en variable muette, alors chaque observation serait repérée par une valeur de 1, «&nbsp;il y aurait alors une parfaite multicolinéarité et aucune solution unique pour les coefficients de régression ne pourrait être trouvée&nbsp;» [@bressoux2010, p.128]. 
 
 * Par exemple, si nous choisissons la modalité *A* comme catégorie de référence, l'équation de régression s'écrit alors&nbsp;:
 
@@ -1268,7 +1268,8 @@ df$upper <- df$pred + 1.96 * df$pred_se
 
 P1 <- ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = pred)) +
-  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), color = "black", linetype = "dashed") + 
+  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), 
+               color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), )+
   scale_fill_viridis(discrete=FALSE) + 
   labs(x = "Distance au centre-ville", 
@@ -1278,7 +1279,8 @@ P1 <- ggplot(data = df) +
 
 P2 <- ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = lower)) +
-  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = lower), color = "black", linetype = "dashed") + 
+  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = lower), 
+               color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = lower), )+
   scale_fill_viridis(discrete=FALSE)+ 
   labs(x = "Distance au centre-ville", 
@@ -1288,7 +1290,8 @@ P2 <- ggplot(data = df) +
 
 P3 <- ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = upper)) +
-  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = upper), color = "black", linetype = "dashed") + 
+  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = upper), 
+               color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = upper), )+
   scale_fill_viridis(discrete=FALSE)+ 
   labs(x = "Distance au centre-ville", 
@@ -1322,7 +1325,8 @@ df$upper <- df$pred + 1.96 * df$pred_se
 
 ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = pred)) +
-  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), color = "black", linetype = "dashed") + 
+  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), 
+               color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), )+
   scale_fill_viridis(discrete=FALSE) + 
   labs(x = "Distance au centre-ville", 
@@ -1420,7 +1424,7 @@ Pour illustrer comment vérifier si le modèle respecte ou non les hypothèses d
 ### Nombre d'observations {#sect0761}
 Tous les auteurs ne s'entendent pas sur le nombre d'observations minimal que devrait comprendre une régression linéaire multiple, tant s'en faut! Parallèlement, d'autres auteurs proposent aussi des méthodes de simulation pour estimer les coefficients de régression sur un jeu de données comprenant peu d'observations. Bien qu'aucune règle ne soit bien établie, la question du nombre d'observations mérite d'être posée puisqu'un modèle basé sur trop peu d'observations risque de produire des coefficients de régression peu fiables. Par faible fiabilité des coefficients, nous entendons que la suppression d’une ou de plusieurs observations pourrait drastiquement changer l’effet et/ou la significativité d’une ou de plusieurs variables explicatives.
 
-Dans un ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, pp. 123-124] proposent deux règles de pouce (à la louche)&nbsp;:
+Dans un ouvrage classique intitulé *Using Multivariate Statistics*, Barbara Tabachnick et Linda Fidell [-@tabachnick2007, p.123-124] proposent deux règles de pouce (à la louche)&nbsp;:
 
 1. $n \geq 50 + 8k$ avec $n$ et $k$ étant respectivement les nombres d'observations et de variables indépendantes, pour tester le coefficient de corrélation multiple (R^2^).
 2. $n \geq 104 + k$ pour tester individuellement chaque variable indépendante.
@@ -2190,7 +2194,7 @@ library(ggplot2)
 library(ggeffects)
 library(ggpubr)
 
-# Création d'un dataframe pour les valeurs prédites pour chaque VI continue
+# Création d'un DataFrame pour les valeurs prédites pour chaque VI continue
 fitV1 <- ggpredict(modele3, terms = "Pct_014")
 fitV2 <- ggpredict(modele3, terms = "Pct_65P")
 fitV3 <- ggpredict(modele3, terms = "Pct_MV")
@@ -2314,7 +2318,8 @@ df$upper <- df$pred + 1.96 * df$pred_se
 
 P1 <- ggplot(data = df) + 
   geom_tile(aes(x = DistCBDkm, y = Pct_FR, fill = pred)) +
-  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), color = "black", linetype = "dashed") + 
+  stat_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), 
+               color = "black", linetype = "dashed") + 
   geom_text_contour(aes(x = DistCBDkm, y = Pct_FR, z = pred), )+
   scale_fill_viridis(discrete=FALSE) + 
   labs(x = "Distance au centre-ville", 
@@ -2387,8 +2392,9 @@ ggplot(data = df) +
        color = "")
 ```
 
+\newpage
 
-## Quiz de révision du chapitre
+## Quiz de révision du chapitre {#sect078}
 
 ```{r quizChapitre6, echo=FALSE, warning=FALSE, results="asis"}
 Chapitre7_Lm <- quizz("quizzs/Chapitre7_Lm.yml", "Chapitre7_Lm")

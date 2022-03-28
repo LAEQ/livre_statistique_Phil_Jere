@@ -70,7 +70,7 @@ Dans les sous-sections suivantes, nous décrivons deux statistiques descriptives
 
 ### Formulation {#sect0421} 
 
-La covariancecovariance (eq. \@ref(eq:cov)), écrite $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives&nbsp;:
+La covariancecovariance (équation \@ref(eq:cov)), écrite $cov(x,y)$, est égale à la moyenne du produit des écarts des valeurs des deux variables par rapport à leurs moyennes respectives&nbsp;:
 
 
 \footnotesize
@@ -221,7 +221,8 @@ df <- data.frame(
 
 show_table(df, 
            caption = "Intervalles pour l’interprétation du coefficient de corrélation habituellement utilisés en sciences sociales",
-           col.names = c("Corrélation","Négative","Positive"))
+           col.names = c("Corrélation","Négative","Positive"),
+           align= c("l", "l", "l"))
 ```
 
 Le coefficient de corrélation mis au carré représente le coefficient de détermination et indique la proportion de la variance de la variable _Y_ expliquée par la variable _X_ et inversement. Par exemple, un coefficient de corrélation de −0,70 signale que 49&nbsp;% de la variance de la variable de _Y_ est expliquée par _X_ (figure \@ref(fig:fig6)).
@@ -423,7 +424,8 @@ stargazer(dfCorr, type="text", summary=FALSE, rownames=FALSE, align = FALSE, dig
 show_table(dfCorr,
            digits = 3,
             caption = 'Comparaison de différentes corrélations pour les deux variables',
-           col.names=c("r","IC 2,5 %","IC 97,5 %", "Méthode")
+           col.names=c("r","IC 2,5 %","IC 97,5 %", "Méthode"),
+           align= c("r", "r", "r", "l")
            )
 
 ```
@@ -483,7 +485,7 @@ df <- read.csv("data/bivariee/sr_rmr_mtl_2016.csv")
 # Fonction pour la corrélation
 correlation <- function(df, i, X, Y, cor.type="pearson"){
   # Paramètres de la fonction :
-  # data : dataframe
+  # data : DataFrame
   # X et Y : noms des variables X et Y
   # cor.type : type de corrélation : c("pearson","spearman","kendall")
   # i : indice qui sera utilisé par les réplications (à ne pas modifier)
@@ -658,7 +660,6 @@ Dans cette section, nous décrivons succinctement la régression linéaire simpl
 
 \newpage
 
-
 ::: {.bloc_attention data-latex=""}
 **Corrélation, régression simple et causalité&nbsp;: attention aux raccourcis!**
 
@@ -669,9 +670,6 @@ Premièrement, la variable explicative (*X*, indépendante) doit absolument pré
 Deuxièmement, bien qu'une variable puisse expliquer efficacement une autre variable, elle peut être un **facteur confondant**. Prenons deux exemples bien connus&nbsp;:
 
 * Avoir les doigts jaunes est associé au cancer du poumon. Bien entendu, les doigts jaunes ne causent pas le cancer&nbsp;: c'est un facteur confondant puisque fumer augmente les risques du cancer du poumon et jaunit aussi les doigts.
-
-
-
 * Dans un article intitulé *Chocolate Consumption, Cognitive Function, and Nobel Laureates*, Messerli [-@Messerli] a trouvé une corrélation positive entre la consommation de chocolat par habitant et le nombre de prix Nobel pour dix millions d'habitants pour 23 pays. Ce résultat a d'ailleurs été rapporté par de nombreux médias, sans pour autant que Messerli [-@Messerli] et les journalistes concluent à un lien de causalité entre les deux variables&nbsp;:
     - Radio Canada (https://ici.radio-canada.ca/nouvelle/582457/chocolat-consommateurs-nobels)
     - La Presse (https://www.lapresse.ca/vivre/sante/nutrition/201210/11/01-4582347-etude-plus-un-pays-mange-de-chocolat-plus-il-a-de-prix-nobel.php)
@@ -683,7 +681,7 @@ Pour approfondir le sujet sur la confusion entre corrélation, régression simpl
 
 L'association entre deux variables peut aussi être simplement le fruit du hasard. Si nous explorons de très grandes quantités de données (avec un nombre impressionnant d'observations et de variables), soit une démarche relevant du forage ou de la fouille de données (*data mining* en anglais), le hasard fera que nous risquons d'obtenir des corrélations surprenantes entre certaines variables. Prenons un exemple concret&nbsp;: admettons que nous ayons collecté 100 variables et que nous calculons les corrélations entre chaque paire de variables. Nous obtenons une matrice de corrélation de 100&nbsp;x&nbsp;100, à laquelle nous pouvons enlever la diagonale et une moitié de la matrice, ce qui nous laisse un total de 4950 corrélations différentes. Admettons que nous choisissions un seuil de significativité de 5&nbsp;%, nous devons alors nous attendre à ce que le hasard produise des résultats significatifs dans 5&nbsp;% des cas. Sur 4950 corrélations, cela signifie qu'environ 247 corrélations seront significatives, et ce, indépendamment de la nature des données. Nous pouvons aisément illustrer ce fait avec la syntaxe  suivante&nbsp;:
 
-```{r corraleatoire, message=FALSE, warning=FALSE, out.width='60%', eval = FALSE}
+```{r corraleatoire, eval=FALSE, message=FALSE, warning=FALSE, out.width='60%'}
 library("Hmisc")
 nbVars <- 100 # nous utilisons 100 variables générées aléatoirement pour l'expérience
 nbExperiment <- 1000 # nous reproduirons 1000 fois l'expérience avec les 100 variables
@@ -705,7 +703,7 @@ for(i in 1:nbExperiment){
   # ajoutons les résultats dans Results
   Results <- c(Results,NbPairs)
 }
-# transformons Results en un dataframe
+# transformons Results en un DataFrame
 df <- data.frame(Values = Results)
 # affichons le résultat
 ggplot(df, aes(x = Values)) + 
@@ -750,7 +748,8 @@ df2 <- df[6:10,]
 
 show_table(list(df1, df2),
            col.names = c("Municipalité","Vélo","KMCV"),
-           caption = "Données fictives sur l'utilisation du vélo par municipalité"
+           caption = "Données fictives sur l'utilisation du vélo par municipalité",
+           align= c("l", "c", "r")
            )
 ```
 
@@ -877,7 +876,8 @@ opts <- options(knitr.kable.NA = "--")
 
 show_table(df,
            col.names = c("Municipalité","Vélo","KmCV","Valeur prédite","Résidu", "Résidu au carré"),
-           caption = "Valeurs observées, prédites et résidus"
+           caption = "Valeurs observées, prédites et résidus",
+           align= c("l", "c", "r", "r", "r", "r")
            )
 ``` 
 
@@ -948,7 +948,8 @@ opts <- options(knitr.kable.NA = "--")
 
 show_table(df, 
            caption = "Calcul du coefficient de détermination",
-           col.names = c("Municipalité", "$y_i$", "$\\widehat{y}_i$", "$\\epsilon_i$","$(y_i-\\bar{y})^2$","$(\\widehat{y}_i-y_i)^2$", "$\\epsilon_i^2$")
+           col.names = c("Municipalité", "$y_i$", "$\\widehat{y}_i$", "$\\epsilon_i$","$(y_i-\\bar{y})^2$","$(\\widehat{y}_i-y_i)^2$", "$\\epsilon_i^2$"),
+           align= c("l", "r", "r", "r", "r", "r", "r")
            )
 ```
 
@@ -1002,7 +1003,7 @@ summary(modele)
 Dans le cas présent, $F = (10 - 2)\frac{\mbox{0,8129}}{\mbox{1-0,8129}} = (10-2)\frac{\mbox{227,04}}{\mbox{52,26}} = \mbox{34,75}$ avec une valeur de $\mbox{p < 0,001}$. Par conséquent, le modèle est significatif.
 
 ### Mise en œuvre dans R {#sect0444}
-Comment calculer une régression linéaire simple dans R. Rien de plus simple avec la fonction `lm(formula = y ~ x, data= dataframe)`.
+Comment calculer une régression linéaire simple dans R. Rien de plus simple avec la fonction `lm(formula = y ~ x, data= DataFrame)`.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 df1 <- read.csv("data/bivariee/Reg.csv", stringsAsFactors = F)
@@ -1019,6 +1020,8 @@ cat("MSE=", round(MSE, 2), "; RMSE=", round(RMSE,2), sep="")
 ### Comment rapporter une régression linéaire simple {#sect0445}
 
 Nous avons calculé une régression linéaire simple pour prédire le pourcentage d'actifs occupés utilisant le vélo pour se rendre au travail en fonction de la distance entre la municipalité et le centre-ville de la région métropolitaine (en kilomètres). Le modèle obtient un *F* de Fisher significatif (*F*(1,8)&nbsp;=&nbsp;34,75, *p*&nbsp;<&nbsp;0,001) et un *R^2^* de 0,813. Le pourcentage de cyclistes peut être prédit par l'équation suivante&nbsp;: 30,603 - 1,448 x (distance au centre-ville en km).
+
+\newpage
 
 ## Quiz de révision du chapitre {#sect045}
 

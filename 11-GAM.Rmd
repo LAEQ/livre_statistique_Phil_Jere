@@ -1,5 +1,9 @@
 # Modèles généralisés additifs  {#chap11}
 
+::: {.bloc_attention data-latex=""}
+Ce chapitre n'a pas encore fait l'objet d'une révision linguistique. Il comprend certainement plusieurs coquilles... Une version révisée sera mise à jour prochainement.
+:::
+
 Dans les précédents chapitres, nous avons eu l'occasion d'explorer toute une panoplie de modèles&nbsp;: régressions linéaires, modèles généralisés, modèles généralisés à effets mixtes et les modèles multiniveaux. Dans ce chapitre, nous abordons une nouvelle extension dans le monde des régressions&nbsp;: les modèles généralisés additifs (*Generalized additive model* en anglais — GAM). Cette extension a pour but de permettre de modéliser des relations non linéaires entre les variables indépendantes et la variable dépendante.
 
 ::: {.bloc_package data-latex=""}
@@ -11,7 +15,7 @@ Dans ce chapitre, nous utilisons principalement les *packages* suivants&nbsp;:
   - `metR` pour placer des étiquettes sur des isolignes.
   
 * Pour jouer avec des *splines*&nbsp;:
-  - `splines2` pour construire les fonctions de base de nombreuses splines.
+  - `splines2` pour construire les fonctions de base de nombreuses *splines*.
   - `segmented` pour ajuster des modèles avec des coefficients variant par segment.
   
 * Pour ajuster des modèles GAM&nbsp;:
@@ -307,7 +311,7 @@ P1 <- ggplot() +
   ylim(0,20)
 
 
-# Cubic spline
+# spline cubique
 basis <- bSpline(dataset$x2, df = 7, degre = 3)
 model <- lm(y ~ basis, data = dataset)
 coefs <- coefficients(model)[2:length(coefficients(model))]
@@ -377,7 +381,7 @@ ggarrange(P1,P2,P3,P4, ncol = 2, nrow = 2)
 
 Les approches que nous venons de décrire sont regroupées sous l'appellation de modèles additifs. Dans les prochaines sous-sections, nous nous concentrons davantage sur les *splines* du fait de leur plus grande flexibilité.
 
-## Spline de régression et spline de lissage {#sect112}
+## *Spline* de régression et *spline* de lissage {#sect112}
 
 Dans les exemples précédents, nous avons vu que la construction d'une *spline* nécessite d'effectuer deux choix importants&nbsp;: le nombre de nœuds et leur localisation. Un trop grand nombre de nœuds conduit à un surajustement du modèle alors qu'un trop faible nombre de nœuds conduit à un sous-ajustement. Lorsque ces choix sont effectués par l'utilisateur et que les bases sont ajoutées manuellement dans le modèle tel que décrit précédemment, nous parlons alors de **splines de régression** (*Regression Spline* en anglais).
 
@@ -386,23 +390,23 @@ Une approche a été proposée pour faciliter le choix du nombre de nœuds il s'
 * plus $\lambda$ tend vers 0, plus la pénalisation est faible et plus la *spline* de lissage devient une simple *spline* de régression; 
 * à l'inverse, plus elle est forte, plus la pénalité est importante, au point que la *spline* peut se résumer à une simple ligne droite. 
 
-Cela est illustré à la figure \@ref(fig:figgam12) comprenant trois splines avec 20 nœuds et des valeurs $\lambda$ différentes contrôlant la force de la pénalité. 
+Cela est illustré à la figure \@ref(fig:figgam12) comprenant trois *splines* avec 20 nœuds et des valeurs $\lambda$ différentes contrôlant la force de la pénalité. 
 
 Bien évidemment, nous constatons qu'avec la *spline* de régression (non pénalisée), 20 nœuds conduisent à un fort surajustement du modèle. En revanche, les *splines* de lissage (pénalisées) permettent de corriger ce problème de surajustement. Toutefois, une valeur trop importante de $\lambda$ conduit à un sous-ajustement du modèle (ici $\lambda = 3$ et $\lambda = 100$, lignes verte et bleue).
 
 
 ```{r figgam12, echo=FALSE, fig.align='center', fig.cap="Pénalisation des splines", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 
-# Model1 : regression spline sans penalite
+# Modèle 1 : régression spline sans pénalite
 mod1 <- gam(y~ s(x2, k = 20, fx = T), data = dataset)
 
-# Model2 : regression spline avec penalite = 3
+# Modèle 2 : régression spline avec pénalite = 3
 mod2 <- gam(y~ s(x2, k = 20, sp = 0.5), data = dataset)
 
-# Model3 : regression spline avec penalite = 10
+# Modèle 3 : régression spline avec pénalite = 10
 mod3 <- gam(y~ s(x2, k = 20, sp = 3), data = dataset)
 
-# Model3 : regression spline avec penalite = 100
+# Modèle 4 : régression spline avec pénalite = 100
 mod4 <- gam(y~ s(x2, k = 20, sp = 100), data = dataset)
 
 df <- data.frame(
@@ -425,10 +429,10 @@ ggplot(df) +
 ```
 
 
-Avec les *splines* de lissage, l'enjeu est alors de sélectionner une valeur optimale de $\lambda$. Le plus souvent, les *packages* R **estiment eux-mêmes** ce paramètre à partir des données utilisées dans le modèle. Toutefois, gardez en mémoire que vous pouvez modifier ce paramètre. Mentionnons également que les splines de lissage peuvent être reparamétrées dans un modèle pour être intégrées comme des effets aléatoires. Dans ce cas-ci, $\lambda$ est remplacé par un simple paramètre de variance directement estimé dans le modèle [@wood2004stable].
+Avec les *splines* de lissage, l'enjeu est alors de sélectionner une valeur optimale de $\lambda$. Le plus souvent, les *packages* R **estiment eux-mêmes** ce paramètre à partir des données utilisées dans le modèle. Toutefois, gardez en mémoire que vous pouvez modifier ce paramètre. Mentionnons également que les *splines* de lissage peuvent être reparamétrées dans un modèle pour être intégrées comme des effets aléatoires. Dans ce cas-ci, $\lambda$ est remplacé par un simple paramètre de variance directement estimé dans le modèle [@wood2004stable].
 
 
-## Interpréter une spline {#sect113}
+## Interprétation d'une *spline* {#sect113}
 
 L'interprétation d'une *spline* se fait à l'aide de graphiques. En effet, puisqu'elle est composée d'un ensemble de coefficients appliqués à des bases, il est difficile d'interpréter directement ces derniers. Nous préférons alors représenter la fonction obtenue à l'aide d'un graphique, illustrant son **effet marginal**. Ce graphique est construit en trois étapes&nbsp;: 
 
@@ -443,9 +447,9 @@ Il est aussi possible dans le cas des *splines* de lissage, d'interpréter les *
 
 ## Multicolinéarité non linéaire {#sect114}
 
-Lorsque des *splines* sont ajoutées dans un modèle, il est nécessaire de vérifier si ces dernières ne posent pas un problème de multicolinéarité. Cependant, le VIF ne peut plus être utilisé du fait de la non-linéarité des relations modélisées. Il est alors nécessaire d'utiliser une autre mesure&nbsp;: la *concurvité* (*concurvity*) permettant de mesurer sur une échelle allant de 0 à 1 à quel point deux splines ont en réalité capturé le même effet et se substituent l'une à l'autre. Une valeur de 0 indique une absence totale de concurvité alors qu'une valeur de 1 indique que deux splines sont rigoureusement identiques (modèle non identifiable). 
+Lorsque des *splines* sont ajoutées dans un modèle, il est nécessaire de vérifier si ces dernières ne posent pas un problème de multicolinéarité. Cependant, le VIF ne peut plus être utilisé du fait de la non-linéarité des relations modélisées. Il est alors nécessaire d'utiliser une autre mesure&nbsp;: la *concurvité* (*concurvity*) permettant de mesurer sur une échelle allant de 0 à 1 à quel point deux *splines* ont en réalité capturé le même effet et se substituent l'une à l'autre. Une valeur de 0 indique une absence totale de concurvité alors qu'une valeur de 1 indique que deux *splines* sont rigoureusement identiques (modèle non identifiable). 
 
-## Aller plus loin avec les splines {#sect115}
+## Aller plus loin avec les *splines* {#sect115}
 
 Jusqu'ici nous avons seulement présenté le cas le plus simple pour lequel une *spline* est construite à partir d'une seule variable dépendante continue, mais elles peuvent être utilisées dans de nombreux autres contextes et ont une incroyable flexibilité. Nous détaillons ici trois exemples fréquents&nbsp;: les *splines* cycliques, les *splines* variant par groupe et les splines multivariées. Pour une description complète des effets non linéaires possibles avec **mgcv**, n'hésitez pas à consulter sa [documentation](https://stat.ethz.ch/R-manual/R-patched/library/mgcv/html/smooth.terms.html).
 
@@ -468,7 +472,7 @@ show_table(df,
 ```
 
 
-### Splines cycliques {#sect1151}
+### *Splines* cycliques {#sect1151}
 
 Une *spline* cyclique est une extension d'une *spline* classique dont les bases aux extrémités sont spécifiées de telle sorte que la valeur au départ de la *spline* soit la même que celle à la fin de la *spline*. Ceci permet à la *spline* de former une boucle ce qui est particulièrement intéressant pour des variables dont le 0 et la valeur maximale correspondent en réalité à la même valeur. L'exemple le plus parlant est certainement le cas d'une variable représentant la mesure d'un angle en degrés. Les valeurs de 0 et 360 sont identiques et les valeurs 350 et 10 sont toutes les deux à une distance de 10 degrés de 0. Un autre exemple possible serait de considérer l'heure comme une variable continue; dans ce cas, 24&nbsp;h et 0&nbsp;h signifient la même chose.
 
@@ -511,7 +515,7 @@ ggplot() +
 
 ### Splines par groupe {#sect1152}
 
-Tel qu'abordé dans les chapitres précédents, il arrive régulièrement que les observations appartiennent à  différents groupes. Dans ce cas de figure, nous pouvons être amené à vérifier si la relation décrite par une *spline* est identique pour chacun des groupes d'observations. Il s'agit alors d'ajuster une *spline* différente par groupe. Dans l'exemple précédent, chaque valeur de NO~2~ a été mesurée par une station fixe de mesure spécifique. Compte tenu du fait que l'environnement autour de chaque station est particulier, nous pourrions s'attendre à ce que les valeurs de NO^2 ne présentent pas exactement les mêmes patrons journaliers pour chaque station.
+Tel qu'abordé dans les chapitres précédents, il arrive régulièrement que les observations appartiennent à  différents groupes. Dans ce cas de figure, nous pouvons être amené à vérifier si la relation décrite par une *spline* est identique pour chacun des groupes d'observations. Il s'agit alors d'ajuster une *spline* différente par groupe. Dans l'exemple précédent, chaque valeur de NO~2~ a été mesurée par une station fixe de mesure spécifique. Compte tenu du fait que l'environnement autour de chaque station est particulier, nous pourrions s'attendre à ce que les valeurs de NO^2^ ne présentent pas exactement les mêmes patrons journaliers pour chaque station.
 
 À la figure \@ref(fig:figgam14), il est possible de constater que le NO~2~ suit globalement le même patron temporel pour l'ensemble des stations à l'exception de trois d'entres-elles. Il s'agit en réalité de stations situées dans des secteurs ruraux de la région parisienne et donc moins impactées par le trafic routier.
 
@@ -546,7 +550,7 @@ ggplot() +
 ```
 
 
-### Splines multivariées et splines d'interaction {#sect1153}
+### *Splines* multivariées et *splines* d'interaction {#sect1153}
 
 Jusqu'ici nous n'avons considéré que des *splines* ne s'appliquant qu'à une seule variable indépendante; cependant, il est possible de construire des splines multivariées s'ajustant simultanément sur plusieurs variables indépendantes. L'objectif est alors de modéliser les potentielles interactions non linéaires entre les variables indépendantes combinées dans une même *spline*. Prenons un exemple concret, dans la section sur les modèles GLM, nous avions modélisé la couverture des aires de diffusion (AD) à Montréal par des îlots de chaleur. Parmi les variables indépendantes, nous avions notamment utilisé la distance au centre-ville ainsi que la part de la surface végétalisée des AD. Nous pourrions formuler l'hypothèse que ces deux variables impactent conjointement et de façon non linéaire la proportion de la surface d'îlot de chaleur dans chaque AD. Pour représenter une *spline* sur plusieurs dimensions, nous utilisons alors une carte de chaleur dont la couleur représente la valeur de la variable dépendante prédite en fonction des deux variables indépendantes.
 
@@ -587,7 +591,7 @@ Dans notre première analyse de ces données, nous avions ajusté une polynomial
 library(splines2)
 # Création des bases de la spline
 basis <- bSpline(x = dataset$prt_veg, df =4, intercept = FALSE)
-# Ajouter les bases au dataframe
+# Ajouter les bases au DataFrame
 basisdf <- as.data.frame(basis)
 names(basisdf) <- paste('spline',1:ncol(basisdf),sep='')
 dataset <- cbind(dataset, basisdf)
@@ -619,7 +623,7 @@ AIC(refmodel, model0, model1)
 Nous constatons que la valeur d'AIC du second modèle est plus réduite, indiquant un meilleur ajustement du modèle avec une *spline* de régression. Notons cependant que la différence avec la *spline* de lissage est anecdotique (deux points d'AIC) et que nous connaissions a priori le bon nombre de nœuds à utiliser. Pour des relations plus complexes, les *splines* de lissage ont tendance à nettement mieux performer. Voyons à présent comment représenter ces trois termes non linéaires.
 
 ```{r message=FALSE, warning=FALSE, figgam16, fig.align='center', fig.cap="Comparaison d'une spline et d'une polynomiale", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
-# Création d'un dataframe de prédiction dans lequel seule
+# Création d'un DataFrame de prédiction dans lequel seule
 # la variable prt_veg varie.
 dfpred <- data.frame(
   prt_veg = seq(min(dataset$prt_veg), max(dataset$prt_veg), 0.5),
@@ -738,7 +742,7 @@ Cela a pour effet d'améliorer de nouveau le modèle. Pour vérifier si l'augmen
 library(viridis)
 library(metR) # pour placer des étiquettes sur les isolignes
 
-# Création d'un dataframe fictif pour les prédictions
+# Création d'un DataFrame fictif pour les prédictions
 dfpred <- expand.grid(
   prt_veg =mean(dataset$prt_veg),
   A65Pct = mean(dataset$A65Pct),
@@ -974,9 +978,9 @@ ggplot(df) +
 
 :::
 
-## Quiz final sur les modèles GAM {#sect118N}
+\newpage
 
-Voici un court quiz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
+## Quiz de révision du chapitre {#sect118}
 
 ```{r quizGAM, results = "asis", warning=FALSE, echo=FALSE}
 quizz_gam <- quizz("quizzs/GAM.yml", "quizz_classif")

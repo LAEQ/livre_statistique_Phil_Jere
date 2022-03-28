@@ -1,9 +1,9 @@
 --- 
-title: "Méthodes quantitatives en sciences sociales avec R"
+title: "Méthodes quantitatives en sciences sociales : un grand bol d'R"
 author: "Philippe Apparicio et Jérémy Gelb"
-date: "`r Sys.Date()`"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
 colorlinks: yes
-cover-image: images/cover.png
+cover-image: images/introduction/ImageCouverture.png
 bibliography: book.bib
 description: Ce livre vise à décrire une panoplie de méthodes quantitatives utilisées en sciences sociales avec le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec rmarkdown. Le contenu est pensé pour être accessible à tous et toutes, même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront des sections sur des méthodes plus avancées comme les modèles à effets mixtes, les modèles multiniveaux, les modèles généralisés additifs ainsi que les méthodes factorielles et de classification. Ceux et celles souhaitant migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées dans R. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique, sans pour autant que la rigueur statistique ne soit négligée.
 documentclass: book
@@ -26,6 +26,39 @@ lang: fr
 ---
 
 
+```{r echo=FALSE, results="asis"}
+if(knitr::is_latex_output() == FALSE){
+   cat("# Bienvenue {-}")
+   cat("\n\n")
+}
+```
+
+```{r  echo=FALSE, out.width='100%', fig.pos = "H"}
+if(knitr::is_latex_output() == FALSE){
+    knitr::include_graphics('images/ImageCouverture.png', dpi = NA)
+}
+```
+  
+```{r echo=FALSE, results="asis"}
+if(knitr::is_latex_output() == FALSE){  
+   cat("\n\n**Auteurs&nbsp;:** Philippe Apparicio et Jérémy Gelb")
+   cat("\n\n**Remerciements&nbsp;:** Ce manuel a été réalisé avec le soutien de la fabriqueREL. Fondée en 2019, la fabriqueREL est portée par divers établissements d’enseignement supérieur du Québec et agit en collaboration avec les services de soutien pédagogique et les bibliothèques. Son but est de faire des ressources éducatives libres (REL) le matériel privilégié en enseignement supérieur au Québec.")
+   cat("\n\n**Maquette de la page couverture&nbsp;:** Graphe Logo (https://www.graphelogo.com/)")
+   cat("\n\n**Mise en page&nbsp;:** Philippe Apparicio et Jérémy Gelb")
+   cat("\n\n**Relecture&nbsp;:** Denise Latreille")
+   cat("\n\n© Philippe Apparicio et Jérémy Gelb")
+  cat("\n\n**Pour citer cet ouvrage&nbsp;:** Apparicio Philippe et Jérémy Gelb (2022). *Méthodes quantitatives en sciences sociales&nbsp;: un grand bol d'R*. Institut national de la recherche scientifique. Licence CC&nbsp;BY-SA.") 
+   cat("\n\n")
+}
+```
+
+
+```{r  echo=FALSE, out.width='100%', fig.pos = "H"}
+if(knitr::is_latex_output() == FALSE){
+    knitr::include_graphics('images/introduction/CouvertureP2.png', dpi = NA)
+}
+```
+
 # Préface {-}
 
 Ce livre vise à décrire une panoplie de méthodes quantitatives utilisées en sciences sociales avec le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec [rmarkdown](https://rmarkdown.rstudio.com/). Le contenu est pensé pour être accessible à tous et toutes, même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront des sections sur des méthodes plus avancées comme les modèles à effets mixtes, les modèles multiniveaux, les modèles généralisés additifs ainsi que les méthodes factorielles et de classification. Ceux et celles souhaitant migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées dans R. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique, sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite et installez-vous dans votre meilleur fauteuil. Bonne lecture!
@@ -41,18 +74,18 @@ Ce livre vise à décrire une panoplie de méthodes quantitatives utilisées en 
 - **Redistribuer**, c'est-à-dire distribuer en totalité ou partiellement le manuel ou une version révisée sur d'autres canaux que le site Web du livre (par exemple, sur le site Moodle de votre université ou en faire une version imprimée).
 
 ```{r Licence, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Licence Creative Commons du livre",  out.width='100%'}
-knitr::include_graphics('images/Licence.jpg', dpi = NA)
+knitr::include_graphics('images/introduction/Licence.jpg', dpi = NA)
 ```
 
 
-La licence de ce livre, CC BY-SA (figure \@ref(fig:Licence)), oblige donc de&nbsp;:
+La licence de ce livre, CC BY-SA (figure \@ref(fig:Licence)), oblige donc à&nbsp;:
 
 - Attribuer la paternité de l’auteur dans vos versions dérivées, ainsi qu’une mention concernant les grandes modifications apportées, en utilisant la formulation suivante&nbsp;:
-Apparicio, Philippe et Jérémy Gelb. 2022. *Méthodes quantitatives en sciences sociales avec R*. Institut national de la recherche scientifique. CC BY-SA (4.0).
+Apparicio, Philippe et Jérémy Gelb. 2022. *Méthodes quantitatives en sciences sociales : un grand bol d'R*. Institut national de la recherche scientifique. CC BY-SA (4.0).
 - Utiliser la même licence ou une licence similaire à toutes versions dérivées.
 
 ::: {.bloc_astuce data-latex=""}
-**Suggestions d'adaptation du manuel**. 
+**Suggestions d'adaptation du manuel**
 
 Notez que pour chaque méthode statistique abordée dans le livre sont disponibles une description détaillée et une mise en œuvre dans R. Par conséquent, plusieurs adaptations du manuel sont possibles&nbsp;:
 
@@ -137,7 +170,7 @@ Dans le chapitre \@ref(chap03), nous illustrons les incroyables capacités graph
 **Partie 3. Analyses bivariées.** Cette troisième partie comprend trois chapitres dans lesquelles sont présentées les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables. Plus spécifiquement, nous présentons puis mettons en œuvre dans R les méthodes permettant d'explorer les relations entre deux variables quantitatives (covariance, corrélation et régression linéaire simple) dans le chapitre \@ref(chap04), deux variables qualitatives (tableau de contingence et test du khi-deux) dans le chapitre \@ref(chap05) et une variable quantitative avec une variable qualitative avec deux modalités (tests de Student, de Welch et de Wilcoxon) ou avec plus de deux modalités (ANOVA et test de Kruskal-Wallis) dans le chapitre \@ref(chap06).
 
 
-**Partie 4. Modèles de régression**. Dans cette quatrième partie, sont présentées les principales méthodes de statistique inférentielle utilisées en sciences sociales&nbsp;: la régression linéaire multiple (chapitre \@ref(chap07)), les régressions linéaires généralisées (chapitre \@ref(chap08)), les régressions à effets mixtes (chapitre \@ref(chap09)), les régressions à effets mixtes (chapitre \@ref(chap10)), les régressions multiniveaux (chapitre \@ref(chap11)) et les modèles généralisés additifs (chapitre \@ref(chap12)).
+**Partie 4. Modèles de régression**. Dans cette quatrième partie, sont présentées les principales méthodes de statistique inférentielle utilisées en sciences sociales&nbsp;: la régression linéaire multiple (chapitre \@ref(chap07)), les régressions linéaires généralisées (chapitre \@ref(chap08)), les régressions à effets mixtes (chapitre \@ref(chap09)), les régressions multiniveaux (chapitre \@ref(chap10)),  (chapitre \@ref(chap11)) et les modèles généralisés additifs (chapitre \@ref(chap11)).
 
 **Partie 5. Analyses exploratoires multivariées**. Dans cette cinquième partie, sont abordées les méthodes de statistique exploratoire et descriptive permettant de décrire des tableaux de données comprenant plusieurs variables. Nous décrivons d'abord les méthodes de réduction de données&nbsp;: les méthodes factorielles dans le chapitre \@ref(chap12) (analyses de composantes principales, analyses factorielles de correspondances, analyses factorielles de correspondances multiples) et les méthodes de classification non supervisées dans le chapitre \@ref(chap13) (classification ascendante hiérarchique, k-moyennes, k-médianes, k-médoïdes et leurs extensions en logique floue comme les c-moyennes et c-médianes).
 
@@ -182,7 +215,7 @@ Fait cocasse, l'écriture de ce livre a démarré lorsque Philippe Apparicio ét
 
 
 ```{r CargoAmbre, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo et Ambrée, chiots de la Fondation Mira",  out.width='70%'}
-knitr::include_graphics('images/CargoAmbre.png', dpi = NA)
+knitr::include_graphics('images/introduction/CargoAmbre.png', dpi = NA)
 ```
 
 
@@ -306,7 +339,23 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
     if(length(df2) == 1){
       df2 <- df2[[1]]
     }
-    table1 <- df2 %>% 
+    
+    if(class(df2) == "list"){
+      table1 <- df2 %>% 
+      #mutate_all(linebreak)  %>% 
+       knitr::kable(
+        booktabs = TRUE,
+        format = "latex",
+        digits = digits,
+        format.args = list(decimal.mark = ",", big.mark = "\ua0"),
+        valign = 't', row.names = row.names,
+        align = align,
+        col.names = col.names,
+        caption = caption,
+        escape = FALSE, ...) %>% 
+        kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
+    }else{
+      table1 <- df2 %>% 
       mutate_all(linebreak)  %>% 
        knitr::kable(
         booktabs = TRUE,
@@ -319,6 +368,8 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
         caption = caption,
         escape = FALSE, ...) %>% 
         kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
+    }
+    
     if (is.null(col.to.resize) == FALSE){
       table1 <- table1 %>% 
         kableExtra::column_spec(col.to.resize, width=col.width)

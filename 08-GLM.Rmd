@@ -1,6 +1,9 @@
 # Régressions linéaires généralisées (GLM) {#chap08}
 
-**Les modèles linéaires généralisés**
+::: {.bloc_attention data-latex=""}
+Ce chapitre n'a pas encore fait l'objet d'une révision linguistique. Il comprend certainement plusieurs coquilles... Une version révisée sera mise à jour prochainement.
+:::
+
 
 Dans ce chapitre, nous présentons les modèles linéaires généralisés plus communément appelés GLM (*generalized linear models* en anglais). Il s’agit d’une extension directe du modèle de régression linéaire multiple (LM) basé sur la méthode des moindres carrés ordinaires, décrite dans le chapitre précédent. Pour aborder cette section sereinement, il est important d’avoir bien compris le concept de distribution présenté dans la section \@ref(sect024). À la fin de cette section, vous serez en mesure de&nbsp;:
 
@@ -295,7 +298,7 @@ Le graphique à réaliser comprend donc la distribution de la variable dépendan
 Notez ici que **simuler des données** à partir d’un modèle et **effectuer des prédictions** à partir d’un modèle sont deux opérations différentes. Prédire une valeur à partir d’un modèle revient simplement à appliquer son équation de régression à des données. Si lnous réutilisons les mêmes données, la prédiction renvoie toujours le même résultat, il s’agit de la partie systématique (ou déterministe) du modèle. 
 Pour illustrer cela, admettons que nous ayons ajusté un modèle GLM de type gaussien (fonction de lien identitaire) avec trois variables continues $X_1$, $X_2$ et $X_3$ et des coefficients respectifs de 0,5, 1,2 et 1,8 ainsi qu’une constante de 7. Nous pouvons utiliser ces valeurs pour prédire la valeur attendue de $Y$ quand $X_1= 3$, $X_2= 5$ et $X_3 = 5$&nbsp;: 
 
-$Prédiction = \mbox{7 + 3}\times \mbox{0,5 + 5}\times \mbox{1,2 + 5}\times\mbox{1,8 = 23,5}$
+$\mbox{Prédiction} = \mbox{7 + 3}\times \mbox{0,5 + 5}\times \mbox{1,2 + 5}\times\mbox{1,8 = 23,5}$
 
 En revanche, simuler des données à partir d’un modèle revient à ajouter la dimension stochastique (aléatoire) du modèle. Puisque notre modèle GLM est gaussien, il comporte un paramètre $\sigma$ (son écart-type); admettons pour cet exemple qu’il soit de 1,2. Ainsi, avec les données précédentes, il est possible de simuler un ensemble infini de valeurs dont la distribution est la suivante&nbsp;: $Normal(\mu = 23,5 \text{ , } \sigma = 1,2)$. 95&nbsp;% du temps, ces valeurs simulées se trouveront dans l’intervalle $\mbox{[21,1-25,9]}$ ($\mu - 2\sigma \text{; } \mu + 2\sigma$), puisque cette distribution est normale. Les valeurs simulées dépendent donc de la distribution choisie pour le modèle et de l’ensemble des paramètres du modèle, pas seulement de l’équation de régression.
 
@@ -343,6 +346,7 @@ df <- data.frame(
 show_table(df, 
     caption = 'Exemple de matrice de confusion',
     col.names = c("Valeur prédite / Valeur réelle","A", "B", "Total (%)"),
+    align= c("l", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -363,6 +367,7 @@ df <- data.frame(
 show_table(df, 
     caption = 'Exemple de matrice de confusion multinomiale',
     col.names = c("Valeur prédite / Valeur réelle","A", "B","C", "D", "Total (%)"),
+    align= c("l", "r", "r", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -412,6 +417,7 @@ indicators <- data.frame(
 show_table(indicators, 
     caption = 'Inteprétation des valeurs du coefficient de Kappa',
     col.names = c("K","Interprétation"),
+    align= c("l", "l"),
     position = "HOLD_position"
 )
 ```
@@ -430,6 +436,7 @@ indicators <- data.frame(
 show_table(indicators, 
     caption = 'Indicateurs de qualité de prédiction',
     col.names = c("", "précision", "rappel", "F1"),
+    align= c("l", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -455,7 +462,7 @@ LR = 2(loglik(M_2) - loglik(M_1))
 
 Avec $M_2$ un modèle reprenant toutes les variables du modèle $M_1$, impliquant donc que  $loglik(M_2) >= loglik(M_1))$. 
 
-Avec ce test, nous supposons que le modèle $M_2$ qui comporte plus de paramètres que le modèle $M_1$ devrait être mieux ajusté aux données. Si c'est bien le cas, la différence entre les *loglikelihood* de deux modèles devrait être supérieure à zéro. La valeur calculée *LR* suit une distribution du Khi^2^ avec un nombre de degrés de liberté égal au nombre de paramètres supplémentaires dans le modèle $M_2$ comparativement à $M_1$. Avec ces deux informations, il est possible de déterminer la valeur de *p* associée à ce test et de déterminer si $M_2$ est significativement mieux ajusté que $M_1$ aux données. Notez qu'il existe aussi deux autres tests (test de Wald et test de Lagrange) ayant la même fonction. Il s'agit, dans les deux cas, d'approximation du test de rapport des vraisemblances dont la puissance statistique est inférieure au test de rapport de vraisemblance [@NeymanLemma].
+Avec ce test, nous supposons que le modèle $M_2$ qui comporte plus de paramètres que le modèle $M_1$ devrait être mieux ajusté aux données. Si c'est bien le cas, la différence entre les *loglikelihood* de deux modèles devrait être supérieure à zéro. La valeur calculée *LR* suit une distribution du khi-deux avec un nombre de degrés de liberté égal au nombre de paramètres supplémentaires dans le modèle $M_2$ comparativement à $M_1$. Avec ces deux informations, il est possible de déterminer la valeur de *p* associée à ce test et de déterminer si $M_2$ est significativement mieux ajusté que $M_1$ aux données. Notez qu'il existe aussi deux autres tests (test de Wald et test de Lagrange) ayant la même fonction. Il s'agit, dans les deux cas, d'approximation du test de rapport des vraisemblances dont la puissance statistique est inférieure au test de rapport de vraisemblance [@NeymanLemma].
 
 Dans les prochaines sections, nous décrivons les modèles GLM les plus couramment utilisés. Il en existe de nombreuses variantes que nous ne pouvons pas toutes décrire ici. L'objectif est de comprendre les rouages de ces modèles afin de pouvoir, en cas de besoin, transposer ces connaissances sur des modèles plus spécifiques. Pour faciliter la lecture de ces sections, nous vous proposons une carte d’identité de chacun des modèles présentés. Elles contiennent l’ensemble des informations pertinentes à retenir pour chaque modèle.
 
@@ -502,7 +509,7 @@ show_table(tableau,
 Les seuls paramètres à estimer du modèle sont les coefficients $\beta$ et la constante $\beta_0$. La fonction de lien logistique transforme la valeur de ces coefficients, en conséquence, **ils ne peuvent plus être interprétés directement**. $\beta_0$ et $\beta$ sont exprimés dans une unité particulière: des logarithmes de rapports de cote (*log odd ratio*). Le rapport de cote est relativement facile à interpréter contrairement à son logarithme. Pour l’obtenir, il suffit d’utiliser la fonction exponentielle (l’inverse de la fonction logarithme) pour passer des log rapport de cote à de simples rapports de cote.
 Donc si $exp(\beta)$ est inférieur à 1, il réduit les chances d’observer l’évènement et inversement si $exp(\beta)$ est supérieur à 1. 
 
-Par exemple, admettons que nous ayons eu un coefficient $\beta_1$ de 1,2 pour une variable $X_1$ dans une régression logistique. Il est nécessaire d'utiliser son exponentiel pour l'interpréter de façon intuitive. $mbox{exp(1,2) = 3,32}$, ce qui signifie que lorsque $X_1$ augmente d'une unité, les chances d'observer 1 plutôt que 0 comme valeur de *Y* sont multipliées par 3,32. Admettons maintenant que $\beta_1$ vaille −1,2, nous calculons donc $mbox{exp(-1,2) = 0,30}$, ce qui signifie qu'à chaque augmentation d'une unité de $X_1$, les chances  d'observer 1 plutôt que 0 comme valeur de *Y* sont multipliées par 0,30. En d'autres termes,les chances d'observer 1 plutôt que 0 sont divisées par  3,33 ($mbox{1/0,30 = 3,33}$), soit une diminution de 70&nbsp;% ($mbox{1-0,3 = 0,7}$) des chances d'observer 1 plutôt que 0.
+Par exemple, admettons que nous ayons eu un coefficient $\beta_1$ de 1,2 pour une variable $X_1$ dans une régression logistique. Il est nécessaire d'utiliser son exponentiel pour l'interpréter de façon intuitive. $\mbox{exp(1,2)} = \mbox{3,32}$, ce qui signifie que lorsque $X_1$ augmente d'une unité, les chances d'observer 1 plutôt que 0 comme valeur de *Y* sont multipliées par 3,32. Admettons maintenant que $\beta_1$ vaille −1,2, nous calculons donc $\mbox{exp(-1,2) = 0,30}$, ce qui signifie qu'à chaque augmentation d'une unité de $X_1$, les chances  d'observer 1 plutôt que 0 comme valeur de *Y* sont multipliées par 0,30. En d'autres termes,les chances d'observer 1 plutôt que 0 sont divisées par  3,33 ($\mbox{1}/\mbox{0,30} = \mbox{3,33}$), soit une diminution de 70&nbsp;% ($\mbox{1}-\mbox{0,3} = \mbox{0,7}$) des chances d'observer 1 plutôt que 0.
 
 ::: {.bloc_aller_loin data-latex=""}
 **Les rapports de cotes**
@@ -522,7 +529,7 @@ avec *p* la probabilité d'observer le phénomène (ici la blessure grave à la 
 
 La non-séparation complète signifie qu’aucune des variables *X* n'est, à elle seule, capable de parfaitement distinguer les deux catégories 0 et 1 de la variable *Y*. Dans un tel cas de figure, les algorithmes d’ajustement utilisés pour estimer les paramètres des modèles sont incapables de converger. Notez aussi l’absurdité de créer un modèle pour prédire une variable *Y* si une variable *X* est capable à elle seule de la prédire à coup sûr. Ce problème est appelé un effet de Hauck-Donner. Il est assez facile de le repérer, car la plupart du temps les fonctions de R signalent ce problème (message d'erreur sur la convergence). Sinon, des valeurs extrêmement élevées ou faibles pour certains rapports de cote peuvent aussi indiquer un effet de Hauck-Donner.
 
-La sur-dispersion est un problème spécifique aux distributions n’ayant pas de paramètre de dispersion (binomiale, Poisson, exponentielle, etc.), pour lesquelles la variance dépend directement de l'espérance. La sur-dispersion désigne une situation dans laquelle les résidus (ou erreurs) d'un modèle sont plus dispersés que ce que suppose la distribution utilisée. À l’inverse, il est aussi possible (mais rare) d’observer des cas de sous-dispersion (lorsque la dispersion des résidus est plus petite que ce que suppose la distribution choisie). Ce cas de figure se produit généralement lorsque le modèle parvient à réaliser une prédiction trop précise pour être crédible. Si vous rencontrez une forte sous-dispersion, cela signifie souvent que l’une de vos variables indépendantes provoque une séparation complète. La meilleure option dans ce cas est de supprimer la variable en question du modèle. La variance attendue d’une distribution binomiale est $nb \times p \times(1-p)$, soit le produit entre le nombre de tirages, la probabilité de réussite et la probabilité d'échec. À titre d'exemple, si nous considérons une distribution binomiale avec un seul tirage et 50&nbsp;% de chances de réussite, sa variance serait&nbsp;: $1 \times mbox{0,5} \times \mbox{(1-0,5) = 0,25}$.
+La sur-dispersion est un problème spécifique aux distributions n’ayant pas de paramètre de dispersion (binomiale, Poisson, exponentielle, etc.), pour lesquelles la variance dépend directement de l'espérance. La sur-dispersion désigne une situation dans laquelle les résidus (ou erreurs) d'un modèle sont plus dispersés que ce que suppose la distribution utilisée. À l’inverse, il est aussi possible (mais rare) d’observer des cas de sous-dispersion (lorsque la dispersion des résidus est plus petite que ce que suppose la distribution choisie). Ce cas de figure se produit généralement lorsque le modèle parvient à réaliser une prédiction trop précise pour être crédible. Si vous rencontrez une forte sous-dispersion, cela signifie souvent que l’une de vos variables indépendantes provoque une séparation complète. La meilleure option dans ce cas est de supprimer la variable en question du modèle. La variance attendue d’une distribution binomiale est $nb \times p \times(1-p)$, soit le produit entre le nombre de tirages, la probabilité de réussite et la probabilité d'échec. À titre d'exemple, si nous considérons une distribution binomiale avec un seul tirage et 50&nbsp;% de chances de réussite, sa variance serait&nbsp;: $1 \times \mbox{0,5} \times \mbox{(1-0,5) = 0,25}$.
 
 Plusieurs raisons peuvent expliquer la présence de sur-dispersion dans une modèle: 
 
@@ -532,7 +539,7 @@ Plusieurs raisons peuvent expliquer la présence de sur-dispersion dans une mod�
 
 La conséquence directe de la sur-dispersion est la sous-estimation de la variance des coefficients de régression. En d’autres termes, la sur-dispersion conduit à sous-estimer notre incertitude quant aux coefficients obtenus et réduit les valeurs de *p* calculées pour ces coefficients. Les risques de trouver des résultats significatifs à cause des fluctuations d'échantillonnage augmentent.
 
-Pour détecter de la sur-dispersion ou de la sous-dispersion dans un modèle logistique binomial, il est possible d'observer les résidus de déviance du modèle. Ces derniers sont supposés suivre une distribution du Khi^2^ avec *n−k* degrés de liberté (avec *n* le nombre d'observations et *k* le nombre de coefficients dans le modèle). Par conséquent, la somme des résidus de déviance d'un modèle logistique binomiale divisée par le nombre de degrés de liberté devrait être proche de 1. Une légère déviation (jusqu'à 0,15 au-dessus ou au-dessous de 1) n'est pas alarmante, au-delà, il est nécessaire d'ajuster le modèle.
+Pour détecter de la sur-dispersion ou de la sous-dispersion dans un modèle logistique binomial, il est possible d'observer les résidus de déviance du modèle. Ces derniers sont supposés suivre une distribution du khi-deux avec *n−k* degrés de liberté (avec *n* le nombre d'observations et *k* le nombre de coefficients dans le modèle). Par conséquent, la somme des résidus de déviance d'un modèle logistique binomiale divisée par le nombre de degrés de liberté devrait être proche de 1. Une légère déviation (jusqu'à 0,15 au-dessus ou au-dessous de 1) n'est pas alarmante, au-delà, il est nécessaire d'ajuster le modèle.
 
 Notez que si la variable *Y* modélisée est exactement binaire (chaque expérience est indépendante et n'est composée que d'un seul tirage) et que le modèle utilise donc une distribution de Bernoulli, le test précédent pour détecter une éventuelle sur-dispersion n'est pas valide. @hilbe2009logistic parle de sur-dispersion implicite pour le modèle de Bernoulli et recommande notamment de toujours ajuster les erreurs standards des modèles utilisant des distributions de Bernoulli, binomiale et Poisson. L'idée ici est d'éviter d'être trop optimiste face à l'incertitude du modèle sur les coefficients et de l'ajuster en conséquence. Pour cela, il est possible d'utiliser des quasi-distributions, ou des estimateurs robustes [@zeileis2004econometric]. Notez que si le modèle ne souffrait pas de sur ou sous-dispersion, ces ajustements produisent des résultats équivalents aux résultats non ajustés.
 
@@ -554,6 +561,7 @@ show_table(tableau,
     col.names = c("Nom de la variable","Signification","Type de variable","Mesure"), 
     col.to.resize = c(2,4),
     col.width = "5cm",
+    align= c("l", "l", "l", "l"),
     position = "HOLD_position"
 )
 ```
@@ -786,7 +794,8 @@ mat3 <- rbind(mat2,c(cs,sum(mat),NA),c(cp,NA,NA))
 mat4 <- cbind(c("0 (prédit)", "1 (prédit)", "Total", "%"), mat3)
 show_table(mat4,
       col.names = c("","0 (réel)", "1 (réel)", "Total", "%"),
-      caption = "Matrice de confusion pour le modèle binomial", 
+      caption = "Matrice de confusion pour le modèle binomial",
+      align= c("l", "r", "r", "r", "r"),
       position = "HOLD_position")
 ```
 
@@ -814,6 +823,7 @@ final_table[6,2] <- pval
 show_table(final_table,
       col.names = c("","Précision", "Rappel", "F1"),
       caption = "Matrice de confusion pour le modèle binomial",
+      align= c("l", "r", "r", "r"),
        position = "HOLD_position")
 ```
 
@@ -884,6 +894,7 @@ ok_tableau <- tableau_comp[c(1,29:54),c(1,2,3,4,5,6,9,10)]
 show_table(ok_tableau,
       col.names = c("Variable","Coefficient", "Rapport de cote", "Err.std","Val.z", "P","RC 2,5 %", "RC 97,5 %"),
       caption = "Résultats du modèle binomial",
+      align= c("l", "r", "r", "r", "r", "r", "r", "r"),
       position = "HOLD_position")
 ```
 
@@ -916,14 +927,14 @@ Afin de simplifier la présentation de certains résultats, il est possible de c
 Prenons comme individu un homme de 30 ans, vivant dans une grande ville allemande, ayant un niveau d’éducation de niveau secondaire, employé, dans la tranche de revenu moyen, déclarant effectuer un trajet de 45 minutes et ayant rapporté un niveau de conscience environnementale de 5 (sur 10). Nous pouvons prédire la probabilité qu’il utilise le vélo pour son trajet le plus fréquent en utilisant la formule suivante&nbsp;: 
 
 
-`logit(p) =  -2,497 + 1 \times 0,372 + 30 \times -0,009 + 1 \times 0,193 + 1 \times 0,042 + 1 \times 0,273 + 45 \times -0,001 + 5 \times 0,102`
+$logit(p) =  -\mbox{2,497} + \mbox{1} \times \mbox{0,372} + \mbox{30} \times -\mbox{0,009} + \mbox{1} \times \mbox{0,193} + \mbox{1} \times \mbox{0,042} + \mbox{1} \times \mbox{0,273} + \mbox{45} \times -\mbox{0,001} + \mbox{5} \times \mbox{0,102}$
 
-`p = exp(-2,497 + 1 \times 0,372 + 30 \times -0,009 + 1 \times 0,193 + 1 \times 0,042 + 1 \times 0,273 + 45 \times -0,001 + 5 \times 0,102)/(1+exp(-2,497 + 1 \times 0,372 + 30 \times-0,009 + 1 \times 0,193 + 1 \times 0,042 + 1 \times 0,273 + 45 \times -0,001 + 5 \times 0,102)) = 0,194`
+$p = exp(-\mbox{2,497} + \mbox{1} \times \mbox{0,372} + \mbox{30} \times -\mbox{0,009} + \mbox{1} \times \mbox{0,193} + \mbox{1} \times \mbox{0,042} + 1 \times \mbox{0,273} + 45 \times -\mbox{0,001} + \mbox{5} \times \mbox{0,102})/(\mbox{1}+exp(-\mbox{2,497} + 1 \times \mbox{0,372} + \mbox{30} \times-\mbox{0,009} + 1 \times \mbox{0,193} + 1 \times \mbox{0,042} + \mbox{1} \times \mbox{0,273} + \mbox{45} \times -\mbox{0,001} + 5 \times \mbox{0,102})) = \mbox{0,194}$
 
 
 Il y aurait 19,4&nbsp;% de chances pour que cette personne soit cycliste. Cette probabilité dépasse le seuil que nous avons sélectionné, cette personne serait donc classée comme. Si nous augmentons son âge de 15 ans, nous obtenons&nbsp;:
 
-`p = exp(-2,497 + 1 \times 0,372 + 45 \times -0,009 + 1 \times 0,193 + 1 \times 0,042 + 1 \times 0,273 + 45 \times -0,001 + 5 \times 0,102) / (1+exp(-2,497 + 1 \times 0,372 + 45 \times -0,009 + 1 \times 0,193 + 1 \times 0,042 + 1 \times 0,273 + 45 \times -0,001 + 5 \times 0,102)) = 0,174`
+$p = exp(-\mbox{2,497} + \mbox{1} \times \mbox{0,372} + \mbox{45} \times \mbox{-0,009} + \mbox{1} \times \mbox{0,193} + \mbox{1} \times \mbox{0,042} + \mbox{1} \times \mbox{0,273} + \mbox{45} \times -\mbox{0,001} + \mbox{5} \times \mbox{0,102}) / (\mbox{1}+exp(-\mbox{2,497} + \mbox{1} \times \mbox{0,372} + \mbox{45} \times -\mbox{0,009} + \mbox{1} \times \mbox{0,193} + \mbox{1} \times \mbox{0,042} + \mbox{1} \times \mbox{0,273} + \mbox{45} \times -\mbox{0,001} + \mbox{5} \times \mbox{0,102})) = \mbox{0,174}$
 
 Soit une réduction de 2 points de pourcentages. Il est également possible de représenter cette évolution sur un graphique pour montrer l’effet sur l’étendue des valeurs possibles. Sur ces graphiques des effets marginaux, il est essentiel de représenter l'incertitude quant à la prédiction. En temps normal, la fonction `predict` calcule directement l'erreur standard de la prédiction et cette dernière peut être utilisée pour calculer l'intervalle de confiance de la prédiction. Cependant, nous voulons ici utiliser nos erreurs standards robustes. Nous devons donc procéder par simulation pour déterminer l'intervalle de confiance à 95&nbsp;% de nos prédictions. Cette opération nécessite de réaliser plusieurs opérations manuellement dans R.
 
@@ -967,7 +978,7 @@ mat_sim_preds <- do.call(cbind,sim_preds)
 intervals <- apply(mat_sim_preds,MARGIN = 1, FUN = function(vec){
   return(quantile(vec,probs = c(0.025, 0.975)))
 })
-# Étape 4 : récupérer tous ces éléments dans un dataframe
+# Étape 4 : récupérer tous ces éléments dans un DataFrame
 df <- data.frame(
   Age = seq(20,80),
   pred = as.vector(pred),
@@ -1083,7 +1094,8 @@ df <- data.frame(
 )
 show_table(df, 
     caption = "Variables indépendantes utilisées pour prédire la catégorie de prix de logements Airbnb",
-    col.names = c("Nom de la variable","Description","Type de variable","Mesure"), 
+    col.names = c("Nom de la variable","Description","Type de variable","Mesure"),
+    align= c("l", "l", "l", "l"),
     col.to.resize = c(2,4),
     col.width = "5cm",
     position = "HOLD_position"
@@ -1102,6 +1114,7 @@ show_table(df,
     col.names = c("Nom de la variable","Description","Type de variable","Mesure"), 
     col.to.resize = c(2,4),
     col.width = "5cm",
+    align= c("l", "l", "l", "l"),
     position = "HOLD_position"
 )
 ```
@@ -1147,7 +1160,7 @@ cooks <- lapply(1:ncol(res),function(i){
   h <- hat[,i]
   cook <- (r/(1 - h))^2 * h/(1 * modele@rank)
 })
-# Structuration dans un dataframe
+# Structuration dans un DataFrame
 matcook <- data.frame(do.call(cbind, cooks))
 names(matcook) <- c("dist1","dist2")
 matcook$oid <- 1:nrow(matcook)
@@ -1438,6 +1451,7 @@ tab <- tableau[,c(1,2,3,6,9,10,11)]
 show_table(tab,
            col.names = c("Variable", "Coefficient", "RC", "P", "RC 2,5 %", "RC 97,5 %", "sign."),
            caption = "Coefficients du modèle logistique des cotes proportionnelles",
+           align= c("l", "r", "r", "r", "r", "r", "r"),
            )
 ```
 
@@ -1529,7 +1543,7 @@ Les conditions d’application sont les mêmes que pour un modèle binomial, ave
 
 Notez également que le grand nombre de paramètres dans ce type de modèle implique de disposer d’un plus grand nombre d’observations afin de disposer de suffisamment d’information dans chaque catégorie pour ajuster tous les paramètres.
 
-Pour vérifier la présence de sur-dispersion, il est possible, dans le cas du modèle multinomial, de calculer le rapport entre le Khi^2^ de Pearson et le nombre de degrés de liberté du modèle. Si ce rapport est supérieur à 1 (des valeurs jusqu'à 1,15 ne sont pas problématiques), alors le modèle souffre de sur-dispersion [@Sasmultinom]. Le Khi^2^ de Pearson est simplement la somme des résidus de Pearson au carré dans le cas d'un modèle GLM.
+Pour vérifier la présence de sur-dispersion, il est possible, dans le cas du modèle multinomial, de calculer le rapport entre le khi-deux de Pearson et le nombre de degrés de liberté du modèle. Si ce rapport est supérieur à 1 (des valeurs jusqu'à 1,15 ne sont pas problématiques), alors le modèle souffre de sur-dispersion [@Sasmultinom]. Le khi-deux de Pearson est simplement la somme des résidus de Pearson au carré dans le cas d'un modèle GLM.
 
 \footnotesize
 \begin{equation}
@@ -1560,7 +1574,7 @@ Pour ces deux questions, les répondants devaient sélectionner leur degré d'ac
 * A. Les individus sont en accord avec les deux propositions.
 * B. Les individus sont en désaccord sur les OGM, mais en accord sur le réchauffement climatique.
 * C. Les individus sont en accord sur les OGM, mais en désaccord sur le réchauffement climatique.
-* D. :es individus sont en désaccord avec les deux propositions.
+* D. Les individus sont en désaccord avec les deux propositions.
 
 Un modèle logistique multinomial a été utilisé pour déterminer quels facteurs contribuent à la probabilité d'appartenir à ces différentes catégories. Les variables indépendantes présentes dans le modèle sont détaillées dans le tableau \@ref(tab:variablemultinom). Les auteurs avaient notamment conclu que&nbsp;: 
 
@@ -1578,6 +1592,7 @@ df <- data.frame(
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle logistique multinomial",
     col.names = c("Nom de la variable","signification","Type de variable","Mesure"), 
+    align= c("l", "l", "l", "l"),
     col.to.resize = c(2,4),
     col.width = "5cm",
     position = "HOLD_position"
@@ -1955,6 +1970,7 @@ tab3 <- tables[[3]][,c(1,2,3,6,9,10,11)]
 show_table(tab1,
            col.names = c("Variable", "Coefficient", "RC", "val.p", "RC 2,5 %", "RC 97,5 %", "sign."),
            caption = "Coefficients du modèle multinomial A versus B",
+           align= c("l", "r", "r", "r", "r", "r", "r"),
            position = "HOLD_position"
            )
 ```
@@ -1963,8 +1979,9 @@ Le tableau \@ref(tab:coeffsmultinom1) compare donc le groupe A (en accord avec l
 
 ```{r coeffsmultinom2, message=FALSE, warning=FALSE, echo=FALSE}
 show_table(tab2,
-           col.names = c("variable", "coefficient", "RC", "val.p", "RC 2,5 %", "RC 97,5 %", "sign."),
+           col.names = c("variable", "Coefficient", "RC", "val.p", "RC 2,5 %", "RC 97,5 %", "sign."),
            caption = "Coefficients du modèle multinomial A versus C",
+           align= c("l", "r", "r", "r", "r", "r", "r"),
            position = "HOLD_position"
            )
 ```
@@ -1973,8 +1990,9 @@ Le tableau \@ref(tab:coeffsmultinom2) compare les groupes A et C (en désaccord 
 
 ```{r coeffsmultinom3, message=FALSE, warning=FALSE, echo=FALSE}
 show_table(tab3,
-           col.names = c("variable", "coefficient", "RC", "val.p", "RC 2,5 %", "RC 97,5 %", "sign."),
-           caption = "Coefficients du modèle multinomial A versus D",
+           col.names = c("variable", "Coefficient", "RC", "val.p", "RC 2,5 %", "RC 97,5 %", "sign."),
+           align= c("l", "r", "r", "r", "r", "r", "r"),
+          caption = "Coefficients du modèle multinomial A versus D",
            )
 ```
 
@@ -2064,6 +2082,7 @@ df <- data.frame(
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle de Poisson",
     col.names = c("Nom de la variable","Signification","Type de variable","Mesure"), 
+    align= c("l", "l", "l", "l"),
     col.to.resize = c(2,4),
     col.width = "5cm"
 )
@@ -2184,13 +2203,13 @@ Il est également possible d'illuster cet écart à l'aide d'un graphique repré
 ```{r surdisppoiss, fig.aling="center", fig.cap="Représentation de la sur-dispersion des données dans le modèle de Poisson", message=FALSE, warning=FALSE, out.width='65%', dpi=300, dev = 'png'}
 # Extraction des prédictions du modèle
 lambdas <- predict(modele, type = "response")
-# Création d'un dataframe pour contenir la prédiction et les vraies valeurs
+# Création d'un DataFrame pour contenir la prédiction et les vraies valeurs
 df1 <- data.frame(
   lambdas = lambdas,
   reals = data2$Nbr_acci
 )
 # Calcul de l'intervalle de confiance à 95 % selon la distribution de Poisson
-# et stockage dans un second dataframe
+# et stockage dans un second DataFrame
 seqa <- seq(0,round(max(lambdas)),1)
 df2 <- data.frame(
   lambdas = seqa,
@@ -2421,6 +2440,7 @@ tableauComplet <- cbind(coeffs,err.std,expcoeff,exp2.5,exp975,pvals)
 tableau <- build_table(modele2, confid = T, sign = T, coef_digits = 2, std_digits = 2)
 show_table(tableau[,c(1,2,3,6,9,10,11)], 
       col.names = c("Variable","Coeff.", "exp(Coeff.)", "Val.p", "IC 2,5 % exp(Coeff.)", "IC 97,5 % exp(Coeff.)", "Sign."),
+      align= c("l", "r", "r", "r", "r", "r", "r"),
       caption = 'Résultats du modèle de quasi-Poisson', 
       position = "HOLD_position")
 ```
@@ -2599,13 +2619,13 @@ ggplot() +
 ```{r surdispnb, message=FALSE, warning=FALSE, fig.aling = "center", fig.cap="Représentation de la sur-dispersion des données dans le modèle de Poisson", fig.pos="H", dev = "png", dpi = 300}
 # Extraction des prédictions du modèle
 mus <- predict(modelnb, type = "response")
-# Création d'un dataframe pour contenir la prédiction et les vraies valeurs
+# Création d'un DataFrame pour contenir la prédiction et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = data2$Nbr_acci
 )
 # Calcul de l'intervalle de confiance à 95 % selon la distribution de Poisson
-# et stockage dans un second dataframe
+# et stockage dans un second DataFrame
 seqa <- seq(0,round(max(mus)),1)
 df2 <- data.frame(
   mus = seqa,
@@ -2651,7 +2671,8 @@ Il est possible d'accéder à l'ensemble des coefficients du modèle via la fonc
 tableau <- build_table(modelnb, confid = T, sign = T, coef_digits = 2, std_digits = 2)
 show_table(tableau[,c(1,2,3,6,9,10,11)], 
       col.names = c("Variable","Coeff.", "exp(Coeff.)", "Val.p", "IC 2, 5% exp(Coeff.)", "IC 97,5 % exp(Coeff.)", "Sign."),
-      caption = 'Résultats du modèle binomial négatif', 
+      caption = 'Résultats du modèle binomial négatif',
+      align= c("l", "r", "r", "r", "r", "r", "r"),
       position = "HOLD_position")
 ```
 
@@ -2954,6 +2975,7 @@ rownames(part_poiss) <- NULL
 show_table(part_poiss, 
     caption = "Résultats de la partie Poisson du modèle de Poisson avec excès de zéros ajusté",
     col.names = c('Variable',"Coeff.","Val.p","Exp(Coeff.)","IC 2,5 % exp(Coeff.)","IC 97,5 % exp(Coeff.)", "Sign."),
+    align= c("l", "r", "r", "r", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -2964,6 +2986,7 @@ rownames(part_logit) <- NULL
 show_table(part_logit, 
     caption = "Résultats de la partie logistique du modèle de Poisson avec excès de zéros ajusté",
     col.names = c('Variable',"Coeff.","Val.p","RC","IC 2,5 % RC","IC 97,5 % RC", "Sign."),
+    align= c("l", "r", "r", "r", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -3145,13 +3168,13 @@ Il est également possible de vérifier si la condition d'homogénéité de la v
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = "response")
 sigma_model <- sigma(modele)
-# Création d'un dataframe pour contenir les prédictions et les vraies valeurs
+# Création d'un DataFrame pour contenir les prédictions et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = DataFinal2$VegPct
 )
 # Calcul de l'intervalle de confiance à 95 % selon la distribution normale
-# et stockage dans un second dataframe
+# et stockage dans un second DataFrame
 seqa <- seq(0,100,10)
 df2 <- data.frame(
   mus = seqa,
@@ -3212,6 +3235,7 @@ tab <- build_table(modele, coef_digits = 3, p_digits = 3)
 show_table(tab, 
     caption = "Résultats du modèle gaussien",
     col.names = c('Variable',"Coeff.","Err.std","Val.z", "val.p","IC coeff 2,5 %", "IC coeff 97,5 %", "Sign."),
+    align= c("l", "r", "r", "r", "r", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -3426,8 +3450,9 @@ Nous ne détaillons pas ici l'interprétation des coefficients du modèle (prés
 # Afficher le tableau
 tab <- build_table(modele, coef_digits = 3, p_digits = 3)
 show_table(tab, 
-    caption = "Résultats du modèle student",
+    caption = "Résultats du modèle Student",
     col.names = c('Variable',"Coeff.","Err.std","Val.z", "val.p","IC coeff 2,5 %", "IC coeff 97,5 %", "Sign."),
+    align= c("l", "r", "r", "r", "r", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -3519,6 +3544,7 @@ df <- data.frame(
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle Gamma",
     col.names = c("Nom de la variable","Signification","Type de variable","Mesure"), 
+    align= c("l", "l", "l", "l"),
     col.to.resize = c(2,4),
     col.width = "5cm"
 )
@@ -3720,13 +3746,13 @@ Nous pouvons comparer graphiquement la variance observée dans les données et l
 ```{r dispgamma, fig.align="center", warning = FALSE, message=FALSE, fig.cap="Comparaison de la variance attendue par le modèle et la variance observée dans les données pour le modèle Gamma", out.width = "50%", dev = "png", dpi = 300}
 # Extraction des prédictions du modèle
 mus <- predict(modele, type = "response")[,1]
-# Création d'un dataframe pour contenir la prédiction et les vraies valeurs
+# Création d'un DataFrame pour contenir la prédiction et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = dataset3$Duree
 )
 # Calcul de l'intervalle de confiance à 95 % selon la distribution Gamma
-# et stockage dans un second dataframe
+# et stockage dans un second DataFrame
 seqa <- seq(10,120,10)
 shape <- exp(modele@coefficients[[2]])
 df2 <- data.frame(
@@ -3802,7 +3828,7 @@ P1 <- ggplot(data = dfArrond) +
        y = "",
        subtitle = "Exponentiels des coefficients du modèle")+
   xlim(c(0.75,1.46))
-# Création d'un dataframe fictif pour les effets marginaux
+# Création d'un DataFrame fictif pour les effets marginaux
 dfpred <- expand.grid(
   LogDist = mean(dataset3$LogDist),
   Motif = 'education',
@@ -3865,6 +3891,7 @@ tableau_ok <- tableau_ok[,c(1,2,3,6,7,8,9)]
 show_table(tableau_ok, 
     caption = "Résultats pour le modèle GLM Gamma",
     col.names = c('Variable',"Coeff.","Exp(Coeff.)","Val.p","IC 2,5 % exp(Coeff.)","IC 97,5 % exp(Coeff.)", "Sign."),
+    align= c("l", "r", "r", "r", "r", "r", "r"),
     position = "HOLD_position"
 )
 ```
@@ -3873,7 +3900,7 @@ Les déplacements ayant comme motif le magasinage et le travail ont tendance à 
 
 
 ```{r distancegamma, warning = FALSE, message=FALSE, fig.cap = "Effet de la distance à vol d'oiseau sur les temps de trajet à Montréal", fig.align = "center", out.width = "85%", dev = "png", dpi = 300, fig.pos = "H"}
-# Création d'un dataframe fictif pour la prédiction
+# Création d'un DataFrame fictif pour la prédiction
 dfpred <- expand.grid(
   Dist = seq(1,40, 0.5),
   Motif = 'education',
@@ -4006,7 +4033,8 @@ df <- data.frame(
   C4 = c("Pourcentage de la population ayant 65 ans et plus", "Pourcentage de la population ayant 14 ans et moins", "Pourcentage de la population à faible revenu", "Pourcentage de la population faisant partie des minorités visibles", "Pourcentage de la surface de l’AD couverte par de la végétation", "Arrondissement de l'Île de Montréal"))
 show_table(df, 
     caption = "Variables indépendantes utilisées dans le modèle Beta",
-    col.names = c("Nom de la variable","Signification","Type de variable","Mesure"), 
+    col.names = c("Nom de la variable","Signification","Type de variable","Mesure"),
+    align= c("l", "l", "l", "l"),
     col.to.resize = c(2,4),
     col.width = "5cm",
     position = "HOLD_position"
@@ -4206,7 +4234,7 @@ test <- grepl("Arrond",names(modele3$coefficients), fixed = T)
 # Extraire les coefficients et les erreurs standards
 coeffs <- modele3$coefficients[test]
 err.std <- summary(modele3)$se[test]
-# Créer un dataframe avec les rapports de cote et les intervalles de confiance
+# Créer un DataFrame avec les rapports de cote et les intervalles de confiance
 df <- data.frame(
   Arrond = gsub("Arrond","",names(coeffs), fixed = T),
   coeffs = coeffs,
@@ -4239,12 +4267,13 @@ tableau_ok <- tableau[c(1:6),]
 tableau_ok <- tableau_ok[,c(1,2,3,6,9,10,11)]
 show_table(tableau_ok, 
     caption = "Résultats pour le modèle GLM Beta",
-    col.names = c('Variable',"Coeff.","RC","Val.p","IC 2,5 % RC","IC 97,5 % RC", "Sign.")
+    col.names = c('Variable',"Coeff.","RC","Val.p","IC 2,5 % RC","IC 97,5 % RC", "Sign."),
+    align= c("l", "r", "r", "r", "r", "r", "r")
 )
 ```
 
 ```{r betaFR, message=FALSE, warning=FALSE, fig.cap = "Effets marginaux des variables pourcentage de personnes à faible revenu et densité de végétation", fig.align = "center", out.width = "100%", dev = "png", dpi = 300}
-# Créer un dataframe pour la prédiction
+# Créer un DataFrame pour la prédiction
 df <- expand.grid(
   A65Pct = mean(dataset3$A65Pct),
   A014Pct = mean(dataset3$A014Pct),
@@ -4304,9 +4333,9 @@ La figure \@ref(fig:GLMfinal) résume les choix de modèles présentés au cours
 knitr::include_graphics("images/glm/guide_GLM.png", dpi = 300)
 ```
 
-## Quiz final sur les modèles GLM {#sect087}
+\newpage
 
-Voici un court quiz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
+## Quiz de révision du chapitre {#sect087}
 
 ```{r quizGLM, echo=FALSE, warning=FALSE, results="asis"}
 quizz_glm <- quizz("quizzs/GLM.yml", "quizz_classif")

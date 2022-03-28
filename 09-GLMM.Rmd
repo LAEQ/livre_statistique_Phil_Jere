@@ -1,5 +1,9 @@
 # Régressions à effets mixtes (GLMM) {#chap09}
 
+::: {.bloc_attention data-latex=""}
+Ce chapitre n'a pas encore fait l'objet d'une révision linguistique. Il comprend certainement plusieurs coquilles... Une version révisée sera mise à jour prochainement.
+:::
+
 Dans les deux chapitres précédents, nous avons consécutivement présenté la méthode de la régression linéaire multiple (LM) ainsi qu'une de ses extensions, soit les modèles linéaires généralisés (GLM). Dans ce chapitre, nous poursuivons sur cette voie avec une nouvelle extension&nbsp;: les modèles généralisés à effet mixtes (GLMM). À la fin de cette section, vous serez en mesure de&nbsp;:
 
 * comprendre la distinction entre un modèle GLM et un modèle GLMM;
@@ -618,7 +622,7 @@ model2 <- lmer(Y2 ~ X + (1|group), data = df3)
 # Extraction des prédictions du modèle
 mus <- predict(model2, type = "response")
 sigma_model <- sigma(model2)
-# Création d'un dataframe pour contenir les prédictions et les vraies valeurs
+# Création d'un DataFrame pour contenir les prédictions et les vraies valeurs
 df1 <- data.frame(
   mus = mus,
   reals = df3$Y2,
@@ -626,7 +630,7 @@ df1 <- data.frame(
 )
 df1$group <- as.factor(df1$group)
 # Calcul de l'intervalle de confiance à 95 % selon la distribution normale
-# et stockage dans un second dataframe
+# et stockage dans un second DataFrame
 seqa <- seq(70,95,5)
 df2 <- data.frame(
   mus = seqa,
@@ -1217,10 +1221,9 @@ round(summary(modele3)$coefficients,3)
 
 Les deux autres options envisageables sont&nbsp;: effectuer une analyse de type 3 ou calculer les intervalles de confiance par *bootstrap*. Cependant, elles requièrent beaucoup plus de temps de calcul. Par conséquent, elles ne sont pas présentées ici.
 
+\newpage
 
-## Quiz final sur les modèles GLMM
-
-Voici un court quiz pour vérifier si vous avez retenu les points essentiels de ce chapitre.
+## Quiz de révision du chapitre {#sect097}
 
 ```{r quizGLMM, echo=FALSE, warning=FALSE, results="asis"}
 quizz_glmm <- quizz("quizzs/glmm.yml", "quizz_classif")
