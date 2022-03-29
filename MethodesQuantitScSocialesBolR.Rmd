@@ -1,0 +1,491 @@
+--- 
+title: "Méthodes quantitatives en sciences sociales : un grand bol d'R"
+author: "Philippe Apparicio et Jérémy Gelb"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+colorlinks: yes
+cover-image: images/introduction/ImageCouverture.png
+bibliography: book.bib
+description: Ce livre vise à décrire une panoplie de méthodes quantitatives utilisées en sciences sociales avec le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec rmarkdown. Le contenu est pensé pour être accessible à tous et toutes, même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront des sections sur des méthodes plus avancées comme les modèles à effets mixtes, les modèles multiniveaux, les modèles généralisés additifs ainsi que les méthodes factorielles et de classification. Ceux et celles souhaitant migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées dans R. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique, sans pour autant que la rigueur statistique ne soit négligée.
+documentclass: book
+fontsize: 11pt
+github-repo: LAEQ/livre_statistique_Phil_Jere
+graphics: yes
+link-citations: yes
+lof: yes
+lot: yes
+mainfont: Palatino Linotype
+monofont: "Source Code Pro"
+monofontoptions: "Scale=0.8"
+mathfontoptions: "Scale=0.1"
+site: bookdown::bookdown_site
+csl: StyleINRS.csl
+url: https://laeq.github.io/LivreStatistique_website/
+geometry: "left=2cm,right=2cm,top=2cm,bottom=2cm"
+toc-title: "Table des matières"
+lang: fr
+---
+
+
+```{r echo=FALSE, results="asis"}
+if(knitr::is_latex_output() == FALSE){
+   cat("# Bienvenue {-}")
+   cat("\n\n")
+}
+```
+
+```{r  echo=FALSE, out.width='100%', fig.pos = "H"}
+if(knitr::is_latex_output() == FALSE){
+    knitr::include_graphics('images/ImageCouverture.png', dpi = NA)
+}
+```
+  
+```{r echo=FALSE, results="asis"}
+if(knitr::is_latex_output() == FALSE){  
+   cat("\n\n**Auteurs&nbsp;:** Philippe Apparicio et Jérémy Gelb")
+   cat("\n\n**Remerciements&nbsp;:** Ce manuel a été réalisé avec le soutien de la fabriqueREL. Fondée en 2019, la fabriqueREL est portée par divers établissements d’enseignement supérieur du Québec et agit en collaboration avec les services de soutien pédagogique et les bibliothèques. Son but est de faire des ressources éducatives libres (REL) le matériel privilégié en enseignement supérieur au Québec.")
+   cat("\n\n**Maquette de la page couverture&nbsp;:** Graphe Logo (https://www.graphelogo.com/)")
+   cat("\n\n**Mise en page&nbsp;:** Philippe Apparicio et Jérémy Gelb")
+   cat("\n\n**Relecture&nbsp;:** Denise Latreille")
+   cat("\n\n© Philippe Apparicio et Jérémy Gelb")
+  cat("\n\n**Pour citer cet ouvrage&nbsp;:** Apparicio Philippe et Jérémy Gelb (2022). *Méthodes quantitatives en sciences sociales&nbsp;: un grand bol d'R*. Institut national de la recherche scientifique. Licence CC&nbsp;BY-SA.") 
+   cat("\n\n")
+}
+```
+
+
+```{r  echo=FALSE, out.width='100%', fig.pos = "H"}
+if(knitr::is_latex_output() == FALSE){
+    knitr::include_graphics('images/introduction/CouvertureP2.png', dpi = NA)
+}
+```
+
+# Préface {-}
+
+Ce livre vise à décrire une panoplie de méthodes quantitatives utilisées en sciences sociales avec le logiciel ouvert R. Il a d'ailleurs été écrit intégralement dans R avec [rmarkdown](https://rmarkdown.rstudio.com/). Le contenu est pensé pour être accessible à tous et toutes, même à ceux et celles n'ayant presque aucune base en statistique ou en programmation. Les personnes plus expérimentées y découvriront des sections sur des méthodes plus avancées comme les modèles à effets mixtes, les modèles multiniveaux, les modèles généralisés additifs ainsi que les méthodes factorielles et de classification. Ceux et celles souhaitant migrer progressivement d'un autre logiciel statistique vers R trouveront dans cet ouvrage les éléments pour une transition en douceur. La philosophie de ce livre est de donner toutes les clefs de compréhension et de mise en œuvre des méthodes abordées dans R. La présentation des méthodes est basée sur une approche compréhensive et intuitive plutôt que mathématique, sans pour autant que la rigueur statistique ne soit négligée. Servez-vous votre boisson chaude ou froide favorite et installez-vous dans votre meilleur fauteuil. Bonne lecture!
+
+## Un manuel sous la forme d'une ressource éducative libre {-#sect001}
+
+**Pourquoi un manuel de statistique en sciences sociales sous licence libre?** Les logiciels libres sont aujourd'hui très répandus. Comparativement aux logiciels propriétaires, l’accès au code source permet à quiconque de l’utiliser, de le modifier, de le dupliquer et de le partager. Le logiciel R, dans lequel sont mises en œuvre les méthodes quantitatives décrites dans ce livre, est d’ailleurs à la fois un langage de programmation et un logiciel libre (sous la licence publique générale [GNU GLPv2](https://fr.wikipedia.org/wiki/Licence_publique_g%C3%A9n%C3%A9rale_GNU)). Par analogie aux logiciels libres, il existe aussi des **ressources éducatives libres (REL)** «&nbsp;dont la licence accorde les permissions désignées par les 5R (**Retenir — Réutiliser — Réviser — Remixer — Redistribuer**) et donc permet nécessairement la modification&nbsp;» ([**_fabriqueREL_**](https://fabriquerel.org/rel/)). La licence de ce livre, CC BY-SA (figure \@ref(fig:Licence)), permet donc de&nbsp;:
+
+- **Retenir**, c'est-à-dire télécharger et d'imprimer gratuitement le livre. Notez qu'il aurait été plutôt surprenant d'écrire un livre payant sur un logiciel libre et donc gratuit. Aussi, nous aurions été très embarrassés que des personnes étudiantes avec des ressources financières limitées doivent payer pour avoir accès au livre, sans pour autant savoir préalablement si le contenu est réellement adapté à leurs besoins.
+- **Réutiliser**, c'est-à-dire utiliser la totalité ou une section du livre sans limitation et sans compensation financière. Cela permet ainsi à d'autres personnes enseignantes de l'utiliser dans le cadre d'activités pédagogiques.
+- **Réviser**, c'est-à-dire modifier, adapter et traduire le contenu en fonction d'un besoin pédagogique précis puisqu'aucun manuel n’est parfait, tant s’en faut! Rappelons que le livre a d'ailleurs été écrit intégralement dans R avec [rmarkdown](https://rmarkdown.rstudio.com/). Quiconque peut ainsi télécharger gratuitement le code source du livre sur [github](https://LAEQ.github.io/livre_statistique_Phil_Jere/) et le modifier à sa guise (voir l’encadré intitulé *Suggestions d'adaptation du manuel*).
+- **Remixer**, c'est-à-dire «&nbsp;de combiner la ressource avec d’autres ressources dont la licence le permet aussi pour créer une nouvelle ressource intégrée&nbsp;» ([**_fabriqueREL_**](https://fabriquerel.org/rel/)).
+- **Redistribuer**, c'est-à-dire distribuer en totalité ou partiellement le manuel ou une version révisée sur d'autres canaux que le site Web du livre (par exemple, sur le site Moodle de votre université ou en faire une version imprimée).
+
+```{r Licence, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Licence Creative Commons du livre",  out.width='100%'}
+knitr::include_graphics('images/introduction/Licence.jpg', dpi = NA)
+```
+
+
+La licence de ce livre, CC BY-SA (figure \@ref(fig:Licence)), oblige donc à&nbsp;:
+
+- Attribuer la paternité de l’auteur dans vos versions dérivées, ainsi qu’une mention concernant les grandes modifications apportées, en utilisant la formulation suivante&nbsp;:
+Apparicio, Philippe et Jérémy Gelb. 2022. *Méthodes quantitatives en sciences sociales : un grand bol d'R*. Institut national de la recherche scientifique. CC BY-SA (4.0).
+- Utiliser la même licence ou une licence similaire à toutes versions dérivées.
+
+::: {.bloc_astuce data-latex=""}
+**Suggestions d'adaptation du manuel**
+
+Notez que pour chaque méthode statistique abordée dans le livre sont disponibles une description détaillée et une mise en œuvre dans R. Par conséquent, plusieurs adaptations du manuel sont possibles&nbsp;:
+
+- Conserver uniquement les chapitres sur les méthodes statistiques ciblées dans votre cours.
+- En faire une version imprimée et la distribuer aux personnes étudiantes.
+- Modifier la description d'une ou plusieurs méthodes en effectuant les mises à jour directement dans les chapitres.
+- Insérer ses propres jeux de données dans les sections intitulées *Mise en œuvre dans R*.
+- Modifier les tableaux et figures.
+- Ajouter une série d'exercices.
+- Rédiger un nouveau chapitre.
+- Modifier des syntaxes R. Plusieurs *packages* R peuvent être utilisés pour mettre en œuvre telle ou telle méthode statistique. Ces derniers évoluent aussi très vite et de nouveaux *packages* sont proposés fréquemment! Par conséquent, il peut être judicieux de modifier une syntaxe R du livre en fonction de ses habitudes de programmation dans R (utilisation d'autres *packages* que ceux utilisés dans le manuel par exemple) ou de bien mettre à jour une syntaxe à la suite de la parution d'un nouveau *package* plus performant ou intéressant.
+- Toute autre adaptation qui permet de répondre au mieux à un besoin pédagogique.
+:::
+
+## Un manuel conçu comme un projet collaboratif {-#sect002}
+
+Il existe actuellement de nombreux livres sous licence ouverte écrits avec [rmarkdown](https://rmarkdown.rstudio.com/) avec le *package* `bookdown` [@xie2016bookdown], répertoriés sur le site de [https://bookdown.org/](https://bookdown.org/). Sans surprise, R étant un logiciel libre dédié aux méthodes statistiques et à la science des données, plusieurs abordent les méthodes quantitatives, notamment&nbsp;:
+
+- [Beyond Multiple Linear Regression: Applied Generalized Linear Models and Multilevel Models in R](https://bookdown.org/roback/bookdown-BeyondMLR/) [@roback2021beyond], CC BY-NC-SA.
+- [Introduction to Econometrics with R](https://www.econometrics-with-r.org/) [@hanck2019introduction], CC BY-NC-SA.
+- [Statistical Inference via Data Science: A ModernDive into R and the Tidyverse](https://moderndive.com/) [@ismay2019statistical], CC BY-NC-SA.
+- [R Graphics Cookbook, 2nd edition](https://r-graphics.org/) [@Chang2018], CC BY.
+
+Par contre, la grande majorité de ces livres numériques rédigés avec `bookdown` sont en anglais. À notre connaissance, ce projet constitue le premier manuel numérique en français sur les méthodes quantitatives appliquées aux sciences sociales réalisé avec `bookdown`. La première version du livre étant lancée, il est grand temps de planifier les suivantes! Pour ce faire, nous considérons ce livre comme un **projet collaboratif visant à mobiliser la communauté universitaire francophone qui enseigne les statistiques en sciences sociales avec R**. Plusieurs raisons motivent cette vision collaborative&nbsp;:
+
+- **Rien n'est parfait!** Cette première version comprend sûrement des coquilles et certaines sections mériteraient d'être améliorées. Les commentaires et suggestions visant à améliorer son contenu sont les bienvenus.
+- **La table des matières doit être impérativement extensible!** De nombreuses méthodes statistiques très utilisées en sciences sociales ne sont pas abordées dans ce livre et mériteraient d'être ajoutées dans une version ultérieure&nbsp;: certaines extensions des régressions linéaires (régressions Rigge et Lasso, Tobit, quantile, etc.), les modèles d'équations simultanées, les analyses de données longitudinales (entre autres, modèles de survie, régression par panel), les modèles d'équations structurelles et bien d'autres! Par conséquent, si vous êtes intéressé(e)s, à ajouter un nouveau chapitre ou une partie du livre, nous vous invitons vivement à communiquer avec nous ou à diffuser sous une licence similaire votre version dérivée. L’objectif étant de continuer à faire tourner la roue du libre et, idéalement, que les futures versions soient corédigées par une communauté d’auteurs et d'autrices spécialistes en méthodes quantitatives.
+
+
+## Comment lire ce livre? {-#sect003}
+
+Si vous googlez l'expression «&nbsp;comment lire un livre?&nbsp;», vous trouverez une multitude de conseils et astuces. Pour ce livre, nous vous conseillons de le lire de gauche à droite et page par page! Plus sérieusement, le livre comprend plusieurs types de blocs de texte qui, nous l'espèrons, en facilitent la lecture.
+
+
+::: {.bloc_package data-latex=""}
+**Bloc *packages***. Habituellement localisé au début d'un chapitre, il comprend la liste des *packages* R utilisés pour un chapitre.
+:::
+
+::: {.bloc_objectif data-latex=""}
+**Bloc objectif**. Il comprend une description des objectifs d'un chapitre ou d'une section.
+:::
+
+::: {.bloc_notes  data-latex=""}
+**Bloc notes**. Il comprend une information secondaire sur une notion, un élément, une idée abordée dans une section.
+:::
+
+::: {.bloc_aller_loin data-latex=""}
+**Bloc pour aller plus loin**. Il comprend des références ou des extensions d'une méthode statistique abordée dans une section.
+:::
+
+::: {.bloc_astuce data-latex=""}
+**Bloc astuce**. Il décrit un élément qui vous facilitera le vie&nbsp;: une propriété statistique, un *package*, une fonction, une syntaxe R.
+:::
+
+::: {.bloc_attention data-latex=""}
+**Bloc attention**. Il comprend une notion ou un élément important à bien maîtriser.
+:::
+
+## Comment utiliser les données du livre pour reproduire les exemples? {-#sect003B}
+
+Ce livre propose des exemples détaillés et appliqués dans R pour chacune des méthodes abordées. Ces exemples se basent sur des jeux de données structurés et mis à disposition avec le livre. Ils sont disponibles sur le *repo github* dans le sous-dossier `data`, à l'adresse https://github.com/LAEQ/livre_statistique_Phil_Jere/tree/master/data. 
+
+Pour télécharger l'intégralité des données, vous pouvez utiliser le lien suivant&nbsp;: https://downgit.github.io/#/home?url=https://github.com/LAEQ/livre_statistique_Phil_Jere/tree/master/data. Cela est rendu possible grâce à l'outil [DownGit](https://downgit.github.io/#/home).
+
+Une autre option est de télécharger le *repo* complet du livre directement sur *github* (https://github.com/LAEQ/livre_statistique_Phil_Jere) en cliquant sur le bouton `Code`, puis le bouton `Download ZIP` (figure \@ref(fig:downloaffromgit)). Les données se trouvent alors dans le sous-dossier nommé `data`.
+
+```{r downloaffromgit, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Téléchargement de l'intégralité du livre",  out.width='50%'}
+knitr::include_graphics('images/introduction/download_github.png', dpi = NA)
+```
+
+## Structure du livre {-#sect004}
+
+Le livre est organisé autour de cinq grandes parties.
+
+
+**Partie 1. La découverte de R.** Dans cette première partie, nous discutons brièvement de l’histoire et de la philosophie de R. Nous voyons ensuite comment installer R et RStudio. Les bases du langage R (particulièrement les principaux objets que sont le vecteur, la matrice, la liste et le *dataframe*) ainsi que la manipulation des données avec R sont aussi largement abordés dans le chapitre \@ref(chap01).
+
+**Partie 2. Analyses univariées et représentations graphiques**. Cette seconde partie comprend deux chapitres. Dans le chapitre \@ref(chap02), nous décrivons dans un premier temps les différents types de données (primaires *versus* secondaires, transversales *versus* longitudinales, spatiales *versus* aspatiales, individuelles *versus* agrégées), les différents types de variables quantitatives (discrètes et continues) et qualitatives (nominales et ordinales) et les principales distributions de variables utilisées en sciences sociales (uniforme, Bernoulli, binomiale, géométrique, binomiale négative, poisson, poisson avec excès de zéros, gaussienne, gaussienne asymétrique, log-normale, Student, Cauchy, Chi-carré, exponentielle, gamma, bêta, Weibull et Pareto). Dans un second temps, nous abordons les statistiques descriptives pour des variables quantitatives (paramètres de tendance centrale, paramètres de position, paramètres de dispersion, paramètres de forme), puis qualitatives (fréquences absolues, relatives et cumulées).
+
+Dans le chapitre \@ref(chap03), nous illustrons les incroyables capacités graphiques de R en mettant en œuvre les principaux graphiques (histogramme, graphique de densité, nuage de points, graphique en lignes, boîtes à moustache, graphique en violon, graphique en barre, graphique circulaire), quelques graphiques particuliers (graphique en radar, diagramme d'accord, nuage de mots, carte proportionnelle) et une initiation aux cartes choroplèthes.
+
+**Partie 3. Analyses bivariées.** Cette troisième partie comprend trois chapitres dans lesquelles sont présentées les principales méthodes exploratoires et confirmatoires bivariées permettant d'évaluer la relation entre deux variables. Plus spécifiquement, nous présentons puis mettons en œuvre dans R les méthodes permettant d'explorer les relations entre deux variables quantitatives (covariance, corrélation et régression linéaire simple) dans le chapitre \@ref(chap04), deux variables qualitatives (tableau de contingence et test du khi-deux) dans le chapitre \@ref(chap05) et une variable quantitative avec une variable qualitative avec deux modalités (tests de Student, de Welch et de Wilcoxon) ou avec plus de deux modalités (ANOVA et test de Kruskal-Wallis) dans le chapitre \@ref(chap06).
+
+
+**Partie 4. Modèles de régression**. Dans cette quatrième partie, sont présentées les principales méthodes de statistique inférentielle utilisées en sciences sociales&nbsp;: la régression linéaire multiple (chapitre \@ref(chap07)), les régressions linéaires généralisées (chapitre \@ref(chap08)), les régressions à effets mixtes (chapitre \@ref(chap09)), les régressions multiniveaux (chapitre \@ref(chap10)),  (chapitre \@ref(chap11)) et les modèles généralisés additifs (chapitre \@ref(chap11)).
+
+**Partie 5. Analyses exploratoires multivariées**. Dans cette cinquième partie, sont abordées les méthodes de statistique exploratoire et descriptive permettant de décrire des tableaux de données comprenant plusieurs variables. Nous décrivons d'abord les méthodes de réduction de données&nbsp;: les méthodes factorielles dans le chapitre \@ref(chap12) (analyses de composantes principales, analyses factorielles de correspondances, analyses factorielles de correspondances multiples) et les méthodes de classification non supervisées dans le chapitre \@ref(chap13) (classification ascendante hiérarchique, k-moyennes, k-médianes, k-médoïdes et leurs extensions en logique floue comme les c-moyennes et c-médianes).
+
+
+## Pourquoi faut-il programmer en sciences sociales? {-#sect005}
+
+Vous contrasterez rapidement que R est un véritable langage de programmation. L'apprentissage de ce language de programmation est-il pour autant pertinent pour les étudiants et étudiantes en sciences sociales? Il est vrai que la programmation n'est pas une compétence qui vient d'emblée à l'esprit lorsque l'on s'intéresse à la recherche aux sciences sociales. Pourtant, elle est de plus en plus importante, et ce, pour plusieurs raisons&nbsp;:
+
+* Une part toujours plus grande des phénomènes sociaux se produisent ou peuvent s'observer au travers d'environnements numériques. Être capable d'exploiter efficacement ces outils permet d'extraire des données riches sur des phénomènes complexes, tel qu’en témoignent des études récentes sur la propagation de la désinformation sur les réseaux sociaux [@allcott2017social], la migration des personnes [@spyratos2019quantifying], la propagation et les risques de contamination de la COVID-19 [@boulos2020geographical]. Le plus souvent, les interfaces (API par exemple) permettant d'accéder à ces données nécessitent des habiletés en programmation.
+* La quantité de données numériques ouvertes et accessibles en ligne croit chaque année sur des sujets très divers. La plupart des villes et des gouvernements ont maintenant leur portail de données ouvertes auxquelles s'ajoutent les données produites par des projets collaboratifs comme [OpenStreetMap](https://www.openstreetmap.org) ou [NoisePlanet](https://noise-planet.org/map_noisecapture/index.html). Récupérer ces données et les structurer pour les utiliser à des fins de recherche nécessitent le plus souvent des compétences en programmation.
+* Les méthodes quantitatives connaissent également un développement très important. Les logiciels propriétaires peinent à suivre la cadence de ce développement, contrairement aux logiciels à code source ouvert (comme R) qui permettent d'avoir accès aux dernières méthodes. Il est souvent long et coûteux de développer une interface graphique pour un logiciel, ce qui explique que la plupart de ces programmes en sont dépourvus et nécessitent alors de savoir programmer pour les utiliser.
+* Savoir programmer donne une liberté considérable en recherche. Cette compétence permet notamment de ne plus être limité(e) aux fonctionnalités proposées par des logiciels spécifiques. Il devient possible d'innover tant en matière de structuration, d'exploration et d'analyse des données que de représentation des résultats en écrivant ses propres fonctions. Cette flexibilité contribue directement à la production d'une recherche de meilleure qualité et plus diversifiée.
+* Programmer permet également d'automatiser des tâches qui autrement seraient extrêmement répétitives comme&nbsp;: déplacer et renommer une centaine de fichiers; retirer les lignes inutiles dans un ensemble de fichiers et les compiler dans une seule base de données; vérifier parmi des milliers d'adresses lesquelles sont valides; récupérer chaque jour les messages postés sur un forum. Autant de tâches faciles à automatiser si l'on sait programmer.
+* Dans un logiciel avec une interface graphique, il est compliqué de conserver un historique des opérations effectuées. Programmer permet au contraire de garder une trace de l'ensemble des actions effectuées au cours d'un projet de recherche. En effet, le code utilisé reste disponible et permet de reproduire (ou d'adapter) la méthode et les résultats obtenus, ce qui est essentiel dans le monde de la recherche. À cela s'ajoute le fait que chaque ligne de code que vous écrivez vient s'ajouter à un capital de code que vous possédez, car elles pourront être réutilisées dans d'autres projets!
+
+
+## Remerciements {-#sect006}
+
+De nombreuses personnes ont contribué à l'élaboration de ce manuel. Ce projet a bénéficié du soutien pédagogique et financier de la [**_fabriqueREL_**](https://fabriquerel.org/) (ressources éducatives libres). Les différentes rencontres avec le comité de suivi nous ont permis de comprendre l'univers des ressources éducatives libres (REL) et notamment leurs [fameux 5R](https://fabriquerel.org/rel/) (Retenir — Réutiliser — Réviser — Remixer — Redistribuer), de mieux définir le besoin pédagogique visé par ce manuel, d'identifier des outils et des ressources pédagogiques pertinents pour son élaboration. Ainsi, nous remercions chaleureusement les membres de suivi de la *fabriqueREL* pour leur support inconditionnel&nbsp;: 
+
+- Myriam Beaudet, bibliothécaire à l'Université de Sherbrooke.
+- Marianne Dubé, conseillère pédagogique à l'Université de Sherbrooke et coordonnatrice de la fabriqueREL.
+-	Myrian Grondin, bibliothécaire à l'Institut national de la recherche scientifique (INRS).
+- Claude Potvin, conseiller en formation à l'Université Laval.
+- Serge Allary, vice-recteur adjoint aux études de l'Université de Sherbrooke.
+
+Nous tenons aussi à remercier sincèrement les étudiants et étudiantes du cours **Méthodes quantitatives appliquées aux études urbaines (EUR8219)** du programme de maîtrise en études urbaines de l'INRS. Leurs commentaires et suggestions nous ont permis d'améliorer grandement les versions préliminaires de ce manuel qui ont été utilisées dans le cadre de ce cours.
+
+Nous remercions les membres du comité de révision pour leurs commentaires et suggestions très constructifs. Ce comité est composé de trois étudiantes et deux professeurs de l’[INRS](https://inrs.ca/)&nbsp;:
+
+-	Victoria Gay-Gauvin, étudiante à la maîtrise en études urbaines.
+- Salomé Vallette, étudiante au doctorat en études urbaines.
+- Diana Pena Ruiz, étudiante au doctorat en études des populations.
+- [Benoît Laplante](https://inrs.ca/la-recherche/professeurs/benoit-laplante/), professeur enseignant aux programmes de maîtrise et de doctorat en études des populations.
+- [Xavier Leloup](https://inrs.ca/la-recherche/professeurs/xavier-leloup/), professeur enseignant au programme de doctorat en études urbaines.
+
+Finalement, nous remercions Denise Latreille, réviseure linguistique et chargée de cours à l'Université Sherbrooke, pour la révision du manuel.
+
+## Dédicace toute spéciale à Cargo et Ambrée  {-#sect007}
+
+Fait cocasse, l'écriture de ce livre a démarré lorsque Philippe Apparicio était famille d'accueil d'un chiot de la [Fondation Mira](https://www.mira.ca/fr/), un organisme à but non lucratif qui forme des chiens-guides et d’assistance pour accroître l’autonomie et l’inclusion sociale des personnes vivant avec un handicap visuel ou moteur, ainsi que des jeunes présentant un trouble du spectre de l’autisme (TSA). En fin de rédaction du livre, ce fût au tour de Jérémy Gelb d'être famille d'accueil d'un autre chiot Mira. Nous remercions chaleureusement la [Fondation Mira](https://www.mira.ca/fr/) pour nous avoir donné l'occasion de vivre cette expérience incroyable. Ce livre est donc dédié au beau Cargo et à la belle Ambrée qui nous ont tant supportés dans l'écriture du livre. Il n’y a rien de plus relaxant que d’écrire un livre de statistique avec un chiot qui dort à ses pieds!
+
+
+```{r CargoAmbre, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Cargo et Ambrée, chiots de la Fondation Mira",  out.width='70%'}
+knitr::include_graphics('images/introduction/CargoAmbre.png', dpi = NA)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+## quelques parametres generaux en fonction du type de document
+library(tidyverse)
+library(ggpubr)
+library(kableExtra)
+
+if (knitr::is_latex_output()){
+  font_size_table <- 8
+}else{
+  font_size_table <- 14
+}
+
+# note : il ne faut changer que les caracteres en dehors des equations
+clean_text <- function(string){
+  if (is.na(string)){
+    return (NA)
+  }
+  if(string == ""){
+    return("")
+  }
+  string <- gsub("\\$", "+DOLLAR+", string, fixed = TRUE)
+  changes <- list(
+     c("`", "", F),
+      c("\\^([^\"]*?)\\^","\\\\textsuperscript{\\1}",F),
+      c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+      c("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", F),
+      c("\\%", "\\\\%", F),
+      c("&", "\\\\&", F),
+      #c("\\^(?=(?:[^$]*$[^$]*$)*[^$]*$)", "\\\\textasciicircum{}", F),
+      c("\\*{2}", "doublestars", F),
+      c("\\*([^\"]*?)\\*", "\\\\textit{\\1}", F),
+      c("doublestars", "**", F),
+      c("\\\\@ref\\(([^\"]*?)\\)", "\\\\ref{\\1}", F),
+      c("\\(\\%\\)", "(\\\\%)", F),
+      c("_", "\\_", TRUE),
+      c("beta\\_", "beta_", TRUE),
+      c("alpha\\_", "alpha_", TRUE),
+      c("\\&nbsp;", "\\\\&nbsp;", TRUE)
+      )
+  parts <- strsplit(string, "$", fixed = T)[[1]]
+  new_strings <- sapply(1:length(parts), function(i){
+    thisstring <- parts[[i]]
+    if (thisstring != ""){
+      parts2 <- strsplit(thisstring, "`", fixed = T)[[1]]
+      new_strings2 <- sapply(1:length(parts2), function(j){
+        thisstring2 <- parts2[[j]]
+        if (j %% 2 ==0){
+          thisstring2 <- gsub("^","\\textasciicircum{}",thisstring2, fixed = T)
+          return(thisstring2)
+        }else{
+          return(thisstring2)
+        }
+      })
+      thisstring <- paste(new_strings2, collapse="")
+    }
+    
+    
+    if (i %% 2 ==0){
+      return(paste("$",thisstring,"$",sep=""))
+    }else{
+      for (ch in changes){
+          if(ch[[3]]){
+            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, fixed = T)
+          }else{
+            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, perl = T)
+          }
+          
+      }
+      return(thisstring)
+    }
+  })
+  fullstring <- paste(new_strings, collapse = "")
+  fullstring <- gsub("+DOLLAR+", "\\$" , fullstring, fixed = TRUE)
+  return (fullstring)
+  
+}
+
+clean_df_latex <- function(df){
+  if(inherits(df, "list") == F){
+    df <- list(df)
+  }
+  df2 <- lapply(df, function(i){
+    i <- data.frame(i)
+    for(col in names(i)){
+      if(is.character(i[[col]])){
+       i[[col]] <- sapply(i[[col]], clean_text)
+      }
+    }
+    return(i)
+  })
+  return(df2)
+}
+
+show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL, 
+                       col.width = NULL, digits = getOption("digits"), 
+                       align = NULL, row.names = FALSE, position = NULL, ...){
+  options(knitr.kable.NA = '')
+  if(is.null(position)){
+    position <- "basic"
+  }
+  
+  ## dans le cas d'un tableau LATEX
+  if (knitr::is_latex_output()){
+    #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
+    df2 <- clean_df_latex(df)
+    if (is.null(col.names) == F){
+      if(is.na(col.names)==F){
+        #col.names <- gsub("\\(\\%\\)","(\\\\%)",col.names)
+        col.names <- gsub("\\%","\\\\%",col.names)
+        col.names <- gsub("\\^([^\"]*?)\\^","\\\\textasciicircum{\\1}",col.names,fixed = F)
+      }
+    }
+
+    if(is.null(caption)==F){
+      caption <- gsub("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", caption)
+      caption <- gsub("\\*([^\"]*?)\\*","\\\\textit{\\1}", caption)
+    }
+    if(length(df2) == 1){
+      df2 <- df2[[1]]
+    }
+    
+    if(class(df2) == "list"){
+      table1 <- df2 %>% 
+      #mutate_all(linebreak)  %>% 
+       knitr::kable(
+        booktabs = TRUE,
+        format = "latex",
+        digits = digits,
+        format.args = list(decimal.mark = ",", big.mark = "\ua0"),
+        valign = 't', row.names = row.names,
+        align = align,
+        col.names = col.names,
+        caption = caption,
+        escape = FALSE, ...) %>% 
+        kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
+    }else{
+      table1 <- df2 %>% 
+      mutate_all(linebreak)  %>% 
+       knitr::kable(
+        booktabs = TRUE,
+        format = "latex",
+        digits = digits,
+        format.args = list(decimal.mark = ",", big.mark = "\ua0"),
+        valign = 't', row.names = row.names,
+        align = align,
+        col.names = col.names,
+        caption = caption,
+        escape = FALSE, ...) %>% 
+        kableExtra::kable_styling(font_size = 8,protect_latex = T, latex_options = position)
+    }
+    
+    if (is.null(col.to.resize) == FALSE){
+      table1 <- table1 %>% 
+        kableExtra::column_spec(col.to.resize, width=col.width)
+    }
+  ## dans le cas d'un tableau HTLM
+  }else{
+    
+    # gerer les newline
+    if(class(df) != "list"){
+      df <- data.frame(df)
+      for(col in names(df)){
+        if(is.character(df[[col]])){
+          df[[col]] <- gsub("\\newline","<br/>",df[[col]], fixed = T)
+        }
+      }
+    }else {
+      df <- lapply(df, function(i){
+        i <- data.frame(i)
+        i <- i %>% mutate_if(~is.character(.), funs(str_replace_all(., "\\newline", "<br/>")))
+        return(i)
+      })
+    }
+    table1 <- knitr::kable(
+      df, booktabs = TRUE,
+      format.args = list(decimal.mark = ",", big.mark = "&nbsp;"),
+      col.names = col.names,
+      align = align,
+      valign = 't', row.names = row.names,
+      digits = digits,
+      caption = caption,
+      escape = FALSE, ...)
+    ## gerer le padding
+    table1 <- gsub(pattern = "NApadding", replacement = "padding",x = table1, fixed = T)
+  }
+  return(table1)
+}
+
+tofr <- function(float){
+  return(gsub(".",",",as.character(float),fixed = T))
+}
+
+
+# a simple function to show a more simple figure when a lot of details are given
+show_as_png <- function(gplot, out, dpi = 250){
+  invisible({capture.output({this_file <- ggsave(plot = gplot,
+                      filename = out, 
+                      device = "png",
+                      dpi = dpi)})})
+  knitr::include_graphics(out, dpi = dpi)
+}
+
+
+print_number <- function(x, digits = NULL){
+  if(is.null(digits) == FALSE){
+    x <- round(x, digits = digits)
+  }
+  parts <- strsplit(as.character(x), split = ".", fixed = TRUE)[[1]]
+  part1 <- strsplit(parts[[1]], "")[[1]]
+  i<-1
+  elems <- sapply(rev(part1), function(y){
+    if(i == 3){
+      i <<- 1
+      return(paste0(" ",y))
+    }else{
+      i <<- i+1
+      return(y)
+    }
+  })
+  part1 <- paste(rev(elems), collapse = "")
+  x2 <- paste0(part1, ",",parts[[2]])
+  cat(x2)
+}
+
+
+as_error_text <- function(x) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\errorMessage{%s}\\normalfont\\color{black}",x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span class='error_message'>%s</span>",x)
+  } else x
+}
+
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+source("code_complementaire/JG_helper.R")
+source("code_complementaire/QuizzFunctions.R")
+```
+
+<!--chapter:end:index.Rmd-->
+
+# À propos des auteurs {#auteurs .unnumbered}
+
+**Philippe Apparicio** (<http://www.inrs.ca/philippe-apparicio>) est professeur titulaire au Centre Urbanisation Culture Société de l'Institut national de la recherche scientifique (INRS, <http://www.inrs.ca/>). Il enseigne au programme de maîtrise en études urbaines (<https://inrs.ca/les-etudes/programmes-d-etudes/etudier-en-sciences-sociales/>) les cours *Méthodes quantitatives appliquées aux études urbaines* et *Analyses spatiales appliquées aux études urbaines*. Il a aussi créé et enseigné, il y a plusieurs années, le cours *Systèmes d'information géographique appliqués aux études urbaines*. Durant les dernières années, il a offert plusieurs formations aux Écoles d'été du Centre interuniversitaire québécois de statistiques sociales (CIQSS, <https://www.ciqss.org/>). Il est le directeur du **laboratoire d'équité environnementale** (<http://laeq.ucs.inrs.ca>). Géographe de formation, ses intérêts de recherche actuels incluent la justice et l'équité environnementale, la pollution atmosphérique, le bruit et le vélo en ville. Il a publié une centaine d'articles scientifiques dans différents domaines des études urbaines et de la géographie.
+
+**Jérémy Gelb** a obtenu un doctorat en études urbaines à l’INRS en 2022, sous la supervision de Philippe Apparicio. Il est membre du **laboratoire d'équité environnementale** (<http://laeq.ucs.inrs.ca>). Son sujet de thèse porte sur l’exposition des cyclistes aux pollutions atmosphériques et sonores en milieu urbain. Il utilise quotidiennement des systèmes d’information géographique (SIG) et est tombé dans la marmite de l'*open source* avec le triptyque QGIS, R et Python au début de sa maîtrise. Il a récemment développé deux *packages* R&nbsp;: [`geocmeans`](https://cran.r-project.org/web/packages/geocmeans/index.html) et [`spNetwork`](https://cran.r-project.org/web/packages/spNetwork/index.html), permettant respectivement d’effectuer des analyses de classification floue non supervisée pondérée spatialement et des estimations de densité par kernel sur réseau.
+
+Philippe et Jérémy travaillent étroitement ensemble depuis plusieurs années. Avec d’autres collègues, ils ont copublié plusieurs articles [@2021_1; @2021_2; @2021_3; @2021_4; @2020_1; @2020_2; @2020_3; @2019_1; @2019_2; @2019_3; @2018_1; @2017_1; @2016_1]. Tous deux s’intéressent à l’exposition des cyclistes à la pollution atmosphérique et sonore dans plusieurs villes à travers le monde&nbsp;: Philippe ayant une préférence pour les collectes dans les villes des Suds (notamment indiennes, africaines et latino-américaines) et Jérémy dans les villes des Nords (européennes et nord-américaines).
+
+
+```{r JerPhil, echo=FALSE, fig.align='center', fig.cap="Philippe Apparicio et Jérémy Gelb lors d’une collecte de données à vélo à Delhi", auto_pdf=TRUE, out.width='33%'}
+knitr::include_graphics('images/introduction/PhilJerem.jpg', dpi = NA)
+```
+
+<!--chapter:end:00-auteurs.Rmd-->
+
+
+# Annexes {#annexes}
+
+Placeholder
+
+
+## Table des valeurs critiques de khi-deux {#annexe1}
+## Table des valeurs critiques de Fisher {#annexe2}
+## Table des valeurs critiques de *t* {#annexe3}
+
+<!--chapter:end:19-Annexes.Rmd-->
+
