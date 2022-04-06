@@ -1059,6 +1059,8 @@ knitr::include_graphics('images/analysesfactorielles/AnalysesFactoriellesTabAFC.
 - En sciences politiques, le recours à l’AFC peut être intéressant pour explorer les résultats d’une élection. Les deux variables qualitatives pourraient être les *circonscriptions électorales* et les *partis politiques*. Le croisement des lignes et des colonnes du tableau de contingence représenterait le nombre de votes obtenus par un parti politique *j* dans la circonscription électorale *i*. Appliquer une AFC sur un tel tableau de contingence permettrait de révéler les ressemblances entre les différents partis politiques et celles entre les circonscriptions électorales. 
 
 ::: {.bloc_attention data-latex=""}
+
+
 **Application d'une ACP sur un tableau de contingence transformé en un tableau avec les pourcentages en ligne&nbsp;: un bien mauvais calcul...**
 
 Il pourrait être tentant de transformer le tableau de contingence initial (tableau&nbsp;\@ref(tab:encadreAFCACP1)) en un tableau avec les pourcentages en lignes (tableau&nbsp;\@ref(tab:encadreAFCACP2)) afin de lui appliquer une analyse en composantes principales. Une telle démarche a deux inconvénients majeurs&nbsp;: chacune des modalités de la première variable qualitative (*I*) aurait alors le même poids; chacune des modalités de la deuxième variable (*J*) aurait aussi le même poids. Or, à la lecture des marges en ligne et en colonne au tableau&nbsp;\@ref(tab:encadreAFCACP1), il est clair que la modalité `j1` et `i1` comprennent plus bien d'individus que les autres modalités respectives.
@@ -1086,7 +1088,6 @@ show_table(dataafex1,
            )
 ```
 
-
 ```{r encadreAFCACP2, echo=FALSE, message=FALSE, warning=FALSE}
 dataafex2 <- dataAFCex
 rownames(dataafex2) <- c("i1", "i2", "i3", "i4")
@@ -1105,6 +1106,7 @@ show_table(dataafex2,
           position = 'HOLD_position'
            )
 ```
+
 :::
 
 ### Recherche d'une simplification basée sur la distance du khi-deux {#sect1231}
