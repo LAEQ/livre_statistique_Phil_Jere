@@ -1,11 +1,6 @@
 # Méthodes de classification non supervisée {#chap13}
 
-::: {.bloc_attention data-latex=""}
-Ce chapitre n'a pas encore fait l'objet d'une révision linguistique. Il comprend certainement plusieurs coquilles... Une version révisée sera mise à jour prochainement.
-:::
-
-
-Dans le cadre de ce chapitre, nous présentons les méthodes les plus utilisées en sciences sociales pour explorer la présence de groupes homogènes au sein d'un jeu de données, soit les méthodes de classification non supervisée. Le qualificatif *non supervisé* signifie que ces classes/groupes ne sont pas connues a priori et doivent être identifiées à partir des données. Autrement dit, nous cherchons à regrouper les observations partageant des caractéristiques similaires sur la base de plusieurs variables. Ces méthodes descriptives et exploratoires multivariées peuvent être vues comme une façon de réduire le nombre d'observations d'un jeu de données à un ensemble d'observations synthétiques, représentant le mieux possible la population à l’étude.
+Dans le cadre de ce chapitre, nous présentons les méthodes les plus utilisées en sciences sociales pour explorer la présence de groupes homogènes au sein d'un jeu de données, soit les méthodes de classification non supervisée. Le qualificatif *non supervisé* signifie que ces classes/groupes ne sont pas connus a priori et doivent être identifiés à partir des données. Autrement dit, nous cherchons à regrouper les observations partageant des caractéristiques similaires sur la base de plusieurs variables. Ces méthodes descriptives et exploratoires multivariées peuvent être vues comme une façon de réduire le nombre d'observations d'un jeu de données à un ensemble d'observations synthétiques, représentant le mieux possible la population à l’étude.
 
 ::: {.bloc_package data-latex=""}
 Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;: 
@@ -18,7 +13,7 @@ Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;:
   - `NbClust` pour trouver le bon nombre de groupe dans une classification.
   - `cluster` pour appliquer la méthode GAP.
   - `proxy` pour calculer plusieurs types de distances.
-  - `Gmedian` pour calculer le k-medians.
+  - `Gmedian` pour calculer le k-médianes.
   - `geocmeans` pour explorer les résultats de classifications floues.
 :::
 
@@ -27,7 +22,7 @@ Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;:
 ::: {.bloc_objectif data-latex=""}
 **Pourquoi recourir à des méthodes de classification non supervisée en sciences sociales?**
 
-Les méthodes de classification sont très utilisées en sciences sociales. Elles visent à d'identifier des groupes cohérents au sein d'un ensemble d'observations sur la base de plusieurs variables (figure \@ref(fig:ClassifNonNSuperv)). Ces groupes peuvent ensuite être analysés et nous renseigner sur les caractéristiques communes partagées par les individus qui les composent. 
+Les méthodes de classification sont très utilisées en sciences sociales. Elles visent à identifier des groupes cohérents au sein d'un ensemble d'observations sur la base de plusieurs variables (figure \@ref(fig:ClassifNonNSuperv)). Ces groupes peuvent ensuite être analysés et nous renseigner sur les caractéristiques communes partagées par les individus qui les composent. 
 
 
 ```{r ClassifNonNSuperv, echo=FALSE, fig.align='center', fig.pos = "H", fig.cap="Principe de base des méthodes de classification non supervisée", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='40%'}
@@ -37,16 +32,16 @@ knitr::include_graphics('images/classification/ClassifNonNSuperv.png', dpi = NA)
 
 Un exemple classique est l'identification de profils d'individus ayant répondu à un sondage, en fonction de plusieurs caractéristiques (par exemple, l'âge, le sexe, la situation de famille, le revenu, etc.). En identifiant ces groupes homogènes, il est ensuite possible d'explorer les associations entre ces profils et d'autres variables.
 
-Un second exemple serait de regrouper les secteurs d'une ville selon leurs caractéristiques environnementales (végétation, niveau de bruit, pollution atmosphérique, etc.) et socioéconomiques (revenu médian des ménages, pourcentages d’immigrants, de personnes à faible scolarité, taux de chômage, etc.).
+Un second exemple serait de regrouper les secteurs d'une ville selon leurs caractéristiques environnementales (végétation, niveau de bruit, pollution atmosphérique, etc.) et socioéconomiques (revenu médian des ménages, pourcentage d’immigrants, pourcentage de personnes à faible scolarité, taux de chômage, etc.).
 :::
 
 ## Méthodes de classification : un aperçu {#sect131}
 
 Il existe une multitude de méthodes de classification généralement regroupées dans plusieurs familles imbriquées à partir de deux distinctions importantes.
 
-La première distinction vise à séparer les méthodes **supervisées** et **non supervisées**. Pour les premières, les catégories/groupes/classes des observations sont connues à l'avance. L'enjeu n'est pas de trouver les catégories puisqu’elles sont connues, mais **de déterminer des règles ou un modèle permettant d'attribuer des observations à ces catégories**. Parmi les méthodes de classification supervisée, les plus connues sont les forêts d’arbres décisionnels, les réseaux de neurones artificiels ou encore l’analyse factorielle discriminante. Nous n'abordons pas ces méthodes dans ce chapitre dédié uniquement aux méthodes de classification non supervisée. Pour ces dernières, les catégories ne sont pas connues à l'avance et l'enjeu est de **faire ressortir les structures des groupes propres aux données**. Ainsi, les méthodes de classification non supervisée «&nbsp;relèvent de la statistique exploratoire multidimensionnelle et permettent de classifier automatiquement les observations sans connaissance a priori sur la nature des classes présentes dans le jeu de données; les plus connues sont sans conteste les algorithmes de classification ascendante hiérarchique (CAH) et *k-means* (k-moyennes)&nbsp;» [@2021_4, p.1]. Notez également qu'à la frontière entre ces deux familles se situent les méthodes de classification semi-supervisée. Il s'agit de cas spécifiques où des informations partielles sont connues sur les groupes à détecter&nbsp;: seulement le groupe final de certaines observations est connu, certaines observations sont supposées appartenir à un même groupe même s'il est indéfini en lui-même [@bair2013semi].
+La première distinction vise à séparer les méthodes **supervisées** des **non supervisées**. Pour les premières, les catégories/groupes/classes des observations sont connues à l'avance. L'enjeu n'est pas de trouver les catégories puisqu’elles sont connues, mais **de déterminer des règles ou un modèle permettant d'attribuer des observations à ces catégories**. Parmi les méthodes de classification supervisée, les plus connues sont les forêts d’arbres décisionnels, les réseaux de neurones artificiels ou encore l’analyse factorielle discriminante. Nous n'abordons pas ces méthodes dans ce chapitre dédié uniquement aux méthodes de classification non supervisée. Pour ces dernières, les catégories ne sont pas connues à l'avance et l'enjeu est de **faire ressortir les structures des groupes propres aux données**. Ainsi, les méthodes de classification non supervisée «&nbsp;relèvent de la statistique exploratoire multidimensionnelle et permettent de classifier automatiquement les observations sans connaissance a priori sur la nature des classes présentes dans le jeu de données; les plus connues sont sans conteste les algorithmes de classification ascendante hiérarchique (CAH) et du *k-means* (k-moyennes)&nbsp;» [@2021_4, p.1]. Notez également qu'à la frontière entre ces deux familles, se situent les méthodes de classification semi-supervisée. Il s'agit de cas spécifiques où des informations partielles sont connues sur les groupes à détecter&nbsp;: seulement le groupe final de certaines observations est connu, certaines observations sont supposées appartenir à un même groupe même s'il est indéfini en lui-même [@bair2013semi].
 
-La seconde distinction vise à séparer les méthodes **strictes** et **floues**. Les premières ont pour objectif d'assigner chaque observation à une et une seule catégorie, alors que les secondes décrivent le degré d’appartenance de chaque observation à chaque catégorie. Autrement dit, «&nbsp;dans une classification stricte, chaque observation appartient à une seule classe. Mathématiquement parlant, l’appartenance à une classe donnée est binaire (0 ou 1) tandis que dans une classification floue, chaque observation a une probabilité d’appartenance variant de 0 à 1 à chacune des classes&nbsp;» [@2021_4, p.1]. Bien entendu, pour chaque observation, la somme des degrés d’appartenance à chacune des classes sera égale à 1 (figure \@ref(fig:floueVSstrict)). En termes de données, cela signifie que pour les méthodes strictes, le groupe d'appartenance d'une observation sera contenu dans une seule variable nominale (une colonne d'un *DataFrame*). Pour les méthodes floues, il est nécessaire de disposer d’autant de variables continues (plusieurs colonnes numériques d'un *DataFrame*), soit une par groupe, dans lequel sera enregistré le degré d'appartenance de chaque observation à chacun des groupes. Parmi les méthodes de classification supervisée floue, notez que nous avons déjà abordé la régression logistique multinomiale dans le chapitre sur les GLM (section \@ref(sect0824)).
+La seconde distinction vise à séparer les méthodes **strictes** des **floues**. Les premières ont pour objectif d'assigner chaque observation à une et une seule catégorie, alors que les secondes décrivent le degré d’appartenance de chaque observation à chaque catégorie. Autrement dit, «&nbsp;dans une classification stricte, chaque observation appartient à une seule classe. Mathématiquement parlant, l’appartenance à une classe donnée est binaire (0 ou 1) tandis que dans une classification floue, chaque observation a une probabilité d’appartenance variant de 0 à 1 à chacune des classes&nbsp;» [@2021_4, p.1]. Bien entendu, pour chaque observation, la somme des degrés d’appartenance à chacune des classes est égale à 1 (figure \@ref(fig:floueVSstrict)). En termes de données, cela signifie que pour les méthodes strictes, le groupe d'appartenance d'une observation est contenu dans une seule variable nominale (une colonne d'un *DataFrame*). Pour les méthodes floues, il est nécessaire de disposer d’autant de variables continues (plusieurs colonnes numériques d'un *DataFrame*), soit une par groupe, dans lesquelles est enregistré le degré d'appartenance de chaque observation à chacun des groupes. Parmi les méthodes de classification supervisée floue, notez que nous avons déjà abordé la régression logistique multinomiale dans le chapitre sur les GLM (section \@ref(sect0824)).
 
 ```{r floueVSstrict, echo=FALSE, fig.align='center', fig.cap="Classifications stricte et floue", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='40%'}
 library(dplyr)
@@ -56,13 +51,13 @@ knitr::include_graphics('images/classification/floueVSstricte.png', dpi = NA)
 ```
 
 
-En résumé, le croisement de ces deux distinctions permet de ainsi de différencier les méthodes **supervisées strictes**, **supervisées floues**, **non supervisées strictes** et **non supervisées floues** (figure \@ref(fig:methoClassif)), auxquelles s'ajoutent les méthodes semi-supervisées discutées brièvement.
+En résumé, le croisement de ces deux distinctions permet ainsi de différencier les méthodes **supervisées strictes**, **supervisées floues**, **non supervisées strictes** et **non supervisées floues** (figure \@ref(fig:methoClassif)), auxquelles s'ajoutent les méthodes semi-supervisées discutées brièvement.
 
 ```{r methoClassif, echo=FALSE, fig.align='center', fig.cap="Synthèse des principales méthodes de classification (Gelb et Apparicio 2021)", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='60%'}
 knitr::include_graphics('images/classification/syntheseClassif.png', dpi = NA)
 ```
 
-Dans ce chapitre, nous décrivons les trois méthodes de classification non supervisée les plus utilisées et faciles à mettre en œuvre&nbsp;: la classification ascendante hiérarchique, les nuées dynamiques strictes (*k-means* et *k-median*) et nuées dynamiques floues (*c-means* et *c-median*). 
+Dans ce chapitre, nous décrivons les trois méthodes de classification non supervisée les plus utilisées et faciles à mettre en œuvre&nbsp;: la classification ascendante hiérarchique, les nuées dynamiques strictes (*k-means* et *k-medians*) et nuées dynamiques floues (*c-means* et *c-medians*). 
 
 ## Notions essentielles en classification {#sect132}
 
@@ -77,11 +72,11 @@ La distance en analyse de données est définie comme une fonction (*d*) permett
 * **la symétrie**&nbsp;: la distance entre $x$ et $y$ est la même qu'entre $y$ et $x$; $d(x,y) = d(y,x)$.
 * **le triangle d'inégalité**&nbsp;: passer d'un point $x$ à un point $z$ est toujours plus court ou égal que de passer par $y$ entre $x$ et $z$; $d(x,z)\leq d(x,y)+d(y,z)$.
 
-Il existe un grand nombre de types de distance qui peuvent être utilisés pour déterminer le degré de (dis)similarité entre les observations. Nous présentons ici les six types les plus fréquemment utilisés en sciences sociales, mais retenez qu’il en existe bien d'autres.
+Il existe un grand nombre de types de distance qui peuvent être utilisés pour déterminer le degré de similarité entre les observations. Nous présentons ici les six types les plus fréquemment utilisés en sciences sociales, mais retenez qu’il en existe bien d'autres.
 
 #### Distance euclidienne {#sect13211}
 
-Il s'agit vraisemblablement de la distance la plus couramment utilisée, soit la longueur de la ligne droite la plus courte entre les deux objets considérés. Pour la représenter, admettons que nous nous intéressons à trois classes d'étudiant(e)s A, B et C pour lesquelles nous avons calculé la moyenne de leurs notes dans les cours de méthodes quantitatives et qualitatives. Ces deux variables sont mesurées dans la même unité et varient de 0 à 100. Le nuage de points à la figure \@ref(fig:dist0) illustre cette situation avec des données fictives.
+Il s'agit vraisemblablement de la distance la plus couramment utilisée, soit la longueur de la ligne droite la plus courte entre les deux objets considérés. Pour la représenter, admettons que nous nous intéressons à trois classes d'étudiants et d'étudiantes A, B et C pour lesquelles nous avons calculé la moyenne de leurs notes dans les cours de méthodes quantitatives et qualitatives. Ces deux variables sont mesurées dans la même unité et varient de 0 à 100. Le nuage de points à la figure \@ref(fig:dist0) illustre cette situation avec des données fictives.
 
 ```{r dist0, echo=FALSE, fig.align='center', fig.cap="Situation de base pour le calcul de distance", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='60%'}
 
@@ -95,7 +90,7 @@ ggplot(df) +
   geom_point(aes(x = quantitative, y = qualitative, color = classe), size = 3) + 
   scale_color_manual(values = c("A" = "#E73D3D", "B" = "#3CE73C", "C" = "#3C3CE7")) + 
   labs(x = "Moyenne des notes en méthodes quantitatives",
-       y = "Moyenne des notes en méthode qualitatives")
+       y = "Moyenne des notes en méthodes qualitatives")
 
 ```
 
@@ -131,7 +126,7 @@ d(a,b) = \sqrt{\sum{}^v_{i=1}(a_i-b_i)^2}
 \end{equation}
 \normalsize
 
-Avec *v* le nombre de variables décrivant les observations *a* et *b*.
+avec *v* le nombre de variables décrivant les observations *a* et *b*.
 
 Nous pouvons facilement calculer la distance euclidienne pour notre jeu de données&nbsp;: 
 
@@ -141,18 +136,18 @@ Nous pouvons facilement calculer la distance euclidienne pour notre jeu de donn�
 ::: {.bloc_attention data-latex=""}
 **Distance et unité de mesure&nbsp;**
 
-Il est très important de garder à l'esprit que la distance entre deux observations dépend directement des unités de mesure utilisées. Cela est très souvent problématique, car il est rare que toutes les variables utilisées pour décrire des observations soient mesurées dans la même unité. Ainsi, une variable dont les valeurs numériques seraient plus grandes risquerait de déséquilibrer les calculs de distance. À titre d'exemple, une variable mesurée en mètres plutôt qu'en kilomètres produirait des distances euclidiennes 1000 fois plus grandes.
+Il est très important de garder à l'esprit que la distance entre deux observations dépend directement des unités de mesure utilisées. Cela est très souvent problématique, car il est rare que toutes les variables utilisées pour décrire des observations soient mesurées dans la même unité. Ainsi, une variable dont les valeurs numériques sont plus grandes risque de déséquilibrer les calculs de distance. À titre d'exemple, une variable mesurée en mètres plutôt qu'en kilomètres produit des distances euclidiennes 1000 fois plus grandes.
 
 Il est donc nécessaire de standardiser les variables utilisées avant de calculer des distances. Cette opération permet de transformer les variables originales vers une échelle commune. Plusieurs types de transformations peuvent être utilisés tels que décrits à la section \@ref(sect02552)&nbsp;:
 
-* **Le centrage et la réduction** qui consistent à soustraire à chaque valeur sa moyenne, puis à la diviser par son écart-type. La nouvelle variable obtenue s'exprime alors en écart-type (appelé aussi score-z). La formule de la transformation est $f(x) = \frac{x - \bar{x}}{\sigma_x}$, avec $\bar{x}$ la moyenne de $x$ et $\sigma_x$ l'écart-type de $x$.
+* **Le centrage et la réduction** qui consistent à soustraire de chaque valeur sa moyenne, puis à la diviser par son écart-type. La nouvelle variable obtenue s'exprime alors en écart-type (appelé aussi score-z). La formule de la transformation est $f(x) = \frac{x - \bar{x}}{\sigma_x}$, avec $\bar{x}$ la moyenne de $x$ et $\sigma_x$ l'écart-type de $x$.
 * **La transformation sur une mise à l'échelle de 0 à 1** qui permet de modifier l'étendue d'une variable afin que sa valeur maximale soit de 1 et sa valeur minimale soit de 0. La formule de cette transformation est $f(x) = \frac{x-min(x)}{max(x)-min(x)}$.
-* **La transformation en rangs** qui consiste à remplacer les valeurs d'une variable par leurs rangs. La valeur la plus faible est remplacée par 1, et la plus forte par *n* (nombre d'observations). Notez que cette transformation modifie la distribution de la variable originale contrairement aux deux transformations précédentes. Cette propriété peut être désirable si les écarts absolus entre les valeurs ont peu d'importance, si la variable n'a pas été mesurée avec précision ou encore si des valeurs extrêmes sont présentes.
-* **La transformation en percentiles** qui consiste à remplacer les valeurs d'une variable par leur percentile correspondant. Elle peut être vue comme une standardisation de la transformation en rangs, car elle ne dépend pas du nombre d'observations.
+* **La transformation en rang** qui consiste à remplacer les valeurs d'une variable par leur rang. La valeur la plus faible est remplacée par 1, et la plus forte par *n* (nombre d'observations). Notez que cette transformation modifie la distribution de la variable originale contrairement aux deux transformations précédentes. Cette propriété peut être désirable si les écarts absolus entre les valeurs ont peu d'importance, si la variable n'a pas été mesurée avec précision ou encore si des valeurs extrêmes sont présentes.
+* **La transformation en percentile** qui consiste à remplacer les valeurs d'une variable par leur percentile correspondant. Elle peut être vue comme une standardisation de la transformation en rang, car elle ne dépend pas du nombre d'observations.
 
-La figure \@ref(fig:impactTransform) montre l'impact de ces transformations sur l'histogramme d'une variable.
+La figure \@ref(fig:impactTransform) montre l'effet de ces transformations sur l'histogramme d'une variable.
 
-```{r impactTransform, echo=FALSE, fig.align='center', fig.cap="Impacts de différentes transformations sur la distribution d'une variable", fig.pos="H", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='80%'}
+```{r impactTransform, echo=FALSE, fig.align='center', fig.cap="Effets de différentes transformations sur la distribution d'une variable", fig.pos="H", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='80%'}
 
 x <- rgamma(10000, 0.95,0.1)
 dfx <- data.frame(
@@ -168,8 +163,8 @@ x2 <- reshape2::melt(dfx)
 x2$variable <- case_when(x2$variable == "x" ~ "1-originale",
                          x2$variable == "xstd" ~ "2-centrée-réduite",
                          x2$variable == "x_01" ~ "3-mise à l'échelle 0-1",
-                         x2$variable == "x_rang" ~ "4-rangs",
-                         x2$variable == "x_prt" ~ "5-percentiles",
+                         x2$variable == "x_rang" ~ "4-rang",
+                         x2$variable == "x_prt" ~ "5-percentile",
                          )
 
 ggplot(x2) + 
@@ -181,7 +176,7 @@ ggplot(x2) +
 
 #### Distance de Manhattan {#sect13212}
 
-Cette seconde distance est également couramment utilisée. Elle doit son nom au réseau de rue de l'île de Manhattan qui suit un plan quadrillé. La distance de Manhattan correspond à la somme des écarts absolus entre les valeurs des différentes variables décrivant les observations (équation \@ref(eq:manhattandist)). La figure \@ref(fig:dist2) illustre que la distance Manhattan (lignes noires) représente les deux côtés opposés de l'hypoténuse d’un triangle rectangle; l'hypoténuse représentant quant à lui la distance euclidienne.
+Cette seconde distance est également couramment utilisée. Elle doit son nom au réseau de rue de l'île de Manhattan qui suit un plan quadrillé. La distance de Manhattan correspond à la somme des écarts absolus entre les valeurs des différentes variables décrivant les observations (équation \@ref(eq:manhattandist)). La figure \@ref(fig:dist2) illustre que la distance Manhattan (lignes noires) représente les deux côtés opposés de l'hypoténuse d’un triangle rectangle; l'hypoténuse représentant quant à elle la distance euclidienne.
 
 \footnotesize
 \begin{equation}  
@@ -221,11 +216,11 @@ Calculons la distance de Manhattan pour nos deux paires d'observations&nbsp;:
 
 #### Distance du khi-deux {#sect13213}
 
-La distance du khi-deux est basée sur le test du khi-deux (chapitre \@ref(chap05)) et est généralement utilisée pour calculer la distance entre deux histogrammes, deux images ou deux ensembles de mots. Plus précisément, elle permet de mesure la distance entre deux observations A et B, pour lesquels nous disposons d'un ensemble de variables étant toutes des variables de comptage.
+La distance du khi-deux est basée sur le test du khi-deux (chapitre \@ref(chap05)) et est généralement utilisée pour calculer la distance entre deux histogrammes, deux images ou deux ensembles de mots. Plus précisément, elle permet de mesure la distance entre deux observations A et B, pour lesquelles nous disposons d'un ensemble de variables étant toutes des variables de comptage.
 
-Prenons un exemple concret en générant trois histogrammes A, B et C sur l'intervalle [0,50] à partir d'une distribution normale, log-normale et gamma, puis comptons le nombre de valeurs de chaque unité (1,2,3,4, etc.). Ces histogrammes sont représentés à la figure \@ref(fig:dist3).
+Prenons un exemple concret en générant trois histogrammes A, B et C sur l'intervalle [0,50] à partir des distributions normale, log-normale et Gamma, puis comptons le nombre de valeurs de chaque unité (1, 2, 3, 4, etc.). Ces histogrammes sont représentés à la figure \@ref(fig:dist3).
 
-```{r dist3, echo=FALSE, fig.align='center', fig.cap="Trois histogrammes pour illustrer le calcul de la distance du chi-deux", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
+```{r dist3, echo=FALSE, fig.align='center', fig.cap="Trois histogrammes pour illustrer le calcul de la distance du khi-deux", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
 
 set.seed(123)
 x1 <- rnorm(500, mean = 25, sd = 5)
@@ -252,7 +247,7 @@ ggplot(df2) +
   labs(x = "", y = "")
 ```
 
-Nous pouvons calculer les distances du khi-deux entre les paires d'histogrammes (tableau \@ref(tab:tabdist3)). Nous pouvons ainsi constater que les histogrammes B et C sont les plus semblables.
+Nous pouvons calculer les distances du khi-deux entre les paires d'histogrammes (tableau \@ref(tab:tabdist3)). Nous constatons ainsi que les histogrammes B et C sont les plus semblables.
 
 ```{r tabdist3, echo=FALSE, message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='50%'}
 
@@ -287,9 +282,9 @@ d_{\chi^2}(a,b) = \frac{1}{2}\sum^n_{i=1}\frac{(a_i-b_i)^2}{(a_i+b_i)}
 \end{equation}
 \normalsize
 
-Avec $a_i$ et $b_i$ les comptages pour les histogrammes. Notez que si $a_i$ et $b_i$ valent tous les deux 0, il faut retirer ces valeurs avant le calcul, car cela provoquerait une division par 0.
+avec $a_i$ et $b_i$ les comptages pour les histogrammes. Notez que si $a_i$ et $b_i$ valent tous les deux 0, il faut retirer ces valeurs avant le calcul, car cela provoquerait une division par 0.
 
-À première vue, cette distance peut paraître moins utile que les deux précédentes. Pourtant, de nombreuses données sont collectées comme des histogrammes. Un premier exemple serait des images que nous pouvons représenter sous forme de trois histogrammes, un pour chaque canal de couleur (rouge, vert et bleu). Un second exemple serait des données sonores, souvent synthétisées sous forme d'histogrammes des fréquences sonores enregistrées (octaves ou tiers d'octaves). Un dernier exemple pourrait être le nombre d'accidents de la route enregistré à diverses intersections d'une ville chaque heure. Dans ce contexte, un histogramme serait formé par intersection avec les heures de la journée comme limites des bandes et le nombre d'accidents comme hauteur des bandes.
+À première vue, cette distance peut paraître moins utile que les deux précédentes. Pourtant, de nombreuses données sont collectées comme des histogrammes. Un premier exemple serait des images que nous pouvons représenter sous forme de trois histogrammes, un pour chaque canal de couleur (rouge, vert et bleu). Un second exemple serait des données sonores, souvent synthétisées sous forme d'histogrammes des fréquences sonores enregistrées (octaves ou tiers d'octaves). Un dernier exemple pourrait être le nombre d'accidents de la route enregistré à diverses intersections d'une ville chaque heure. Dans ce contexte, un histogramme serait formé par l'intersection avec les heures de la journée comme limites des bandes et le nombre d'accidents comme hauteur des bandes.
 
 #### Distance de Mahalanobis {#sect13214}
 
@@ -308,7 +303,7 @@ avec *S* étant la matrice de covariance.
 
 #### Distance de Hamming {#sect13215}
 
-Cette distance est utilisée quand les écarts entre les variables de deux observations sont uniquement binaires. Un bon exemple serait un jeu de données ne comprenant que des variables qualitatives, pouvant avoir une valeur identique pour deux observations (distance&nbsp;=&nbsp;0) ou différente (distance&nbsp;=&nbsp;1). La distance de Hamming est la simple addition de ces écarts.
+Cette distance est utilisée quand les écarts entre les variables de deux observations sont uniquement binaires. Un bon exemple serait un jeu de données ne comprenant que des variables qualitatives pouvant avoir une valeur identique pour deux observations (distance&nbsp;=&nbsp;0) ou différente (distance&nbsp;=&nbsp;1). La distance de Hamming est la simple addition de ces écarts.
 
 Prenons un exemple très simple en prenant trois maisons pour lesquelles nous connaissons cinq caractéristiques \@ref(tab:tabdist4)).
 
@@ -356,7 +351,7 @@ show_table(house_dists,
 
 #### Distance de Gower {#sect13216}
 
-La distance de Gower [-@gower1971general] peut être utilisée pour mesurer la distance entre deux observations lorsque les données sont à la fois qualitatives et quantitatives. Cette distance est comprise dans un intervalle de 0 à 1, 0 signifiant que les deux observations sont identiques et 1 que les observations sont radicalement différentes.
+La distance de Gower [-@gower1971general] peut être utilisée pour mesurer la distance entre deux observations lorsque les données sont à la fois qualitatives et quantitatives. Cette distance est comprise dans un intervalle de 0 à 1, 0 signifiant que les deux observations sont identiques et 1, que les observations sont radicalement différentes.
 
 Elle se calcule de la façon suivante&nbsp;: 
 
@@ -373,11 +368,7 @@ s_{xyj} =  1 - \frac{|x_j-y_j|}{max(j)-min(j)} \text{ pour une variable quantita
 \end{equation}
 \normalsize
 
-avec&nbsp;: 
-
-* *p* le nombre de variables
-* *x* et *y* deux observations
-* *j* une variable.
+avec *p* le nombre de variables, *x* et *y* deux observations et *j* une variable.
 
 Autrement dit, si la valeur d'une variable qualitative diffère entre deux observations, la distance entre ces deux observations augmente de $1/p$. Pour une variable quantitative, la distance augmente selon la différence absolue entre les valeurs de la variable divisée par l'étendue totale de la variable, le tout à nouveau divisé par *p*.
 
@@ -389,7 +380,7 @@ Si cette mesure semble intéressante puisqu'elle permet de combiner des variable
 ::: {.bloc_aller_loin data-latex=""}
 **D'autres distances pour des données mixtes**
 
-Il existe bien d'autres distances qui peuvent être utilisées dans le cas de données mixtes. Le *package* `kmed` en implémente cinq (auxquelles s'ajoute la distance de Gower) dans sa fonction `distmix`&nbsp;: les distances de Wishart, dePodani, d'Huang, d'Harikumar et d'Ahmad. Ces différentes distances ont toutes leurs avantages et défauts respectifs; pour plus d'information, référez-vous à la documentation de la fonction `distmix`.
+Il existe bien d'autres distances qui peuvent être utilisées dans le cas de données mixtes. Le *package* `kmed` en implémente cinq (auxquelles s'ajoute la distance de Gower) dans sa fonction `distmix`&nbsp;: les distances de Wishart, de Podani, d'Huang, d'Harikumar et d'Ahmad. Ces différentes distances ont toutes leurs avantages et leurs défauts respectifs; pour plus d'information, référez-vous à la documentation de la fonction `distmix`.
 :::
 
 #### Distance du Phi^2^ {#sect13217}
@@ -405,19 +396,13 @@ d_{\Phi^2}(i,j) = \frac{1}{Q}\sum_k\frac{(\delta_{ik} - \delta_{jk})^2}{f_k}
 \end{equation}
 \normalsize
 
-avec&nbsp;: 
+avec *i* et *j* deux observations, *k* une modalité d'une variable qualitative, *Q* le nombre total de modalités des variables qualitatives, $\delta_{ik} = 1$ si l'observation i a la modalité *k*, 0 sinon et $f_k$ la fréquence de la modalité *k* dans le jeu de données.
 
-* *i* et *j* deux observations
-* *k* une modalité d'une variable qualitative
-* *Q* le nombre total de modalités des variables qualitatives
-* $\delta_{ik} = 1$ si l'observation i a la modalité *k*, 0 sinon
-* $f_k$ la fréquence de la modalité *k* dans le jeu de données.
-
-La distance du \Phi^2^ est très utile pour analyser les résultats de questionnaires.
+La distance du $\Phi^2$ est très utile pour analyser les résultats de questionnaires.
 
 ### Inertie {#sect1322}
 
-Une notion importante à saisir dans le cadre des méthodes de classification non supervisées est celui de l'**inertie** d'un jeu de données. Il est proche de la notion de variance qui a été présenté dans le chapitre sur la statistique univariée (section \@ref(sect0253)).
+Une notion importante à saisir dans le cadre des méthodes de classification non supervisée est celui celle l'**inertie** d'un jeu de données. Elle est proche de la notion de variance qui a été présentée dans le chapitre sur la statistique univariée (section \@ref(sect0253)).
 
 L'inertie est une quantité permettant de décrire la dispersion des observations d'un jeu de données. Cette mesure dépend à la fois des données (nombres d'observations et de variables, échelle des variables) et de la mesure de distance retenue entre deux observations. Plus spécifiquement, l'inertie correspond à la somme des distances entre chaque observation et le centre du jeu de données. 
 
@@ -430,9 +415,9 @@ inertie= \sum{}^n_{i=1} d(c,x_i)
 
 avec *c* le centre du jeu de données, *n* le nombre d'observations, *x* une observation et *d* la fonction calculant la distance entre deux observations.
 
-L'enjeu est de définir *c*, dans un contexte où la distance euclidienne est utilisée, il s'agit simplement d'une observation fictive dont les coordonnées sont les moyennes des différentes variables du jeu de données. Dans le cas d'autres distances, il peut s'agir de l'observation minimisant la distance à toutes les autres observations.
+L'enjeu est de définir *c* dans un contexte où la distance euclidienne est utilisée. Il s'agit simplement d'une observation fictive dont les coordonnées sont les moyennes des différentes variables du jeu de données. Dans le cas d'autres distances, il peut s'agir de l'observation minimisant la distance à toutes les autres observations.
 
-Pour bien visualiser la notion d'inertie, prenons une fois encore du jeu de données IRIS comme exemple. Admettons que nous ne nous intéressons qu'à deux variables de ce jeu de données&nbsp;: `sepal.Length` et `sepal.Width`. Nous pouvons représenter l'inertie totale du jeu de données à la figure \@ref(fig:dist6).
+Pour bien visualiser la notion d'inertie, prenons une fois encore le jeu de données `IRIS` comme exemple. Admettons que nous ne nous intéressons qu'à deux variables de ce jeu de données&nbsp;: `sepal.Length` et `sepal.Width`. Nous pouvons représenter l'inertie totale du jeu de données à la figure \@ref(fig:dist6).
 
 
 ```{r dist6, echo=FALSE, fig.align='center', fig.cap="Représentation de l'inertie du jeu de données IRIS", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
@@ -449,7 +434,7 @@ ggplot(iris) +
 
 ```
 
-Chaque ligne bleue représente la contribution de chaque point à l'inertie totale du jeu de données. Pour chaque IRIS, nous connaissons son espèce (Setosa, Versicolor ou Virginica). Nous pouvons donc attribuer chaque point de ce jeu de données à un groupe (une espèce dans notre cas). Il devient alors possible de calculer l'inertie de chacun des sous-groupes de notre jeu de données. Pour cela, nous devons calculer le centre de chaque groupe (généralement les moyennes des variables des observations au sein d'un groupe) et ensuite calculer l'inertie entre chaque observation et le centre de son groupe. Nous représentons cette situation à la figure \@ref(fig:dist7).
+Chaque ligne bleue représente la contribution de chaque point à l'inertie totale du jeu de données. Pour chaque iris, nous connaissons son espèce (Setosa, Versicolor ou Virginica). Nous pouvons donc attribuer chaque point de ce jeu de données à un groupe (une espèce dans notre cas). Il devient alors possible de calculer l'inertie de chacun des sous-groupes de notre jeu de données. Pour cela, nous devons calculer le centre de chaque groupe (généralement les moyennes des variables des observations au sein d'un groupe) et ensuite calculer l'inertie entre chaque observation et le centre de son groupe. Nous représentons cette situation à la figure \@ref(fig:dist7).
 
 ```{r dist7, echo=FALSE, fig.align='center', fig.cap="Représentation de l'inertie par groupe pour le jeu de données IRIS", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
 library(gganimate)
@@ -497,7 +482,7 @@ La classification ascendante hiérarchique est un algorithme permettant de regro
 
 Ces regroupements successifs créent un arbre de classification appelé dendrogramme. La racine de cet arbre est le groupe unique fusionnant toutes les observations, et ses branches correspondent aux différentes agrégrations effectuées jusqu'aux observations individuelles. Cet arbre peut être vu comme une hiérarchie de classification. Chaque niveau de l'arbre est un regroupement de plus en plus généraliste au fur et à mesure que nous nous approchons de sa racine.
 
-Pour appliquer cette méthode, il est nécessaire de sélectionner une **fonction de distance** pour mesurer la dissimilarité ou la ressemblance entre deux observations. L'algorithme fonctionne avec n'importe quelle fonction de distance ce qui permet de l'appliquer aussi bien à des données qualitatives que quantitatives. En effet, l'opération de regroupement des observations se base sur une matrice de distance, soit un tableau de taille *n x n* indiquant pour chaque paire d'observations leur degré de dissimilarité. La figure \@ref(fig:tablvsmat)) illustre cette transformation en appliquant la distance du $\Phi^2$ à un jeu de données comprenant cinq observations et 5 variables qualitatives.
+Pour appliquer cette méthode, il est nécessaire de sélectionner une **fonction de distance** pour mesurer la dissimilarité ou la ressemblance entre deux observations. L'algorithme fonctionne avec n'importe quelle fonction de distance, ce qui permet de l'appliquer aussi bien à des données qualitatives que quantitatives. En effet, l'opération de regroupement des observations se base sur une matrice de distance, soit un tableau de taille *n x n* indiquant pour chaque paire d'observations leur degré de dissimilarité. La figure \@ref(fig:tablvsmat) illustre cette transformation en appliquant la distance du $\Phi^2$ à un jeu de données comprenant cinq observations et 5 variables qualitatives.
 
 ```{r tablvsmat, echo=FALSE, fig.align='center', fig.cap="Du tableau de données à la matrice de distance", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%'}
 
@@ -540,9 +525,9 @@ grid.arrange(g1, g2, nrow=2, newpage = FALSE)
 
 En plus de la fonction de distance, il est également nécessaire de sélectionner un **critère d'agrégation**, soit la règle permettant de décider à chaque itération quelles observations doivent être regroupées. Les méthodes les plus courantes sont&nbsp;: 
 
-* Le critère de Ward [-@ward1963hierarchical]&nbsp;: cette méthode consiste à agréger à chaque itération les deux observations permettant de minimiser la variance (ou inertie) intra-groupe, ce qui revient à maximiser l'inertie inter-groupe (autrement dit, à rendre les groupes les plus homogènes possibles et les plus dissemblables entre eux). Ainsi, l'enjeu est de fusionner les deux observations permettant d'avoir les groupes les plus dissimilaires possible après fusion.
-* Le lien complet&nbsp;: à chaque itération, les deux groupes d'observations associés sont ceux pour lesquels la distance maximale entre les observations les composants est la plus petite parmi tous les groupes.
-* Le lien simple&nbsp;: à chaque itération, les deux groupes d'observations associés sont ceux pour lesquels la distance minimum entre les observations les composants est la plus petite parmi tous les groupes.
+* Le critère de Ward [-@ward1963hierarchical]&nbsp;: cette méthode consiste à agréger à chaque itération les deux observations permettant de minimiser la variance (ou l'inertie) intra-groupe, ce qui revient à maximiser l'inertie inter-groupe (autrement dit, à rendre les groupes les plus homogènes possible et les plus dissemblables entre eux). Ainsi, l'enjeu est de fusionner les deux observations permettant d'avoir les groupes les plus dissimilaires possible après fusion.
+* Le lien complet&nbsp;: à chaque itération, les deux groupes d'observations associés sont ceux pour lesquels la distance maximale entre les observations les composant est la plus petite parmi tous les groupes.
+* Le lien simple&nbsp;: à chaque itération, les deux groupes d'observations associés sont ceux pour lesquels la distance minimum entre les observations les composant est la plus petite parmi tous les groupes.
 
 La plus utilisée est de loin la méthode de Ward. La méthode du lien complet produit généralement des résultats similaires. En revanche, la méthode du lien simple peut produire des groupes non sphériques (non centrés sur leur moyenne) plus difficle à interpréter.
 
@@ -577,9 +562,9 @@ Une fois que l'algorithme a été appliqué aux données et le dendrogramme obte
 
 #### Méthode du coude {#sect13321}
 
-Cette première approche est la plus simple à mettre en oeuvre. Il s'agit simplement de produire plusieurs classifications à partir du dendrogramme avec différentes valeurs de *k* (nombre de groupes) et de calculer à chaque fois la part de l'inertie expliquée. Chaque groupe supplémentaire ne peut qu'améliorer l'inertie expliquée, car pour rappel, si $k=n$, alors nous expliquons 100&nbsp;% de l'inertie totale. L'objectif est de déterminer à quel moment l'ajout d'un groupe supplémentaire ne contribue que de façon marginale à améliorer l'inertie expliquée. Si nous représentons les valeurs d'inertie expliquée pour les différentes valeurs de *k* dans un graphique, une rupture (un coude) indiquerait ce point au-delà duquel les groupes supplémentaires ne captent finalement que du bruit et non plus de l'information.
+Cette première approche est la plus simple à mettre en oeuvre. Il s'agit simplement de produire plusieurs classifications à partir du dendrogramme avec différentes valeurs de *k* (nombre de groupes) et de calculer à chaque fois la part de l'inertie expliquée. Chaque groupe supplémentaire ne peut qu'améliorer l'inertie expliquée, car pour rappel, si $k=n$, alors nous expliquons 100&nbsp;% de l'inertie totale. L'objectif est de déterminer à quel moment l'ajout d'un groupe supplémentaire ne contribue que de façon marginale à améliorer l'inertie expliquée. Si nous représentons les valeurs d'inertie expliquée pour les différentes valeurs de *k* dans un graphique, une rupture (un coude) indiquerait le point au-delà duquel les groupes supplémentaires ne captent finalement que du bruit et non plus de l'information.
 
-Si nous reprenons l'exemple du jeu de données iris, nous pouvons créer ce graphique avec *k* allant de 2 à 8 (figure \@ref(fig:kmeans2)). Un premier coude très net est observable pour $k = 3$ et un second plus faible, mais tout de même marqué pour $k = 4$. 
+Si nous reprenons l'exemple du jeu de données `IRIS`, nous pouvons créer ce graphique avec *k* allant de 2 à 8 (figure \@ref(fig:kmeans2)). Un premier coude très net est observable pour $k = 3$ et un second plus faible, mais tout de même marqué pour $k = 4$. 
 
 ```{r kmeans2, echo=FALSE, fig.align='center', fig.cap="Méthode du coude", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 
@@ -636,7 +621,7 @@ ggplot(rows) +
 ::: {.bloc_notes  data-latex=""}
 **Inertie expliquée et centre de groupe**
 
-Pour calculer l'inertie expliquée, il est nécessaire de pouvoir déterminer pour chaque groupe son centre (ou centroïde). Lorsque la distance euclidienne est utilisée, il s'agit simplement de calculer pour chaque groupe la valeur moyenne des différentes colonnes des observations de ce groupe. Cependant, lorsque d'autres distances sont utilisées, il peut être plus difficile de déterminer le centre d'un groupe. Avec la distance de Manhattan, il est par exemple recommandé d'utiliser la médiane des colonnes plutôt que la moyenne. Pour la distance de Hamming, la moyenne peut aussi être utilisée, car elle représente pour cette distance la fréquence d'occurrence des différentes modalités des variables qualitatives. Pour d'autres distances plus complexes, il est préférable de définir le centre d'un groupe comme le point de ce groupe minimisant les distances à tous les autres points du groupe. Il s'agit du médioïde du groupe.
+Pour calculer l'inertie expliquée, il est nécessaire de pouvoir déterminer pour le centre de gravité (ou centroïde) chaque groupe. Lorsque la distance euclidienne est utilisée, il s'agit simplement de calculer pour chaque groupe la valeur moyenne des différentes colonnes des observations. Cependant, lorsque d'autres distances sont utilisées, il peut être plus difficile de déterminer le centre d'un groupe. Avec la distance de Manhattan, il est par exemple recommandé d'utiliser la médiane des colonnes plutôt que la moyenne. Pour la distance de Hamming, la moyenne peut aussi être utilisée, car elle représente pour cette distance la fréquence d'occurrence des différentes modalités des variables qualitatives. Pour d'autres distances plus complexes, il est préférable de définir le centre d'un groupe comme le point de ce groupe minimisant les distances à tous les autres points du groupe. Il s'agit du médoïde du groupe.
 :::
 
 
@@ -655,14 +640,10 @@ b(i) &= min_{i \neq j}\frac{1}{|C_j|}\sum_{j \in C_j}d(i,j)
 \end{equation}
 \normalsize
 
-avec&nbsp;: 
-
-* $s(i)$ la valeur de l'indice de silhouette pour l'observation *i*,
-* $a(i)$ la distance moyenne entre l'observation *i* et son groupe $C_i$,
-* $b(i)$ la distance minimale entre l'observation *i* et le centre de chaque autre groupe $C_j$.
+avec $s(i)$ la valeur de l'indice de silhouette pour l'observation *i*, $a(i)$ la distance moyenne entre l'observation *i* et son groupe $C_i$ et $b(i)$ la distance minimale entre l'observation *i* et le centre de chaque autre groupe $C_j$.
 
 
-La valeur totale de l'indice est simplement la moyenne des valeurs moyennes des indices de silhouette au sein de chaque groupe. Une valeur plus élevée indique une meilleure classification. Il est nécessaire de déterminer le centre des groupes pour calculer cet indicateur ce qui peut être un exercice difficile quand une distance autre que la distance euclidienne est utilisée, référez-vous à la note de la section précédente pour plus d'informations. L'indice de silhouette semble indiquer que seulement trois groupes serait un choix optimal, soit la valeur la plus haute (figure \@ref(fig:kmeans3)).
+La valeur totale de l'indice est simplement la moyenne des valeurs moyennes des indices de silhouette au sein de chaque groupe. Une valeur plus élevée indique une meilleure classification. Il est nécessaire de déterminer le centre des groupes pour calculer cet indicateur ce qui peut être un exercice difficile quand une distance autre que la distance euclidienne est utilisée. Référez-vous à la note de la section précédente pour plus d'informations. L'indice de silhouette semble indiquer que seulement trois groupes serait un choix optimal, soit la valeur la plus haute (figure \@ref(fig:kmeans3)).
 
 ```{r kmeans3, echo=FALSE, fig.align='center', fig.cap="Méthode de l'indice de silhouette", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 
@@ -688,7 +669,7 @@ ggplot(rows) +
 
 #### Méthode GAP {#sect13323}
 
-Cette méthode, proposée par @tibshirani2001estimating, consiste à comparer l'inertie intra-groupe (inexpliquée) avec l'inertie observée pour un jeu de données généré aléatoirement (distribution uniforme des valeurs entre le minimum et le maximum de chaque variable) pour différentes valeurs successives de *k*. Une fois ces calculs effectués, l'objectif est de trouver la valeur de *k* tel que la valeur de GAP à *k+1* n'est pas plus grande qu'un écart type pour GAP à *k+1*.
+Cette méthode, proposée par @tibshirani2001estimating, consiste à comparer l'inertie intra-groupe (inexpliquée) avec l'inertie observée pour un jeu de données généré aléatoirement (distribution uniforme des valeurs entre le minimum et le maximum de chaque variable) pour différentes valeurs successives de *k*. Une fois ces calculs effectués, l'objectif est de trouver la valeur de *k* telle que la valeur de GAP à *k&nbsp;+&nbsp;1* n'est pas plus grande qu'un écart type pour GAP à *k&nbsp;+&nbsp;1*.
 
 La statistique GAP est calculée ainsi&nbsp;: 
 
@@ -701,13 +682,9 @@ GAP(k) = \frac{1}{\text{nsim}} \sum^{\text{nsim}}_{\text{sim} = 1} log(W_{ksim})
 \end{equation}
 \normalsize
 
-avec&nbsp;: 
+avec $W_k$ l'inertie non expliquée (intra-groupe), $W_{ksim}$ l'inertie non expliquée (intra-groupe) obtenue pour un jeu de données simulé et *k* le nombre de groupes.
 
-* $W_k$ l'inertie non expliquée (intra-groupe)
-* $W_{ksim}$ l'inertie non expliquée (intra-groupe) obtenue pour un jeu de données simulé
-* *k* le nombre de groupes
-
-L'idée est qu'une bonne classification doit produire des résultats plus structurés que ce que nous pourrions attendre du hasard. Chaque groupe supplémentaire permet de réduire l'inertie, mais lorsque l'ajout d'un groupe ne permet pas un gain significatif comparativement au hasard, alors l'ajout de ce groupe ne se justifie pas. À nouveau, il est possible de visualiser la situation avec un simple graphique (figure \@ref(fig:kmeans4)). Selon cette méthode, il faudrait sélectionner 4 groupes car, il s'agit de la première valeur de *k* validant le critère de cette méthode. La seconde valeur retenue par cette méthode est 6.
+L'idée est qu'une bonne classification doit produire des résultats plus structurés que ce que nous pourrions attendre du hasard. Chaque groupe supplémentaire permet de réduire l'inertie, mais lorsque l'ajout d'un groupe ne permet pas un gain significatif comparativement au hasard, alors l'ajout de ce groupe ne se justifie pas. À nouveau, il est possible de visualiser la situation avec un simple graphique (figure \@ref(fig:kmeans4)). Selon cette méthode, il faudrait sélectionner quatre groupes, car il s'agit de la première valeur de *k* validant le critère de cette méthode. La seconde valeur retenue par cette méthode est 6.
  
 
 ```{r kmeans4, echo=FALSE, fig.align='center', fig.cap="Méthode GAP", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
@@ -749,7 +726,7 @@ ggplot(tab[2:8,]) +
 
 ### Limites de la classification ascendante hiérarchique {#sect1333}
 
-Bien que très flexible (choix de la fonction de distance et du critère d'agrégation), la CAH fait face à un enjeu majeur&nbsp;: la vitesse d'exécution et la consommation de mémoire lorsque des grands jeux de données sont utilisés. En effet, il est nécessaire de calculer à chaque étape une matrice de distance entre les groupes. Si un jeu de données comprend 1&nbsp;000 observations, cette matrice comprend donc 1&nbsp;000 x 1&nbsp;000 cases soit un million de distances. Même en divisant ce nombre par deux (les éléments de la matrice sont symétriques, donc $d(ij) = d(ji)$) ce nombre augmente avec le carré du nombre d'observations. Pour de grands jeux de données, elle peut donc échouer à cause des limites de l'ordinateur utilisé. Il existe des versions plus performantes de l'algorithme réduisant cette limite, mais il convient de la garder en mémoire. Quand un très grand jeu de données doit être analysé, les méthodes des nuées dynamiques sont une alternative à considérer.
+Bien que très flexible (choix de la fonction de distance et du critère d'agrégation), la CAH fait face à un enjeu majeur&nbsp;: la vitesse d'exécution et la consommation de mémoire lorsque des grands jeux de données sont utilisés. En effet, il est nécessaire de calculer à chaque étape une matrice de distance entre les groupes. Si un jeu de données comprend 1000 observations, cette matrice comprend donc 1000&nbsp;x&nbsp;1000 cases, soit un million de distances. Même en divisant ce nombre par deux (les éléments de la matrice sont symétriques, donc $d(ij) = d(ji)$), ce nombre augmente avec le carré du nombre d'observations. Pour de grands jeux de données, la CAH peut donc échouer à cause des limites de l'ordinateur utilisé. Il existe des versions plus performantes de l'algorithme réduisant cette limite, mais il convient de la garder en mémoire. Quand un très grand jeu de données doit être analysé, les méthodes des nuées dynamiques sont une solution à considérer.
 
 ### Mise en oeuvre dans R {#sect1334}
 
@@ -758,10 +735,10 @@ Nous proposons ici un exemple issu d'un article portant sur les parcs urbains de
 ```{r exampleHclust1DF, echo = FALSE, out.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 df <- data.frame(
   equipement = c("Aire de jeux", "Pataugeoire", "Jeux d’eau",
-                 "Baseball", "Football (soccer)", "Basketball", "Tennis"," Football américain", "Volleyball", "Athlétisme",
+                 "Baseball", "Soccer (football)", "Basketball", "Tennis"," Football", "Volleyball", "Athlétisme",
                  "Patinoire extérieure", "Glissade", "Piste de ski de fond", "Piste de raquette",
                  "Parc de planches à roulettes", "Patins à roues alignées",
-                 "Piscine intérieure", "Randonnée"),
+                 "Piscine intérieure", "Chemin de randonnée"),
   N = c(601,161,28,188,169,144,125,36,24,20,241,30,14,9,18,8,92,15)
 )
 
@@ -783,7 +760,7 @@ group_rows(my_table,
   )
 ```
 
-Puisque notre jeu de données ne comporte que des variables qualitatives, nous allons utiliser la distance du $\Phi^2$ pour construire notre matrice de distance entre les parcs. Notons que dans l'article original la distance euclidienne au carrée avait été utilisée, nous n'obtiendrons probablement pas les mêmes résultats, car la distance du $\Phi^2$ tient compte des fréquences d'occurrence des modalités des variables qualitatives.
+Puisque notre jeu de données ne comporte que des variables qualitatives, nous utilisons la distance du $\Phi^2$ pour construire notre matrice de distance entre les parcs. Notons que, dans l'article original, la distance euclidienne au carrée avait été utilisée, alors nous n'obtiendrons probablement pas les mêmes résultats, car la distance du $\Phi^2$ tient compte des fréquences d'occurrence des modalités des variables qualitatives.
 
 #### Calcul de la matrice de distance {#sect13341}
 
@@ -795,7 +772,7 @@ parcs <- read.csv("data/classification/Parcs.txt", header = TRUE, stringsAsFacto
 X <- parcs[c(5:22, 27)]
 ```
 
-Pour calculer la distance du $\Phi^2$, nous utilisons la fonction `dist` du *package* `proxy` avec le paramètre `method = "Phi-squared"`. Elle requiert que l'ensemble des variables catégorielles soient converties en variables binaires. Pour cela, nous pouvons utiliser la fonction `dummy_cols` du *package* `fastDummies`
+Pour calculer la distance du $\Phi^2$, nous utilisons la fonction `dist` du *package* `proxy` avec le paramètre `method = "Phi-squared"`. Elle requiert que l'ensemble des variables catégorielles soient converties en variables binaires. Pour cela, nous pouvons utiliser la fonction `dummy_cols` du *package* `fastDummies`.
 
 ```{r exampleHclust2, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 library(fastDummies)
@@ -819,7 +796,7 @@ Puisque nous n'utilisons pas la distance euclidienne, nous optons ici pour l'ind
 library(cluster)
 ks <- 2:10
 
-# Calcul des indices de Silhouette pour les différentes valeurs de k
+# Calcul des indices de silhouette pour les différentes valeurs de k
 values <- sapply(ks, function(k){
   # découpage du dendrogramme
   groupes <- cutree(dendogramme_parcs, k = k)
@@ -837,7 +814,7 @@ ggplot(df) +
   geom_point(aes(x = k, y = silhouette), color = "red") + 
   labs(x = "nombre de groupes", y="indice global de silhouette")
 ```
-Si nous écartons d'emblée les résultats pour k&nbsp;=&nbsp;2 et k&nbsp;=&nbsp;3 (trop peu de groupes pour l'interprétation), nous constatons que la solution optimale selon ce critère serait k&nbsp;=&nbsp;5. Dans l'article original, la solution k&nbsp;=&nbsp;6 avait été retenue en examinant le dendrogramme. Comparons les résultats pour k&nbsp;=&nbsp;5 et k&nbsp;=&nbsp;6.
+Si nous écartons d'emblée les résultats pour k&nbsp;=&nbsp;2 et k&nbsp;=&nbsp;3 (trop peu de groupes pour l'interprétation), nous constatons que la solution optimale selon ce critère est k&nbsp;=&nbsp;5. Dans l'article original, la solution k&nbsp;=&nbsp;6 avait été retenue en examinant le dendrogramme. Comparons les résultats pour k&nbsp;=&nbsp;5 et k&nbsp;=&nbsp;6.
 
 ```{r exampleHclust5, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 resk5 <- cutree(dendogramme_parcs, k = 5)
@@ -845,10 +822,10 @@ resk6 <- cutree(dendogramme_parcs, k = 6)
 sil5 <- silhouette(resk5, dist = parc_distances)
 sil6 <- silhouette(resk6, dist = parc_distances)
 
-# résumé pour l'indice de Silhouette pour k = 5
+# résumé pour l'indice de silhouette pour k = 5
 summary(sil5)
 
-# résumé pour l'indice de Silhouette pour k = 6
+# résumé pour l'indice de silhouette pour k = 6
 summary(sil6)
   
 ```
@@ -916,9 +893,9 @@ Il est ensuite possible d'afficher le tableau obtenu pour l'interpréter. Les r�
 ```{r exampleHclust7, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
 library(kableExtra)
 row.names(groupe_ratios) <- c(
-  "Aire de jeux", "Jeux d'eau", "Pataugeoire", "Athlétisme", "Baseball", "Basketball", "Football américain", "Football (soccer)",
+  "Aire de jeux", "Jeux d'eau", "Pataugeoire", "Athlétisme", "Baseball", "Basketball", "Football américain", "Soccer (football)",
   "Tennis", "Volleyball", "Glissade", "Patinoire", "Piste de ski de fond", "Raquettes", "Parc de planches à roulettes",
-  "Patins à roues alignées", "Piscine extérieure", "Randonnée", "Moins d'un hectare", "1 à 5 hectares", "5 à 10 hectares",
+  "Patins à roues alignées", "Piscine extérieure", "Chemin de randonnée", "Moins d'un hectare", "1 à 5 hectares", "5 à 10 hectares",
   "10 à 20 hectares", "20 hectares et plus", "Équipements pour les 0 à 4 ans", "Terrains de sport", "Équipements d'hiver", 
   "Équipements spécialisés", "Autres équipements", "Tous les équipements", ""
 )
@@ -945,19 +922,19 @@ group_rows(my_table,
 
 * Le second groupe (212 parcs) correspond à de très petits parcs (moins d'un hectare) comportant uniquement une aire de jeu.
 
-* Le troisième groupe (197 parcs) correspond à des petits parcs (entre 1 et 5 hectares), souvent équipés d'une piscine extérieure (27,4&nbsp;% des cas), et en moyenne de deux terrains de sports (essentiellement des terrains de tennis et de soccer). Ces parcs comprennent en moyenne plus de 4&nbsp;équipements et doivent donc correspondre à la classe D dans l'article original (Petit parc (1&nbsp;à 5&nbsp;ha) avec en moyenne six équipements, dont une patinoire et une piscine).
+* Le troisième groupe (197 parcs) correspond à de petits parcs (entre 1 et 5 hectares), souvent équipés d'une piscine extérieure (27,4&nbsp;% des cas), et en moyenne de deux terrains de sports (essentiellement des terrains de tennis et de soccer). Ces parcs comprennent en moyenne plus de 4&nbsp;équipements et doivent donc correspondre à la classe D dans l'article original (Petit parc (1&nbsp;à 5&nbsp;ha) avec en moyenne six équipements, dont une patinoire et une piscine).
 
-* Le quatrième groupe (49 parcs) comprend des petits parcs (entre 1 et 5 hectares) qui ressemblent aux parcs du groupe 2 mais tendent à disposer en plus d'un terrain de sport (baseball ou basketball).
+* Le quatrième groupe (49 parcs) comprend de petits parcs (entre 1 et 5 hectares) qui ressemblent aux parcs du groupe 2 mais tendent à disposer en plus d'un terrain de sport (baseball ou basketball).
 
-* Le quatrième groupe (84 parcs) correspond à des petits parcs, il est caractérisé par une présence plus marquée de pataugeoires (39&nbsp;%).
+* Le quatrième groupe (84 parcs) correspond à de petits parcs, il est caractérisé par une présence plus marquée de pataugeoires (39&nbsp;%).
 
-* Le cinquième groupe (35 parcs) est très similaire au second groupe (uniquement une aire de jeux), excepté sont d'une taille supérieure (de 1 à 5 hectares).
+* Le cinquième groupe (35 parcs) est très similaire au second groupe (uniquement une aire de jeux), excepté sont les parcs qui s'y trouvent sont de taille supérieure (de 1 à 5 hectares).
 
-Considérant les différences minimes entre certains des groupes que nous avons obtenus, il est clair que retenir seulement trois ou cinq groupes aurait été préférable. Notez également l'importance du choix de la distance, car nous obtenons des résultats sensiblement différents de ceux de l'article original en ayant opté pour la distance du $\Phi^2$ plutôt que la distance euclidienne au carré.
+Considérant les différences minimes entre certains des groupes que nous avons obtenus, il est clair que retenir seulement trois ou cinq groupes serait préférable. Notez également l'importance du choix de la distance, car nous obtenons des résultats sensiblement différents de ceux de l'article original en ayant opté pour la distance du $\Phi^2$ plutôt que la distance euclidienne au carré.
 
 #### Utilisation de la matrice de distance eucidienne au carré {#sect13344}
 
-Pour obtenir des résultats plus proches de deux de l'article original, nous pouvons reprendre notre analyse et utiliser cette fois-ci une distance euclidienne au carré.
+Pour obtenir des résultats plus proches de ceux de l'article original, nous pouvons reprendre notre analyse et utiliser cette fois-ci une distance euclidienne au carré.
 
 ```{r exampleHclust8, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE, fig.cap="Valeur de l'indice de silhouette pour différents nombres de groupes (distance euclidienne au carré)"}
 X$groupe <- NULL
@@ -967,7 +944,7 @@ parc_distances_euc <- dist(as.matrix(X), method = "Euclidean")**2
 # Application de la CAH
 dendogramme_parcs_euc <- hclust(parc_distances_euc, method = "ward.D")
 
-# calcul de l'indice de Silhouette
+# calcul de l'indice de silhouette
 ks <- 2:10
 values <- sapply(ks, function(k){
   # découpage du dendrogramme
@@ -992,7 +969,7 @@ ggplot(df) +
   labs(x = "nombre de groupes", y="indice global de silhouette")
 ```
 
-Nous pouvons constater cette fois-ci que quatre groupes serait probablement le meilleur choix et qu'au-delà de ce nombre, l'indice global de silhouette ne faire que diminuer. Tentons cependant de reproduire les résultats de l'article avec k = 6.
+Nous constatons cette fois-ci, que quatre groupes serait probablement le meilleur choix et qu'au-delà de ce nombre, l'indice global de silhouette ne fait que diminuer. Tentons cependant de reproduire les résultats de l'article avec k = 6.
 
 ```{r exampleHclust9, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 resk6 <- cutree(dendogramme_parcs_euc, k = 6)
@@ -1055,9 +1032,9 @@ Recréons le tableau final des résultats au tableau \@ref(tab:exampleHclust10).
 ```{r exampleHclust10, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%'}
 library(kableExtra)
 row.names(groupe_ratios) <- c(
-  "Aire de jeux", "Jeux d'eau", "Pataugeoire", "Athlétisme", "Baseball", "Basketball", "Football américain", "Football (soccer)",
+  "Aire de jeux", "Jeux d'eau", "Pataugeoire", "Athlétisme", "Baseball", "Basketball", "Football", "Soccer (football)",
   "Tennis", "Volleyball", "Glissade", "Patinoire", "Piste de ski de fond", "Raquettes", "Parc de planches à roulettes",
-  "Patins à roues alignées", "Piscine extérieure", "Randonnée", "Moins d'un hectare", "1 à 5 hectares", "5 à 10 hectares",
+  "Patins à roues alignées", "Piscine extérieure", "Chemin de andonnée", "Moins d'un hectare", "1 à 5 hectares", "5 à 10 hectares",
   "10 à 20 hectares", "20 hectares et plus", "Équipements pour les 0 à 4 ans", "Terrains de sport", "Équipements d'hiver", 
   "Équipements spécialisés", "Autres équipements", "Tous les équipements", ""
 )
@@ -1086,7 +1063,7 @@ group_rows(my_table,
 
 ## Nuées dynamiques {#sect134}
 
-Les méthodes des nuées dynamiques regroupent plusieurs algorithmes tous plus ou moins liés avec l'algorithme le plus connu&nbsp;: *k-means* originalement proposé par James MacQueen [-@macqueen1967]. Nous présentons également ici plusieurs variantes du *k-means*, soit le *k-medians*, le *k-medioids*, le *c-means* et le *c-medians*.
+Les méthodes des nuées dynamiques regroupent plusieurs algorithmes, tous plus ou moins liés avec l'algorithme le plus connu&nbsp;: *k-means*, originalement proposé par James MacQueen [-@macqueen1967]. Nous présentons également ici plusieurs variantes du *k-means*, soit le *k-medians*, le *k-medioids*, le *c-means* et le *c-medians*.
 
 ### *K-means* {#sect1341}
 
@@ -1102,21 +1079,20 @@ Le fonctionnement classique du *k-means* est le suivant&nbsp;:
 
 1. Définir *k* centres de groupes de façon aléatoire.
 2. Déterminer pour chaque observation le centre de son groupe le plus proche en utilisant la fonction de distance.
-3. pour chacun des groupes ainsi formés, recalculer le centre du groupe en calculant le centroïde (moyennes le plus souvent) des observations appartenant à ce groupe.
+3. Pour chacun des groupes ainsi formés, recalculer le centre du groupe en calculant le centroïde (moyennes le plus souvent) des observations appartenant à ce groupe.
 4. Répéter l'opération 2 avec les nouveaux centres.
 5. Calculer l'inertie expliquée par la nouvelle classification.
 6. Comparer cette inertie expliquée avec celle obtenue lors de l'itération précédente.
-7. Si la variation entre les deux valeurs est supérieure à une certaine limite, reprendre à l'étape 2
-8. Sinon, l'algorithme prend fin.
+7. Si la variation entre les deux valeurs est supérieure à une certaine limite, reprendre à l'étape 2, sinon, l'algorithme prend fin.
 
-Ainsi, l'algorithme *k-means* part d'une première classification obtenue aléatoirement et va ensuite la raffiner jusqu'au point où l'amélioration de la classification devient négligeable. Du fait de ce point de départ aléatoire, cet algorithme est dit heuristique, car deux exécutions risquent de ne pas donner exactement le même résultat. Par conséquent, en relaçant l'algorithme, vous pourriez obtenir des résultats légèrement différents, avec par exemple des groupes similaires, mais obtenus dans un autre ordre, le groupe 1 étant devenu le groupe 3 et vice-versa. Il est aussi possible d'obtenir des résultats radicalement différents d'une tentative à l'autre, ce qui signifie que les groupes formés sont très instables et ne sont pas représentatifs de la population étudiée.
+Ainsi, l'algorithme *k-means* part d'une première classification obtenue aléatoirement et la raffine jusqu'au point où l'amélioration de la classification devient négligeable. Du fait de ce point de départ aléatoire, cet algorithme est dit heuristique, car deux exécutions risquent de ne pas donner exactement le même résultat. Par conséquent, en relaçant l'algorithme, vous pourriez obtenir des résultats légèrement différents, avec par exemple des groupes similaires, mais obtenus dans un autre ordre, le groupe 1 étant devenu le groupe 3 et vice-versa. Il est aussi possible d'obtenir des résultats radicalement différents d'une tentative à l'autre, ce qui signifie que les groupes formés sont très instables et ne sont pas représentatifs de la population étudiée.
 
 ::: {.bloc_astuce data-latex=""}
 **Réplicabilité des résultats dans R**
 
-Lorsqu'une méthode heuristique ou faisant appel au hasard est utilisée dans R, il est nécessaire de s'assurer que les résultats sont reproductibles. Cela permettra notamment de relancer le même code et de réobtenir exactement les mêmes résultats. L'idée étant de figer le hasard.
+Lorsqu'une méthode heuristique ou faisant appel au hasard est utilisée dans R, il est nécessaire de s'assurer que les résultats sont reproductibles. Cela permet notamment de relancer le même code et de réobtenir exactement les mêmes résultats : l'idée étant de figer le hasard.
 
-Ultimement, un programme informatique est incapable de générer un résultat véritablement aléatoire, car il ne fait que suivre une suite d'opérations prédéterminées. Pour générer des résultats qui ressemblent au hasard, des algorithmes ont été proposés, partant d'une configuration initiale et appliquant une série d'opérations complexes permettant de générer des nombres semblant se distribuer aléatoirement. Si nous connaissons le point de départ de la suite d'opération et que nous réappliquons ces dernières, alors nous sommes certains d'obtenir le même résultat. Il est possible dans R de définir un *état initial de hasard* à l'aide de la fonction `set.seed`. Avec ce point de départ défini, nous sommes certains d'obtenir les mêmes résultats en relançant les mêmes opérations. 
+Ultimement, un programme informatique est incapable de générer un résultat véritablement aléatoire, car il ne fait que suivre une suite d'opérations prédéterminées. Pour générer des résultats qui ressemblent au hasard, des algorithmes ont été proposés, partant d'une configuration initiale et appliquant une série d'opérations complexes permettant de générer des nombres semblant se distribuer aléatoirement. Si nous connaissons le point de départ de la suite d'opérations et que nous réappliquons ces dernières, alors nous sommes certains d'obtenir le même résultat. Il est possible, dans R, de définir un *état initial de hasard* à l'aide de la fonction `set.seed`. Avec ce point de départ défini, nous sommes certains d'obtenir les mêmes résultats en relançant les mêmes opérations. 
 
 Prenons un exemple concret en sélectionnant aléatoire 3 chiffres dans un vecteur allant de 1 à 10.
 
@@ -1151,7 +1127,7 @@ set.seed(4568997)
 sample(vec, size = 3)
 ```
 
-Vous pourrez constater que nous utilisons cette fonction plusieurs fois au cours de cette section. Cela nous permet de nous assurer que les résultats obtenus ne changent pas entre le moment où nous écrivons le livre et le moment où nous le formatons. Sinon, le texte pourrait ne plus être en phase avec les images ou les tableaux.
+Vous constatez que nous utilisons cette fonction plusieurs fois au cours de cette section. Elle nous permet de nous assurer que les résultats obtenus ne changent pas entre le moment où nous écrivons le livre et le moment où nous le formatons. Sinon, le texte pourrait ne plus être en phase avec les images ou les tableaux.
 
 :::
 
@@ -1251,39 +1227,39 @@ if(knitr::is_latex_output() == FALSE){
 }
 ```
 
-Nous pouvons constater que pour ce jeu de données relativement simple, l'algorithme converge très rapidement et que sa solution varie peu au-delà de la troisième itération. Si vous utilisez la version HTLM du livre, la figure \@ref(fig:kmeansA)) devrait être animée et illustrer pourquoi le *k-means* est aussi appelé algorithme de nuées dynamiques.
+Nous pouvons constater que, pour ce jeu de données relativement simple, l'algorithme converge très rapidement et que sa solution varie peu au-delà de la troisième itération. Si vous utilisez la version HTLM du livre, la figure \@ref(fig:kmeansA) devrait être animée et illustrer pourquoi le *k-means* est aussi appelé algorithme de nuées dynamiques.
 
 ::: {.bloc_notes  data-latex=""}
-**Centre de groupe et k-means**
+**Centre de groupe et _k-means_**
 
-À nouveau, puisque chaque itération du *k-means* nécessite de recalculer les centres des groupes formés, des problèmes peuvent être rencontrés avec certainS typeS de distance. C'est pourquoi il est recommandé d'utiliser la distance euclidienne avec le *k-means* original. Si des distances plus complexes doivent être utilisées, il est préférable d'utiliser la classification ascendante hiérarchique.
+À nouveau, puisque chaque itération du *k-means* nécessite de recalculer les centres des groupes formés, des problèmes peuvent être rencontrés avec certains types de distance. C'est pourquoi il est recommandé d'utiliser la distance euclidienne avec le *k-means* original. Si des distances plus complexes doivent être utilisées, il est préférable d'utiliser la classification ascendante hiérarchique.
 :::
 
-#### Choisir le nombre optimal de groupes {#sect13412}
+#### Choix du nombre optimal de groupes {#sect13412}
 
-Comme pour la CAH, le principal enjeu avec le *k-means* est de déterminer le nombre idéal de groupes pour effectuer la classification. Si ce nombre n'est pas connu à l'avance et qu'aucune forte justification théorique n'existe, il est possible d'utiliser les mêmes techniques que pour la CAH soit la méthode du coude, l'indicateur de silhouette ou la méthode GAP.
+Comme pour la CAH, le principal enjeu avec le *k-means* est de déterminer le nombre idéal de groupes pour effectuer la classification. Si ce nombre n'est pas connu à l'avance et qu'aucune forte justification théorique n'existe, il est possible d'utiliser les mêmes techniques que pour la CAH, soit la méthode du coude, l'indicateur de silhouette ou la méthode GAP.
 
 
 ### K-médianes {#sect1342}
 
-Le *k-medians* est une version alternative du *k-means*. Contrairement au *k-means* privilégiant la distance euclidienne, le *k-medians* est à utiliser en priorité avec une distance de Manhattan. En effet, le centre d'un groupe n'est pas déterminé comme la moyenne des variables des observations appartenant à ce groupe (*k-means*), mais comme la médiane pour chaque variable (*k-medians*). En dehors de ces deux spécificités, il reprend le fonctionnement décrit plus haut pour le *k-means*. Il est particulièrement pertinent de l'utiliser quand un jeu de données comprend un très grand nombre de colonnes, car dans ce contexte, la distance euclidienne peine à représenter les différences entre les observations. De plus, l'utilisation de la médiane le rend moins sensible aux valeurs extrêmes.
+Le *k-medians* est une variante du *k-means*. Contrairement au *k-means* privilégiant la distance euclidienne, le *k-medians* est à utiliser en priorité avec une distance de Manhattan. En effet, le centre d'un groupe n'est pas déterminé comme la moyenne des variables des observations appartenant à ce groupe (*k-means*), mais comme la médiane pour chaque variable (*k-medians*). En dehors de ces deux spécificités, il reprend le fonctionnement décrit plus haut pour le *k-means*. Il est particulièrement pertinent de l'utiliser quand un jeu de données comprend un très grand nombre de colonnes, car dans ce contexte, la distance euclidienne peine à représenter les différences entre les observations. De plus, l'utilisation de la médiane le rend moins sensible aux valeurs extrêmes.
 
 
-### K-médioïde {#sect1343}
+### K-médoïds {#sect1343}
 
-Le *k-médioïde* est également une version alternative au *k-means*. Le *k-means* crée des groupes en cherchant les centres de ces groupes dans l'espace multidimensionnel des données. Ces centres de groupes peuvent très bien ne pas correspondre à un point du jeu de données, au même titre que la moyenne d'une variable ne coïncide que rarement avec une observation réelle de cette variable. Pour le *k-médioïde*, les groupes sont formés en cherchant les centres de ces groupes **parmi** les observations du jeu de données. Ainsi, chaque groupe est centré sur une observation réelle, la plus similaire à l'ensemble des observations du groupe.
+Le *k-médoïds* est également une variante du *k-means*. Le *k-means* crée des groupes en cherchant les centres de ces groupes dans l'espace multidimensionnel des données. Ces centres de groupes peuvent très bien ne pas correspondre à un point du jeu de données, au même titre que la moyenne d'une variable ne coïncide que rarement avec une observation réelle de cette variable. Pour le *k-médoïds*, les groupes sont formés en cherchant les centres de ces groupes **parmi** les observations du jeu de données. Ainsi, chaque groupe est centré sur une observation réelle, la plus similaire à l'ensemble des observations du groupe.
 
 L'algorithme effectue les opérations suivantes&nbsp;: 
 
 1. Sélectionner aléatoirement *k* observations du jeu de données, elles constituent les centres des groupes initiaux.
 2. Attribuer chaque observation au centre du groupe le plus proche.
-3. tant que la nouvelle solution est plus efficace, effectuer les opérations suivantes&nbsp;: 
+3. Tant que la nouvelle solution est plus efficace, effectuer les opérations suivantes&nbsp;: 
   * pour chaque centre *m* et pour chaque observation *o*,
     * considérer l'inversion de *m* et *o*
     * si cette permutation est meilleure que les précédentes, la conserver en mémoire
   * effectuer la meilleure permutation retenue si elle améliore la classification, sinon l'algorithme prend fin.
   
-Le *k-médioïde* est moins utilisé que le *k-means*, mais est plus performant quand des distances autres que la distance euclidienne doivent être utilisées ou encore que des valeurs aberrantes/extrêmes sont présentes dans les données.
+Le *k-médoïds* est moins utilisé que le *k-means*, mais il est plus performant quand des distances autres que la distance euclidienne sont utilisées ou encore que des valeurs aberrantes/extrêmes sont présentes dans les données.
 
 ### Mise en oeuvre dans R {#sect1344}
 
@@ -1347,7 +1323,7 @@ for (col in names(X)){
 
 #### Choix du nombre de groupes optimal {#sect13442}
 
-La seconde étape consiste à déterminer le nombre de groupes optimal. Pour cela, nous allons comparer les résultats des trois méthodes proposées&nbsp;: la méthode du coude, l'indice de silhouette et la méthode GAP. Pour chaque méthode, nous testons les nombres de groupes de 2 à 10.
+La seconde étape consiste à déterminer le nombre de groupes optimal. Pour cela, nous comparons les résultats des trois méthodes proposées&nbsp;: la méthode du coude, l'indice de silhouette et la méthode GAP. Pour chaque méthode, nous testons les nombres de groupes de 2 à 10.
 
 ##### Méthode du coude {#sect134421}
 
@@ -1413,7 +1389,7 @@ ggplot(df) +
 
 ```
 
-À nouveau, la figure \@ref(fig:kmeansD) indique que le nombre de groupes optimal serait trois selon l'indice de Silhouette.
+À nouveau, la figure \@ref(fig:kmeansD) indique que le nombre de groupes optimal est trois selon l'indice de silhouette.
 
 ##### Méthode GAP {#sect134423}
 
@@ -1455,7 +1431,7 @@ ggplot(tab) +
   
 
 ```
-La figure \@ref(fig:kmeansE) indique également que le nombre de groupes à retenir serait trois. Nous retenons cependant quatre groupes pour pouvoir plus facilement comparer nos résultats avec ceux de l'article original.
+La figure \@ref(fig:kmeansE) indique également que le nombre de groupes à retenir est trois. Nous retenons cependant quatre groupes pour pouvoir plus facilement comparer nos résultats avec ceux de l'article original.
 
 #### Application l'algorithme du *k-means* {#sect13443}
 
@@ -1466,9 +1442,9 @@ set.seed(145)
 resultats <- kmeans(X, centers = 4)
 ```
 
-#### Interprétation les résultats {#sect13444}
+#### Interprétation des résultats {#sect13444}
 
-Une fois les groupes obtenus, l'étape la plus importante est de parvenir à interpréter ces groupes. Pour cela, il est nécessaire d'explorer en profondeur ces groupes au travers des variables utilisées pour les constituer. Dans notre cas, le jeu de données `LyonIris` est spatialisé, nous pouvons donc commencer par cartographier les groupes.
+Une fois les groupes obtenus, l'étape la plus importante est de parvenir à interpréter ces groupes. Pour cela, il est nécessaire de les explorer en profondeur au travers des variables utilisées pour les constituer. Dans notre cas, le jeu de données `LyonIris` est spatialisé, nous pouvons donc commencer par cartographier les groupes.
 
 ```{r kmeansG, fig.cap = "Cartographie des groupes obtenus avec la méthode du k-means", fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 library(tmap)
@@ -1480,7 +1456,7 @@ tm_shape(LyonIris) +
 
 ```
 
-Il est ainsi possible de constater que le groupe 3 forme un ensemble assez compact d'IRIS au centre de Lyon. Le groupe 4 correspond quant à lui à des IRIS situés en périphérie plutôt éloignée, essentiellement à l'Ouest. Le groupe 1 correspond à une périphérie proche du groupe 2 apparaît comme un ensemble d'enclaves dispersées.
+Il est ainsi possible de constater que le groupe 3 forme un ensemble assez compact d'IRIS au centre de Lyon. Le groupe 4 correspond quant à lui à des IRIS situés en périphérie plutôt éloignée, essentiellement à l'ouest. Le groupe 1 correspond à une périphérie proche du groupe 2 et apparaît comme un ensemble d'enclaves dispersées.
 
 Pour distinguer rapidement les profils des différents groupes, il est possible d'utiliser un graphique en radar. La construction d'un tel graphique peut être un peu fastidieuse dans R, cependant le *package* `geocmeans` propose une fonction assez pratique&nbsp;: `spiderPlots`.
 
@@ -1497,7 +1473,7 @@ plots <- spiderPlots(X, matrice_gp,
 
 ```
 
-Il est ainsi possible de constater à la figure \@ref(fig:kmeansH) que le groupe 3 est caractérisé par un niveau de vie élevé, mais par des niveaux de concentration de pollution atmosphérique plus élevés également. Le groupe 4 en revanche est caractérisé par un important couvert végétal, un niveau de vie médian élevé et une plus forte proportion de personnes de plus de 65 ans. le groupe 1 est quant à lui marqué par des niveaux sonores plus élevés. Enfin, le groupe 2 se caractérise par une plus grande proportion de population ayant obtenu comme diplôme le plus élevé le brevet des collèges, d'immigrant, de jeune de moins de 15 ans et un taux de chômage plus élevé.
+Il est ainsi possible de constater, à la figure \@ref(fig:kmeansH), que le groupe 3 est caractérisé par un niveau de vie élevé, mais par des niveaux de concentration de pollution atmosphérique plus élevés également. Le groupe 4 en revanche est caractérisé par un important couvert végétal, un niveau de vie médian élevé et une plus forte proportion de personnes de plus de 65 ans. Le groupe 1 est quant à lui marqué par des niveaux sonores plus élevés. Enfin, le groupe 2 se caractérise par une plus grande proportion de population ayant obtenu comme diplôme le plus élevé le brevet des collèges, d'immigrants, de jeunes de moins de 15 ans et un taux de chômage plus élevé.
 
 Notez que ces graphiques nous permettent rapidement de nous faire une idée des caractéristiques des groupes, mais uniquement sur une échelle relative. En effet, ils ne nous indiquent à aucun moment la taille des écarts entre les groupes. Pour cela, il est nécessaire de réaliser des graphiques en violon pour chaque variable. Pour ce type de graphique, il est préférable d'utiliser les données originales non transformées pour pouvoir mieux appréhender si les différences entre les groupes sont importantes ou négligeables.
 
@@ -1509,7 +1485,7 @@ plots <- violinPlots(X2, as.character(resultats$cluster))
 ggarrange(plotlist = plots, ncol = 2, nrow = 5)
 ```
 
-Il est également recommandé de calculer des statistiques descriptives par groupes et de les rapporter dans un tableau.
+Il est également recommandé de calculer des statistiques descriptives par groupe et de les rapporter dans un tableau.
 
 ```{r kmeansJ, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
 # obtention d'un tableau par groupe
@@ -1549,17 +1525,17 @@ my_table2 <- gsub(pattern = "<th>", replacement = '<th style = "padding : 0.2em"
 my_table2
 ```
 
-Les constats que nous avions faits précédemment sont confirmés par la figure \@ref(fig:kmeansI) et le tableau \@ref(tab:kmeansK). Nous retrouvons ici les groupes originaux décrits dans l'article de @2021_4 : 
+Les constats que nous avons faits précédemment sont confirmés par la figure \@ref(fig:kmeansI) et le tableau \@ref(tab:kmeansK). Nous retrouvons ici les groupes originaux décrits dans l'article de @2021_4 : 
 
 * **Groupe 1**&nbsp;: les espaces interstitiels, formant une périphérie proche du centre et relativement hétérogène sur les variables étudiées, mais caractérisée par des niveaux de bruit importants.
 * **Groupe 2**&nbsp;: les banlieues jeunes et défavorisées, avec des niveaux d'exposition aux pollutions atmosphérique et sonore relativement élevés comparativement à l'ensemble de la région.
-* **Groupe 3**&nbsp;: Les quartiers centraux aisés, mais marqués par les plus hauts niveaux de pollution atmosphérique.
+* **Groupe 3**&nbsp;: les quartiers centraux aisés, mais marqués par les plus hauts niveaux de pollution atmosphérique.
 * **Groupe 4**&nbsp;: les communes rurales, aisées et vieillissantes.
 
 ::: {.bloc_astuce data-latex=""}
 **Interprétation interactive**
 
-Si comme dans notre exemple, vos données comportent une dimension spatiale, le *package* `geocmeans` propose une fonction intéressante appelée `sp_clust_explorer` démarrant une application permettant d'explorer les résultats de votre classification. Le seul enjeu est de créer un objet de la classe `FCMres`. Voici un court exemple&nbsp;: 
+Si, comme dans notre exemple, vos données comportent une dimension spatiale, le *package* `geocmeans` propose une fonction intéressante appelée `sp_clust_explorer` démarrant une application permettant d'explorer les résultats de votre classification. Le seul enjeu est de créer un objet de la classe `FCMres`. Voici un court exemple&nbsp;: 
 
 ```{r kmeansK2, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE, eval = FALSE}
 
@@ -1584,7 +1560,7 @@ sp_clust_explorer(object = kmeansres, spatial = LyonIris)
 ```
 :::
 
-#### K-médianes et K-médioides {#sect13455}
+#### K-médianes et K-médoides {#sect13455}
 
 Nous présentons simplement ici comment effectuer la même analyse en utilisant les variantes du *k-means*, soit le *k-medians* et le *k-mediods*.
 
@@ -1601,7 +1577,7 @@ k_mediods_res <- pam(X,4)
 
 Juste pour le plaisir des yeux, nous pouvons cartographier les trois classifications obtenues en nous assurant au préalable de faire coïncider les groupes les plus similaires de nos trois classifications.
 
-```{r kmeansM, fig.cap = "Comparaison géographique des résultats obtenus pour le k-means, k-medians et k-medoids", fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
+```{r kmeansM, fig.cap = "Comparaison géographique des résultats obtenus pour le k-means, le k-medians et le k-medoids", fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
 
 matrice_gp_kmeans <- dummy_cols(resultats$cluster,
                                 remove_selected_columns = TRUE)
@@ -1642,13 +1618,13 @@ tmap_arrange(map1, map2, map3,
 
 ```
 
-Les trois cartes sont très similaires (figure \@ref(fig:kmeansM)), ce qui signifie que les trois algorithmes tendent à attribuer les observations aux mêmes groupes. Cependant, nous pouvons noter des différences, notamment au nord avec des observations alternant entre les groupes 2 et 3 selon la méthode employée. Ceci peut notamment signifier que ces observations sont «&nbsp;indécises&nbsp;», qu'il est difficile de les attribuer définitivement à une catégorie en particulier. Pour prendre en compte cette forme d'incertitude, il est possible d'opter pour des méthodes de classification en logique floue.
+Les trois cartes sont très similaires (figure \@ref(fig:kmeansM)), ce qui signifie que les trois algorithmes tendent à attribuer les observations aux mêmes groupes. Cependant, nous observons des différences, notamment au nord avec des observations alternant entre les groupes 2 et 3 selon la méthode employée. Cela peut notamment signifier que ces observations sont «&nbsp;indécises&nbsp;», qu'il est difficile de les attribuer définitivement à une catégorie en particulier. Pour prendre en compte cette forme d'incertitude, il est possible d'opter pour des méthodes de classification en logique floue.
 
 ### Extensions en logique floue : *c-means*, *c-medoids* {#sect1346}
 
 Comme nous l'avons mentionné en introduction de cette section, les méthodes de classification floues ont pour objectif d'évaluer le degré d'appartenance de chaque observation à chaque groupe plutôt que d'attribuer chaque observation à un seul groupe. Il est ainsi possible de repérer des observations incertaines, à cheval entre plusieurs groupes. Nous présentons ici deux algorithmes appartenant à cette famille&nbsp;: le *c-means* et le *c-medoids*. Il s'agit dans les deux cas d'extensions des *k-means* et *k-medoids* vus précédemment.
 
-Pour ces deux méthodes, comme pour le *k-means*, le nombre de groupes *k* doit être spécifié. Elles comprennent cependant un paramètre supplémentaire&nbsp;:*m*, appelé paramètre de floutage qui contrôle à quel point le résultat obtenu sera flou ou strict. Une valeur de 1 produit une classification stricte (chaque observation appartient à un seul groupe) et une valeur plus grande conduit à des classifications de plus en plus floues, jusqu'à ce que chaque observation appartienne à un degré identique à chacun des groupes. Il est recommandé de sélectionner *m* en même temps que *k* car ces deux valeurs impactent simultanément la qualité de la classification. La meilleure approche consiste à tester un ensemble de combinaisons de *m* et de *k* et comparer les valeurs obtenues pour différents indicateurs de qualité de classification floue. Parmi ces indicateurs, il est notamment recommandé d'utiliser le pourcentage de l'inertie expliquée, l'indice de silhouette pour classification floue, l'indice de Xie et Beni [-@xie1991validity], et de Fukuyama et Sugeno [@fukuyama1989].
+Pour ces deux méthodes, comme pour le *k-means*, le nombre de groupes *k* doit être spécifié. Elles comprennent cependant un paramètre supplémentaire&nbsp;: *m*, appelé paramètre de floutage qui contrôle à quel point le résultat obtenu sera flou ou strict. Une valeur de 1 produit une classification stricte (chaque observation appartient à un seul groupe) et une valeur plus grande conduit à des classifications de plus en plus floues, jusqu'à ce que chaque observation appartienne à un degré identique à chacun des groupes. Il est recommandé de sélectionner *m* en même temps que *k*, car ces deux valeurs influencent simultanément la qualité de la classification. La meilleure approche consiste à tester un ensemble de combinaisons de *m* et de *k* et à comparer les valeurs obtenues pour différents indicateurs de qualité de classification floue. Parmi ces indicateurs, il est notamment recommandé d'utiliser le pourcentage de l'inertie expliquée, l'indice de silhouette pour classification floue, l'indice de Xie et Beni [-@xie1991validity], et de Fukuyama et Sugeno [@fukuyama1989].
 
 #### Mise en oeuvre du *c-means* dans R {#sect13461}
 
@@ -1680,7 +1656,7 @@ for (col in names(X)){
 
 ##### Sélection de *k* et de *m*
 
-La seconde étape consiste à sélectionner les valeurs idéales pour *k* et *m*. Nous testons ici toutes les valeurs de k entre 2 et 7, et les valeurs de *m* entre 1,5 et 2,5 (avec des écarts de 0,1).
+La seconde étape consiste à sélectionner les valeurs optimales pour *k* et *m*. Nous testons ici toutes les valeurs de k de 2 à 7, et les valeurs de *m* de 1,5 à 2,5 (avec des écarts de 0,1).
 
 ```{r cmeansB, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE, fig.cap = "Sélection des paramètres k et m pour l'algorithme c-means"}
 library(e1071)
@@ -1747,9 +1723,9 @@ plot3 <- ggplot(df_scores) +
 ggarrange(plot1, plot2, plot3, ncol = 2, nrow = 2)
 ```
 
-Ces trois graphiques à la figure (figure \@ref(fig:cmeansB)) semblent indiquer des solutions différentes. Sans surprise, augmenter le niveau de flou (*m*) réduit l'inertie expliquée alors qu'augmenter le nombre de groupes (*k*) augmente l'inertie expliquée. L'indice de Silhouette indique assez clairement que trois groupes serait le meilleur choix, suivi par deux ou quatre groupes, si *m* est inférieur à 1,8. Cependant, ne retenir que trois groupes ne permet d'expliquer que 30% de l'inertie. Afin de nous rapprocher des résultats de l'article original [@2021_4], nous allons retenir `m = 1,5` et `k = 4`.
+Les trois graphiques à la figure  \@ref(fig:cmeansB) semblent indiquer des solutions différentes. Sans surprise, augmenter le niveau de flou (*m*) réduit l'inertie expliquée, alors qu'augmenter le nombre de groupes (*k*) augmente l'inertie expliquée. L'indice de silhouette indique assez clairement que trois groupes serait le meilleur choix, suivi par deux ou quatre groupes, si *m* est inférieur à 1,8. Cependant, ne retenir que trois groupes ne permet d'expliquer que 30% de l'inertie. Afin de nous rapprocher des résultats de l'article original [@2021_4], nous retenons `m = 1,5` et `k = 4`.
 
-##### Appliquer l'algorithme *c-means*
+##### Application l'algorithme *c-means*
 
 Avec *k* et *m* définis, il ne reste plus qu'à appliquer l'algorithme à nos observations.
 
@@ -1758,7 +1734,7 @@ set.seed(123)
 cmeans_resultats <- FKM(X, 4, 1.5)
 ```
 
-L'objet obtenu `cmeans_resultats` contient les résultats de la classification. Plus spécifiquement, `cmeans_resultats$U` est la matrice d'appartenance, soit une matrice de taille *n* x *k*, dont chaque case $U_{ij}$ indique la probabilité pour l'observation *i* d'appartenir au groupe *j*. `cmeans_resultats$H` contient le centre des groupes, et `cmeans_resultats$Clus` le groupe auquel chaque observation à la plus de chance d'appartenir. Pour comparer plus facilement nos résultats avec ceux du *k-means*, nous pouvons changer l'ordre des groupes obtenus pour les faire coïncider avec les groupes les plus similaires obtenus avec la méthode *k-means*.
+L'objet obtenu `cmeans_resultats` contient les résultats de la classification. Plus spécifiquement, `cmeans_resultats$U` est la matrice d'appartenance, soit une matrice de taille *n* x *k*, dont chaque case $U_{ij}$ indique la probabilité pour l'observation *i* d'appartenir au groupe *j*. `cmeans_resultats$H` contient le centre des groupes, et `cmeans_resultats$Clus`, le groupe auquel chaque observation à le plus de chances d'appartenir. Pour comparer plus facilement nos résultats avec ceux du *k-means*, nous pouvons changer l'ordre des groupes obtenus pour les faire coïncider avec les groupes les plus similaires obtenus avec la méthode *k-means*.
 
 ```{r cmeansC2, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 # changeons l'ordre des groupes
@@ -1783,7 +1759,7 @@ cmeans_resultats$H <- H2
 cmeans_resultats$Clus <- Clus2
 ```
 
-##### Interpréter les résultats
+##### Interprétation des résultats
 
 Globalement, les approches pour interpréter les résultats issus d'une classification obtenue par *c-means* sont les mêmes que pour une classification obtenue par *k-means*.
 
@@ -1795,7 +1771,7 @@ maps <- mapClusters(LyonIris, cmeans_resultats$U)
 ggarrange(plotlist = maps$ProbaMaps, ncol = 2, nrow = 2, legend = "none")
 ```
 
-Sur les cartes de la figure \@ref(fig:cmeansD), l'intensité de bleu correspond à la probabilité pour chaque IRIS d'appartenir aux différents groupes. Nous pouvons retrouver les principales structures spatiales que nous avions identifiées avec le *k-means*, cependant, nous pouvons à présent constater que le groupe 1 est bien plus incertain que les autres. Nous pouvons une fois encore générer un graphique en radar pour comparer les profils des quatre groupes.
+Sur les cartes de la figure \@ref(fig:cmeansD), l'intensité de bleu correspond à la probabilité pour chaque IRIS d'appartenir aux différents groupes. Nous retrouvons les principales structures spatiales que nous avons identifiées avec le *k-means*; cependant, nous pouvons à présent constater que le groupe 1 est bien plus incertain que les autres. Nous pouvons une fois encore générer un graphique en radar pour comparer les profils des quatre groupes.
 
 ```{r cmeansE, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE, fig.cap="Graphique en radar pour les résultats du c-means"}
 par(mfrow=c(3,2), mai = c(0.1,0.1,0.1,0.1))
@@ -1804,7 +1780,7 @@ spiderPlots(X, cmeans_resultats$U,
 
 ```
 
-Sans surprise, nous retrouvons essentiellement les profils que nous avions obtenus avec le *k-means* dans la figure \@ref(fig:cmeansE). Une différence importante peut cependant être notée&nbsp;: le groupe cumulant les désavantages sociaux a aussi cette fois-ci les niveaux de pollution sonore journaliers les plus élevés. Pour compléter la lecture des résultats, il est nécessaire de se pencher sur le tableau des statistiques descriptives des différents groupes. Une fois encore, nous proposons d'utiliser la fonction `summarizeClusters` du *package* `geocmeans`. Notez que cette fonction calcule les statistiques descriptives pondérées en fonction de l'appartenance des observations aux groupes. Ainsi, une observation ayant une faible chance d'appartenir à un groupe ne contribue que faiblement aux statistiques descriptives de ce groupe.
+Sans surprise, nous retrouvons essentiellement les profils que nous avons obtenus avec le *k-means* dans la figure \@ref(fig:cmeansE). Pour compléter la lecture des résultats, il est nécessaire de se pencher sur le tableau des statistiques descriptives des différents groupes. Une fois encore, nous proposons d'utiliser la fonction `summarizeClusters` du *package* `geocmeans`. Notez que cette fonction calcule les statistiques descriptives pondérées en fonction de l'appartenance des observations aux groupes. Ainsi, une observation ayant une faible chance d'appartenir à un groupe ne contribue que faiblement aux statistiques descriptives de ce groupe.
 
 \newpage
 
@@ -1856,23 +1832,23 @@ La méthode du *c-medoids* dans R peut être mise en oeuvre avec la fonction `FK
 ::: {.bloc_aller_loin data-latex=""}
 **Stabilité des groupes obtenus par les méthodes de nuées dynamiques**&nbsp;:
 
-Puisque la méthode *k-means* et ses variantes reposent sur une initialisation aléatoire de leur algorithme, les résultats peuvent varier en fonction de cet état de départ. Dans certains contextes, il est possible que les résultats obtenus varient significativement, ce qui signifie que les groupes obtenus ne sont pas représentatifs de la population étudiée. Une solution pour vérifier si ce problème se pose est simplement de relancer l'algorithme un grand nombre de fois (généralement 1&nbsp;000) et comparer les résultats obtenus au cours de ces réplications.
+Puisque la méthode *k-means* et ses variantes reposent sur une initialisation aléatoire de leur algorithme, les résultats peuvent varier en fonction de cet état de départ. Dans certains contextes, il est possible que les résultats obtenus varient significativement, ce qui signifie que les groupes obtenus ne sont pas représentatifs de la population étudiée. Une solution pour vérifier si ce problème se pose est simplement de relancer l'algorithme un grand nombre de fois (généralement 1000) et de comparer les résultats obtenus au cours de ces réplications.
 
-Cette méthode est rarement implémentée directement et requiert développer sa propre fonction. `geocmeans` dispose d'une fonction déjà existante, mais ne pouvant être appliquée qu'avec l'algorithme *c-means*. Nous proposons ici une implémentation pour la méthode *k-means* qui peut facilement être adaptée aux autres méthodes de classifications heuristiques.
+Cette méthode est rarement implémentée directement et requiert d'écrire sa propre fonction. `geocmeans` dispose d'une fonction déjà existante, mais ne pouvant être appliquée qu'avec l'algorithme *c-means*. Nous proposons ici une implémentation pour la méthode *k-means* qui peut facilement être adaptée aux autres méthodes de classifications heuristiques.
 
 La démarche à suivre est la suivante&nbsp;: 
 
 1. Appliquer l'algorithme une première fois pour obtenir une classification de référence à laquelle nous comparerons toutes les réplications.
-2. Effectuer 1&nbsp;000 itérations au cours desquelles&nbsp;: 
-  1. Une nouvelle classification est calculée
-  2. Les groupes obtenus sont comparés à ceux de la classification de références
-  3. L'indice de Jacard est calculé entre les groupes des deux classifications
-  4. Les valeurs de l'indice de Jacard sont enregistrées
-  5. Les centres des groupes sont enregistrés
+2. Effectuer 1000 itérations au cours desquelles&nbsp;: 
+    + Une nouvelle classification est calculée.
+    + Les groupes obtenus sont comparés à ceux de la classification de référence.
+    + L'indice de Jacard est calculé entre les groupes des deux classifications.
+    + Les valeurs de l'indice de Jacard sont enregistrées.
+    + Les centres des groupes sont enregistrés.
   
-Ainsi, nous obtenons 1&nbsp;000 valeurs de l'indice de Jacard pour chaque groupe. Cet indice permet de mesurer le degré d'accord entre deux variables (ici les probabilités d'appartenance des observations au même groupe pour deux classifications différentes.) Une valeur moyenne en dessous de 0,5 indique qu'un groupe est très instable, car nous obtenons des résultats très différents lors des réplications. Une valeur entre 0,6 et 0,75 indique qu'un groupe semble bien exister dans les données, bien que marqué par une certaine incertitude. Une valeur au-dessus de 0,8 indique un groupe bien identifié et stable.
+Ainsi, nous obtenons 1000 valeurs de l'indice de Jacard pour chaque groupe. Cet indice permet de mesurer le degré d'accord entre deux variables (ici les probabilités d'appartenance des observations au même groupe pour deux classifications différentes.) Une valeur moyenne en dessous de 0,5 indique qu'un groupe est très instable, car nous obtenons des résultats très différents lors des réplications. Une valeur entre 0,6 et 0,75 indique qu'un groupe semble bien exister dans les données, bien que marqué par une certaine incertitude. Une valeur au-dessus de 0,8 indique un groupe bien identifié et stable.
 
-Nous obtenons également les centres des groupes des 1&nbsp;000 classifications. Il est ainsi possible de représenter leurs histogrammes et de déterminer si les centres des groupes sont stables (unimodalité et faible variance) ou incertains (plusieurs modes et/ou forte variances).
+Nous obtenons également les centres des groupes des 1000 classifications. Il est ainsi possible de représenter leurs histogrammes et de déterminer si les centres des groupes sont stables (unimodalité et faible variance) ou incertains (plusieurs modes et/ou forte variance).
 
 ```{r kmeansStab1, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE, fig.pos = "H", out.extra = ""}
 
@@ -1988,7 +1964,7 @@ ggplot(df) +
 
 ```
 
-Les différents histogrammes de la figure \@ref(fig:kmeansStab4) indiquent clairement que pour plusieurs variables (`Lden`, `NO2`, `PM25`, `Pct_Img`, et `NivVieMed`) les caractéristiques du groupe 4 varient grandement sur l'ensemble des réplications. Nous pouvons comparer ce graphique à celui du groupe 2 qui était bien plus stable.
+Les différents histogrammes de la figure \@ref(fig:kmeansStab4) indiquent clairement que pour plusieurs variables (`Lden`, `NO2`, `PM25`, `Pct_Img`, et `NivVieMed`) les caractéristiques du groupe 4 varient grandement sur l'ensemble des réplications. Nous pouvons comparer ce graphique à celui du groupe 2 qui est bien plus stable.
 
 ```{r kmeansStab5, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='90%', message = FALSE, fig.cap = "Distributions des valeurs des centres du groupe 2 sur 1000 itérations", fig.pos = "H", out.extra = ""}
 
@@ -2011,9 +1987,9 @@ Nous pouvons constater une plus faible variance des résultats obtenus (en regar
 
 ## Conclusion sur la cinquième partie {#sect135}
 
-Dans le cadre de cette cinquième partie du livre, nous avons abordé les principales méthodes factorielles et méthodes de classification non supervisées. Les premières sont des méthodes de réduction de données puisqu'elles permettent de résumer l'information d'un tableau en quelques nouvelles variables synthétiques. Les secondes permettent de regrouper les observations d'un tableau en plusieurs groupes homogènes. Il existe donc une complémentarité évidente entre ces deux groupes de méthodes&nbsp;: si le tableau initial comprend un grand nombre de variables, il est possible de lui appliquer une méthode factorielle produisant de nouvelles variables synthétiques qui sont ensuite utilisées pour calculer une méthode de classification non supervisée.
+Dans le cadre de cette cinquième partie du livre, nous avons abordé les principales méthodes factorielles et les principales méthodes de classification non supervisée. Les premières sont des méthodes de réduction de données puisqu'elles permettent de résumer l'information d'un tableau en quelques nouvelles variables synthétiques. Les secondes permettent de regrouper les observations d'un tableau en plusieurs groupes homogènes. Il existe donc une complémentarité évidente entre ces deux groupes de méthodes&nbsp;: si le tableau initial comprend un grand nombre de variables, il est possible de lui appliquer une méthode factorielle produisant de nouvelles variables synthétiques qui sont ensuite utilisées pour calculer une méthode de classification non supervisée.
 
-```{r MFMCComplementarite, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Complémentarité entre les méthodes factorielles et les méthodes de classification non supervisées",  fig.pos="H", out.width='50%'}
+```{r MFMCComplementarite, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Complémentarité entre les méthodes factorielles et les méthodes de classification non supervisée",  fig.pos="H", out.width='50%'}
 knitr::include_graphics('images/classification/AnalysesFactoClassif.png', dpi = NA)
 ```
 

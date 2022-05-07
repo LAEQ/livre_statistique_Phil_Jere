@@ -844,7 +844,7 @@ generate_plot(dgamma,parametres,real_names,xlim,colors)
 
 La distribution bêta est définie sur l’intervalle [0; 1], elle est donc énormément utilisée pour modéliser des variables étant des proportions ou des probabilités.
 
-La distribution bêta a été élaborée pour modéliser la superposition d’un très grand nombre de petits effets fortuits qui ne sont pas indépendants et notamment pour étudier l’effet de la réalisation d’un événement aléatoire sur la probabilité des tirages subséquents. Elle a aussi une utilité pratique en statistique, car elle peut être combinée avec d’autres distributions (distribution beta-binomiale, beta-negative-binomiale, etc.). Un autre usage plus rare mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Cela est dû au fait que la distribution d’une distribution gamma *g1* divisée par la somme de *g1* et d’une autre distribution gamma *g2* suit une distribution beta. Un exemple concret est, par exemple, la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de beta a la fonction de densité suivante&nbsp;: 
+La distribution bêta a été élaborée pour modéliser la superposition d’un très grand nombre de petits effets fortuits qui ne sont pas indépendants et notamment pour étudier l’effet de la réalisation d’un événement aléatoire sur la probabilité des tirages subséquents. Elle a aussi une utilité pratique en statistique, car elle peut être combinée avec d’autres distributions (distribution bêta-binomiale, bêta-negative-binomiale, etc.). Un autre usage plus rare mais intéressant est la modélisation de la fraction du temps représentée par une tâche dans le temps nécessaire à la réalisation de deux tâches de façon séquentielle. Cela est dû au fait que la distribution d’une distribution Gamma *g1* divisée par la somme de *g1* et d’une autre distribution Gamma *g2* suit une distribution bêta. Un exemple concret est, par exemple, la fraction du temps effectué à pied dans un déplacement multimodal. La distribution de bêta a la fonction de densité suivante&nbsp;: 
 
 \footnotesize
 \begin{equation} f(x;\alpha;\beta) = \frac{1}{\mathrm{B}(\alpha, \beta)} x^{\alpha-1}(1-x)^{\beta-1}
@@ -854,7 +854,7 @@ La distribution bêta a été élaborée pour modéliser la superposition d’un
 
 Elle a donc deux paramètres $\alpha$ et $\beta$ contrôlant tous les deux la forme de la distribution. Cette caractéristique lui permet d’avoir une très grande flexibilité et même d’adopter des formes bimodales. $B$ correspond à la fonction mathématique Beta&nbsp;: ne pas la confondre avec la distribution Beta et le paramètre Beta ($\beta$) de cette même distribution.
 
-```{r fig268, echo=FALSE, fig.align='center', fig.cap="Distribution Beta", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
+```{r fig268, echo=FALSE, fig.align='center', fig.cap="Distribution bêta", message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='70%'}
 parametres <- list(shape1 = c(0.5,5,2,2),
                   shape2 = c(0.5,1,2,5))
 real_names <- c("alpha","beta")
@@ -1740,7 +1740,7 @@ show_table(df,
       align= c("l", "r")
           )
 ```
-Le plus grand *logLikelihood* est obtenu par la distribution de Gamma qui s'ajuste donc le mieux à nos données. Pour finir, nous pouvons tester formellement, avec le test de Kolmogorov-Smirnov, si les données proviennent bien de cette distribution de Gamma.
+Le plus grand *logLikelihood* est obtenu par la distribution Gamma qui s'ajuste donc le mieux à nos données. Pour finir, nous pouvons tester formellement, avec le test de Kolmogorov-Smirnov, si les données proviennent bien de cette distribution Gamma.
 
 ```{r message=FALSE, warning=FALSE}
 params <- as.list(model_gamma$estimate)
@@ -1748,7 +1748,7 @@ ks.test(data_trt_bus$Min.Delay,
         y = pgamma, shape = params$shape, rate = params$rate)
 ```
 
-Comme la valeur de *p* est inférieure à 0,05, nous ne pouvons pas accepter l'hypothèse que notre jeu de données suit effectivement un loi de Gamma. Considérant le nombre d'observations et le fait que de nombreux temps d'attente sont identiques (ce à quoi le test est très sensible), ce résultat n'est pas surprenant. La distribution de Gamma reste cependant la distribution qui représente le mieux nos données. Nous pouvons estimer grâce, à cette distribution, la probabilité qu'un bus ait un retard de plus de 10 minutes de la façon suivante&nbsp;: 
+Comme la valeur de *p* est inférieure à 0,05, nous ne pouvons pas accepter l'hypothèse que notre jeu de données suit effectivement un loi de Gamma. Considérant le nombre d'observations et le fait que de nombreux temps d'attente sont identiques (ce à quoi le test est très sensible), ce résultat n'est pas surprenant. La distribution Gamma reste cependant la distribution qui représente le mieux nos données. Nous pouvons estimer grâce, à cette distribution, la probabilité qu'un bus ait un retard de plus de 10 minutes de la façon suivante&nbsp;: 
 
 ```{r message=FALSE, warning=FALSE}
 pgamma(10, shape = params$shape, rate = params$rate, lower.tail = F)

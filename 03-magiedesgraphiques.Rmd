@@ -407,7 +407,7 @@ L'histogramme permet de décrire graphiquement la forme de la distribution d'une
 
 #### Histogramme simple {#sect03211}
 
-Générons quatre variables ayant respectivement une distribution gaussienne, Student, Gamma et Beta, puis réalisons un histogramme pour chacune de ces variables et combinons-les avec la fonction `ggarrange` (figure \@ref(fig:fig318)).
+Générons quatre variables ayant respectivement une distribution gaussienne, Student, Gamma et bêta, puis réalisons un histogramme pour chacune de ces variables et combinons-les avec la fonction `ggarrange` (figure \@ref(fig:fig318)).
 
 ```{r fig318, fig.align='center', fig.cap="Histogrammes", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='65%'}
 
@@ -441,7 +441,7 @@ ggarrange(plotlist = histogrammes, ncol = 2, nrow = 2)
 ```
 
 
-Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable empiler nos données, ce qui signifie changer la forme du *DataFrame* actuel, qui comprend quatre colonnes (gaussien, gamma, beta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* `reshape2`.
+Notez que cette syntaxe est très lourde. Dans le cas présent, il serait plus judicieux d'utiliser la fonction `facet_wrap`. Pour cela, nous devons au préalable empiler nos données, ce qui signifie changer la forme du *DataFrame* actuel, qui comprend quatre colonnes (gaussien, Gamma, bêta et student) et 1000 observations, pour qu'il n'ait plus que deux colonnes (la valeur originale et le nom de l'ancienne colonne) et 4000 observations. La figure \@ref(fig:fig319) décrit graphiquement ce processus qui peut être effectué avec la fonction `melt` du *package* `reshape2`.
 
 ```{r fig319, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Empiler les données d'un DataFrame",  out.width='30%', dev = "png", dpi = 300}
 knitr::include_graphics('images/magie_graphiques/melting.png', dpi = NA)

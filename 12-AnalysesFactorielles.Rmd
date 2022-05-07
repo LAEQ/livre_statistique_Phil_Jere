@@ -2,12 +2,7 @@
 
 # Méthodes factorielles {#chap12}
 
-::: {.bloc_attention data-latex=""}
-Ce chapitre n'a pas encore fait l'objet d'une révision linguistique. Il comprend certainement plusieurs coquilles... Une version révisée sera mise à jour prochainement.
-:::
-
-
-Dans le cadre de ce chapitre, nous présentons les trois méthodes factorielles les plus utilisées en sciences sociales&nbsp;: l'analyse en composantes principales (ACP, section \@ref(sect122)), l'analyse factorielle des correspondances (AFC, section \@ref(sect123)) et l'analyse factorielle des correspondances multiples (ACM, section \@ref(sect124)). Ces méthodes qui permettent d'explorer et de synthétiser l'information de différents tableaux de données relèvent de la statistique exploratoire multidimensionnelle.
+Dans le cadre de ce chapitre, nous présentons les trois méthodes factorielles les plus utilisées en sciences sociales&nbsp;: l'analyse en composantes principales (ACP, section \@ref(sect122)), l'analyse factorielle des correspondances (AFC, section \@ref(sect123)) et l'analyse factorielle des correspondances multiples (ACM, section \@ref(sect124)). Ces méthodes, qui permettent d'explorer et de synthétiser l'information de différents tableaux de données, relèvent de la statistique exploratoire multidimensionnelle.
 
 ::: {.bloc_package data-latex=""}
 Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;: 
@@ -16,10 +11,10 @@ Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;:
   - `ggplot2`, le seul, l'unique!
   - `ggpubr` pour combiner des graphiques.
 * Pour les analyses factorielles&nbsp;:
-  - `FactoMineR` pour réaliser des ACP, AFC et ACM.
+  - `FactoMineR` pour réaliser une ACP, une AFC et une ACM.
   - `factoextra` pour réaliser des graphiques à partir des résultats d'une analyse factorielle.
   - `explor` pour les résultats d'une ACP, d'une AFC ou d'une ACM avec une interface Web interactive.
-* Autre *package*&nbsp;:
+* Autres *packages*&nbsp;:
   - `geocmeans` pour un jeu de données utilisé pour calculer une ACP.
   - `ggplot2`, `ggpubr`, `stringr` et `corrplot` pour réaliser des graphiques personnalisés sur les résultats d'une analyse factorielle.
   - `tmap` et `RColorBrewer` pour cartographier les coordonnées factorielles.
@@ -29,7 +24,7 @@ Dans ce chapitre, nous utilisons les *packages* suivants&nbsp;:
 ::: {.bloc_objectif data-latex=""}
 **Réduction de données et identification de variables latentes**
 
-Les méthodes factorielles sont souvent dénommées des **méthodes de réduction de données**, en raison de leur objectif principal&nbsp;: résumer l'information d'un tableau en quelques nouvelles variables synthétiques (figure&nbsp;\@ref(fig:AnalysesFactoriellesFig)). Ainsi, elles permettent de réduire l'information d'un tableau volumineux —&nbsp;comprenant par exemple 1000&nbsp;observations et 100&nbsp;variables&nbsp;— en *p* nouvelles variables (par exemple cinq avec toujours 1000&nbsp;observations) résumant *X* % de l'information contenue dans le tableau initial. Formulée plus mathématiquement, Lebart et al. [-@lebart1995statistique, p.13] signalent qu'avec les méthodes factorielles, «&nbsp;on cherche à réduire les dimensions du tableau de données en représentant les associations entre individus et entre variables dans des espaces de faibles dimensions&nbsp;».
+Les méthodes factorielles sont souvent dénommées des **méthodes de réduction de données**, en raison de leur objectif principal&nbsp;: résumer l'information d'un tableau en quelques nouvelles variables synthétiques (figure&nbsp;\@ref(fig:AnalysesFactoriellesFig)). Ainsi, elles permettent de réduire l'information d'un tableau volumineux —&nbsp;comprenant par exemple 1000&nbsp;observations et 100&nbsp;variables&nbsp;— en *p* nouvelles variables (par exemple cinq avec toujours 1000&nbsp;observations) résumant *X* % de l'information contenue dans le tableau initial. Formulée plus mathématiquement, Lebart et al. [-@lebart1995statistique, p.13] en donnent une formulation plus mathématique&nbsp;: ils signalent qu'avec les méthodes factorielles, «&nbsp;on cherche à réduire les dimensions du tableau de données en représentant les associations entre individus et entre variables dans des espaces de faibles dimensions&nbsp;».
 
 ```{r AnalysesFactoriellesFig, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Principe de base des analyses factorielles",  fig.pos="H", out.width='50%'}
 knitr::include_graphics('images/analysesfactorielles/AnalysesFactorielles.png', dpi = NA)
@@ -42,7 +37,7 @@ Ces nouvelles variables synthétiques peuvent être considérées comme des **va
 
 ### Méthodes factorielles et types de données {#sect1211}
 
-En analyse factorielle, la nature même des données du tableau à traiter détermine la méthode à employer&nbsp;: l’analyse en composantes principales (ACP) est adaptée aux tableaux avec des variables continues (idéalement normalement distribuées), l’analyse factorielle des correspondances (AFC) s’applique à des tableaux de contingence tandis que l’analyse des correspondances multiples (ACM) permet de résumer des tableaux avec des données qualitatives (issues d'un sondage par exemple) (tableau&nbsp;\@ref(tab:typesanalysesfactorielles)). Sachez toutefois qu'il existe d'autres méthodes factorielles qui ne sont pas abordées dans ce chapitre, notamment&nbsp;: l'analyse factorielle de données mixtes (AFDM) permettant d'explorer des tableaux avec à la fois des variables continues et des variables qualitatives, l'analyse factorielle multiple hiérarchique (AFMH) permettant de traiter des tableaux avec une structure hiérarchique. Pour s'initier à ces deux autres méthodes factorielles plus récentes, consultez notamment l'excellent ouvrage de Jérôme Pagès [-@pages2013analyse].
+En analyse factorielle, la nature même des données du tableau à traiter détermine la méthode à employer&nbsp;: l’analyse en composantes principales (ACP) est adaptée aux tableaux avec des variables continues (idéalement normalement distribuées), l’analyse factorielle des correspondances (AFC) s’applique à des tableaux de contingence tandis que l’analyse des correspondances multiples (ACM) permet de résumer des tableaux avec des données qualitatives (issues d'un sondage par exemple) (tableau&nbsp;\@ref(tab:typesanalysesfactorielles)). Sachez toutefois qu'il existe d'autres méthodes factorielles qui ne sont pas abordées dans ce chapitre, notamment&nbsp;: l'analyse factorielle de données mixtes (AFDM) permettant d'explorer des tableaux avec à la fois des variables continues et des variables qualitatives et l'analyse factorielle multiple hiérarchique (AFMH) permettant de traiter des tableaux avec une structure hiérarchique. Pour s'initier à ces deux autres méthodes factorielles plus récentes, consultez notamment l'excellent ouvrage de Jérôme Pagès [-@pages2013analyse].
 
 ```{r typesanalysesfactorielles, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 
@@ -63,9 +58,9 @@ show_table(typesaf,
 
 ### Bref historique des méthodes factorielles {#sect1212}
 
-Il existe une longue tradition de l'utilisation des méthodes factorielles dans le monde universitaire francophone puisque plusieurs d'entre elles ont été proposées par des statisticiens et des statisticiennes francophones à partir des années 1960. L’analyse en composantes principales (ACP) a été proposée dès les années 1930 par le statisticien américain Harold Hotelling [-@hotelling1933analysis]. En revanche, l’analyse des correspondances (AFC) et son extension (l’analyse des correspondances multiples, ACM) ont été proposées par le statisticien français Jean-Paul Benzécri [-@benzecri1973analyse], tandis que l’analyse factorielle de données mixtes (AFDM) a été proposée par Brigitte Escofier et Jérôme Pagès [@escofier1979traitement; @pages2002analyse].
+Il existe une longue tradition de l'utilisation des méthodes factorielles dans le monde universitaire francophone puisque plusieurs d'entre elles ont été proposées par des statisticiens et des statisticiennes francophones à partir des années 1960. L’analyse en composantes principales (ACP) a été proposée dès les années 1930 par le statisticien américain Harold Hotelling [-@hotelling1933analysis]. En revanche, l’analyse des correspondances (AFC) et son extension, l’analyse des correspondances multiples (ACM), ont été proposées par le statisticien français Jean-Paul Benzécri [-@benzecri1973analyse], tandis que l’analyse factorielle de données mixtes (AFDM) a été proposée par Brigitte Escofier et Jérôme Pagès [@escofier1979traitement; @pages2002analyse].
 
-Ainsi, plusieurs ouvrages de statistique  sur les méthodes factorielles, désormais classiques, ont été publiés en français [@benzecri1973analyse; @escofier1998analyses; @lebart1995statistique; @pages2013analyse]. Ils méritent grandement d'être consultés, notamment pour mieux comprendre les formulations mathématiques (matricielles et géométriques) de ces méthodes. À cela, s'ajoutent plusieurs ouvrages visant à «&nbsp;vulgariser ces méthodes&nbsp;» en sciences sociales; c'est notamment le cas de l'excellent ouvrage de Léna Sanders [-@sanders1989analyse] en géographie.
+Ainsi, plusieurs ouvrages de statistique  sur les méthodes factorielles, désormais classiques, ont été publiés en français [@benzecri1973analyse; @escofier1998analyses; @lebart1995statistique; @pages2013analyse]. Ils méritent grandement d'être consultés, notamment pour mieux comprendre les formulations mathématiques (matricielles et géométriques) de ces méthodes. À cela s'ajoutent plusieurs ouvrages visant à «&nbsp;vulgariser ces méthodes&nbsp;» en sciences sociales; c'est notamment le cas de l'excellent ouvrage de Léna Sanders [-@sanders1989analyse] en géographie.
 
 
 ## Analyses en composantes principales (ACP) {#sect122}
@@ -88,7 +83,7 @@ knitr::include_graphics('images/analysesfactorielles/AnalysesFactoriellesTabACP.
 ```
 
 
-**Ressemblance entre les individus**. Concrètement deux individus se ressemblent si leurs valeurs respectives pour les *p* variables du tableau sont similaires. Cette proximité/ressemblance est évaluée à partir de la distance euclidienne&nbsp; (équation \@ref(eq:ACPdistEuc)). La notion de distance fait l'objet d'une section à part entière (section \@ref(sect132)) que vous pouvez consulter dès à présent si elle ne vous est pas familière.
+**Ressemblance entre les individus**. Concrètement, deux individus se ressemblent si leurs valeurs respectives pour les *p* variables du tableau sont similaires. Cette proximité/ressemblance est évaluée à partir de la distance euclidienne (équation&nbsp;\@ref(eq:ACPdistEuc)). La notion de distance fait l'objet d'une section à part entière (section \@ref(sect132)) que vous pouvez consulter dès à présent si elle ne vous est pas familière.
 
 \footnotesize
 \begin{equation}
@@ -126,7 +121,7 @@ add_header_above(my_table, c(" " = 1, "Variables centrées réduites" = 3))
 ```
 
 
-**Liaisons entre les variables**. Dans une ACP normée, les liaisons entre les variables deux à deux sont évaluées avec le coefficient de corrélation (section \@ref(sect0431)), soit la moyenne du produit des deux variables centrées réduites (équation \@ref(eq:ACPcor)). Notez que dans une ACP non normée, plus rarement utilisée, les liaisons sont alors évaluées avec la covariance puisque les variables sont uniquement centrées (équation \@ref(eq:ACPcov)).
+**Liaisons entre les variables**. Dans une ACP normée, les liaisons entre les variables deux à deux sont évaluées avec le coefficient de corrélation (section \@ref(sect0431)), soit la moyenne du produit des deux variables centrées réduites (équation \@ref(eq:ACPcor)). Notez que dans une ACP non normée, plus rarement utilisée, les liaisons sont évaluées avec la covariance puisque les variables sont uniquement centrées (équation \@ref(eq:ACPcov)).
 
 \footnotesize
 \begin{equation}
@@ -147,7 +142,7 @@ cov(x,y) = \frac{\sum_{i=1}^n (x_{i}-\bar{x})(y_{i}-\bar{y})}{n}
 * la corrélation de Pearson (section \@ref(sect043)), qu'il est possible d'illustrer graphiquement à partir d'un nuage de points;
 * la régression linéaire simple (section \@ref(sect044)), permettant de résumer la relation linéaire entre deux variables avec une droite de régression de type $Y=a+bX$. 
 
-Brièvement, plus deux variables sont corrélées (positivement ou négativement), plus le nuage de points qu'elles forment est allongé et plus les points sont proches de la droite de régression (figure&nbsp;\@ref(fig:liaisons2Vars), partie&nbsp;**a**). À l'inverse, plus la liaison entre les deux variables normalement distribuées est faible, plus le nuage prend la forme d'un cercle et plus les points du nuage sont éloignés de la droite de régression (figure&nbsp;\@ref(fig:liaisons2Vars), partie&nbsp;**b**). Puisqu'en ACP normée, les variables sont centrées réduites, le centre de gravité du nuage de points est (*x*=0, *y*=0) et il est toujours traversé par la droite de régression. Finalement, nous avons vu que la méthode des moindres carrés ordinaires (MCO) permet de déterminer cette droite en minimisant les distances entre les valeurs observées et celles projetées orthogonalement sur cette droite (valeurs prédites). Dans le cas de deux variables uniquement, l'axe factoriel principal/la composante principale est donc la droite qui résume le mieux la liaison entre les deux variables (en rouge). L'axe&nbsp;2 représente la seconde plus importante composante (axe, dimension) et il est orthogonal (perpendiculaire) au premier axe (en bleu).
+Brièvement, plus deux variables sont corrélées (positivement ou négativement), plus le nuage de points qu'elles forment est allongé et plus les points sont proches de la droite de régression (figure&nbsp;\@ref(fig:liaisons2Vars), partie&nbsp;**a**). À l'inverse, plus la liaison entre les deux variables normalement distribuées est faible, plus le nuage prend la forme d'un cercle et plus les points du nuage sont éloignés de la droite de régression (figure&nbsp;\@ref(fig:liaisons2Vars), partie&nbsp;**b**). Puisqu'en ACP normée, les variables sont centrées réduites, le centre de gravité du nuage de points est (*x*=0,&nbsp;*y*=0) et il est toujours traversé par la droite de régression. Finalement, nous avons vu que la méthode des moindres carrés ordinaires (MCO) permet de déterminer cette droite en minimisant les distances entre les valeurs observées et celles projetées orthogonalement sur cette droite (valeurs prédites). Dans le cas de deux variables uniquement, l'axe factoriel principal/la composante principale est donc la droite qui résume le mieux la liaison entre les deux variables (en rouge). L'axe&nbsp;2 représente la seconde plus importante composante (axe, dimension) et il est orthogonal (perpendiculaire) au premier axe (en bleu).
 
 ```{r liaisons2Vars, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Corrélation, allongement du nuage de points et axes factoriels", out.width='100%'}
 knitr::include_graphics('images/analysesfactorielles/bivariePlanFacto.png', dpi = NA)
@@ -220,9 +215,9 @@ knitr::include_graphics('images/analysesfactorielles/bivariePlanFacto.png', dpi 
   
 ```
 
-Imaginez maintenant trois variables pour lesquelles vous désirez identifier un axe, une droite qui résume le mieux les liaisons entre elles. Visuellement, vous passez d'un nuage de points en deux dimensions (2D) à trois dimensions (3D). Si les corrélations entre les trois variables sont très faibles, alors le nuage prendra la forme d'un ballon de football (soccer en Amérique du Nord). Par contre, plus ces liaisons seront fortes, plus la forme sera allongée comme un ballon de rugby plus les points seront proches de l'axe traversant le ballon.
+Imaginez maintenant trois variables pour lesquelles vous désirez identifier un axe, une droite qui résume le mieux les liaisons entre elles. Visuellement, vous passez d'un nuage de points en deux dimensions (2D) à un nuage en dimensions (3D). Si les corrélations entre les trois variables sont très faibles, alors le nuage prend la forme d'un ballon de soccer (football en Europe). Par contre, plus ces liaisons sont fortes, plus la forme est allongée comme un ballon de rugby et plus les points sont proches de l'axe traversant le ballon.
 
-Ajouter une autre variable revient alors à ajouter une quatrième dimension qu'il est impossible de visualiser, même pour les plus fervents adaptes de science-fiction. Pourtant, le problème reste le même&nbsp;: identifier dans un plan en *p* dimensions (variables), les axes factoriels –&nbsp;les composantes principales&nbsp;– qui concourent le plus à résumer les liaisons entre les variables continues préalablement centrées réduites, et ce, en utilisation la méthode des moindres carrés ordinaires.
+Ajouter une autre variable revient alors à ajouter une quatrième dimension qu'il est impossible de visualiser, même pour les plus fervents adaptes de science-fiction. Pourtant, le problème reste le même&nbsp;: identifier, dans un plan en *p* dimensions (variables), les axes factoriels –&nbsp;les composantes principales&nbsp;– qui concourent le plus à résumer les liaisons entre les variables continues préalablement centrées réduites, et ce, en utilisation la méthode des moindres carrés ordinaires.
 
 ::: {.bloc_attention data-latex=""}
 Les termes **composantes principales** et **axes factoriels** sont des synonymes employés pour référer aux nouvelles variables synthétiques produites par l'ACP et résumant l'information du tableau intitial.
@@ -301,8 +296,8 @@ z= \frac{x_i-\mu}{\sigma}
 	
 Par conséquent, la variance totale (ou inertie totale) d’un tableau sur lequel est calculée une ACP normée est égale au nombre de variables qu'il comprend. Puisque nous l'appliquons ici à dix variables, la variance totale du tableau à réduire – c'est-à-dire à résumer en *K* nouvelles variables synthétiques, composantes principales, axes factoriels – est donc égale à 10. Trois mesures reportées au tableau&nbsp;\@ref(tab:dataacpValeurPropres) permettent d'analyser les valeurs propres&nbsp;: 
 
-- $\mbox{VP}_k$, la valeur propre (*eigenvalue* en anglais) de l'axe *k* c'est-à-dire la quantité de variance du tableau initial résumé par l'axe.
-- $\mbox{VP}_k / \mbox{P}$ avec *P* étant le nombre de variables que comprend le tableau initial. Cette mesure représente ainsi le pourcentage de la variance totale du tableau résumé par l’axe *k*, autrement dit, la quantité d’informations du tableau initial résumée par l’axe, la composante principale *k*. Cela nous permet ainsi d’évaluer le pouvoir explicatif de l’axe.
+- $\mbox{VP}_k$, la valeur propre (*eigenvalue* en anglais) de l'axe *k*, c'est-à-dire la quantité de variance du tableau initial résumé par l'axe.
+- $\mbox{VP}_k / \mbox{P}$ avec *P* étant le nombre de variables que comprend le tableau initial. Cette mesure représente ainsi le pourcentage de la variance totale du tableau résumé par l’axe *k*, autrement dit la quantité d’informations du tableau initial résumée par l’axe, la composante principale *k*. Cela nous permet ainsi d’évaluer le pouvoir explicatif de l’axe.
 - Le pourcentage cumulé pour les axes.
 
 ```{r dataacpValeurPropres, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -327,15 +322,15 @@ show_table(dfACPvp,
 
 Avant d'analyser en détail le tableau&nbsp;\@ref(tab:dataacpValeurPropres), notez que la somme des valeurs propres de toutes les composantes de l'ACP est toujours  égale au nombre de variables du tableau initial. Aussi, la quantité de variance expliquée (les valeurs propres) décroît de la composante&nbsp;1 à la composante&nbsp;*K*.
 
-**Combien d'axes d'une ACP faut-il retenir?** Pour ce faire, deux approches sont possibles&nbsp;:
+**Combien d'axes d'une ACP faut-il retenir?** Pour répondre à cette question, deux approches sont possibles&nbsp;:
 
-- **Approche statistique** (avec le critère de Kaiser [-@kaiser1960application]). Nous retenons uniquement les composantes qui présentent une valeur propre supérieure à&nbsp;1. Rappelez-vous qu'en ACP normée, les variables sont préalablement centrées réduites et donc que leur variance respective est égale à&nbsp;1. Par conséquent, une composante ayant une valeur propre inférieure à&nbsp;1 a un pouvoir explicatif inférieur à celui d'une variable. À la lecture du tableau, nous retenons les trois premières composantes si nous appliquons ce critère.
-- **Approche empirique** basée sur la lecture des pourcentages et des pourcentages cumulés. Nous pourrons retenir uniquement les deux premières composantes. En effet, ces deux premiers facteurs résument près des deux tiers de la variance totale du tableau (63,02&nbsp;%). Cela démontre bien que l'ACP, comme les autres méthodes factorielles, est bien une méthode de réduction de données puisque nous résumons dix variables avec deux nouvelles variables synthétiques (axes, composantes principales). Pour faciliter le choix du nombre d'axes, il est fortement conseillé de construire des histogrammes à partir des valeurs propres, des pourcentages et des pourcentages cumulés (figure&nbsp;\@ref(fig:acpgraphvp)). Or, à la lecture de ces graphiques, nous constatons que la variance expliquée chute drastiquement après les deux premières composantes. Par conséquent, nous pouvons retenir uniquement les deux premiers axes.
+- **Approche statistique** (avec le critère de Kaiser [-@kaiser1960application]). Nous retenons uniquement les composantes qui présentent une valeur propre supérieure à&nbsp;1. Rappelez-vous qu'en ACP normée, les variables sont préalablement centrées réduites, et donc que leur variance respective est égale à&nbsp;1. Par conséquent, une composante ayant une valeur propre inférieure à&nbsp;1 a un pouvoir explicatif inférieur à celui d'une variable. À la lecture du tableau, nous retenons les trois premières composantes si nous appliquons ce critère.
+- **Approche empirique** basée sur la lecture des pourcentages et des pourcentages cumulés. Nous pouvons retenir uniquement les deux premières composantes. En effet, ces deux premiers facteurs résument près des deux tiers de la variance totale du tableau (63,02&nbsp;%). Cela démontre bien que l'ACP, comme les autres méthodes factorielles, est bien une méthode de réduction de données puisque nous résumons dix variables avec deux nouvelles variables synthétiques (axes, composantes principales). Pour faciliter le choix du nombre d'axes, il est fortement conseillé de construire des histogrammes à partir des valeurs propres, des pourcentages et des pourcentages cumulés (figure&nbsp;\@ref(fig:acpgraphvp)). Or, à la lecture de ces graphiques, nous constatons que la variance expliquée chute drastiquement après les deux premières composantes. Par conséquent, nous pouvons retenir uniquement les deux premiers axes.
 
 ::: {.bloc_astuce data-latex=""}
 **Lecture du diagramme des valeurs propres** 
 
-Plus les variables incluses dans l'ACP sont corrélées entre elles, plus l'ACP sera intéressante&nbsp;: plus les valeurs propres des premiers axes sont fortes et plus il y a des sauts importants dans le diagramme des valeurs propres. À l'inverse, lorsque les variables incluses dans l'ACP sont peu corrélées entre elles, il n'y aura pas de sauts importants dans l'histogramme, autrement dit, les valeurs propres sont uniformément décroissantes.
+Plus les variables incluses dans l'ACP sont corrélées entre elles, plus l'ACP est intéressante&nbsp;: plus les valeurs propres des premiers axes sont fortes et plus il y a des sauts importants dans le diagramme des valeurs propres. À l'inverse, lorsque les variables incluses dans l'ACP sont peu corrélées entre elles, il n'y a pas de sauts importants dans l'histogramme, autrement dit les valeurs propres sont uniformément décroissantes.
 :::
 
 ```{r acpgraphvp, echo=FALSE, fig.align='center', fig.cap="Graphiques personnalisés pour les valeurs propres pour l'ACP", auto_pdf=TRUE, dev="png", dpi=300, out.width='75%'}
@@ -384,7 +379,7 @@ plotVP3 <- ggplot(dfACPvp, aes(x=VP_cumupct, y=Composante,fill=VP<1, group=1))+
 Pour qualifier les axes, quatre mesures sont disponibles pour les variables&nbsp;:
 
 - **Les coordonnées factorielles des variables**  sont simplement les coefficients de corrélation de Pearson des variables sur l’axe *k* et varient ainsi de -1 à 1 (relire au besoin la section \@ref(sect043)). Pour qualifier un axe, il convient alors de repérer les variables les plus corrélées positivement et négativement sur l’axe, autrement dit, de repérer les variables situées aux extrémités l'axe. 
-- **Les cosinus carrés des variables** (Cos^2^) (appelées aussi les qualités de représentation des variables sur un axe) permettent de repérer le ou les axes qui concourent le plus à donner un sens à la variable. Elles sont en fait les coordonnées des variables mises au carré. La somme des cosinus carrés d’une variable sur tous les axes de l’ACP est donc égale à&nbsp;1 (sommation en ligne).
+- **Les cosinus carrés des variables** (Cos^2^) (appelés aussi les qualités de représentation des variables sur un axe) permettent de repérer le ou les axes qui concourent le plus à donner un sens à la variable. Ils sont en fait les coordonnées des variables mises au carré. La somme des cosinus carrés d’une variable sur tous les axes de l’ACP est donc égale à&nbsp;1 (sommation en ligne).
 **La qualité de représentation d'une variable sur les _n_ premiers axes** est simplement la somme des cosinus carrés d'une variable sur les axes retenus. Par exemple, pour la variable `Lden`, la qualité de représentation de la variable  sur le premier axe est égale&nbsp;: $\mbox{0,42}^2=\mbox{0,17}$. Pour cette même variable, la qualité de la `Lden` sur les trois premiers axes est égale à&nbsp;: $\mbox{0,17}+\mbox{0,32}+\mbox{0,26}=\mbox{0,75}$.
 - **Les contributions des variables** permettent de repérer celles qui participent le plus à la formation d’un axe. Elles s'obtiennent en divisant les cosinus carrés par la valeur propre de l’axe multiplié par 100. La somme des contributions des variables pour un axe donné est donc égale à 100 (sommation en colonne). Par exemple, pour la variable `Lden`, la contribution sur le premier axe est égale&nbsp;: $\mbox{0,174} / \mbox{3,543} \times \mbox{100}= \mbox{4,920 }%$.
 
@@ -422,7 +417,7 @@ add_header_above(my_table, c(" " = 1, "Coordonnées" = 3, "Cosinus carrés" = 4,
 - À la lecture des contributions, il est clair que quatre variables contribuent grandement à la formation de l'axe&nbsp;1&nbsp;: `NivVieMed` (22,06&nbsp;%), 
 `Pct_Img` (21,56&nbsp;%), `TxChom1564` (16,89&nbsp;%) et `Pct_brevet` (14,94&nbsp;%). Il convient alors d'analyser en détail leurs coordonnées factorielles et leurs cosinus carrés.
 
-- À la lecture des coordonnées factorielles, nous constatons que trois variables socioéconomiques sont fortement corrélées positivement avec l’axe&nbsp;1, soit le *pourcentage d’immigrants* (0,87), le *taux de chômage* (0,77) le *pourcentage de personnes avec une faible scolarité* (0,73). À l’autre extrémité, la *médiane du niveau de vie* (en Euros) est négativement corrélée avec l’axe&nbsp;1. Comment interpréter ce résultat? Premièrement, cela signifie que plus la valeur de l’axe 1 est positive et élevée, plus celles des trois variables (`Pct_Img`,`TxChom1564` et `Pct_brevet`) sont aussi élevées (corrélations positives) et plus la valeur de `NivVieMed` est faible (corrélation négative). Inversement, plus la valeur de l’axe&nbsp;1 est négative et faible, les valeurs de `Pct_Img`, `TxChom1564` et `Pct_brevet` sont faibles et plus celle de `NivVieMed` est forte. Deuxièmement, cela signifie que les trois variables (`Pct_Img`,`TxChom1564` et `Pct_brevet`) sont fortement corrélées positivement entre elles puisqu’elles se situent sur la même extrémité de l’axe et qu’elles sont toutes trois négativement corrélées avec la variable `NivVieMed`. Cela peut être rapidement confirmé avec la matrice de corrélation entre les dix variables (tableau&nbsp;\@ref(tab:dataacpMatriceCorr)). 
+- À la lecture des coordonnées factorielles, nous constatons que trois variables socioéconomiques sont fortement corrélées positivement avec l’axe&nbsp;1, soit le *pourcentage d’immigrants* (0,87), le *taux de chômage* (0,77) et le *pourcentage de personnes avec une faible scolarité* (0,73). À l’autre extrémité, la *médiane du niveau de vie* (en Euros) est négativement corrélée avec l’axe&nbsp;1. Comment interpréter ce résultat? Premièrement, cela signifie que plus la valeur de l’axe 1 est positive et élevée, plus celles des trois variables (`Pct_Img`,`TxChom1564` et `Pct_brevet`) sont aussi élevées (corrélations positives) et plus la valeur de `NivVieMed` est faible (corrélation négative). Inversement, plus la valeur de l’axe&nbsp;1 est négative et faible, les valeurs de `Pct_Img`, `TxChom1564` et `Pct_brevet` sont faibles et plus celle de `NivVieMed` est forte. Deuxièmement, cela signifie que les trois variables (`Pct_Img`,`TxChom1564` et `Pct_brevet`) sont fortement corrélées positivement entre elles puisqu’elles se situent sur la même extrémité de l’axe et qu’elles sont toutes trois négativement corrélées avec la variable `NivVieMed`. Cela peut être rapidement confirmé avec la matrice de corrélation entre les dix variables (tableau&nbsp;\@ref(tab:dataacpMatriceCorr)). 
 - À la lecture des cosinus carrés de l'axe&nbsp;1, nous constatons que plus des trois quarts de la dispersion/de l'information des variables `NivVieMed` (0,78) et `Pct_Img` (0,76) est concentrée sur l'axe&nbsp;1.
 
 
@@ -447,35 +442,35 @@ show_table(MatriceCorr,
 
 **Analyse de la deuxième composante principale (valeur propre de 2,76, 27,60&nbsp;%)**
 
-- À la lecture des contributions, trois variables environnementales contribuent à la formation de l'axe&nbsp;2&nbsp;: principalement, celles sur la pollution de l'air (`NO2`&nbsp;=&nbsp;31,07&nbsp;% et `PM25`&nbsp;=&nbsp;30,36&nbsp;%) et secondairement, sur le bruit routier (`Lden`&nbsp;=&nbsp;11,64&nbsp;%).
-- À la lecture des coordonnées factorielles, ces trois variables sont fortement corrélées positivement avec l'axe 2&nbsp;: `NO2` (0,93), `PM25` (0,92) et `Lden` (0,57). À l'autre extrémité de l'axe, la variable `Pct0_14` est négativement, mais pas fortement corrélée négativement (-0,53). La lecture de la matrice de corrélation au tableau&nbsp;\@ref(tab:dataacpMatriceCorr) confirme que ces trois variables environnementales sont fortement corrélées positivement entre elles (par exemple, un coefficient de corrélation de Pearson de 0,90 entre `NO2` et `PM25`).
-- À la lecture des cosinus carrés de l'axe&nbsp;2, nous constatons que près de 90&nbsp;% de la dispersion/de l'information des variables `NO2` (0,86) et `PM25` (0,84) est concentré sur l'axe&nbsp;2.
+- À la lecture des contributions, trois variables environnementales contribuent à la formation de l'axe&nbsp;2&nbsp;: principalement, celles sur la pollution de l'air (`NO2`&nbsp;=&nbsp;31,07&nbsp;% et `PM25`&nbsp;=&nbsp;30,36&nbsp;%) et secondairement, celle sur le bruit routier (`Lden`&nbsp;=&nbsp;11,64&nbsp;%).
+- À la lecture des coordonnées factorielles, ces trois variables sont fortement corrélées positivement avec l'axe 2&nbsp;: `NO2` (0,93), `PM25` (0,92) et `Lden` (0,57). À l'autre extrémité de l'axe, la variable `Pct0_14` est négativement, mais pas fortement, corrélée (-0,53). La lecture de la matrice de corrélation au tableau&nbsp;\@ref(tab:dataacpMatriceCorr) confirme que ces trois variables environnementales sont fortement corrélées positivement entre elles (par exemple, un coefficient de corrélation de Pearson de 0,90 entre `NO2` et `PM25`).
+- À la lecture des cosinus carrés de l'axe&nbsp;2, nous constatons que près de 90&nbsp;% de la dispersion/de l'information des variables `NO2` (0,86) et `PM25` (0,84) est concentrée sur l'axe&nbsp;2.
 
 
 **Analyse de la troisième composante principale (valeur propre de 1,042, 10,42&nbsp;%)**
 
-- Le *pourcentage de personnes âgées* (`Pct_65`) contribue principalement à la formation de l'axe&nbsp;3 avec lequel il est corrélé positivement (contribution de 49,26&nbsp;% et coordonnée factorielle de 0,72). S'en suit, la variable `Lden` qui joue un rôle beaucoup moins important (contribution de 24,80&nbsp;% et coordonnée factorielle de 0,51).
+- Le *pourcentage de personnes âgées* (`Pct_65`) contribue principalement à la formation de l'axe&nbsp;3 avec lequel il est corrélé positivement (contribution de 49,26&nbsp;% et coordonnée factorielle de 0,72). S'en suit la variable `Lden`, qui joue un rôle beaucoup moins important (contribution de 24,80&nbsp;% et coordonnée factorielle de 0,51).
 
 ::: {.bloc_astuce data-latex=""}
 **Lien entre la valeur propre d'un axe et le nombre de variables contribuant à sa formation**
 
-Vous auvez compris que plus la valeur propre d'un axe est forte, plus il y a potentiellement de variables qui concourent à sa formation. Cela explique que pour la troisième composante qui a une faible valeur propre (1,042), seule une variable contribue significativement à sa formation. 
+Vous auvez compris que plus la valeur propre d'un axe est forte, plus il y a potentiellement de variables qui concourent à sa formation. Cela explique que pour la troisième composante, qui a une faible valeur propre (1,042), seule une variable contribue significativement à sa formation. 
 :::
 
 **Analyse de la qualité de représentation des variables sur les premiers axes de l'ACP**
 
-À titre de rappel, la qualité est simplement la somme des cosinus carrés d’une variable sur les axes retenus. Si nous retenons trois axes, les six variables qui sont le mieux résumées –&nbsp;et qui ont donc le plus d'influence sur les résultats de l'ACP&nbsp;– sont &nbsp;:`NO2` (0,92), `PM25` (0,87), `NivVieMed` (0,79), `Pct_Img` (0,78), `Pct_brevet` (0,77) et`Lden` (0,75).
+À titre de rappel, la qualité est simplement la somme des cosinus carrés d’une variable sur les axes retenus. Si nous retenons trois axes, les six variables qui sont le mieux résumées –&nbsp;et qui ont donc le plus d'influence sur les résultats de l'ACP&nbsp;– sont &nbsp;: `NO2` (0,92), `PM25` (0,87), `NivVieMed` (0,79), `Pct_Img` (0,78), `Pct_brevet` (0,77) et `Lden` (0,75).
 
 **Qualification, dénomination d'axes factoriels**
 
-L'analyse des coordonnées, contributions et cosinus carrés doit vous permettre de formuler un intitulé pour chacun des axes retenus. Nous vous proposons les intitulés suivants&nbsp;: 
+L'analyse des coordonnées, des contributions et des cosinus carrés doit vous permettre de formuler un intitulé pour chacun des axes retenus. Nous vous proposons les intitulés suivants&nbsp;: 
 
 - *Niveau de défavorisation socioéconomique* (axe&nbsp;1). Plus la valeur de l'axe est élevé, plus le niveau de défavorisation de l'entité spatiale (IRIS) est élevé.
 - *Qualité environnementale* (axe&nbsp;2). Plus la valeur de l'axe est forte, plus les niveaux de pollution atmosphérique (dioxyde d'azote et particules fines) et de bruit (Lden) sont élevés.
 
 **Recours à des graphiques pour analyser les résultats de l'ACP pour des variables**
 
-Plus le nombre de variables utilisées pour calculer l'ACP est important, plus l'analyse des coordonnées factorielles, des cosinus carrés et des contributions reportés dans un tableau devient fastidieuse. Puisque l’ACP a été calculée sur dix variables, l’analyse des valeurs du tableau&nbsp;\@ref(tab:dataacpCoordVars) a donc été assez facile et rapide. Imaginez maintenant que nous réalisons une ACP sur une centaine de variables, la taille du tableau des résultats pour les variables sera considérable... Par conséquent, il est recommandé de construire plusieurs graphiques qui facilitent l’analyse des résultats pour les variables. 
+Plus le nombre de variables utilisées pour calculer l'ACP est important, plus l'analyse des coordonnées factorielles, des cosinus carrés et des contributions reportés dans un tableau devient fastidieuse. Puisque l’ACP a été calculée sur dix variables, l’analyse des valeurs du tableau&nbsp;\@ref(tab:dataacpCoordVars) a été assez facile et rapide. Imaginez maintenant que nous réalisons une ACP sur une centaine de variables, la taille du tableau des résultats pour les variables sera considérable... Par conséquent, il est recommandé de construire plusieurs graphiques qui facilitent l’analyse des résultats pour les variables. 
 
 Par exemple, à la figure&nbsp;\@ref(fig:acpgraphvarscoords), nous avons construit des graphiques avec les coordonnées factorielles sur les trois premiers axes de l’ACP. En un coup d’œil, il est facile de repérer les variables les plus corrélées positivement ou négativement avec chacun d’entre eux.
 Aussi, il est fréquent de construire un nuage de points avec les coordonnées des variables sur les deux premiers axes factoriels, soit un graphique communément appelé **nuage de points des variables sur le premier plan factoriel** sur lequel est représenté le cercle des corrélations (figure&nbsp;\@ref(fig:acp1erplanfactVars)). Bien entendu, cet exercice peut être fait avec d’autres axes factoriels (les axes 3 et 4 par exemple).
@@ -591,11 +586,11 @@ tmap_arrange(Carte1, Carte2)
 
 ::: {.bloc_aller_loin data-latex=""}
 
-Nous n'avons pas abordé plusieurs autres éléments intéressants de l'ACP.
+Nous abordons ici plusieurs autres éléments intéressants de l'ACP.
 
 **Ajout de variables ou d'individus supplémentaires** 
 
-Premièrement, il est possible d'ajouter des variables continues ou des individus supplémentaires qui n'ont pas été pris en compte dans le calcul de l'ACP (figure&nbsp;\@ref(fig:acpvarindcorrsuppl)). Concernant les variables continues supplémentaires, il s'agit simplement de calculer leurs corrélations avec les axes retenus de l'ACP. Concernant les individus, il s'agit de les projeter sur les axes factoriels. Pour plus d'informations sur le sujet, consultez les excellents ouvrages de Ludovic Lebart, Alain Morineau et Marie Piron [-@lebart1995statistique, p.42-45] ou encore Jérôme Pagès [-@pages2013analyse, p.22-24].
+Premièrement, il est possible d'ajouter des variables continues ou des individus supplémentaires qui n'ont pas été pris en compte dans le calcul de l'ACP (figure&nbsp;\@ref(fig:acpvarindcorrsuppl)). Concernant les variables continues supplémentaires, il s'agit simplement de calculer leurs corrélations avec les axes retenus de l'ACP. Concernant les individus, il s'agit de les projeter sur les axes factoriels. Pour plus d'informations sur le sujet, consultez les excellents ouvrages de Ludovic Lebart, Alain Morineau et Marie Piron [-@lebart1995statistique, p.42-45] ou encore de Jérôme Pagès [-@pages2013analyse, p.22-24].
 
 ```{r acpvarindcorrsuppl, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Variables et individus supplémentaires pour l'ACP",  out.width='28%', fig.pos = "H", out.extra = ""}
 knitr::include_graphics('images/analysesfactorielles/AcpIndVarSuppl.png', dpi = NA)
@@ -603,15 +598,15 @@ knitr::include_graphics('images/analysesfactorielles/AcpIndVarSuppl.png', dpi = 
 
 **Pondération des individus et des variables**
 
-Deuxièmement, il est possible de pondérer à la fois les individus et plus rarement les variables lors du calcul de l'ACP.
+Deuxièmement, il est possible de pondérer à la fois les individus et, plus rarement, les variables lors du calcul de l'ACP.
 
 **Analyse en composantes principales non paramétrique**
 
-Troisièmement, il est possible de calculer une ACP sur des variables préalablement transformées en rangs (section \@ref(sect02552)). Cela peut être justifié lorsque les variables sont très anormalement distribuées en raison de valeurs extrêmes. Les coordonnées factorielles pour les variables sont alors le coefficient de Spearman (section \@ref(sect0433)) et non de Pearson. Aussi, les variables sont centrées non pas sur leurs moyennes respectives, mais sur leurs médianes. Pour plus d'informations sur cette approche, consultez de nouveau Lebart et al. [-@lebart1995statistique, p.51-52].
+Troisièmement, il est possible de calculer une ACP sur des variables préalablement transformées en rang (section \@ref(sect02552)). Cela peut être justifié lorsque les variables sont très anormalement distribuées en raison de valeurs extrêmes. Les coordonnées factorielles pour les variables sont alors le coefficient de Spearman (section \@ref(sect0433)) et non de Pearson. Aussi, les variables sont centrées non pas sur leurs moyennes respectives, mais sur leurs médianes. Pour plus d'informations sur cette approche, consultez de nouveau Lebart et al. [-@lebart1995statistique, p.51-52].
 
 **Analyse en composantes principales robuste**
 
-D'autres méthodes plus avancées qu'une ACP non paramétrique peuvent être utilisées afin d'obtenir des composantes principales qui ne sont pas influencées par des valeurs extrêmes&nbsp;: les ACP robustes [@rivest1988analyse; @hubert2005robpca] qui peuvent être mises en œuvre, entre autres, avec le *package* `roscpca`.
+Finalement, d'autres méthodes plus avancées qu'une ACP non paramétrique peuvent être utilisées afin d'obtenir des composantes principales qui ne sont pas influencées par des valeurs extrêmes&nbsp;: les ACP robustes [@rivest1988analyse; @hubert2005robpca] qui peuvent être mises en œuvre, entre autres avec le *package* `roscpca`.
 :::
 
 
@@ -631,9 +626,9 @@ Data <- LyonIris@data[c("CODE_IRIS","Lden","NO2","PM25","VegHautPrt",
 
 Pour calculer l'ACP, il suffit d'utiliser la fonction `PCA` de `FactoMineR`, puis la fonction `summary(MonACP)` qui renvoie les résultats de l'ACP pour&nbsp;: 
 
-- Les valeurs propres (section `Eigenvalues`) pour les composantes principales (`Dim.1` à `Dim.n`) avec leur variance expliquée brute (`Variance`), en pourcentage (`% of var.`) et en pourcentage cumulé (`Cumulative % of var.`).
+- Les valeurs propres (section `Eigenvalues`) pour les composantes principales (`Dim.1` à `Dim.n`) avec leur variance expliquée brute (`Variance`) en pourcentage (`% of var.`) et en pourcentage cumulé (`Cumulative % of var.`).
 - Les dix premières observations (section `Individuals`) avec les coordonnées factorielles (`Dim.1` à `Dim.n`), les contributions (`ctr`) et les cosinus carrés (`cos2`). Pour accéder aux résultats pour toutes les observations, utilisez les fonctions `res.acp$ind` ou encore `res.acp$ind$coord` (uniquement les coordonnées factorielles), `res.acp$ind$contrib` (uniquement les contributions) et `res.acp$ind$cos2` (uniquement les cosinus carrés).
-- Les variables (section `Variables`) avec les coordonnées factorielles (D`im.1` à `Dim.n`), les contributions (`ctr`) et les cosinus carrés (`cos2`).
+- Les variables (section `Variables`) avec les coordonnées factorielles (`Dim.1` à `Dim.n`), les contributions (`ctr`) et les cosinus carrés (`cos2`).
 
 ```{r echo=TRUE}
 library(FactoMineR)
@@ -664,12 +659,12 @@ plot(res.acp, graph.type = "classic", choix="ind", axes = 1:2,
 
 
 ::: {.bloc_aller_loin data-latex=""}
-Nous avons vu dans un encadré ci-dessus qu'il est possible d'ajouter des variables et des individus supplémentaires dans une ACP, ce que permet la fonction `PCA` de `FactoMineR` avec les paramètres `ind.sup` et `quanti.sup`. Aussi, pour ajouter des pondérations aux individus ou aux variables, utilisez les paramètres `row.w` et `col.w`. Pour plus d'informations sur ces paramètres, consulter l'aide de la fonction en tapant `?PCA` dans la console de Rstudio.
+Nous avons vu, dans un encadré ci-dessus, qu'il est possible d'ajouter des variables et des individus supplémentaires dans une ACP, ce que permet la fonction `PCA` de `FactoMineR` avec les paramètres `ind.sup` et `quanti.sup`. Aussi, pour ajouter des pondérations aux individus ou aux variables, utilisez les paramètres `row.w` et `col.w`. Pour plus d'informations sur ces paramètres, consulter l'aide de la fonction en tapant `?PCA` dans la console de RStudio.
 :::
 
 #### Exploration graphique des résultats de l'ACP avec `factoextra` {#sect12232}
 
-Visuellement, vous avez pu constater que les graphiques ci-dessus (pour les valeurs propres et pour le premier plan factoriel pour les variables et les individus) réalisés avec les fonctions de base `barplot` et `plot` sont peu attrayants. Avec le *package* `factoextra`, quelques lignes de code suffissent pour construire des graphiques bien plus esthétiques. 
+Visuellement, vous avez pu constater que les graphiques ci-dessus (pour les valeurs propres et pour le premier plan factoriel pour les variables et les individus), réalisés avec les fonctions de base `barplot` et `plot`, sont peu attrayants. Avec le *package* `factoextra`, quelques lignes de code suffissent pour construire des graphiques bien plus esthétiques. 
 
 Premièrement, la syntaxe ci-dessous renvoie deux graphiques pour analyser les résultats des valeurs propres (figure&nbsp;\@ref(fig:factoextra1)).
 
@@ -846,7 +841,7 @@ plotVP3 <- ggplot(dfACPvp, aes(x=VP_cumupct, y=Composante,fill=VP<1, group=1))+
 Deuxièmement, la syntaxe ci-dessous permet de&nbsp;: 
 
 - Construire un *DataFrame* avec les résultats des variables.
-- Construire des histogrammes avec les coordonnées des variables sur les axes factoriels (figure&nbsp;\@ref(fig:acpmesgraphs2)). Notez que les coordonnées négatives sont indiquées avec des barres bleues et celles positives avec des barres de couleur saumon.
+- Construire des histogrammes avec les coordonnées des variables sur les axes factoriels (figure&nbsp;\@ref(fig:acpmesgraphs2)). Notez que les coordonnées négatives sont indiquées avec des barres bleues et celles positives, avec des barres de couleur saumon.
 - Un graphique avec les contributions des variables sur les axes retenus (figure&nbsp;\@ref(fig:acpmesgraphs3)).
 - Un graphique avec les cosinus carrés des variables sur les axes retenus (figure&nbsp;\@ref(fig:acpmesgraphs4)). 
 - Un histogramme avec la qualité des variables sur les axes retenus (figure&nbsp;\@ref(fig:acpmesgraphs5)), soit la sommation de leurs cosinus carrés sur les axes retenus.
@@ -996,7 +991,7 @@ ggplot(dfACPVars)+
                          " composantes : ", sum(vppct), "%"))
 ```
 
-Troisièmement, lorsque les observations sont des unités spatiales, il convient de cartographier les coordonnées factorielles des individus. Dans le jeu de données utilisé, les observations sont des polygones délimitant les îlots regroupés pour l'information statistique (IRIS) pour l'agglomération de Lyon (France). Nous utilisons les *packages* `tmap` et `RColorBrewer` pour réaliser des cartes choroplèthes avec les coordonnées deux premières composantes (figure&nbsp;\@ref(fig:acpmesgraphs6)).
+Troisièmement, lorsque les observations sont des unités spatiales, il convient de cartographier les coordonnées factorielles des individus. Dans le jeu de données utilisé, les observations sont des polygones délimitant les îlots regroupés pour l'information statistique (IRIS) pour l'agglomération de Lyon (France). Nous utilisons les *packages* `tmap` et `RColorBrewer` pour réaliser des cartes choroplèthes avec les coordonnées des deux premières composantes (figure&nbsp;\@ref(fig:acpmesgraphs6)).
 
 
 ```{r acpmesgraphs6, echo=TRUE, fig.align='center', fig.cap="Cartographie des coordonnées factorielles des individus", auto_pdf=TRUE, dev="png", dpi=300, out.width='75%'}
@@ -1030,7 +1025,7 @@ tmap_arrange(Carte1, Carte2)
 ::: {.bloc_aller_loin data-latex=""}
 **Exploration interactive des résultats d'une ACP avec le _package_ `explor`**. 
 
-Vous avez compris qu'il ne suffit pas de calculer une ACP, il faut retenir les *n* premiers axes de l'ACP qui nous semblent les plus pertinents, puis les interpréter à la lecture des coordonnées factorielles, les cosinus carrés et les contributions des variables et des individus sur les axes. Il faut donc bien explorer les résultats à l’aide de tableaux et de graphiques! Cela explique que nous avons mobilisé de nombreux graphiques dans les deux sections précédentes (\@ref(sect12232) et \@ref(sect12233)). 
+Vous avez compris qu'il ne suffit pas de calculer une ACP, il faut retenir les *n* premiers axes de l'ACP qui nous semblent les plus pertinents, puis les interpréter à la lecture des coordonnées factorielles, des cosinus carrés et des contributions des variables et des individus sur les axes. Il faut donc bien explorer les résultats à l’aide de tableaux et de graphiques! Cela explique que nous avons mobilisé de nombreux graphiques dans les deux sections précédentes (\@ref(sect12232) et \@ref(sect12233)). 
 L’exploration des données d’une ACP peut aussi être réalisée avec des graphiques interactifs. Or, un superbe *package* dénommé `explor` (https://juba.github.io/explor/), reposant sur `Shiny` (https://shiny.rstudio.com/), permet d’explorer de manière interactive les résultats de plusieurs méthodes factorielles calculés avec `FactorMinerR`. Pour cela, il vous suffit de lancer les deux lignes de code suivantes&nbsp;:
 
 `library(explor)`
@@ -1046,7 +1041,7 @@ Finalement, `explor` permet également d'explorer les résultats d'une analyse d
 Pour bien comprendre l'AFC, il est essentiel de bien maîtriser les notions de tableau de contingence (marges du tableau, fréquences observées et théoriques, pourcentages en ligne et en colonne, contributions au khi-deux) et de distance du khi-deux. Si ce n'est pas le cas, il est conseillé de (re)lire le chapitre \@ref(chap05). 
 :::
 
-Dans le chapitre \@ref(chap05), nous avons vu comment construire un tableau de contingence (figure&nbsp;\@ref(fig:AnalysesFactoriellesTabAFCFig)) à partir deux variables qualitatives comprenant plusieurs modalités, puis comment vérifier s’il y a dépendance entre les deux variables qualitatives avec le test du khi-deux. Or, s’il y a bien dépendance, il est peut-être judicieux de résumer l’information que contient le tableau de contingence en quelques nouvelles variables synthétiques, objectif auquel répond l’analyse factorielle des correspondances (AFC).
+Dans le chapitre \@ref(chap05), nous avons vu comment construire un tableau de contingence (figure&nbsp;\@ref(fig:AnalysesFactoriellesTabAFCFig)) à partir de deux variables qualitatives comprenant plusieurs modalités, puis comment vérifier s’il y a dépendance entre les deux variables qualitatives avec le test du khi-deux. Or, s’il y a bien dépendance, il est peut-être judicieux de résumer l’information que contient le tableau de contingence en quelques nouvelles variables synthétiques, objectif auquel répond l’analyse factorielle des correspondances (AFC).
 
 ```{r AnalysesFactoriellesTabAFCFig, fig.align='center', echo=FALSE, auto_pdf = TRUE, fig.cap="Tableau de contingence pour une AFC", out.width='70%'}
 knitr::include_graphics('images/analysesfactorielles/AnalysesFactoriellesTabAFC.png', dpi = NA)
@@ -1054,7 +1049,7 @@ knitr::include_graphics('images/analysesfactorielles/AnalysesFactoriellesTabAFC.
 
 À titre de rappel (section \@ref(sect1212)), l’AFC a été développée par le statisticien français Jean-Paul Benzécri [-@benzecri1973analyse]. Cela explique qu’elle est souvent enseignée et utilisée en sciences sociales dans les universités francophones, mais plus rarement dans les universités anglophones. Pourtant, les applications de l’AFC sont nombreuses dans différentes disciplines des sciences sociales comme illustrées avec les exemples suivants&nbsp;:
 
--	En géographie, les modalités de la première variable du tableau de contingence sont souvent des entités spatiales (par exemple, régions, municipalités, quartiers, etc.) croisées avec les modalités d'une autre variable qualitative (catégories socioprofessionnelles, modes de transport, tranches de revenu des ménages ou des individus, etc.).
+-	En géographie, les modalités de la première variable du tableau de contingence sont souvent des entités spatiales (régions, municipalités, quartiers, etc.) croisées avec les modalités d'une autre variable qualitative (catégories socioprofessionnelles, modes de transport, tranches de revenu des ménages ou des individus, etc.).
 - En économie régionale, nous pourrions vouloir explorer un tableau de contingence croisant des entités spatiales (par exemple, MRC au Québec, départements en France) et les effectifs d'emplois pour différents secteurs d’activité.
 - En sciences politiques, le recours à l’AFC peut être intéressant pour explorer les résultats d’une élection. Les deux variables qualitatives pourraient être les *circonscriptions électorales* et les *partis politiques*. Le croisement des lignes et des colonnes du tableau de contingence représenterait le nombre de votes obtenus par un parti politique *j* dans la circonscription électorale *i*. Appliquer une AFC sur un tel tableau de contingence permettrait de révéler les ressemblances entre les différents partis politiques et celles entre les circonscriptions électorales. 
 
@@ -1063,9 +1058,9 @@ knitr::include_graphics('images/analysesfactorielles/AnalysesFactoriellesTabAFC.
 
 **Application d'une ACP sur un tableau de contingence transformé en un tableau avec les pourcentages en ligne&nbsp;: un bien mauvais calcul...**
 
-Il pourrait être tentant de transformer le tableau de contingence initial (tableau&nbsp;\@ref(tab:encadreAFCACP1)) en un tableau avec les pourcentages en lignes (tableau&nbsp;\@ref(tab:encadreAFCACP2)) afin de lui appliquer une analyse en composantes principales. Une telle démarche a deux inconvénients majeurs&nbsp;: chacune des modalités de la première variable qualitative (*I*) aurait alors le même poids; chacune des modalités de la deuxième variable (*J*) aurait aussi le même poids. Or, à la lecture des marges en ligne et en colonne au tableau&nbsp;\@ref(tab:encadreAFCACP1), il est clair que la modalité `j1` et `i1` comprennent plus bien d'individus que les autres modalités respectives.
+Il pourrait être tentant de transformer le tableau de contingence initial (tableau&nbsp;\@ref(tab:encadreAFCACP1)) en un tableau avec les pourcentages en ligne (tableau&nbsp;\@ref(tab:encadreAFCACP2)) afin de lui appliquer une analyse en composantes principales. Une telle démarche a deux inconvénients majeurs&nbsp;: chacune des modalités de la première variable qualitative (*I*) aurait alors le même poids; chacune des modalités de la deuxième variable (*J*) aurait aussi le même poids. Or, à la lecture des marges en ligne et en colonne au tableau&nbsp;\@ref(tab:encadreAFCACP1), il est clair que les modalités `j1` et `i1` comprennent bien plus d'individus que les autres modalités respectives.
 
-Si nous reprenons le dernier exemple applicatif, cela signifierait que le même poids sera accordé à chaque parti puisque les variables sont centrées réduites en ACP (moyenne&nbsp;=&nbsp;0 et variance&nbsp;=&nbsp;1). Autrement dit, les grands partis traditionnels seraient ainsi sur le pied d’égalité que les autres partis. Aussi, chaque circonscription électorale aurait le même poids bien que certaines comprennent bien plus d’électeurs et d’électrices que d’autres.
+Si nous reprenons le dernier exemple applicatif, cela signifierait que le même poids est accordé à chaque parti puisque les variables sont centrées réduites en ACP (moyenne&nbsp;=&nbsp;0 et variance&nbsp;=&nbsp;1). Autrement dit, les grands partis traditionnels seraient ainsi sur le pied d’égalité que les autres partis. Aussi, chaque circonscription électorale aurait le même poids bien que certaines comprennent bien plus d’électeurs et d’électrices que d’autres.
 
 ```{r encadreAFCACP1, echo=FALSE, message=FALSE, warning=FALSE}
 dataAFCex <- data.frame(Véhicule = c(357060, 427530, 147500, 128520),
@@ -1111,7 +1106,7 @@ show_table(dataafex2,
 
 ### Recherche d'une simplification basée sur la distance du khi-deux {#sect1231}
 
-Sur le plan mathématique et des objectifs visés, l'AFC est similaire à l'ACP puisqu'elle permet d'explorer un tableau de trois façons&nbsp;: 1) en montrant les ressemblances entre un ensemble d'individus (*I*), 2) en révélant les liaisons entre les variables (*J*) et 3) en résumant le tout avec des variables synthétiques. Toutefois avec l'AFC, les ensembles *I* et *J* sont les modalités de deux variables qualitatives (dont le croisement forme un tableau de contingence) et elle est basée sur la distance du khi-deux (et non sur la distance euclidienne comme en ACP).
+Sur le plan mathématique et des objectifs visés, l'AFC est similaire à l'ACP puisqu'elle permet d'explorer un tableau de trois façons&nbsp;: 1) en montrant les ressemblances entre un ensemble d'individus (*I*), 2) en révélant les liaisons entre les variables (*J*) et 3) en résumant le tout avec des variables synthétiques. Toutefois, avec l'AFC, les ensembles *I* et *J* sont les modalités de deux variables qualitatives (dont le croisement forme un tableau de contingence) et elle est basée sur la distance du khi-deux (et non sur la distance euclidienne comme en ACP).
 
 Ainsi, avec la distance du khi-deux, la proximité (ressemblance) entre deux lignes (*i* et *l*) et deux colonnes (*j* et *k*) est mesurée comme suit&nbsp;:
 
@@ -1129,11 +1124,9 @@ d_{\chi_{jk}^2} = \sum_i \frac{1}{f_{i.}}(\frac{f_{ij}}{f_{.j}}-\frac{f_{ik}}{f_
 \end{equation}
 \normalsize
 
-Prenons un exemple fictif pour calculer ces deux distances. Le tableau \@ref(tab:afcdataex1) comprend trois modalités en ligne (*I*) et trois autres en colonnes (*J*). Le total des effectifs de ce tableau de contingence est égal à 1&nbsp;665.
+Prenons un exemple fictif pour calculer ces deux distances. Le tableau \@ref(tab:afcdataex1) comprend trois modalités en ligne (*I*) et trois autres en colonne (*J*). Le total des effectifs de ce tableau de contingence est égal à 1&nbsp;665.
 
 À partir des données brutes, il est facile de construire deux tableaux&nbsp;: le profil des lignes et le profil des colonnes (tableau \@ref(tab:afcProfilsLignesCols)), c'est-à-dire les proportions en ligne et en colonne.
-
-\newpage
 
 ```{r afcdataex1, echo=FALSE, message=FALSE, warning=FALSE}
 # Fréquences brutes
@@ -1266,7 +1259,7 @@ show_table(Matrices,
            )
 ```
 
-Finalement, l'approche pour déterminer les axes factoriels de l'AFC est similaire à celle de l'ACP&nbsp;: les axes factoriels sont les droites orthogonales qui minimisent les distances aux points du profil des lignes, excepté que la métrique pour mesurer ces distances est celle du khi-deux (et non celle la distance euclidienne comme ACP). Pour plus détail sur le calcul de ces axes (notamment les formulations matricielles), consultez notamment Benzécri [-@benzecri1973analyse], Escofier et Pagès [-@escofier1998analyses] et Lebart et al. [-@lebart1995statistique].
+Finalement, l'approche pour déterminer les axes factoriels de l'AFC est similaire à celle de l'ACP&nbsp;: les axes factoriels sont les droites orthogonales qui minimisent les distances aux points du profil des lignes, excepté que la métrique pour mesurer ces distances est celle du khi-deux (et non celle la distance euclidienne comme pour l'ACP). Pour plus détails sur le calcul de ces axes (notamment les formulations matricielles), consultez notamment Benzécri [-@benzecri1973analyse], Escofier et Pagès [-@escofier1998analyses] et Lebart et al. [-@lebart1995statistique].
 
 
 ### Aides à l'interprétation {#sect1232}
@@ -1321,7 +1314,7 @@ tmap_arrange(Carte1, Carte2, Carte3, Carte4, Carte5, Carte6, ncol = 2, nrow = 3)
 
 #### Résultats de l'AFC pour les valeurs propres {#sect12321}
 
-Avant de calculer l'AFC, il convient de vérifier s'il y a bien dépendance entre les modalités des deux variables qualitatives. En effet, si les deux variables sont indépendantes, il n'est pas nécessaire de résumer le tableau de contingence avec une AFC. Pour ce faire, nous utilisons le test du khi-deux largement décrit à la section \@ref(sect052). Les résultats de ce test signalent qu’il existe des associations entre les modalités des deux variables ($\chi$&nbsp;=&nbsp;203&nbsp;971, p&nbsp;<&nbsp;0,001, tableau \@ref(tab:dataafckhi2)). Nous pouvons donc appliquer une AFC sur ce tableau de contingence.
+Avant de calculer l'AFC, il convient de vérifier s'il y a bien une dépendance entre les modalités des deux variables qualitatives. En effet, si les deux variables sont indépendantes, il n'est pas nécessaire de résumer le tableau de contingence avec une AFC. Pour ce faire, nous utilisons le test du khi-deux largement décrit à la section \@ref(sect052). Les résultats de ce test signalent qu’il existe des associations entre les modalités des deux variables ($\chi$&nbsp;=&nbsp;203&nbsp;971, *p*&nbsp;<&nbsp;0,001, tableau \@ref(tab:dataafckhi2)). Nous pouvons donc appliquer une AFC sur ce tableau de contingence.
 
 ```{r dataafckhi2, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 load("data/analysesfactorielles/DonneesAFC.Rdata")
@@ -1362,7 +1355,6 @@ Nous avons vu qu'en ACP normée (section \@ref(sect12221)), la somme des valeurs
 $$\mbox{0,156}+\mbox{0,046}+\mbox{0,031}+\mbox{0,004}+\mbox{0,004} = \mbox{0,24}$$
 
 $$\phi^2 = \chi^2 / n_{ij}=\mbox{203 971}/ \mbox{849 795} = \mbox{0,24}$$
-
 ```{r dataafcValeurPropres, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 library(FactoMineR)
 # Calcul de l'AFC
@@ -1385,9 +1377,9 @@ show_table(dfAFCvp,
 
 **Combien d'axes d'une AFC faut-il retenir?**
 
-- **Approche statistique**. Mike Bendixen [-@bendixen1995compositional], cité dans l'excellent site [STHDA](http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/#valeurs-propres-variances){target='_blank'}, propose deux critères pour sélectionner les premiers axes d'une AFC&nbsp;: $c_1= 1 / (l-1) \times 100$ et $c_2= 1 / (c-1) \times 100$ avec *l* et *c* étant respectivement les nombres de modalités en ligne et en colonne. Autrement dit, lorsque les données sont distribuées aléatoirement, la valeur propre en pourcentage devrait être égale à $c_1$ et celle de l'axe factoriel moyen à $c_2$. Par conséquent, nous pourrions retenir uniquement les axes dont les valeurs propres en pourcentage excèdent&nbsp;: $c_1 = \mbox{1}/(\mbox{521}-\mbox{1})\times \mbox{100}=\mbox{0,19 }%$ et $c_2=\mbox{1}/(\mbox{6}-\mbox{1})\times \mbox{100}=\mbox{20 }%$. En appliquant ces deux critères, seul le premier axe factoriel qui résume 65,6&nbsp;% mériterait d'être retenu.
+- **Approche statistique**. Mike Bendixen [-@bendixen1995compositional], cité dans l'excellent site [STHDA](http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/74-afc-analyse-factorielle-des-correspondances-avec-r-l-essentiel/#valeurs-propres-variances){target='_blank'}, propose deux critères pour sélectionner les premiers axes d'une AFC&nbsp;: $c_1= 1 / (l-1) \times 100$ et $c_2= 1 / (c-1) \times 100$ avec *l* et *c* étant respectivement les nombres de modalités en ligne et en colonne. Autrement dit, lorsque les données sont distribuées aléatoirement, la valeur propre en pourcentage devrait être égale à $c_1$ et celle de l'axe factoriel moyen à $c_2$. Par conséquent, nous pourrions retenir uniquement les axes dont les valeurs propres en pourcentage excèdent&nbsp;: $c_1 = \mbox{1}/(\mbox{521}-\mbox{1})\times \mbox{100}=\mbox{0,19 }%$ et $c_2=\mbox{1}/(\mbox{6}-\mbox{1})\times \mbox{100}=\mbox{20 }%$. En appliquant ces deux critères, seul le premier axe factoriel qui résume 65,6&nbsp;% mérite d'être retenu.
 
-- **Approche empirique** basée sur la lecture des pourcentages et des pourcentages cumulés. Nous retenons uniquement les deux premières composantes qui résument 85&nbsp;% de la variance totale. Pour faciliter le choix du nombre d'axes avec cette approche empirique, il est fortement conseillé de construire un histogramme à partir des valeurs propres, soit brutes, soit en pourcentages, soit en pourcentages cumulés (figure&nbsp;\@ref(fig:afcGraphVP)).
+- **Approche empirique** basée sur la lecture des pourcentages et des pourcentages cumulés. Nous retenons uniquement les deux premières composantes qui résument 85&nbsp;% de la variance totale. Pour faciliter le choix du nombre d'axes avec cette approche empirique, il est fortement conseillé de construire un histogramme à partir des valeurs propres, soit brutes, soit en pourcentage, soit en pourcentage cumulé (figure&nbsp;\@ref(fig:afcGraphVP)).
 
 ```{r afcGraphVP, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap="Histogramme des valeurs propres de l'AFC", auto_pdf=TRUE, dev="png", dpi=300, out.width='80%'}
 library(factoextra)
@@ -1411,7 +1403,7 @@ Comme pour l'ACP, nous retrouvons les trois mêmes mesures pour les variables et
 Comme en ACP, l'analyse des trois mesures (coordonnées, contributions et cosinus carrés) pour les variables et les individus doit vous permettre de comprendre la signification des axes factoriels retenus de l'AFC. Cette étape d'interprétation est essentielle afin de qualifier les variables latentes (axes factoriels, variables synthétiques) produites par l'AFC.
 :::
 
-- **Les coordonnées factorielles** sont simplement les projections des points-lignes et de points-colonnes sur les axes de l'AFC. Tant pour les lignes que pour les colonnes, ces coordonnées bénéficient de deux propriétés intéressantes. Premièrement pour chaque axe factoriel *k*, la somme du produit des marges des variables ($f.j$, colonnes) ou des individus ($fi.$, lignes) avec leurs coordonnées respectives ($C^k_j$ et $C^k_i$) est égale à 0 (équation&nbsp;\@ref(eq:CoordPropr1)). Deuxièmement, pour chaque axe factoriel *k*, la somme des produits entre les marges (en ligne et en colonne) et les coordonnées au carré (en ligne et en colonne) est égale à la valeur propre de l'axe (équation&nbsp;\@ref(eq:CoordPropr2)).
+- **Les coordonnées factorielles** sont simplement les projections des points-lignes et des points-colonnes sur les axes de l'AFC. Tant pour les lignes que pour les colonnes, ces coordonnées bénéficient de deux propriétés intéressantes. Premièrement, pour chaque axe factoriel *k*, la somme du produit des marges des variables ($f.j$, colonnes) ou des individus ($fi.$, lignes) avec leurs coordonnées respectives ($C^k_j$ et $C^k_i$) est égale à 0 (équation&nbsp;\@ref(eq:CoordPropr1)). Deuxièmement, pour chaque axe factoriel *k*, la somme des produits entre les marges (en ligne et en colonne) et les coordonnées au carré (en ligne et en colonne) est égale à la valeur propre de l'axe (équation&nbsp;\@ref(eq:CoordPropr2)).
 
 \footnotesize
 \begin{equation}
@@ -1460,7 +1452,7 @@ add_header_above(montableau, c(" " = 2, "Coord." = 2, "f.j x Coord." = 2, "f.j x
 
 
 ::: {.bloc_attention data-latex=""}
-Contrairement à l'ACP, les coordonnées factorielles pour les variables en ACF ne sont pas les coefficients de corrélation de Pearson des variables sur les axes!
+Contrairement à l'ACP, les coordonnées factorielles pour les variables en AFC ne sont pas les coefficients de corrélation de Pearson des variables sur les axes!
 :::
 
 - **Les contributions** des colonnes ou des lignes en AFC permettent des repérer celles qui contribuent le plus à la formation des axes factoriels (de manière analogue à l'ACP). Pour un axe donné, leur sommation est égale à&nbsp;100&nbsp;%. Elles s'obtiennent en multipliant la coordonnée au carré avec la marge et en divisant le tout par la valeur propre de l'axe (équations&nbsp;\@ref(eq:CtrAFCVar) et&nbsp;\@ref(eq:CtrAFCInd)).
@@ -1483,11 +1475,11 @@ Contrairement à l'ACP, les coordonnées factorielles pour les variables en ACF 
 
 **Interprétation des résultats pour les colonnes (variables)**
 
-Analysons maintenant, ces trois statistiques pour les variables pour les deux premiers axes de l'AFC (tableau&nbsp;\@ref(tab:dataafcCoordVars) et figure&nbsp;\@ref(fig:afc1erplanfactVars)).
+Maintenant, analysons ces trois statistiques pour les variables pour les deux premiers axes de l'AFC (tableau&nbsp;\@ref(tab:dataafcCoordVars) et figure&nbsp;\@ref(fig:afc1erplanfactVars)).
 
 Pour l'axe&nbsp;1, résumant 65&nbsp;% de la variance, trois modalités concourent à sa formation&nbsp;: `VehCond` (34,69&nbsp;%), `Apied` (34,25&nbsp;%) et `Velo` (20,13&nbsp;%). À la lecture des coordonnées factorielles sur cet axe, les modes de transport relatifs aux véhicules motorisés (`VehCond`&nbsp;=&nbsp;-0,33 et `VehPass`&nbsp;=&nbsp;-0,25) s'opposent clairement aux modes actifs (`Apied`&nbsp;=&nbsp;0,81 et `Velo`&nbsp;=&nbsp;0,94), constat qu'il est possible de confirmer visuellement avec la figure&nbsp;\@ref(fig:afc1erplanfactVars). La modalité `VehCond` a d'ailleurs la plus forte valeur de Cos^2^ sur cet axe (0,92), ce qui signale, sans l'ombre d'un doute, que l'axe&nbsp;1 est celui qui donne le plus de sens à cette modalité. 
 
-Puisque l'axe&nbsp;2 résume une partie beaucoup plus limitée de la variance du tableau (19,25&nbsp;%), il n'est pas étonnant qu'un nombre plus limité de modalités concourent à sa formation&nbsp;: seules les contributions de la modalité `Apied` (51,68&nbsp;%) et secondairement `VehPass` (38,81&nbsp;%) sont importantes. Leurs coordonnées factorielles s'opposent d'ailleurs sur cet axe (respectivement 0,81 et 0,21).
+Puisque l'axe&nbsp;2 résume une partie beaucoup plus limitée de la variance du tableau (19,25&nbsp;%), il n'est pas étonnant qu'un nombre plus limité de modalités concourent à sa formation&nbsp;: seules les contributions de la modalité `Apied` (51,68&nbsp;%) et secondairement de `VehPass` (38,81&nbsp;%) sont importantes. Leurs coordonnées factorielles s'opposent d'ailleurs sur cet axe (respectivement 0,81 et 0,21).
 
 
 ```{r dataafcCoordVars, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -1530,14 +1522,14 @@ fviz_ca_col(res.afc,
 ::: {.bloc_notes  data-latex=""}
 **Premier plan factoriel pour les variables et les individus**
 
-Lorsque le jeu de données comprend à la fois peu de modalités en lignes et en colonnes, il est judicieux de les représenter simultanément sur le premier plan factoriel (axe&nbsp;1 et&nbsp;2). Pour ce faire, vous pouvez utiliser la fonction `fviz_ca_biplot` du *package* `factoextra`.
+Lorsque le jeu de données comprend à la fois peu de modalités en ligne et en colonne, il est judicieux de les représenter simultanément sur le premier plan factoriel (axes&nbsp;1 et&nbsp;2). Pour ce faire, vous pouvez utiliser la fonction `fviz_ca_biplot` du *package* `factoextra`.
 :::
 
 Étant donné que notre jeu de données comprend 521&nbsp;secteurs de recensement, nous proposons ici de cartographier les coordonnées factorielles des individus pour les deux premiers axes de l'AFC (figure&nbsp;\@ref(fig:afc1erplanfactInds2)). Pour l'axe&nbsp;1, les secteurs de recensement à l'est et l'ouest de l'île de Montréal présentent les coordonnées les plus fortement négatives (en rouge); dans ces zones, l'usage des véhicules motorisés pour des déplacements domicile-travail est certainement surreprésenté, comparativement aux modes actifs. À l'inverse, dans les secteurs de recensement du centre de l'île présentant de fortes valeurs positives (en rouge), le recours aux modes de transports actifs (marche et vélo) est bien plus important, toutes proportions gardées. Quant à la cartographie des coordonnées pour l'axe&nbsp;2, elle permet surtout de repérer quelques secteurs de recensement autour du centre-ville (très fortes valeurs positives en vert foncé) où les déplacements domicile-travail à pied sont plus fréquents, toutes proportions gardées.
 
-En résumé, suite à l'analyse des coordonnées factorielles des variables et des individus, nous pouvons conclure que le premier axe est certainement le plus intéressant puisqu’il permet d'opposer l’usage des modes de transports motorisés versus les modes de transports actifs pour les déplacements domicile-travail sur l'île de Montréal. Cette nouvelle variable synthétique (variable latente) pourrait ainsi être introduite des analyses subséquentes (par exemple, dans un modèle de régression). Cela démontre, qu’au même titre que l’ACP, l’AFC est une méthode de réduction de données puisque nous sommes passés d’un tableau comprenant 512 secteurs de recensement et six modalités à un tableau comprend une seule variable synthétique (axe&nbsp;1).
+En résumé, suite à l'analyse des coordonnées factorielles des variables et des individus, nous pouvons conclure que le premier axe est certainement le plus intéressant puisqu’il permet d'opposer l’usage des modes de transports motorisés versus les modes de transports actifs pour les déplacements domicile-travail sur l'île de Montréal. Cette nouvelle variable synthétique (variable latente) pourrait ainsi être introduite dans des analyses subséquentes (par exemple, dans un modèle de régression). Cela démontre qu’au même titre que l’ACP, l’AFC est une méthode de réduction de données puisque nous sommes passés d’un tableau comprenant 512 secteurs de recensement et six modalités à un tableau comprenant une seule variable synthétique (axe&nbsp;1).
 
-```{r afc1erplanfactInds2, echo=FALSE, fig.align='center', fig.cap="Cartographie de coordonnées factorielles des individus pour l'ACF", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='85%', quietly=TRUE, warn.conflicts=TRUE}
+```{r afc1erplanfactInds2, echo=FALSE, fig.align='center', fig.cap="Cartographie de coordonnées factorielles des individus pour l'AFC", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='85%', quietly=TRUE, warn.conflicts=TRUE}
 library(tmap)
 library(stringr)
 dfAFCInd <- data.frame(Coord = res.afc$row$coord, 
@@ -1584,7 +1576,7 @@ fviz_ca_col(res.afc2,
 
 Plusieurs *packages* permettent de calculer une AFC dans R, notamment `ca` (fonction `ca`), `MASS` (fonction `corresp`), `ade4` (fonction `dudi.coa`) et `FactoMineR` (fonction `CA`). De nouveau, nous utilisons `FactoMineR` couplé au *package* `factoextra` pour réaliser rapidement des graphiques avec les résultats pour les variables et les coordonnées.
 
-Pour calculer l'AFC, il suffit d'utiliser la fonction `CA` de `FactoMineR`, puis la fonction `summary(res.afc)` qui renvoie les résultats de l'AFC pour&nbsp;: 
+Pour calculer l'AFC, il suffit d'utiliser la fonction `CA` de `FactoMineR`, puis la fonction `summary(res.afc)`, qui renvoie les résultats de l'AFC pour&nbsp;: 
 
 - Les valeurs propres (section `Eigenvalues`) pour les axes factoriels (`Dim.1` à `Dim.n`) avec leur variance expliquée brute (`Variance`), en pourcentage (`% of var.`) et en pourcentage cumulé (`Cumulative % of var.`).
 - Les dix premières observations (section `Rows`) avec les coordonnées factorielles (`Dim.1` à `Dim.n`), les contributions (`ctr`) et les cosinus carrés (`cos2`). Pour accéder aux résultats pour toutes les observations, utilisez les fonctions `res.afc$row` ou encore `res.afc$row$coord` (uniquement les coordonnées factorielles), `res.afc$row$contrib` (uniquement les contributions) et `res.afc$row$cos2` (uniquement les cosinus carrés).
@@ -1610,9 +1602,9 @@ if(khideux$p.value <=0.05){
 res.afc <- CA(dfDonneesAFC[,1:6], graph=F)
 # Affichage des résultats de la fonction CA
 print(res.afc)
-# Visualisation des marges en colonnes
+# Visualisation des marges en colonne
 round(res.afc$call$marge.col,4)
-# Visualisation des marges en lignes. Étant donnée que nous avons 521 individus, 
+# Visualisation des marges en ligne. Étant donnée que nous avons 521 individus, 
 # la ligne ci-dessous est en commentaire
 # round(res.afc$call$marge.row,4)
 
@@ -1631,7 +1623,7 @@ library(factoextra)
 library(ggplot2)
 library(ggpubr)
 
-# Nombre de modalités en lignes et en colonnes
+# Nombre de modalités en ligne et en colonne
 ModalitesLig <- nrow(dfDonneesAFC)
 ModalitesCol <- ncol(dfDonneesAFC[,1:6])
 # Critère statistique du profil moyen
@@ -1653,7 +1645,7 @@ G2 <- fviz_screeplot(res.afc, choice="variance", addlabels = TRUE, ylim = c(0, 7
 ggarrange(G1, G2)
 ```
 
-Avec les fonctions `fviz_contrib` et `fviz_cos2`, il est très facile de réaliser des histogrammes pour les contributions et les cosinus carrés pour les variables (colonnes) ou les individus (lignes), et ce avec le paramètre `choice = c("row", "col")` (figure&nbsp;\@ref(fig:acp1erplanfactVars2a)).
+Avec les fonctions `fviz_contrib` et `fviz_cos2`, il est très facile de réaliser des histogrammes pour les contributions et les cosinus carrés pour les variables (colonnes) ou les individus (lignes), et ce, avec le paramètre `choice = c("row", "col")` (figure&nbsp;\@ref(fig:acp1erplanfactVars2a)).
 
 ```{r acp1erplanfactVars2a, echo=TRUE, fig.align='center', fig.cap="Contributions des variables avec factoextra", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='65%', quietly=TRUE, warn.conflicts=TRUE, fig.pos = "H"}
 library(factoextra)
@@ -1703,10 +1695,10 @@ fviz_ca_col(res.afc2,
             ylab=paste0("Axe 2 (", VP2pct, " %)"))
 ``` 
 
-Finalement, la syntaxe ci-dessous permet de cartographier les coordonnées factorielles des individus de l’ACF avec le *package* `tmap` (figure&nbsp;\@ref(fig:afc1erplanfactInds2B)).
+Finalement, la syntaxe ci-dessous permet de cartographier les coordonnées factorielles des individus de l’AFC avec le *package* `tmap` (figure&nbsp;\@ref(fig:afc1erplanfactInds2B)).
  
 
-```{r afc1erplanfactInds2B, echo=TRUE, fig.align='center', fig.cap="Cartographie de coordonnées factorielles des individus pour l'ACF", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='85%', quietly=TRUE, warn.conflicts=TRUE, fig.pos = "H"}
+```{r afc1erplanfactInds2B, echo=TRUE, fig.align='center', fig.cap="Cartographie de coordonnées factorielles des individus pour l'AFC", message=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='85%', quietly=TRUE, warn.conflicts=TRUE, fig.pos = "H"}
 library(tmap)
 library(stringr)
 dfAFCInd <- data.frame(Coord = res.afc$row$coord, 
@@ -1802,7 +1794,7 @@ add_header_above(montableau, c(" " = 1,"Sexe" = 2, "Groupe d'âge" = 4, "Mode de
 ::: {.bloc_astuce data-latex=""}
 **ACM versus AFC**
 
-Nous avons vu que l'AFC permet d'analyser un tableau de contingence avec deux variables qualitatives. En ACM, les colonnes sont alors les différentes modalités des variables qualitatives et les lignes sont les observations (par exemple, les individus ayant répondu à une enquête par sondage). En résumé, l'analyse des correspondances multiples (ACM) est simplement **une analyse des correspondances (AFC) appliquée sur un tableau disjonctif complet**. 
+Nous avons vu que l'AFC permet d'analyser un tableau de contingence avec deux variables qualitatives. En ACM, les colonnes sont les différentes modalités des variables qualitatives et les lignes sont les observations (par exemple, les individus ayant répondu à une enquête par sondage). En résumé, l'analyse des correspondances multiples (ACM) est simplement **une analyse des correspondances (AFC) appliquée sur un tableau disjonctif complet**. 
 
 L'ACM permet ainsi de révéler les ressemblances entre les différentes modalités des variables qualitatives et les ressemblances entre les différents individus. Par conséquent, elle produit également des variables synthétiques (axes factoriels) résumant l'information contenue dans le tableau initial. L'évaluation de ces ressemblances et la détermination des axes factoriels sont aussi basées sur la **distance du khi-deux**.
 
@@ -1813,20 +1805,20 @@ L'ACM permet ainsi de révéler les ressemblances entre les différentes modalit
 
 Puisque l'ACM est une extension de l'AFC, nous retrouvons les mêmes aides à l'interprétation&nbsp;: les valeurs propres pour les axes, les coordonnées factorielles, les contributions et les cosinus carrés pour les variables et les individus. 
 
-Pour présenter l'ACM, nous utilisons des données ouvertes de la Ville de Montréal et plus particulièrement un [sondage auprès de la population de l’île de Montréal sur l'agriculture urbaine](https://www.donneesquebec.ca/recherche/dataset/vmtl-agriculture-urbaine-sondage){target='_blank'}. Pour ce faire, nous avons conservé uniquement les personnes pratiquant l'agriculture urbaine (n&nbsp;=&nbsp;352). Les variables qualitatives extraites pour l'ACM sont reportées au tableau&nbsp;\@ref(tab:dataACM) avec la description des questions, leurs modalités respectives avec les effectifs bruts et en pourcentage. Au final, l'ACM est calculée de la manière suivante&nbsp;:
+Pour présenter l'ACM, nous utilisons des données ouvertes de la Ville de Montréal et, plus particulièrement, celles d'un [sondage auprès de la population de l’île de Montréal sur l'agriculture urbaine](https://www.donneesquebec.ca/recherche/dataset/vmtl-agriculture-urbaine-sondage){target='_blank'}. Pour ce faire, nous avons conservé uniquement les personnes pratiquant l'agriculture urbaine (n&nbsp;=&nbsp;352). Les variables qualitatives extraites pour l'ACM sont reportées au tableau&nbsp;\@ref(tab:dataACM) avec la description des questions, leurs modalités respectives avec les effectifs bruts et en pourcentage. Au final, l'ACM est calculée de la manière suivante&nbsp;:
 
 - Neuf variables qualitatives relatives à la pratique de l'agriculture urbaine sont retenues (`q3`, `q4`, `q5`, `q8`, `q9`, `q10`, `q11`, `q12` et `q13`).
-- Quatre variables relatives au profil socioéconomique des personnes répondantes sont introduites comme variables supplémentaires (`q15`, `q16`, `q17`, `q21`).
+- Quatre variables relatives au profil socioéconomique des personnes répondantes sont introduites comme variables supplémentaires (`q15`, `q16`, `q17` et `q21`).
 - Chaque ligne est pondérée avec la variable `pond`.
 
-L'objectif est de cette ACM double&nbsp;: 
+L'objectif de cette ACM est double&nbsp;: 
 
 1. Montrer les ressemblances entre les différentes modalités relatives à la pratique de l'agriculture urbaine. L'analyse des axes factoriels devrait nous permettre d'identifier différents profils des personnes pratiquant l'agriculture urbaine.
 2. Projeter les modalités des variables socioéconomiques afin de vérifier si elles sont ou non associées aux axes factoriels, c'est-à-dire aux différents profils révélés par les axes.
 
 ::: {.bloc_attention data-latex=""}
 
-L'analyse du sondage sur l'agriculture urbaine réalisée ici est purement exploratoire&nbsp;: elle vise uniquement à démonter que l'ACM est un outil particulièrement intéressant pour analyser les données d'un sondage. Par contre, cette analyse n'a aucune prétention scientifique puisque nous ne sommes pas des spécialistes de l'agriculture urbaine. Dans ce champ de recherche très fertile qu'est l'agriculture urbaine (surement pas la meilleure blague du livre...), vous pourrez consulter plusieurs études montréalaises [@mcclintock2018urban; @audate2021motivations; @bhatt2016cultivating].
+L'analyse du sondage sur l'agriculture urbaine réalisée ici est purement exploratoire&nbsp;: elle vise uniquement à démontrer que l'ACM est un outil particulièrement intéressant pour analyser les données d'un sondage. Par contre, cette analyse n'a aucune prétention scientifique puisque nous ne sommes pas des spécialistes de l'agriculture urbaine. Dans ce champ de recherche très fertile qu'est l'agriculture urbaine (surement pas la meilleure blague du livre...), vous pourrez consulter plusieurs études montréalaises [@mcclintock2018urban; @audate2021motivations; @bhatt2016cultivating].
 
 :::
 
@@ -1875,11 +1867,11 @@ group_rows(montableau,
            index = c(
   "Q3.  Depuis combien de temps cultivez-vous des fruits, des fines herbes ou des légumes?" = nmodalites[1],
   "Q4.  Selon vous, quelle proportion des fruits, des fines herbes et des légumes que vous consommez durant l'été provient de votre propre production?" = nmodalites[2],
-  "Q5.  Utilisez-vous du compost provenant de vos déchets verts ou de vos déchets alimentaires pour faire pousser des fruits, des fines herbes ou des légumes?" = nmodalites[3],
+  "Q5.  Utilisez-vous du compost provenant de vos déchets verts ou alimentaires pour faire pousser des fruits, des fines herbes ou des légumes?" = nmodalites[3],
   "Q8.  Récupérez-vous l'eau de pluie pour irriguer vos cultures de fruits, de fines herbes ou des légumes ou encore votre jardin?" = nmodalites[4],
-  "Q9.  Combien de sortes de fruits, de fines herbes ou des légumes cultivez-vous?" = nmodalites[5],
-  "Q10. Cultivez-vous suffisamment de fruits, de fines herbes ou des légumes pour partager avec d'autres personnes?" = nmodalites[6],
-  "Q11. Échangez-vous vos semis ou vos récoltes de fruits, de fines herbes ou des légumes avec d'autres personnes?" = nmodalites[7],
+  "Q9.  Combien de sortes de fruits, de fines herbes ou de légumes cultivez-vous?" = nmodalites[5],
+  "Q10. Cultivez-vous suffisamment de fruits, de fines herbes ou de légumes pour partager avec d'autres personnes?" = nmodalites[6],
+  "Q11. Échangez-vous vos semis ou vos récoltes de fruits, de fines herbes ou de légumes avec d'autres personnes?" = nmodalites[7],
   "Q12. Selon vous, l'agriculture urbaine contribue-t-elle à améliorer les rapports entre les gens?" = nmodalites[8],
   "Q13. Saviez-vous que la Ville de Montréal encourage et soutient l'agriculture urbaine sur l'île de Montréal?" = nmodalites[9],
   "Q15. À quel groupe d'âge appartenez-vous?" = nmodalites[10],
@@ -1893,7 +1885,7 @@ group_rows(montableau,
 #### Résultats de l'ACM pour les valeurs propres {#sect12411}
 
 Les résultats pour les valeurs propres sont reportés au tableau&nbsp;\@ref(tab:ACMValeursPropresTab) et à la figure&nbsp;\@ref(fig:ACMValeursPropresFig).
-En ACM, l'inertie totale du tableau des variables qualitatives est égale au nombre moyen de modalités par variable moins un, soit $\frac{K}{J}-1$ avec *K* et *J* étant respectivement les nombres de modalités et de variables. Aussi, le nombre d'axes produits par l'ACM est égal à $K - J$. Pour notre tableau, l'inertie est donc égale à $\mbox{25} / \mbox{9} = \mbox{1,77}$ avec $\mbox{25}-\mbox{9} = \mbox{16}$ axes. Le nombre d'axes à retenir est souvent plus difficile à déterminer puisque tel que signalé judicieusement par Jérôme Pagès [-@pages2002analyse, p.53] : «&nbsp;en pratique, comparée à l'ACP, l'ACM conduit, dans l'ensemble à&nbsp;: des pourcentages d'inertie plus petits; une décroissance de ces pourcentages plus douce&nbsp;».
+En ACM, l'inertie totale du tableau des variables qualitatives est égale au nombre moyen de modalités par variable moins un, soit $\frac{K}{J}-1$ avec *K* et *J* étant respectivement les nombres de modalités et de variables. Aussi, le nombre d'axes produits par l'ACM est égal à $K - J$. Pour notre tableau, l'inertie est donc égale à $\mbox{25} / \mbox{9} = \mbox{1,77}$ avec $\mbox{25}-\mbox{9} = \mbox{16}$ axes. Le nombre d'axes à retenir est souvent plus difficile à déterminer puisque, tel que signalé judicieusement par Jérôme Pagès [-@pages2002analyse, p.53] : «&nbsp;en pratique, comparée à l'ACP, l'ACM conduit, dans l'ensemble à&nbsp;: des pourcentages d'inertie plus petits; une décroissance de ces pourcentages plus douce&nbsp;».
 
 L'histogramme des valeurs propres (figure&nbsp;\@ref(fig:ACMValeursPropresFig)) révèle plusieurs sauts importants dans les valeurs propres qui pourraient justifier le choix du nombre d'axes factoriels, soit aux axes&nbsp;1, 2, 3 et&nbsp;6. Pour l'exercice, nous retenons les trois premiers axes qui résument 30&nbsp;% de l'inertie du tableau initial.
 
@@ -1937,7 +1929,7 @@ ggarrange(g2, g3,  nrow = 2)
 
 #### Résultats de l'ACM pour les modalités des variables {#sect12412}
 
-À titre de rappel, comme pour l’ACP et l'AFC, nous retrouvons les trois mêmes mesures pour les variables et les individus (coordonnées factorielles, contributions et cosinus carrés). Plus les variables qualitatives du jeu données comprennent de modalités, plus la taille du tableau des résultats des modalités sera importante et plus il est fastidieux de l'analyser. Il est donc recommandé de construire des histogrammes avec les coordonnées factorielles et les contributions des modalités, mais aussi un nuage de points avec les coordonnées des modalités des variables qualitatives sur le premier voire le deuxième plan factoriel.
+À titre de rappel, comme pour l’ACP et l'AFC, nous retrouvons les trois mêmes mesures pour les variables et les individus (coordonnées factorielles, contributions et cosinus carrés). Plus les variables qualitatives du jeu données comprennent de modalités, plus la taille du tableau des résultats des modalités est importante et plus il est fastidieux de l'analyser. Il est donc recommandé de construire des histogrammes avec les coordonnées factorielles et les contributions des modalités, mais aussi un nuage de points avec les coordonnées des modalités des variables qualitatives sur le premier, voire le deuxième plan factoriel.
 
 ::: {.bloc_objectif data-latex=""}
 **Compréhension des axes factoriels de l'ACM&nbsp;: une étape essentielle, incontournable...**
@@ -1945,7 +1937,7 @@ ggarrange(g2, g3,  nrow = 2)
 Comme en ACP et en AFC, l'analyse des trois mesures (coordonnées, contributions et cosinus carrés) pour les variables et les individus doit vous permettre de comprendre la signification des axes factoriels retenus de l'ACM. Prenez le temps de bien réaliser cette étape d'interprétation souvent plus fastidieuse qu'en ACP et ACM, en raison du nombre élevé de modalités. Cette étape est en effet essentielle afin de qualifier les variables latentes (axes factoriels, variables synthétiques) produites par l'ACM.
 :::
 
-Les résultats pour les variables sont reportés 1) au tableau&nbsp;\@ref(tab:ACMValeursCoordTab), 2) aux figure&nbsp;\@ref(fig:ACMValeursCoordFig1), \@ref(fig:ACMValeursCoordFig2) et \@ref(fig:ACMValeursCoordFig3) pour les coordonnées et les contributions et à la figure&nbsp;\@ref(fig:ACMValeursPlanFacto1) pour le premier plan factoriel.
+Les résultats pour les variables sont reportés 1) au tableau&nbsp;\@ref(tab:ACMValeursCoordTab), 2) aux figures&nbsp;\@ref(fig:ACMValeursCoordFig1), \@ref(fig:ACMValeursCoordFig2) et \@ref(fig:ACMValeursCoordFig3) pour les coordonnées et les contributions et à la figure&nbsp;\@ref(fig:ACMValeursPlanFacto1) pour le premier plan factoriel.
 
 
 **Interprétation des résultats de l'axe&nbsp;1 pour les variables**
@@ -1954,17 +1946,17 @@ Sept modalités concourent le plus à la formation de l'axe&nbsp;1 résumant 13,
 
 * **Coordonnées négatives**&nbsp;:  `Q12. Non` (-0,84), `Q3. Moins de 1 an`  (-0,73), `Q9. Moins de 5 sortes` (-0,67), `Q4. Moins de 10%` (-0,56), `Q10. Non` (-0,521). Cela signifie que lorsque les coordonnées des individus sont fortement négatives sur cet axe, les personnes pratiquant l'agriculture urbaine&nbsp;: 
     + *ne pensent pas que l'agriculture urbaine contribue à améliorer les rapports entre les gens* (`Q12`);
-    + *cultivent des fruits, des fines herbes ou des légumes depuis moins d'un an* (`Q3`);
+    + *cultivent des fruits, des fines herbes ou de légumes depuis moins d'un an* (`Q3`);
     + *cultivent moins de cinq sortes de fruits, de fines herbes ou de légumes* (`Q9`);
-    + *moins de 10&nbsp;% de leur proportion des fruits, des fines herbes et des légumes consommés durant l’été provient de votre propre production *(`Q4`);
+    + *moins de 10&nbsp;% de la proportion des fruits, des fines herbes et des légumes consommés durant l’été provient de leur propre production *(`Q4`);
     + *ne cultivent pas suffisamment pour partager avec d'autres personnes* (`Q10`).
     
 * **Coordonnées positives**&nbsp;: `Q9. 15 sortes ou plus` (1,36), `Q9. 10 à 14 sortes` (1,28), `Q5. Oui` (0,95) et `Q11. Oui` (0,85). Cela signifie que lorsque les coordonnées des individus sont fortement positives sur cet axe, les personnes pratiquant l'agriculture urbaine&nbsp;:
     + *cultivent plus de dix sortes de fruits, de fines herbes ou de légumes* (`Q9`);
-    + *utilisent du compost provenant de leurs déchets verts ou de leurs déchets alimentaires pour faire pousser des fruits, des fines herbes ou des légumes* (`Q5`);
+    + *utilisent du compost provenant de leurs déchets verts ou de leurs déchets alimentaires pour faire pousser des fruits, des fines herbes ou de légumes* (`Q5`);
     + *échangent leurs semis ou leurs récoltes de fruits, de fines herbes ou des légumes avec d’autres personnes* (`Q11`).
 
-En résumé, l'axe&nbsp;1 oppose clairement les **néophytes en agriculture** versus les **personnes expérimentées** cultivant des fruits et légumes variés avec leur propre compost et échangeant leurs semis ou récoltes.
+En résumé, l'axe&nbsp;1 oppose clairement les **néophytes en agriculture** versus les **personnes expérimentées** cultivant des fruits et de légumes variés avec leur propre compost et échangeant leurs semis ou leurs récoltes.
 
 
 ```{r ACMValeursCoordTab, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
@@ -2047,9 +2039,9 @@ Quatre modalités concourent le plus à la formation de l'axe&nbsp;2 résumant 8
 
 - **Coordonnées négatives**&nbsp;:  `Q9. 10 à 14 sortes` (-0,97), `Q11. Oui` (-0,83), `Q3. De 1 à 4 ans` (-0,79), `Q4. 10 à 25%` (-0,76). Cela signifie que lorsque les coordonnées des individus sont fortement négatives sur cet axe, les personnes pratiquant l'agriculture urbaine&nbsp;:  
     + *cultivent de 10 à 14 sortes de fruits, de fines herbes ou de légumes* (`Q9`); 
-    + *échangent leurs semis ou leurs récoltes de fruits, de fines herbes ou des légumes avec d’autres personnes* (`Q11`);
+    + *échangent leurs semis ou leurs récoltes de fruits, de fines herbes ou de légumes avec d’autres personnes* (`Q11`);
     + *cultivent des fruits, des fines herbes ou des légumes depuis 1 à 4 ans* (`Q3`);
-    + *de 10 à 25&nbsp;% de leur proportion des fruits, des fines herbes et des légumes consommés durant l’été provient de votre propre production *(`Q4`).
+    + *de 10 à 25&nbsp;% de la proportion des fruits, des fines herbes et des légumes consommés durant l’été provient de leur propre production *(`Q4`).
 
 - **Coordonnées positives**&nbsp;: seule la modalité `Q9. 15 sortes ou plus` (2,15) présente une forte coordonnée positive.
 
@@ -2176,13 +2168,13 @@ fviz_mca_ind (res.acm,
 
 Plusieurs *packages* permettent de calculer une ACM dans R, notamment `ExPosition` (fonction `epMCA`), `ade4` (fonction `dudi.mca`) et `FactoMineR` (fonction `MCA`). De nouveau, nous utilisons `FactoMineR` couplé au *package* `factoextra` pour réaliser rapidement des graphiques.
 
-Pour calculer l'ACM, il suffit d'utiliser la fonction `MCA` de `FactoMineR`, puis la fonction `summary(res.acm)` qui renvoie les résultats de l'AFC pour&nbsp;: 
+Pour calculer l'ACM, il suffit d'utiliser la fonction `MCA` de `FactoMineR`, puis la fonction `summary(res.acm)` qui renvoie les résultats de l'ACM pour&nbsp;: 
 
 - Les valeurs propres (section `Eigenvalues`) pour les axes factoriels (`Dim.1` à `Dim.n`) avec leur variance expliquée brute (`Variance`), en pourcentage (`% of var.`) et en pourcentage cumulé (`Cumulative % of var.`).
 - Les dix premières observations (section `Individuals`) avec les coordonnées factorielles (`Dim.1` à `Dim.n`), les contributions (`ctr`) et les cosinus carrés (`cos2`). Pour accéder aux résultats pour toutes les observations, utilisez les fonctions `res.acm$ind` ou encore `res.acm$ind$coord` (uniquement les coordonnées factorielles), `res.acm$ind$contrib` (uniquement les contributions) et `res.acm$ind$cos2` (uniquement les cosinus carrés).
 - Les dix premières modalités des variables (section `Categories`) avec les coordonnées factorielles (D`im.1` à `Dim.n`), les contributions (`ctr`) et les cosinus carrés (`cos2`).
 
-La syntaxe ci-dessous permet dans un premier temps de calculer l'ACM, puis de créer un *DataFrame* pour les résultats des valeurs propres.
+La syntaxe ci-dessous permet, dans un premier temps, de calculer l'ACM, puis de créer un *DataFrame* pour les résultats des valeurs propres.
 
 ```{r ACMCodePartie1VPa, echo=TRUE, message=FALSE, warning=FALSE, out.width='75%'}
 library(FactoMineR)
@@ -2214,7 +2206,7 @@ fviz_screeplot(res.acm, addlabels = TRUE,
                x="Composantes", y="Valeur propre", title="")
 ```
 
-Avec un peu plus de lignes de code, il est relativement facile d'exploiter le *DataFrame* des valeurs propres créé précédemment (`dfACMvp`), pour construire des graphiques plus personnalisés.
+Avec un peu plus de lignes de code, il est relativement facile d'exploiter le *DataFrame* des valeurs propres créé précédemment (`dfACMvp`) pour construire des graphiques plus personnalisés.
 
 ```{r ACMCodePartie1VPc, echo=TRUE, fig.align='center', fig.cap="Graphiques pour les valeurs propres de l'ACM avec factoextra", quietly = TRUE, warn.conflicts = TRUE,   message=FALSE, auto_pdf=TRUE, out.width='75%', dev="png", dpi=300}
 library(factoextra)
@@ -2268,7 +2260,7 @@ rownames(dfmodalites) <- 1:nrow(dfmodalites)
 names(dfmodalites) <- str_replace(names(dfmodalites), ".Dim.", "F")
 ```
 
-Plusieurs fonctions très faciles à utiliser de `factoextra` permettent de construire rapidement des graphiques&nbsp;: `fviz_mca_var` pour un nuage de points d'un plan factoriel, `fviz_cos2`et `fviz_contrib` (en utilisant le paramètre `choice=var.cat`) pour des histogrammes avec les cosinus carrés et les contributions des modalités. N'hésitez pas à consulter l'aide de ces fonctions ou encore cette section du site de [STHDA](de http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/75-acm-analyse-des-correspondances-multiples-avec-r-l-essentiel/#graphique-des-variables).
+Plusieurs fonctions très faciles à utiliser de `factoextra` permettent de construire rapidement des graphiques&nbsp;: `fviz_mca_var` pour un nuage de points d'un plan factoriel, `fviz_cos2` et `fviz_contrib` (en utilisant le paramètre `choice=var.cat`) pour des histogrammes avec les cosinus carrés et les contributions des modalités. N'hésitez pas à consulter l'aide de ces fonctions ou encore cette section du site de [STHDA](de http://www.sthda.com/french/articles/38-methodes-des-composantes-principales-dans-r-guide-pratique/75-acm-analyse-des-correspondances-multiples-avec-r-l-essentiel/#graphique-des-variables).
 
 Il est aussi possible de créer vos propres graphiques avec `ggplot2` en utilisant le *DataFrame* créé précédemment avec les modalités. Par exemple, la syntaxe ci-dessous renvoie deux histogrammes pour l'axe&nbsp;1&nbsp;: l'un avec les coordonnées, l'autre avec les contributions. Dans la syntaxe, repérez le terme `CoordF1`. Dupliquez la syntaxe et changez ce terme pour `CoordF2` et `CoordF3` pour réaliser les graphiques des axes&nbsp;2 et&nbsp;3.
 
@@ -2305,7 +2297,7 @@ fviz_mca_var(res.acm2, repel = TRUE,
              ggtheme = theme_minimal ())
 ```
 
-La syntaxe suivante permet de construire le premier plan factoriel pour les modalités avec la fonction `fviz_mca_var` de `factoextra` (figure&nbsp;\@ref(fig:ACMMiseEnOeuvreVars3)).
+La syntaxe suivante permet de construire le premier plan factoriel pour les modalités supplémentaires avec la fonction `fviz_mca_var` de `factoextra` (figure&nbsp;\@ref(fig:ACMMiseEnOeuvreVars3)).
 
 ```{r ACMMiseEnOeuvreVars3, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'ACM pour les modalités supplémentaires", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='75%'}
 fviz_mca_var(res.acm, repel = TRUE,
@@ -2350,7 +2342,7 @@ fviz_mca_ind(res.acm, col.ind = "cos2",
              ggtheme = theme_minimal())
 ```
 
-La syntaxe ci-dessous produit aussi le premier plan factoriel pour les individus, mais attribuant une couleur différente aux modalités de la variable `q12` (figure&nbsp;\@ref(fig:ACMPlanFactoInd2Facto)).
+La syntaxe ci-dessous produit aussi le premier plan factoriel pour les individus, mais en attribuant une couleur différente aux modalités de la variable `q12` (figure&nbsp;\@ref(fig:ACMPlanFactoInd2Facto)).
 
 ```{r ACMPlanFactoInd2Facto, echo=TRUE, fig.align='center', fig.cap="Premier plan factoriel de l'ACM pour les individus avec coloration d'une variable avec factoextra", fig.pos = "H", message=FALSE, warning=FALSE, auto_pdf=TRUE, dev="png", dpi=300, out.width='70%'}
 fviz_mca_ind (res.acm,
