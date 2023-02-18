@@ -232,10 +232,12 @@ Pour illustrer les aides à l'interprétation de l'ACP, nous utilisons un jeu de
 
 ```{r dataacp, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 library(geocmeans)
+library(sf)
+
 data(LyonIris)
-Data <- LyonIris@data[c("Lden","NO2","PM25","VegHautPrt",
+Data <- st_drop_geometry(LyonIris[c("Lden","NO2","PM25","VegHautPrt",
                         "Pct0_14","Pct_65","Pct_Img",
-                        "TxChom1564","Pct_brevet","NivVieMed")]
+                        "TxChom1564","Pct_brevet","NivVieMed")])
 
 intitule <- c("Bruit routier (Lden dB(A))",
               "Dioxyde d'azote (ug/m^3^)",
@@ -617,9 +619,9 @@ Plusieurs *packages* permettent de calculer une ACP dans R, notamment `psych` (f
 ```{r echo=TRUE}
 library(geocmeans)
 data(LyonIris)
-Data <- LyonIris@data[c("CODE_IRIS","Lden","NO2","PM25","VegHautPrt",
+Data <- st_drop_geometry(LyonIris[c("CODE_IRIS","Lden","NO2","PM25","VegHautPrt",
                         "Pct0_14","Pct_65","Pct_Img",
-                        "TxChom1564","Pct_brevet","NivVieMed")]
+                        "TxChom1564","Pct_brevet","NivVieMed")])
 ```
 
 #### Calcul et exploration d'une ACP avec `FactoMineR` {#sect12231}

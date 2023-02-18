@@ -1265,12 +1265,16 @@ Le *k-médoïds* est moins utilisé que le *k-means*, mais il est plus performan
 
 Pour cet exemple, nous proposons d'utiliser le jeu de données spatiales `LyonIris` du *package* `geocmeans`. Ce jeu de données spatiales pour l'agglomération lyonnaise (France) comprend dix variables, dont quatre environnementales (EN) et six socioéconomiques (SE), pour les îlots regroupés pour l'information statistique (IRIS) de l'agglomération lyonnaise (tableau&nbsp;\@ref(tab:datageocmeans) et figure&nbsp;\@ref(fig:datacartoacp)). Nous proposons de réaliser une analyse similaire à celle de l'article de @2021_4, soit de classer les IRIS de Lyon selon ces caractéristiques pour déterminer si certains groupes d'IRIS combinent des situations désavantageuses sur les plans sociaux et environnementaux, dans une perspective d'équité environnementale.
 
+Notez ici que la fonction `st_drop_geometry` provenant du package `sf` permet de retirer l'information géographique du jeu de données `LyonIris` pour obtenir un simple `dataframe`.
+
 ```{r datageocmeans, echo=FALSE, message=FALSE, warning=FALSE, out.width='75%'}
 library(geocmeans)
+library(sf)
+
 data(LyonIris)
-Data <- LyonIris@data[c("Lden","NO2","PM25","VegHautPrt",
+Data <- st_drop_geometry(LyonIris[c("Lden","NO2","PM25","VegHautPrt",
                         "Pct0_14","Pct_65","Pct_Img",
-                        "TxChom1564","Pct_brevet","NivVieMed")]
+                        "TxChom1564","Pct_brevet","NivVieMed")])
 
 intitule <- c("Bruit routier (Lden dB(A))",
               "Dioxyde d'azote (ug/m^3^)",
@@ -1308,11 +1312,13 @@ La première étape consiste donc à charger les données et à les préparer po
 ```{r kmeansB, message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='75%', message = FALSE}
 # Chargement des données
 library(geocmeans)
+library(sf)
+
 data(LyonIris)
 
 # NB : LyonIris est un objet spatial, il faut donc extraire uniquement son DataFrame
-X <- LyonIris@data[c("Lden","NO2","PM25","VegHautPrt","Pct0_14","Pct_65","Pct_Img",
-                     "TxChom1564","Pct_brevet","NivVieMed")]
+X <- st_drop_geometry(LyonIris[c("Lden","NO2","PM25","VegHautPrt","Pct0_14","Pct_65","Pct_Img",
+                     "TxChom1564","Pct_brevet","NivVieMed")])
 
 # Centrage et réduction de chaque colonne du DataFrame
 for (col in names(X)){
@@ -1478,8 +1484,9 @@ Il est ainsi possible de constater, à la figure \@ref(fig:kmeansH), que le grou
 Notez que ces graphiques nous permettent rapidement de nous faire une idée des caractéristiques des groupes, mais uniquement sur une échelle relative. En effet, ils ne nous indiquent à aucun moment la taille des écarts entre les groupes. Pour cela, il est nécessaire de réaliser des graphiques en violon pour chaque variable. Pour ce type de graphique, il est préférable d'utiliser les données originales non transformées pour pouvoir mieux appréhender si les différences entre les groupes sont importantes ou négligeables.
 
 ```{r kmeansI, fig.cap = "Graphiques en violon pour les groupes issus du k-means", fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE}
-X2 <- LyonIris@data[c("Lden","NO2","PM25","VegHautPrt","Pct0_14","Pct_65","Pct_Img",
-                      "TxChom1564","Pct_brevet","NivVieMed")]
+X2 <- st_drop_geometry(LyonIris[c("Lden","NO2","PM25","VegHautPrt","Pct0_14",
+                                  "Pct_65","Pct_Img","TxChom1564","Pct_brevet",
+                                  "NivVieMed")])
 
 plots <- violinPlots(X2, as.character(resultats$cluster))
 ggarrange(plotlist = plots, ncol = 2, nrow = 5)
@@ -1640,8 +1647,9 @@ library(fclust)
 data(LyonIris)
 
 # NB : LyonIris est un objet spatial, il faut donc extraire uniquement son DataFrame
-X <- LyonIris@data[c("Lden","NO2","PM25","VegHautPrt","Pct0_14","Pct_65","Pct_Img",
-                     "TxChom1564","Pct_brevet","NivVieMed")]
+X <- st_drop_geometry(LyonIris[c("Lden","NO2","PM25","VegHautPrt","Pct0_14",
+                                 "Pct_65","Pct_Img",
+                                 "TxChom1564","Pct_brevet","NivVieMed")])
 
 # changement d'échelle des données (0 à 100)
 to_0_100 <- function(x){
@@ -1768,7 +1776,7 @@ Commençons donc par créer plusieurs cartes des probabilités d'appartenir aux 
 ```{r cmeansD, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%', message = FALSE, fig.cap="Cartographie des probabilités d'appartenir aux quatre groupes identifiés par l'algorithme c-means"}
 maps <- mapClusters(LyonIris, cmeans_resultats$U)
 
-ggarrange(plotlist = maps$ProbaMaps, ncol = 2, nrow = 2, legend = "none")
+tmap_arrange(maps$ProbaMaps, ncol = 2, nrow = 2)
 ```
 
 Sur les cartes de la figure \@ref(fig:cmeansD), l'intensité de bleu correspond à la probabilité pour chaque IRIS d'appartenir aux différents groupes. Nous retrouvons les principales structures spatiales que nous avons identifiées avec le *k-means*; cependant, nous pouvons à présent constater que le groupe 1 est bien plus incertain que les autres. Nous pouvons une fois encore générer un graphique en radar pour comparer les profils des quatre groupes.
@@ -1785,8 +1793,9 @@ Sans surprise, nous retrouvons essentiellement les profils que nous avons obtenu
 \newpage
 
 ```{r cmeansF, fig.align='center', message=FALSE, warning=FALSE, auto_pdf=TRUE, out.width='100%'}
-df <-  LyonIris@data[c("Lden","NO2","PM25","VegHautPrt","Pct0_14","Pct_65","Pct_Img",
-                       "TxChom1564","Pct_brevet","NivVieMed")]
+df <-  st_drop_geometry(LyonIris[c("Lden","NO2","PM25","VegHautPrt","Pct0_14",
+                                   "Pct_65","Pct_Img", "TxChom1564",
+                                   "Pct_brevet","NivVieMed")])
 
 tableaux <- summarizeClusters(data = df, 
                   belongmatrix = cmeans_resultats$U,
@@ -1912,8 +1921,8 @@ data(LyonIris)
 set.seed(123)
 
 # NB : LyonIris est un objet spatial, il faut donc extraire uniquement son DataFrame
-X <- LyonIris@data[c("Lden","NO2","PM25","VegHautPrt","Pct0_14","Pct_65","Pct_Img",
-                     "TxChom1564","Pct_brevet","NivVieMed")]
+X <- st_drop_geometry(LyonIris[c("Lden","NO2","PM25","VegHautPrt","Pct0_14","Pct_65","Pct_Img",
+                     "TxChom1564","Pct_brevet","NivVieMed")])
 
 # Centrage et réduction de chaque colonne du DataFrame
 for (col in names(X)){

@@ -503,7 +503,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
   }
 
   ## si fonction de lien = logit : OR
-  if(class(model)=='glm'){
+  if(class(model)[[1]]=='glm'){
     if (model$family$link == "logit"){
       base_table <- cbind(base_table[,1], round(exp(base_table[,1]),OR_digits) , base_table[,2:ncol(base_table)])
       if(confid){
@@ -548,7 +548,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
   params_types <- sapply(params_names, function(i){
     if(grepl("poly(",i,fixed=T)){
       return("numeric")
-    }else if(class(model)=="lm"){
+    }else if(class(model)[[1]]=="lm"){
       return(class(model$model[[i]]))
     }else{
       return(class(model$data[[i]]))
@@ -564,7 +564,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
     pname <- params_names[[i]]
     ptype <- params_types[[i]]
     rn <- rownames(base_table)
-    if(ptype %in% c("character","factor")){
+    if(ptype[[1]] %in% c("character","factor")){
       rows <- base_table[grepl(pname,x = rn,fixed = T),]
       if(class(model)[[1]]=="lm"){
         uvalues <- unique(as.character(model$model[[pname]]))
@@ -584,7 +584,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
       new_table <- rbind(row1,new_table)
       return(new_table)
     }
-    if(ptype %in% c("integer", "double", "numeric")){
+    if(ptype[[1]] %in% c("integer", "double", "numeric")){
       if(pname == "Constante"){
         row <- base_table[rn=="(Intercept)",]
       }else if(grepl("poly(",pname,fixed=T)){
@@ -609,7 +609,7 @@ build_table.glm <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
   }
 
   final_table <- do.call(rbind,allrows)
-  if(class(model)!="lm"){
+  if(class(model)[[1]]!="lm"){
     if(model$family$link == "logit" & confid){
       colnames(final_table) <- c("variable", "coefficient", "OR",
                                  "err. std",paste("val.",letter), "val .p",
@@ -762,7 +762,7 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
     pname <- params_names[[i]]
     ptype <- params_types[[i]]
     rn <- rownames(base_table)
-    if(ptype %in% c("character","factor")){
+    if(ptype[[1]] %in% c("character","factor")){
       rows <- base_table[grepl(pname,x = rn,fixed = T) & grepl(".1",x=rn,fixed=F)==F,]
       uvalues <- unique(as.character(model$data[[pname]]))
       if(length(uvalues)>2){
@@ -778,7 +778,7 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
       new_table <- rbind(row1,new_table)
       return(new_table)
     }
-    if(ptype %in% c("integer", "double", "numeric")){
+    if(ptype[[1]] %in% c("integer", "double", "numeric")){
       if(pname == "Constante"){
         row <- base_table[rn=="(Intercept)",]
       }else{
@@ -796,7 +796,7 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
       pname <- params_names2[[i]]
       ptype <- params_types2[[i]]
       rn <- rownames(base_table)
-      if(ptype %in% c("character","factor")){
+      if(ptype[[1]] %in% c("character","factor")){
         rows <- base_table[grepl(pname,x = rn,fixed = T) & grepl(".1",x=rn,fixed=F)==T,]
         uvalues <- unique(as.character(model$data[[pname]]))
         if(length(uvalues)>2){
@@ -812,7 +812,7 @@ build_table.gam <- function(model, confid = T, coef_digits = 2, std_digits = 2, 
         new_table <- rbind(row1,new_table)
         return(new_table)
       }
-      if(ptype %in% c("integer", "double", "numeric")){
+      if(ptype[[1]] %in% c("integer", "double", "numeric")){
         if(pname == "Constante"){
           row <- base_table[rn=="(Intercept).1",]
         }else{
@@ -993,7 +993,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
     rownames(base_table)[2] <- "shape"
   }
 
-  if(model@family@vfamily == "multinomial"){
+  if(model@family@vfamily[[1]] == "multinomial"){
 
     final_table <- basetable.multinom(model,base_table,params_names,params_types)
 
@@ -1002,7 +1002,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
     allrows <- lapply(1:length(params_names), function(i){
       pname <- params_names[[i]]
       ptype <- params_types[[i]]
-      if(ptype %in% c("character","factor")){
+      if(ptype[[1]] %in% c("character","factor")){
         rows <- base_table[grepl(pname,x = rn,fixed = T),]
         uvalues <- unique(as.character(model@model[[pname]]))
         if(length(uvalues)>2){
@@ -1018,7 +1018,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
         new_table <- rbind(row1,new_table)
         return(new_table)
       }
-      if(ptype %in% c("integer", "double", "numeric")){
+      if(ptype[[1]] %in% c("integer", "double", "numeric")){
         if(pname == "Constante"){
           row <- base_table[rn=="(Intercept)",]
         }else{
@@ -1034,7 +1034,7 @@ build_table.vglm <- function(model, confid = T, coef_digits = 2, std_digits = 2,
       k <- 1
       more_rows <- lapply(not_paralelle,function(i){
         type_param <- class(model@model[[i]])
-        if(type_param %in% c("character","factor")){
+        if(type_param[[1]] %in% c("character","factor")){
           rows <- base_table[grepl(i,x = rn,fixed = T),]
           uvalues <- unique(as.character(model@model[[i]]))
           new_names <- gsub(pattern = i, x = row.names(rows), replacement = "", fixed = T)
@@ -1173,7 +1173,7 @@ basetable.multinom <- function(model,base_table,params_names,params_types){
     allrows <- lapply(1:length(params_names), function(i){
       pname <- params_names[[i]]
       ptype <- params_types[[i]]
-      if(ptype %in% c("character","factor")){
+      if(ptype[[1]] %in% c("character","factor")){
         rows <- base_table[grepl(pname,x = rn,fixed = T) & grepl(idpart,x = rn,fixed = T),]
         uvalues <- unique(as.character(model@model[[pname]]))
         if(length(uvalues)>2){
@@ -1191,7 +1191,7 @@ basetable.multinom <- function(model,base_table,params_names,params_types){
         new_table <- rbind(row1,new_table)
         return(new_table)
       }
-      if(ptype %in% c("integer", "double", "numeric")){
+      if(ptype[[1]] %in% c("integer", "double", "numeric")){
         if(pname == "Constante"){
           row <- base_table[rn==paste("(Intercept)",idpart,sep=""),]
         }else{
@@ -1211,7 +1211,7 @@ basetable.multinom <- function(model,base_table,params_names,params_types){
     allrows_fixed <- lapply(1:length(terms), function(i){
       pname <- terms[[i]]
       ptype <- terms_types[[i]]
-      if(ptype %in% c("character","factor")){
+      if(ptype[[1]] %in% c("character","factor")){
         rows <- base_table[grepl(pname,x = rn,fixed = T),]
         uvalues <- unique(as.character(model@model[[pname]]))
         if(length(uvalues)>2){
@@ -1227,7 +1227,7 @@ basetable.multinom <- function(model,base_table,params_names,params_types){
         new_table <- rbind(row1,new_table)
         return(new_table)
       }
-      if(ptype %in% c("integer", "double", "numeric")){
+      if(ptype[[1]] %in% c("integer", "double", "numeric")){
         if(pname == "Constante"){
           row <- base_table[rn=="(Intercept)",]
         }else{

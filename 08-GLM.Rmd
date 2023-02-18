@@ -738,10 +738,10 @@ library(ROCR)
 prob <- predict(model2, type = "response")
 # Calcul de la sensibilité et de la spécificité (package ROCR)
 predictions <- prediction(prob, dfenquete2$y)
-sens <- data.frame(x=unlist(performance(predictions, "sens")@x.values),
-                   y=unlist(performance(predictions, "sens")@y.values))
-spec <- data.frame(x=unlist(performance(predictions, "spec")@x.values),
-                   y=unlist(performance(predictions, "spec")@y.values))
+sens <- data.frame(x=unlist(ROCR::performance(predictions, "sens")@x.values),
+                   y=unlist(ROCR::performance(predictions, "sens")@y.values))
+spec <- data.frame(x=unlist(ROCR::performance(predictions, "spec")@x.values),
+                   y=unlist(ROCR::performance(predictions, "spec")@y.values))
 # Trouver numériquement la valeur seuil (minimiser la différence absolue
 # entre sensibilité et spécificité)
 real <- dfenquete2$y

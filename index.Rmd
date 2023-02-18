@@ -146,9 +146,7 @@ Si vous googlez l'expression «&nbsp;comment lire un livre?&nbsp;», vous trouve
 
 ## Comment utiliser les données du livre pour reproduire les exemples? {-#sect003B}
 
-Ce livre propose des exemples détaillés et appliqués dans R pour chacune des méthodes abordées. Ces exemples se basent sur des jeux de données structurés et mis à disposition avec le livre. Ils sont disponibles sur le *repo github* dans le sous-dossier `data`, à l'adresse https://github.com/LAEQ/livre_statistique_Phil_Jere/tree/master/data. 
-
-Pour télécharger l'intégralité des données, vous pouvez utiliser le lien suivant&nbsp;: https://downgit.github.io/#/home?url=https://github.com/LAEQ/livre_statistique_Phil_Jere/tree/master/data. Cela est rendu possible grâce à l'outil [DownGit](https://downgit.github.io/#/home).
+Ce livre propose des exemples détaillés et appliqués dans R pour chacune des méthodes abordées. Ces exemples se basent sur des jeux de données structurés et mis à disposition avec le livre. Ils sont disponibles dans le [repos github du livre](https://github.com/LAEQ/livre_statistique_Phil_Jere/tree/master/data). 
 
 Une autre option est de télécharger le *repo* complet du livre directement sur *github* (https://github.com/LAEQ/livre_statistique_Phil_Jere) en cliquant sur le bouton `Code`, puis le bouton `Download ZIP` (figure \@ref(fig:downloaffromgit)). Les données se trouvent alors dans le sous-dossier nommé `data`.
 
@@ -239,7 +237,7 @@ clean_text <- function(string){
   if(string == ""){
     return("")
   }
-  string <- gsub("\\$", "+DOLLAR+", string, fixed = TRUE)
+  string <- gsub("\\$", "+DOLLAR+", string, fixed = TRUE,  useBytes = TRUE)
   changes <- list(
      c("`", "", F),
       c("\\^([^\"]*?)\\^","\\\\textsuperscript{\\1}",F),
@@ -257,8 +255,16 @@ clean_text <- function(string){
       c("beta\\_", "beta_", TRUE),
       c("alpha\\_", "alpha_", TRUE),
       c("\\&nbsp;", "\\\\&nbsp;", TRUE)
+      #c("%%", "\\%\\%", TRUE),
+      #c("%/%", "\\%/\\%", TRUE)
       )
-  parts <- strsplit(string, "$", fixed = T)[[1]]
+  
+  if(grepl("$",string, fixed = TRUE, useBytes = TRUE)){
+    parts <- strsplit(string, "$", fixed = T)[[1]]
+  }else{
+    parts <- string
+  }
+    
   new_strings <- sapply(1:length(parts), function(i){
     thisstring <- parts[[i]]
     if (thisstring != ""){
@@ -266,7 +272,7 @@ clean_text <- function(string){
       new_strings2 <- sapply(1:length(parts2), function(j){
         thisstring2 <- parts2[[j]]
         if (j %% 2 ==0){
-          thisstring2 <- gsub("^","\\textasciicircum{}",thisstring2, fixed = T)
+          thisstring2 <- gsub("^","\\textasciicircum{}",thisstring2, fixed = T,  useBytes = TRUE)
           return(thisstring2)
         }else{
           return(thisstring2)
@@ -281,9 +287,9 @@ clean_text <- function(string){
     }else{
       for (ch in changes){
           if(ch[[3]]){
-            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, fixed = T)
+            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, fixed = T,  useBytes = TRUE)
           }else{
-            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, perl = T)
+            thisstring <- gsub(ch[[1]],ch[[2]],thisstring, perl = T,  useBytes = TRUE)
           }
           
       }
@@ -291,7 +297,8 @@ clean_text <- function(string){
     }
   })
   fullstring <- paste(new_strings, collapse = "")
-  fullstring <- gsub("+DOLLAR+", "\\$" , fullstring, fixed = TRUE)
+  fullstring <- gsub("+DOLLAR+", "\\$" , fullstring, fixed = TRUE,  useBytes = TRUE)
+  
   return (fullstring)
   
 }
@@ -324,23 +331,23 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
   if (knitr::is_latex_output()){
     #etape1 : supprimer les caracteres speciaux, echapper les gras et italic
     df2 <- clean_df_latex(df)
-    if (is.null(col.names) == F){
-      if(is.na(col.names)==F){
+    if (length(col.names) > 0){
+      if(is.na(col.names)[[1]]==F){
         #col.names <- gsub("\\(\\%\\)","(\\\\%)",col.names)
-        col.names <- gsub("\\%","\\\\%",col.names)
-        col.names <- gsub("\\^([^\"]*?)\\^","\\\\textasciicircum{\\1}",col.names,fixed = F)
+        col.names <- gsub("\\%","\\\\%",col.names, useBytes = TRUE)
+        col.names <- gsub("\\^([^\"]*?)\\^","\\\\textasciicircum{\\1}",col.names,fixed = F, useBytes = TRUE)
       }
     }
 
-    if(is.null(caption)==F){
-      caption <- gsub("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", caption)
-      caption <- gsub("\\*([^\"]*?)\\*","\\\\textit{\\1}", caption)
+    if(is.null(caption)[[1]]==F){
+      caption <- gsub("\\*{2}([^\"]*)\\*{2}","\\\\textbf{\\1}", caption, useBytes = TRUE)
+      caption <- gsub("\\*([^\"]*?)\\*","\\\\textit{\\1}", caption, useBytes = TRUE)
     }
     if(length(df2) == 1){
       df2 <- df2[[1]]
     }
     
-    if(class(df2) == "list"){
+    if(class(df2)[[1]] == "list"){
       table1 <- df2 %>% 
       #mutate_all(linebreak)  %>% 
        knitr::kable(
@@ -378,11 +385,11 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
   }else{
     
     # gerer les newline
-    if(class(df) != "list"){
+    if(class(df)[[1]] != "list"){
       df <- data.frame(df)
       for(col in names(df)){
         if(is.character(df[[col]])){
-          df[[col]] <- gsub("\\newline","<br/>",df[[col]], fixed = T)
+          df[[col]] <- gsub("\\newline","<br/>",df[[col]], fixed = T, useBytes = TRUE)
         }
       }
     }else {
@@ -402,13 +409,13 @@ show_table <- function(df, col.names = NA, caption = NULL, col.to.resize = NULL,
       caption = caption,
       escape = FALSE, ...)
     ## gerer le padding
-    table1 <- gsub(pattern = "NApadding", replacement = "padding",x = table1, fixed = T)
+    table1 <- gsub(pattern = "NApadding", replacement = "padding",x = table1, fixed = T,  useBytes = TRUE)
   }
   return(table1)
 }
 
 tofr <- function(float){
-  return(gsub(".",",",as.character(float),fixed = T))
+  return(gsub(".",",",as.character(float),fixed = T,  useBytes = TRUE))
 }
 
 
